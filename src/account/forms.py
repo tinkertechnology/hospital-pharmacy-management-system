@@ -10,7 +10,7 @@ class RegistrationForm(UserCreationForm):
 
     class Meta:
         model = Account
-        fields = ('email', 'username', 'password1', 'password2', )
+        fields = ('mobile', 'username', 'password1', 'password2', )
 
 
 class AccountAuthenticationForm(forms.ModelForm):
@@ -19,13 +19,14 @@ class AccountAuthenticationForm(forms.ModelForm):
 
 	class Meta:
 		model = Account
-		fields = ('email', 'password')
+		fields = ('password', 'mobile')
 
 	def clean(self):
 		if self.is_valid():
-			email = self.cleaned_data['email']
+			# email = self.cleaned_data['email']
 			password = self.cleaned_data['password']
-			if not authenticate(email=email, password=password):
+			mobile = self.cleaned_data['mobile']
+			if not authenticate(mobile=mobile, password=password):
 				raise forms.ValidationError("Invalid login")
 
 
@@ -33,15 +34,15 @@ class AccountUpdateForm(forms.ModelForm):
 
 	class Meta:
 		model = Account
-		fields = ('email', 'username', )
+		fields = ('username', 'mobile' )
 
-	def clean_email(self):
-		email = self.cleaned_data['email']
-		try:
-			account = Account.objects.exclude(pk=self.instance.pk).get(email=email)
-		except Account.DoesNotExist:
-			return email
-		raise forms.ValidationError('Email "%s" is already in use.' % account)
+	# def clean_mobile(self):
+	# 	email = self.cleaned_data['mobile']
+	# 	try:
+	# 		account = Account.objects.exclude(pk=self.instance.pk).get(mobile=mobile)
+	# 	except Account.DoesNotExist:
+	# 		return email
+	# 	raise forms.ValidationError('Email "%s" is already in use.' % account)
 
 	def clean_username(self):
 		username = self.cleaned_data['username']
@@ -52,7 +53,13 @@ class AccountUpdateForm(forms.ModelForm):
 		raise forms.ValidationError('Username "%s" is already in use.' % username)
 
 
-
+	def clean_mobile(self):
+		mobile = self.cleaned_data['mobile']
+		try:
+			account = Account.objects.exclude(pk=self.instance.pk).get(mobile=mobile)
+		except Account.DoesNotExist:
+			return mobile
+		raise forms.ValidationError('Mobile "%s" is already in use.' % account)
 
 
 

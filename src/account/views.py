@@ -1,8 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
 
 from account.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
 from blog.models import BlogPost
+from .models import Account, PhoneOTP
+from django.contrib.auth import get_user_model
+
+from django.shortcuts import get_object_or_404 
+import random
+User = get_user_model()
+
 
 
 
@@ -32,7 +42,7 @@ def logout_view(request):
 
 
 def login_view(request):
-
+	
 	context = {}
 
 	user = request.user
@@ -58,6 +68,8 @@ def login_view(request):
 	# print(form)
 	return render(request, "account/login.html", context)
 
+def account_jpt(view):
+	return render(request, "jpt.html")
 
 def account_view(request):
 
@@ -93,5 +105,66 @@ def account_view(request):
 
 def must_authenticate_view(request):
 	return render(request, 'account/must_authenticate.html', {})
+
+
+class ValidatePhoneSendOTP(APIView):
+
+	def post(self, request, *args, **kwargs):
+		phone_number = request.data.get('mobile')
+		if phone_number:
+			mobile = str(phone_number)
+			print(mobile)
+			user = Account.objects.filter(mobile__iexact=mobile)
+
+			if user.exists():
+				return Response({
+					'status': False,
+					'detail': 'number already exists'
+					})
+			else:
+				key = send_otp(mobile)
+				if key:
+					PhoneOTP.objects.create(
+						mobile = mobile,
+						otp = key,
+
+						)
+					return Response({
+						'status': True,
+						'detail': 'OTP sent to ' + mobile
+						})
+
+				else:
+
+					return Response({
+						'status': False,
+						'detail': 'error sending OTP'
+						})
+
+
+		else:
+			return Response({
+				'status': False,
+				'detail': 'mobile number not given'
+
+				})
+
+
+
+def send_otp(mobile):
+	if mobile:
+		key = random.randint(999, 9999)
+		return key
+	else :
+		return False
+
+
+
+
+
+
+
+
+
 
 
