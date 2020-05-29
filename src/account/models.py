@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import RegexValidator
 
 class MyAccountManager(BaseUserManager):
-	def create_user(self,mobile, username, password=None):
+	def create_user(self,email,mobile, username, password=None):
 		if not mobile:
 			raise ValueError('Users must have an mobile number')
 		if not username:
@@ -12,16 +12,17 @@ class MyAccountManager(BaseUserManager):
 		user = self.model(
 			mobile=self.normalize_email(mobile),
 			username=username,
-			# email=email
+			email=email
 		)
 
 		user.set_password(password)
 		user.save(using=self._db)
 		return user
 
-	def create_superuser(self,mobile, username, password):
+	def create_superuser(self,mobile, email, username, password):
 		user = self.create_user(
 			mobile=self.normalize_email(mobile),
+			email=self.normalize_email(email),
 			password=password,
 			username=username,
 		)
@@ -45,7 +46,7 @@ class Account(AbstractBaseUser):
 
 
 	USERNAME_FIELD = 'mobile'
-	REQUIRED_FIELDS = ['username']
+	REQUIRED_FIELDS = ['username', 'email']
 
 	objects = MyAccountManager()
 

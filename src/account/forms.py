@@ -6,11 +6,12 @@ from account.models import Account
 
 
 class RegistrationForm(UserCreationForm):
-    email = forms.EmailField(max_length=254, help_text='Required. Add a valid email address.')
+    # mobile = forms.CharField(max_length=254, help_text='Required. Add a valid phone address.')
+    email = forms.EmailField(max_length=254, help_text='Required. Add a valid phone address.')
 
     class Meta:
         model = Account
-        fields = ('mobile', 'username', 'password1', 'password2', )
+        fields = ('email','mobile', 'username', 'password1', 'password2', )
 
 
 class AccountAuthenticationForm(forms.ModelForm):
@@ -19,11 +20,11 @@ class AccountAuthenticationForm(forms.ModelForm):
 
 	class Meta:
 		model = Account
-		fields = ('password', 'mobile')
+		fields = ('email', 'password', 'mobile')
 
 	def clean(self):
 		if self.is_valid():
-			# email = self.cleaned_data['email']
+			email = self.cleaned_data['email']
 			password = self.cleaned_data['password']
 			mobile = self.cleaned_data['mobile']
 			if not authenticate(mobile=mobile, password=password):
@@ -34,15 +35,15 @@ class AccountUpdateForm(forms.ModelForm):
 
 	class Meta:
 		model = Account
-		fields = ('username', 'mobile' )
+		fields = ('email','username', 'mobile' )
 
-	# def clean_mobile(self):
-	# 	email = self.cleaned_data['mobile']
-	# 	try:
-	# 		account = Account.objects.exclude(pk=self.instance.pk).get(mobile=mobile)
-	# 	except Account.DoesNotExist:
-	# 		return email
-	# 	raise forms.ValidationError('Email "%s" is already in use.' % account)
+	def clean_mobile(self):
+		email = self.cleaned_data['mobile']
+		try:
+			account = Account.objects.exclude(pk=self.instance.pk).get(mobile=mobile)
+		except Account.DoesNotExist:
+			return email
+		raise forms.ValidationError('Email "%s" is already in use.' % account)
 
 	def clean_username(self):
 		username = self.cleaned_data['username']

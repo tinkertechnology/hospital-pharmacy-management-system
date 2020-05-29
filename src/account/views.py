@@ -124,15 +124,36 @@ class ValidatePhoneSendOTP(APIView):
 			else:
 				key = send_otp(mobile)
 				if key:
-					PhoneOTP.objects.create(
-						mobile = mobile,
-						otp = key,
+					old = PhoneOTP.objects.filter(mobile__iexact=mobile)
+					if old.exists():
+						old = old.first()
+						count = old.count
+						if count > 10:
+							return Response({
+								'status': False,
+								'detail': 'OTP limit exists, contact support'
+								})
+						old.count = count + 1
+						old.save()
+						print('increaded count', count)
 
-						)
-					return Response({
-						'status': True,
-						'detail': 'OTP sent to ' + mobile
-						})
+						return Response({
+							'status': True,
+							'detail' : 'OTP sent sucessfully'
+
+							})
+
+					else:
+
+						PhoneOTP.objects.create(
+							mobile = mobile,
+							otp = key,
+
+							)
+						return Response({
+							'status': True,
+							'detail': 'OTP sent to ' + mobile
+							})
 
 				else:
 
