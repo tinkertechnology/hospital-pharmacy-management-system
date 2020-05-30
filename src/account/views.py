@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from django.http import HttpResponse
 
 from account.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
 from blog.models import BlogPost
@@ -42,23 +42,47 @@ def logout_view(request):
 
 
 def login_view(request):
+	# if request.method == 'POST':
+	# 	mobile = request.POST.get('mobile')
+	# 	password = request.POST.get('password')
+	# 	print(mobile)
+	# 	print(password)
+
+	# 	user = authenticate(mobile=mobile, password=password)
+	# 	print(user)
+
+	# 	if user:
+	# 		if user.is_active:
+	# 			login(request, user)
+	# 			return redirect('dashboard')
+	# 		else:
+	# 			return HttpResponse('Your account was inactive')
+	# 	else:
+	# 		return HttpResponse('Invalid login credentials')
+
+	# return render(request, "account/login.html")
 	
 	context = {}
 
 	user = request.user
 	if user.is_authenticated: 
-		return redirect("home")
+		return redirect('dashboard')
 
 	if request.POST:
+		mobile = request.POST.get('mobile')
+		password = request.POST.get('password')
+		# print(mobile)
+		# print(password)
 		form = AccountAuthenticationForm(request.POST)
 		if form.is_valid():
-			email = request.POST['email']
-			password = request.POST['password']
-			user = authenticate(email=email, password=password)
+			print('passed')
+			user = authenticate(mobile=mobile, password=password)
 
 			if user:
 				login(request, user)
-				return redirect("home")
+				return redirect('dashboard')
+		else:
+			print('Failed')
 
 	else:
 		form = AccountAuthenticationForm()
@@ -67,6 +91,7 @@ def login_view(request):
 
 	# print(form)
 	return render(request, "account/login.html", context)
+
 
 def account_jpt(view):
 	return render(request, "jpt.html")

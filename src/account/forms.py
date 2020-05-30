@@ -15,16 +15,17 @@ class RegistrationForm(UserCreationForm):
 
 
 class AccountAuthenticationForm(forms.ModelForm):
-
-	password = forms.CharField(label='Password', widget=forms.PasswordInput)
+	mobile = forms.CharField(label='Mobile Number', widget=forms.TextInput(attrs={'class':'form-control'}))
+	password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class':'form-control'}))
 
 	class Meta:
 		model = Account
-		fields = ('email', 'password', 'mobile')
+		fields = ('password', 'mobile')
+		# fields = ('email', 'password', 'mobile')
 
 	def clean(self):
 		if self.is_valid():
-			email = self.cleaned_data['email']
+			# email = self.cleaned_data['email']
 			password = self.cleaned_data['password']
 			mobile = self.cleaned_data['mobile']
 			if not authenticate(mobile=mobile, password=password):

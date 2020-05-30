@@ -1,0 +1,73 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+<div class="pcoded-content">
+    <div class="pcoded-inner-content">
+        <div class="main-body">
+            <div class="page-wrapper">
+                <div class="row">
+			        <div class="col-sm-12">
+			            <!-- Zero config.table start -->
+			            <div class="card">
+			                <div class="card-header">
+			                    <h4>USER ORDER LIST</h4>
+			                    
+			                    <div class="card-header-right">
+			                        <ul class="list-unstyled card-option">
+			                            <li><i class="feather icon-minus minimize-card"></i></li>
+			                            <li><i class="feather icon-maximize full-card"></i></li>
+			                        </ul>
+			                    </div>
+			                </div>
+
+			                <div class="card-block">
+			                    <div class="dt-responsive table-responsive">
+			                        <table id="simpletable" class="table table-striped table-bordered nowrap">
+			                            <thead>
+				                            <tr>
+				                                <th><i class="fa fa-user"></i> CART ID</th>
+				                                <th><i class="fa fa-user"></i> USER ID</th>
+				                                <th><i class="fa fa-user"></i> MOBILE NUMBER</th>
+				                                <th><i class="fa fa-user"></i> EMAIL ADDRESS</th>
+				                                <th><i class="fa fa-user"></i> BILLING ADDRESS</th>
+				                                <th><i class="fa fa-user"></i> SHIPPING ADDRESS</th>
+				                                <th><i class="fa fa-phone"></i> STATUS</th>
+				                            </tr>
+			                            </thead>
+			                            <tbody>
+			                                {% if order_list %}
+			                                    {% for item in order_list %}
+			                                        <tr>
+			                                        	<td>
+			                                        		<a href="{% url 'user_order_detail' item.cart_id%}">
+			                                        			{{ item.cart_id }}
+			                                        		</a>
+			                                        	</td>
+			                                        	<td>{{ item.user_id }}</td>
+			                                            <td>{{ item.cart.user.mobile }}</td>
+			                                            <td>{{ item.user.user.email }}</td>
+			                                            <td>{{ item.billing_address }}</td>
+			                                            <td>{{ item.shipping_address }}</td>
+			                                            <td>{{ item.status }}</td>
+			                                        </tr>
+			                                    {% endfor %}
+			                                {% else %}
+			                                    <tr>
+			                                        <td colspan="7">No data's available</td>
+			                                    </tr>
+			                                {% endif %}
+			                            </tbody>
+			                        </table>
+			                    </div>
+			                </div>
+			            </div>
+			            <!-- Zero config.table end -->
+			        </div>
+			    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

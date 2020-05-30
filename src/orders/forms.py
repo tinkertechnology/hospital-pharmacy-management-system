@@ -1,7 +1,8 @@
 from django import forms
+from django.forms import ModelForm
 from django.contrib.auth import get_user_model
 
-from .models import UserAddress
+from .models import UserAddress, Order
 User = get_user_model()
 
 class GuestCheckoutForm(forms.Form):
@@ -49,6 +50,13 @@ class UserAddressForm(forms.ModelForm):
 			'type'
 		]
 
+
+class UserOrderForm(ModelForm):
+	userorder = forms.ModelChoiceField(queryset=Order.objects.filter(), widget=forms.Select(attrs={'class':'form-control'}), empty_label='Select Order')
+	
+	class Meta:
+		model = Order
+		fields = '__all__'
 
 
 
