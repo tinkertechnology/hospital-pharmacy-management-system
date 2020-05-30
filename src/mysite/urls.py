@@ -32,7 +32,10 @@ from account.views import (
     account_view,
     account_jpt,
 	must_authenticate_view,
-    ValidatePhoneSendOTP
+    ValidatePhoneSendOTP,
+    ValidateOTP,
+    RegisterAPI,
+    ResetPasswordAPIView
 )
 
 
@@ -104,7 +107,11 @@ urlpatterns = [
     url(r'^accounts/', include('rest_registration.api.urls')),
 
     re_path(r'^api/$', APIHomeView.as_view(), name='home_api'),
-    re_path(r'^api/validate_mobile/', ValidatePhoneSendOTP.as_view(), name="validate_otp"),
+    re_path(r'^api/validate_mobile/', ValidatePhoneSendOTP.as_view(), name="validate_mobile"),
+    re_path(r'^api/validate_otp/', ValidateOTP.as_view(), name="validate_otp"),
+    re_path(r'^api/register/', RegisterAPI.as_view(), name="registerAPIView"),
+    re_path(r'^api/reset_password/', ResetPasswordAPIView.as_view(), name="registerAPIView"),
+
 
     re_path(r'^api/cart/$', CartAPIView.as_view(), name='cart_api'),
     re_path(r'^api/checkout/$', CheckoutAPIView.as_view(), name='checkout_api'),

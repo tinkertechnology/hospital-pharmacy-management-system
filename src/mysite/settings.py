@@ -219,8 +219,8 @@ REST_REGISTRATION = {
     'VERIFICATION_FROM_EMAIL': EMAIL_HOST_USER,
 }
 
-AUTHENTICATION_BACKENDS = (
-    'mysite.backends.UsernameOrEmailBackend',
-    'django.contrib.auth.backends.ModelBackend' )
+# AUTHENTICATION_BACKENDS = (
+#     'mysite.backends.UsernameOrEmailBackend',
+#     'django.contrib.auth.backends.ModelBackend' )
 
 

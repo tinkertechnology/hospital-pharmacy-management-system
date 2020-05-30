@@ -2,19 +2,18 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
-
+from django.views.decorators.csrf import csrf_exempt
+from .serializer import CreateUserSerializer
 from account.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
 from blog.models import BlogPost
+from django.contrib.auth.hashers import make_password
 from .models import Account, PhoneOTP
 from django.contrib.auth import get_user_model
-
+import uuid
 from django.shortcuts import get_object_or_404 
 import random
+import requests
 User = get_user_model()
-
-
-
 
 def registration_view(request):
 	context = {}
@@ -113,7 +112,7 @@ class ValidatePhoneSendOTP(APIView):
 		phone_number = request.data.get('mobile')
 		if phone_number:
 			mobile = str(phone_number)
-			print(mobile)
+		
 			user = Account.objects.filter(mobile__iexact=mobile)
 
 			if user.exists():
@@ -134,35 +133,36 @@ class ValidatePhoneSendOTP(APIView):
 								'detail': 'OTP limit exists, contact support'
 								})
 						old.count = count + 1
+						old.otp = key
 						old.save()
 						print('increaded count', count)
-
-						return Response({
-							'status': True,
-							'detail' : 'OTP sent sucessfully'
-
-							})
-
 					else:
-
 						PhoneOTP.objects.create(
 							mobile = mobile,
 							otp = key,
-
 							)
-						return Response({
-							'status': True,
-							'detail': 'OTP sent to ' + mobile
-							})
+					r = requests.post(
+					"http://api.sparrowsms.com/v2/sms/",
+					data={'token' : 'ZkikH0ihw90CzvR2yAOn',
+					'from'  : 'Demo',
+					'to'    : '1234567890',
+					'text'  : 'your mobile verification code is  ' + str(key)})
 
+					status_code = r.status_code
+					response = r.text
+					response_json = r.json()
+					print(status_code)
+					print(response_json)
+					
+					return Response({
+						'status': True,
+						'detail': 'OTP sent to ' + mobile
+						})
 				else:
-
 					return Response({
 						'status': False,
 						'detail': 'error sending OTP'
 						})
-
-
 		else:
 			return Response({
 				'status': False,
@@ -175,6 +175,7 @@ class ValidatePhoneSendOTP(APIView):
 def send_otp(mobile):
 	if mobile:
 		key = random.randint(999, 9999)
+		print(key)
 		return key
 	else :
 		return False
@@ -182,8 +183,136 @@ def send_otp(mobile):
 
 
 
+class ValidateOTP(APIView):
+	def post(self, request, *args, **kwargs):
+		mobile = request.data.get('mobile', False)
+		otp_sent = request.data.get('otp', False)
+
+		if mobile and otp_sent:
+			old = PhoneOTP.objects.filter(mobile__iexact=mobile)
+			if old.exists():
+				old = old.first()
+				otp = old.otp
+				if(str(otp_sent)==str(otp)):
+					old.validated = True
+					old.save()
+					return Response({
+						'status': True,
+						'detail': 'OTP matched, proceed for registration'
+						})
 
 
+				else:
+					return Response({
+						'status': False,
+						'detail': 'Incorrect OTP'
+						})
+			else:
+				return Response({
+					'status' : False,
+					'detail' : 'First proceed via sending OTP request'
+					})
+
+
+		else:
+			return Response({
+				'status': False,
+				'detail': 'Please provide both phone number and OTP for validation'
+				})
+
+
+class RegisterAPI(APIView):
+
+	print('inside register view')
+	@csrf_exempt
+	def post(self, request, *args, **kwargs):
+		print('first')
+		mobile = request.data.get('mobile', False)
+		password = request.data.get('password', False)
+		email = request.data.get('email', False)
+		username = mobile
+		if mobile and password:
+			
+			old = PhoneOTP.objects.filter(mobile__iexact=mobile)
+			if old.exists():
+				old = old.first()
+				validated = old.validated
+
+				if validated:
+					temp_data = {
+						'mobile': mobile,
+						'password': password,
+						'email': email,
+						'username': mobile
+
+					}
+					serializer = CreateUserSerializer(data = temp_data)
+					serializer.is_valid(raise_exception = True)
+					user = serializer.save()
+					old.delete()
+
+					return Response({
+						'status': True,
+						'detail': 'Account Created'
+						})
+
+				else:
+					return Response({
+						'status': False,
+						'detail': 'OTP havent verified first , first validate otp'
+						})
+
+			else:
+				return Response({
+						'status': False,
+						'detail': 'Please Verify your phone first through OTP'
+					})
+
+		else:
+			return Response({
+				'status': False,
+				'detail': 'Both phone and password are not sent'
+				})
+
+
+
+
+class ResetPasswordAPIView(APIView):
+	def post(self, request, *args, **kwargs):
+		mobile = request.data.get('mobile', False)
+		if mobile:
+			old = User.objects.filter(mobile__iexact=mobile).first()
+			print(old.__dict__)
+			if  old is not None:#old.exists():
+				new_password = uuid.uuid4().hex[:6].upper()
+				# print(new_password)
+				# temp_data = {
+				# 	'mobile': old.mobile,
+				# 	'email': old.email,
+				# 	'username': old.username,
+				# 	'password': new_password
+				# }
+				# serializer = UpdateUserSerializer(data = temp_data)
+				# serializer.is_valid(raise_exception = True)
+				old.password = make_password(new_password)
+				old.save()
+				# user = serializer.save()
+				return Response({
+					'status': True,
+					'detail': 'Password has been sent to your mobile '+ new_password
+					})
+			else:
+				return Response({
+					'status': False,
+					'detail': 'mobile number hasnt been registered yet'
+
+					})
+
+		else:
+			return Response({
+				'status': False,
+				'detail' : 'Mobile number was not given'
+				})
 
 
 

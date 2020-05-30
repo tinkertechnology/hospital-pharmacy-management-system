@@ -6,13 +6,16 @@ class MyAccountManager(BaseUserManager):
 	def create_user(self,email,mobile, username, password=None):
 		if not mobile:
 			raise ValueError('Users must have an mobile number')
+		# if not username:
+		# 	raise ValueError('Users must have a username')
 		if not username:
-			raise ValueError('Users must have a username')
+			username = mobile
 
 		user = self.model(
 			mobile=self.normalize_email(mobile),
 			username=username,
-			email=email
+			email=email,
+			password=password
 		)
 
 		user.set_password(password)
@@ -21,7 +24,7 @@ class MyAccountManager(BaseUserManager):
 
 	def create_superuser(self,mobile, email, username, password):
 		user = self.create_user(
-			mobile=self.normalize_email(mobile),
+			mobile=mobile,
 			email=self.normalize_email(email),
 			password=password,
 			username=username,
@@ -70,6 +73,7 @@ class PhoneOTP(models.Model):
 	mobile = models.CharField(validators=[phone_regex], max_length=17, unique=True)
 	otp = models.CharField(max_length=9, blank=True, null=True)
 	count = models.IntegerField(default=0, help_text='No. of otp sent')
+	validated = models.BooleanField(default=False, help_text='if true, user validated otp in secount api')
 
 	def __str__(self):
 		return str(self.mobile) + 'is sent' +str(self.otp)
