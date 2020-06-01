@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'users',
     'newsletter',
     'membership',
+    'store',
+    'payment',
 
     'crispy_forms',
     'django_filters',

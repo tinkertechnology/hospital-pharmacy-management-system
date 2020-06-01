@@ -164,6 +164,16 @@ urlpatterns += [
     re_path(r'^api/user-membership-retrieve/$', UserMembershipRetrieveApiView.as_view(), name='api-user-membership-retrieve'),
 ]
 
+# store api
+from store.views import (
+        StoreListCreateApiView,
+        StoreRetrieveUpdateDestroyApiView,
+)
+urlpatterns += [
+    re_path(r'^api/store/$', StoreListCreateApiView.as_view(), name='api-store'),
+    re_path(r'^api/store/(?P<pk>\d+)/$', StoreRetrieveUpdateDestroyApiView.as_view(), name='api-store-retrieve'),
+]
+
 urlpatterns += [
  
     # re_path(r'^$', newsletter_views.home, name='home'),
