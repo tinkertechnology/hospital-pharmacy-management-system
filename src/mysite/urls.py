@@ -35,7 +35,8 @@ from account.views import (
     ValidatePhoneSendOTP,
     ValidateOTP,
     RegisterAPI,
-    ResetPasswordAPIView
+    ResetPasswordAPIView,
+    ChangePasswordAPIView
 )
 
 
@@ -109,9 +110,9 @@ urlpatterns = [
     re_path(r'^api/$', APIHomeView.as_view(), name='home_api'),
     re_path(r'^api/validate_mobile/', ValidatePhoneSendOTP.as_view(), name="validate_mobile"),
     re_path(r'^api/validate_otp/', ValidateOTP.as_view(), name="validate_otp"),
-    re_path(r'^api/register/', RegisterAPI.as_view(), name="registerAPIView"),
-    re_path(r'^api/reset_password/', ResetPasswordAPIView.as_view(), name="registerAPIView"),
-
+    re_path(r'^api/register/', RegisterAPI.as_view(), name="register"),
+    re_path(r'^api/reset_password/', ResetPasswordAPIView.as_view(), name="reset_password"),
+    re_path(r'^api/change_password/', ChangePasswordAPIView.as_view(), name="change_password"),
 
     re_path(r'^api/cart/$', CartAPIView.as_view(), name='cart_api'),
     re_path(r'^api/checkout/$', CheckoutAPIView.as_view(), name='checkout_api'),
@@ -213,7 +214,6 @@ urlpatterns += [
     path(r'admin/', admin.site.urls),
     path('', home_screen_view, name="home"),
     path('account/', account_view, name="account"),
-    path('jpt', account_jpt, name="jpt"),
     path('blog/', include('blog.urls', 'blog')),
     path('login/', login_view, name="login"),
     path('logout/', logout_view, name="logout"),

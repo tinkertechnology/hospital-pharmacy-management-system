@@ -38,6 +38,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
 	
 	def update(self, instance, validated_data):
+		
 		for attr, value in validated_data.items():
 			if attr == 'password':
 				instance.set_password(value)

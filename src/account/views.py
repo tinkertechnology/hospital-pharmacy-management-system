@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
+from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from .serializer import CreateUserSerializer
 from account.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
@@ -13,6 +16,7 @@ import uuid
 from django.shortcuts import get_object_or_404 
 import random
 import requests
+from django.core.mail import send_mail
 User = get_user_model()
 
 def registration_view(request):
@@ -112,14 +116,19 @@ class ValidatePhoneSendOTP(APIView):
 		phone_number = request.data.get('mobile')
 		if phone_number:
 			mobile = str(phone_number)
+			print(len(mobile))
+			if len(mobile)!=10:
+				return Response({"Fail": "Phone number length must be 10 digit"}, status.HTTP_400_BAD_REQUEST)
+
 		
 			user = Account.objects.filter(mobile__iexact=mobile)
 
 			if user.exists():
-				return Response({
-					'status': False,
-					'detail': 'number already exists'
-					})
+				# return Response({
+				# 	'status': False,
+				# 	'detail': 'number already exists'
+				# 	})
+				return Response({"Fail": "Number already Exists"}, status.HTTP_400_BAD_REQUEST)
 			else:
 				key = send_otp(mobile)
 				if key:
@@ -128,10 +137,7 @@ class ValidatePhoneSendOTP(APIView):
 						old = old.first()
 						count = old.count
 						if count > 10:
-							return Response({
-								'status': False,
-								'detail': 'OTP limit exists, contact support'
-								})
+							return Response({"Fail": "OTP sent limit, Please contact support"}, status.HTTP_400_BAD_REQUEST)
 						old.count = count + 1
 						old.otp = key
 						old.save()
@@ -141,40 +147,43 @@ class ValidatePhoneSendOTP(APIView):
 							mobile = mobile,
 							otp = key,
 							)
-					r = requests.post(
-					"http://api.sparrowsms.com/v2/sms/",
-					data={'token' : 'ZkikH0ihw90CzvR2yAOn',
-					'from'  : 'Demo',
-					'to'    : '1234567890',
-					'text'  : 'your mobile verification code is  ' + str(key)})
+					# r = requests.post(
+					# "http://api.sparrowsms.com/v2/sms/",
+					# data={'token' : 'ZkikH0ihw90CzvR2yAOn',
+					# 'from'  : 'Demo',
+					# 'to'    : '1234567890',
+					# 'text'  : 'your mobile verification code is  ' + str(key)})
 
-					status_code = r.status_code
-					response = r.text
-					response_json = r.json()
-					print(status_code)
-					print(response_json)
-					
+					# status_code = r.status_code
+					# response = r.text
+					# response_json = r.json()
+					# print(status_code)
+					# print(response_json)
+					send_mail(
+					'Thank you for your registration',
+					'Your registered mobile nuymber is '+mobile+' .Use this OTP code for Verification. '+ str(key),
+					settings.EMAIL_HOST_USER,
+					['sunilparajuli2002@gmail.com'],
+					#['gehendras52@gmail.com'],
+					fail_silently=False,
+					)
 					return Response({
-						'status': True,
-						'detail': 'OTP sent to ' + mobile
-						})
+							'status': True,
+							'detail': 'OTP sent to ' + mobile
+							})
 				else:
 					return Response({
 						'status': False,
 						'detail': 'error sending OTP'
 						})
 		else:
-			return Response({
-				'status': False,
-				'detail': 'mobile number not given'
-
-				})
+			Response({"Fail": "Please enter phone number to continue"}, status.HTTP_400_BAD_REQUEST)
 
 
 
 def send_otp(mobile):
 	if mobile:
-		key = random.randint(999, 9999)
+		key = random.randint(9999, 999999)
 		print(key)
 		return key
 	else :
@@ -196,6 +205,7 @@ class ValidateOTP(APIView):
 				if(str(otp_sent)==str(otp)):
 					old.validated = True
 					old.save()
+
 					return Response({
 						'status': True,
 						'detail': 'OTP matched, proceed for registration'
@@ -203,27 +213,17 @@ class ValidateOTP(APIView):
 
 
 				else:
-					return Response({
-						'status': False,
-						'detail': 'Incorrect OTP'
-						})
+					return Response({"Fail": "Incorrect OTP Code please try again"}, status.HTTP_400_BAD_REQUEST)
 			else:
-				return Response({
-					'status' : False,
-					'detail' : 'First proceed via sending OTP request'
-					})
+				return Response({"Fail": "First proceed with OTP verification"}, status.HTTP_400_BAD_REQUEST)
 
 
 		else:
-			return Response({
-				'status': False,
-				'detail': 'Please provide both phone number and OTP for validation'
-				})
+			return Response({"Fail": "Please both OTP code and mobile number"}, status.HTTP_400_BAD_REQUEST)
 
 
 class RegisterAPI(APIView):
 
-	print('inside register view')
 	@csrf_exempt
 	def post(self, request, *args, **kwargs):
 		print('first')
@@ -231,8 +231,10 @@ class RegisterAPI(APIView):
 		password = request.data.get('password', False)
 		email = request.data.get('email', False)
 		username = mobile
-		if mobile and password:
-			
+		if mobile and password:	
+			if len(mobile)!=10:
+				return Response({"Fail": "Please check your mobile number, it should be 10 digit"}, status.HTTP_400_BAD_REQUEST)
+
 			old = PhoneOTP.objects.filter(mobile__iexact=mobile)
 			if old.exists():
 				old = old.first()
@@ -257,22 +259,17 @@ class RegisterAPI(APIView):
 						})
 
 				else:
-					return Response({
-						'status': False,
-						'detail': 'OTP havent verified first , first validate otp'
-						})
+					return Response({"Fail": "OTP havent verified first , first validate otp"}, status.HTTP_400_BAD_REQUEST)
+				
 
 			else:
-				return Response({
-						'status': False,
-						'detail': 'Please Verify your phone first through OTP'
-					})
+				return Response({"Fail": "Please Verify your phone first through OTP"}, status.HTTP_400_BAD_REQUEST)
 
 		else:
-			return Response({
-				'status': False,
-				'detail': 'Both phone and password are not sent'
-				})
+			return Response({"Fail": "Please, enter mobile and password "}, status.HTTP_400_BAD_REQUEST)
+
+
+
 
 
 
@@ -280,10 +277,18 @@ class RegisterAPI(APIView):
 class ResetPasswordAPIView(APIView):
 	def post(self, request, *args, **kwargs):
 		mobile = request.data.get('mobile', False)
+		print(1)
 		if mobile:
+			print(2)
+			print(len(mobile))
+
+			if len(mobile)!=10:
+				print(3)
+				return Response({"Fail": "Please enter 10 digit phone number"}, status.HTTP_400_BAD_REQUEST)
+
 			old = User.objects.filter(mobile__iexact=mobile).first()
-			print(old.__dict__)
 			if  old is not None:#old.exists():
+				print(4)
 				new_password = uuid.uuid4().hex[:6].upper()
 				# print(new_password)
 				# temp_data = {
@@ -294,26 +299,48 @@ class ResetPasswordAPIView(APIView):
 				# }
 				# serializer = UpdateUserSerializer(data = temp_data)
 				# serializer.is_valid(raise_exception = True)
+				print(old.mobile)
 				old.password = make_password(new_password)
 				old.save()
+
+				send_mail(
+					'A reset password has been sent',
+					'A reset password has been sent to your mobile number '+ mobile + '. Use this '+new_password+ ' code for login',
+					settings.EMAIL_HOST_USER,
+					['sunilparajuli2002@gmail.com'],
+					#['gehendras52@gmail.com'],
+					fail_silently=False,
+					)
+
 				# user = serializer.save()
 				return Response({
 					'status': True,
 					'detail': 'Password has been sent to your mobile '+ new_password
 					})
 			else:
-				return Response({
-					'status': False,
-					'detail': 'mobile number hasnt been registered yet'
-
-					})
+				return Response({"Fail": "The Mobile number was not found"}, status.HTTP_400_BAD_REQUEST)
 
 		else:
-			return Response({
-				'status': False,
-				'detail' : 'Mobile number was not given'
-				})
+			return Response({"Fail": "Please enter phone number to continue"}, status.HTTP_400_BAD_REQUEST)
 
+
+class ChangePasswordAPIView(APIView):
+	permission_classes = [IsAuthenticated]
+	def post(self, request, *args, **kwargs):
+		password = request.data.get('password', False)
+		if password:
+				user = request.user
+				print(user.mobile)
+				user.password = make_password(password)
+				user.save()
+				# user = serializer.save()
+				return Response({
+					'status': True,
+					'detail': 'Password has been changed !' + password
+					})
+			
+		else:
+			return Response({"Fail": "Please input desired password"}, status.HTTP_400_BAD_REQUEST)
 
 
 

@@ -13,6 +13,7 @@ class ProductFilter(FilterSet):
 	company_id = CharFilter(field_name='company__id', lookup_expr='icontains', distinct=True)
 	amount = CharFilter(field_name='amount', lookup_expr='icontains', distinct=True)
 	product_unit_id = CharFilter(field_name='product_unit__id', lookup_expr='icontains', distinct=True)
+	
 
 
 	class Meta:

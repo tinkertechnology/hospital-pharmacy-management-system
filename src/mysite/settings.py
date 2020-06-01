@@ -156,10 +156,16 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')
 
-EMAIL_HOST = 'smtp.mailtrap.io'
-EMAIL_HOST_USER = 'f472a1b791bc03'
-EMAIL_HOST_PASSWORD = 'efe5fe413946a6'
-EMAIL_PORT = 2525
+# EMAIL_HOST = 'smtp.mailtrap.io'
+# EMAIL_HOST_USER = 'f472a1b791bc03'
+# EMAIL_HOST_PASSWORD = 'efe5fe413946a6'
+# EMAIL_PORT = 2525
+# EMAIL_USE_TLS = True
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' 
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'xunilparajuli2002@gmail.com'
+EMAIL_HOST_PASSWORD = 'vnnuasmkmapqzvur'
+EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 
