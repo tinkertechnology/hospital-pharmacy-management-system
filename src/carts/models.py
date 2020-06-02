@@ -7,8 +7,6 @@ from django.db.models.signals import pre_save, post_save, post_delete
 
 
 from products.models import Variation
-from payment.models import PaymentMethod
-from store.models import Store
 # Create your models here.
 
 
@@ -54,11 +52,6 @@ class Cart(models.Model):
 	tax_total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	active = models.BooleanField(default=True)
-	is_delivered = models.BooleanField(default=False)
-	fk_ordered_store = models.ForeignKey(Store, related_name='fk_ordered_store', on_delete=models.CASCADE, null=True, blank=True)
-	fk_delivery_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='fk_delivery_user', on_delete=models.CASCADE, null=True, blank=True)
-	is_paid = models.BooleanField(default=False)
-	fk_payment_method = models.ForeignKey(PaymentMethod, related_name='fk_ordered_store', on_delete=models.CASCADE, null=True, blank=True)
 	# fk_status
 
 	# discounts

@@ -174,6 +174,17 @@ urlpatterns += [
     re_path(r'^api/store/(?P<pk>\d+)/$', StoreRetrieveUpdateDestroyApiView.as_view(), name='api-store-retrieve'),
 ]
 
+# store api
+from payment.views import (
+        PaymentMethodListCreateApiView,
+        PaymentMethodRetrieveUpdateDestroyApiView,
+)
+urlpatterns += [
+    re_path(r'^api/paymentmethod/$', PaymentMethodListCreateApiView.as_view(), name='api-paymentmethod'),
+    re_path(r'^api/paymentmethod/(?P<pk>\d+)/$', PaymentMethodRetrieveUpdateDestroyApiView.as_view(), name='api-paymentmethod-retrieve'),
+]
+
+
 urlpatterns += [
  
     # re_path(r'^$', newsletter_views.home, name='home'),
