@@ -5,7 +5,10 @@ from .serializers import InqueryUserSerializer, InquiryUsersListForPharmacistSer
 from rest_framework import generics
 from .models import UserType
 from inquiry.models import Message
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
 
 # Create your views here.
 class UserInquiryList1(generics.ListAPIView):
@@ -29,9 +32,9 @@ class UserInquiryList(generics.ListAPIView):
 		pharmasicts = User.objects.filter(id__in=UserType.objects.filter(user_type_id=1).values('user_id'))
 		all_instance = [i.id for i in pharmasicts]
 
-		print(all_instance)
-		print(pharmasicts.__dict__)
-		print('jpt')
+		# print(all_instance)
+		# print(pharmasicts.__dict__)
+		# print('jpt')
 		return pharmasicts
 
 		# users = User.objects.raw('select DISTINCT sender_id as id FROM inquiry_message WHERE receiver_id=%s', [user.id])

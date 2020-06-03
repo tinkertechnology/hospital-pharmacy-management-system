@@ -327,20 +327,30 @@ class ResetPasswordAPIView(APIView):
 class ChangePasswordAPIView(APIView):
 	permission_classes = [IsAuthenticated]
 	def post(self, request, *args, **kwargs):
-		password = request.data.get('password', False)
-		if password:
-				user = request.user
+		user = request.user
+		new_password = request.data.get('new_password', False)
+		# old_password = request.data.get('old_password', False)
+		print(user.mobile)
+
+		if new_password: #and old_password:
+			# print(old_password)
+			# check_old_password = user.check_password(old_password)
+			# check_old_password = authenticate(mobile=str(user.mobile), password=str(old_password))
+			# print(check_old_password)
+			# if not check_old_password:
+			# 	return Response({"Fail": "Your previous password isn't matched, please try again"}, status.HTTP_400_BAD_REQUEST)
+						
 				print(user.mobile)
-				user.password = make_password(password)
+				user.password = make_password(new_password)
 				user.save()
-				# user = serializer.save()
+			# user = serializer.save()
 				return Response({
 					'status': True,
-					'detail': 'Password has been changed !' + password
+					'detail': 'Password has been changed !' + new_password
 					})
 			
 		else:
-			return Response({"Fail": "Please input desired password"}, status.HTTP_400_BAD_REQUEST)
+			return Response({"Fail": "Please input desired password and try again"}, status.HTTP_400_BAD_REQUEST)
 
 
 

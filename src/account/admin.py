@@ -14,6 +14,13 @@ class AccountAdmin(UserAdmin):
 	list_filter = ()
 	fieldsets = ()
 
+	add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'mobile', 'email', 'password1', 'password2')}
+        ),
+    )
+
 
 admin.site.register(Account, AccountAdmin)
 admin.site.register(PhoneOTP)

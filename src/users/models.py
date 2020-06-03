@@ -20,7 +20,7 @@ class UserTypes(models.Model):
 
 class UserType(models.Model):
 	user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
-	user_type = models.OneToOneField(UserTypes, on_delete=models.CASCADE, null=True, blank=True, default=2)
+	user_type = models.ForeignKey(UserTypes, on_delete=models.CASCADE, null=True, blank=True, default=2)
 
 	# def __str__(self):
 	# 	if self.user is None and self.user_type is None:
