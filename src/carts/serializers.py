@@ -18,6 +18,11 @@ from .mixins import TokenMixin
 "billing_address": 1,
 "shipping_address": 1,
 "checkout_token": "12345",
+"is_delivered" : 0,
+"fk_ordered_store" : 0, 
+"fk_delivery_user" : 0,
+"is_paid" : 0 , 
+"fk_payment_method" : 0
 }
 
 """
@@ -45,28 +50,28 @@ class CheckoutSerializer(TokenMixin, serializers.Serializer):
 		#print checkout_data
 
 
-		try:
-			cart_obj = Cart.objects.get(id=int(cart_id))
-			data["cart_id"] = cart_obj.id
-		except:
-			raise serializers.ValidationError("This is not a valid cart")
+		# try:
+		# 	cart_obj = Cart.objects.get(id=int(cart_id))
+		# 	data["cart_id"] = cart_obj.id
+		# except:
+		# 	raise serializers.ValidationError("This is not a valid cart")
 
-		try:
-			user_checkout = UserCheckout.objects.get(id=int(user_checkout_id))
-			data["user_checkout_id"] = user_checkout.id
-		except:
-			raise serializers.ValidationError("This is not a valid user")
+		# try:
+		# 	user_checkout = UserCheckout.objects.get(id=int(user_checkout_id))
+		# 	data["user_checkout_id"] = user_checkout.id
+		# except:
+		# 	raise serializers.ValidationError("This is not a valid user")
 
 
-		try:
-			billing_obj = UserAddress.objects.get(user__id=int(user_checkout_id), id=int(billing_address))
-		except:
-			raise serializers.ValidationError("This is not a valid address for this user")
+		# try:
+		# 	billing_obj = UserAddress.objects.get(user__id=int(user_checkout_id), id=int(billing_address))
+		# except:
+		# 	raise serializers.ValidationError("This is not a valid address for this user")
 
-		try:
-			shipping_obj = UserAddress.objects.get(user__id=int(user_checkout_id), id=int(shipping_address))
-		except:
-			raise serializers.ValidationError("This is not a valid address for this user")
+		# try:
+		# 	shipping_obj = UserAddress.objects.get(user__id=int(user_checkout_id), id=int(shipping_address))
+		# except:
+		# 	raise serializers.ValidationError("This is not a valid address for this user")
 
 		return data
 

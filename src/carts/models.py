@@ -52,6 +52,8 @@ class Cart(models.Model):
 	tax_total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	active = models.BooleanField(default=True)
+	# fk_status
+
 	# discounts
 	# shipping
 
