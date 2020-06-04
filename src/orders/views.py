@@ -16,12 +16,14 @@ from rest_framework.views import APIView
 
 from carts.mixins import TokenMixin
 from rest_framework import permissions
-from .forms import AddressForm, UserAddressForm
+from .forms import AddressForm, UserAddressForm, UserOrderForm
 from .mixins import CartOrderMixin, LoginRequiredMixin
 from .models import UserAddress, UserCheckout, Order, Quotation
 from .permissions import IsOwnerAndAuth
 from .serializers import UserAddressSerializer, OrderSerializer, OrderDetailSerializer, QuotationSerializer, CartOrderSerializer
 import requests
+from carts.models import Cart, CartItem
+from products.models import Product
 User = get_user_model()
 
 
@@ -277,3 +279,25 @@ class CartOrderApiView(CreateAPIView):
 	# permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 	queryset=Order.objects.all()
 	serializer_class = CartOrderSerializer 
+
+
+def UserOrderView(request):
+	user_order_form = UserOrderForm()
+	order_list = Order.objects.filter(status='created')
+	# cart_items = Cart.cartitem_set.all()
+	# print(cart_items)
+
+	return render(request, 'orders/user_order.html', {'user_order':user_order_form, 'order_list':order_list})
+
+
+def UserOrderDetailView(request, id):
+	cart_items = CartItem.objects.filter(cart_id=id)
+	order = Order.objects.get(cart_id=id)
+	cart = Cart.objects.get(id=id)
+
+	total_price = order.shipping_total_price + cart.total
+	# cart_item_list = cart_items.item
+	# print(cart_items.item)
+	print(cart_items.__dict__)
+	return render(request, 'orders/order_detail.html', {'cart_items':cart_items, 'order':order, 'cart':cart, 'total_price':total_price})
+	# return HttpResponse('User Order Detail View')

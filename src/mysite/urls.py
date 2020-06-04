@@ -22,7 +22,7 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 from django.conf import settings
 
 from personal.views import (
-	home_screen_view,
+	home_screen_view, dashboard_view
 )
 
 from account.views import (
@@ -68,7 +68,9 @@ from orders.views import (
                     OrderDetail,
                     OrderRetrieveAPIView,
                     SendQuotationApiView,
-                    CartOrderApiView
+                    CartOrderApiView, 
+                    UserOrderView,
+                    UserOrderDetailView
                     )
 
 from products.views import (
@@ -234,6 +236,7 @@ urlpatterns += [
 urlpatterns += [
     path(r'admin/', admin.site.urls),
     path('', home_screen_view, name="home"),
+    path('dashboard', dashboard_view, name="dashboard"),
     path('account/', account_view, name="account"),
     path('blog/', include('blog.urls', 'blog')),
     path('login/', login_view, name="login"),
@@ -256,6 +259,9 @@ urlpatterns += [
     
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'),
      name='password_reset_complete'),
+
+    path('user_order', UserOrderView, name='user_order'),
+    path('user_order_detail/<int:id>/', UserOrderDetailView, name='user_order_detail'),
 ]
 
 if settings.DEBUG:

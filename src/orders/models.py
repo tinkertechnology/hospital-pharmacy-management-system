@@ -93,7 +93,7 @@ ORDER_STATUS_CHOICES = (
 class Order(models.Model):
 	status = models.CharField(max_length=120, choices=ORDER_STATUS_CHOICES, default='created')
 	cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-	user = models.ForeignKey(UserCheckout,on_delete=models.CASCADE, null=True)
+	user = models.ForeignKey(UserCheckout,on_delete=models.CASCADE, null=True, )
 	billing_address = models.ForeignKey(UserAddress,on_delete=models.CASCADE, related_name='billing_address', blank=True, null=True)
 	shipping_address = models.ForeignKey(UserAddress, on_delete=models.CASCADE, related_name='shipping_address', blank=True, null=True)
 	shipping_total_price = models.DecimalField(max_digits=50, decimal_places=2, default=5.99)

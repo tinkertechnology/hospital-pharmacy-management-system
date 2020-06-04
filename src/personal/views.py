@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from operator import attrgetter
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.http import HttpResponse
 
 from blog.views import get_blog_queryset
 from blog.models import BlogPost
@@ -35,5 +36,9 @@ def home_screen_view(request, *args, **kwargs):
 
 	return render(request, "personal/home.html", context)
 
+
+def  dashboard_view(request):
+	# return HttpResponse('dashboard_view')
+	return render(request, 'personal/dashboard.html')
 
 
