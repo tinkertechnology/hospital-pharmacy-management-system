@@ -3,15 +3,12 @@ from django.contrib.auth import login, authenticate, logout
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
-<<<<<<< HEAD
 from rest_framework import status
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from .serializer import CreateUserSerializer
-=======
 from django.http import HttpResponse
 
->>>>>>> b75ac30b0d8999f069d395748fbb357865c61ca7
 from account.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
 from blog.models import BlogPost
 from django.contrib.auth.hashers import make_password

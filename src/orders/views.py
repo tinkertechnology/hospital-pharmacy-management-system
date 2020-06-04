@@ -283,7 +283,7 @@ class CartOrderApiView(CreateAPIView):
 
 def UserOrderView(request):
 	user_order_form = UserOrderForm()
-	order_list = Order.objects.filter(status='created')
+	order_list = Order.objects.filter(status=1)
 	# cart_items = Cart.cartitem_set.all()
 	# print(cart_items)
 

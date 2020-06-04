@@ -83,7 +83,14 @@
             {% endfor %} -->
         </div>
     </div>
+    <div class="container">
+    	<span>Delivery Location </span>
+    	
+    	<iframe src="https://maps.google.com/maps?q={{order.order_latitude}},{{order.order_longitude}}&z=19&output=embed" width="100%" height="450" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
+    </div>
 </div>
+
+
 
 {% endblock %}
 

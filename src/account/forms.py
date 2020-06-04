@@ -16,14 +16,9 @@ class RegistrationForm(UserCreationForm):
 
 
 class AccountAuthenticationForm(forms.ModelForm):
-<<<<<<< HEAD
 	# email = forms.CharField(label='Email', )
 
 	password = forms.CharField(label='Password', widget=forms.PasswordInput)
-=======
-	mobile = forms.CharField(label='Mobile Number', widget=forms.TextInput(attrs={'class':'form-control'}))
-	password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class':'form-control'}))
->>>>>>> b75ac30b0d8999f069d395748fbb357865c61ca7
 
 	class Meta:
 		model = Account
