@@ -175,6 +175,8 @@ class CartOrderSerializer(serializers.ModelSerializer):
 		order.shipping_address = useraddress
 		order.user_id = usercheckout_user.id
 		order.cart_id = cart.id
+		order.order_latitude = validated_data.get("order_latitude")
+		order.order_longitude = validated_data.get("order_longitude")
 
 		print(self.context['request'].__dict__)
 		order.fk_ordered_store = validated_data.get("fk_ordered_store")
