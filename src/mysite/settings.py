@@ -227,6 +227,7 @@ REST_REGISTRATION = {
 
     'VERIFICATION_FROM_EMAIL': EMAIL_HOST_USER,
 }
+LOGIN_REDIRECT_URL = '/dashboard/'
 
 # AUTHENTICATION_BACKENDS = (
 #     'mysite.backends.UsernameOrEmailBackend',

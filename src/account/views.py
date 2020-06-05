@@ -47,6 +47,7 @@ def logout_view(request):
 
 
 def login_view(request):
+	print('login')
 	# if request.method == 'POST':
 	# 	mobile = request.POST.get('mobile')
 	# 	password = request.POST.get('password')
@@ -71,7 +72,8 @@ def login_view(request):
 
 	user = request.user
 	if user.is_authenticated: 
-		return redirect('dashboard')
+		print(1)
+		return redirect('/dashboard')
 
 	if request.POST:
 		mobile = request.POST.get('mobile')
