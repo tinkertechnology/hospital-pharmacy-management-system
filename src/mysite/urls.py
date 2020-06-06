@@ -184,6 +184,12 @@ urlpatterns += [
     re_path(r'^api/paymentmethod/(?P<pk>\d+)/$', PaymentMethodRetrieveUpdateDestroyApiView.as_view(), name='api-paymentmethod-retrieve'),
 ]
 
+# esewa payment
+from payment_esewa import views as payment_esewa_views
+urlpatterns = [
+    path('payment_esewa_client_accept',payment_esewa_views.payment_esewa_client_accept)
+]
+
 
 urlpatterns += [
  
