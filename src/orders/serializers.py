@@ -5,7 +5,8 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated
 
 from .models import UserAddress, Order, Quotation, UserCheckout
-from carts.models import Cart
+from products.models import Product, ProductImage
+from carts.models import Cart, CartItem
 import pprint
 
 # parse order token
@@ -193,6 +194,96 @@ class CartOrderSerializer(serializers.ModelSerializer):
 
 
 
+class OrderListStoreSerializer(serializers.ModelSerializer):
+	billing_address = serializers.SerializerMethodField()
+	mobile = serializers.SerializerMethodField()
+	class Meta:
+		model = Order
+		fields = ['id', 'status', 'is_delivered', 'is_paid', 
+		'order_longitude', 'order_latitude', 'cart', 'user', 'order_total',
+		'billing_address', 'fk_ordered_store', 'fk_delivery_user',
+		 'fk_payment_method', 'mobile']
+
+	def get_billing_address(self, obj):
+		return str(obj.billing_address.street)
+
+	def get_mobile(self, obj):
+		return obj.user.user.mobile
+
+
+
+class CartOrderListStoreSerializer(serializers.ModelSerializer):
+	# cart_orders = serializers.SerializerMethodField()
+	class Meta:
+		model = CartItem
+		fields = '__all__'
+
+class CartItemSerializer(serializers.ModelSerializer):
+	#item = CartVariationSerializer(read_only=True)
+	# url = serializers.HyperlinkedIdentityField(view_name='products_detail_api')
+	item = serializers.SerializerMethodField()
+	product_id = serializers.SerializerMethodField()
+	item_title = serializers.SerializerMethodField()
+	product = serializers.SerializerMethodField()
+	price = serializers.SerializerMethodField()
+	image = serializers.SerializerMethodField()
+	class Meta:
+		model = CartItem
+		fields = [
+			# "url",
+			"product_id",
+			"image",
+			"item",
+			"item_title",
+			"price",
+			"product",
+			"quantity",
+			"line_item_total",
+		]
+
+	def get_item(self,obj):
+		return obj.item.id
+
+	def get_product_id(self, obj):
+		return obj.id
+		
+	def get_item_title(self, obj):
+		return "%s %s" %(obj.item.product.title, obj.item.title)
+
+	def get_product(self, obj):
+		return obj.item.product.id
+
+	def get_price(self, obj):
+		print(obj.item.sale_price)
+		print(obj.item.price)
+		print(obj.item.id)
+		# print(obj.item.sale_price)
+		if obj.item.sale_price is None:
+			return obj.item.price
+		return obj.item.sale_price
+
+	def get_image(self, obj):
+		# image_url = ProductImage.objects.filter(product_id=obj.item.id).first()
+		variation = obj.item
+		product = variation.product
+
+		image_url = ProductImage.objects.filter(product=product).first()
+		print(obj.item.id)
+		print(obj.__dict__)
+		print(image_url)
+		# return ""
+		# print(list(image_url.values('image')))
+		
+		imageUrl = "/static/no-image.jpg"
+		d = image_url.__dict__
+		if 'image' in d:
+			imageUrl = d['image']
+
+
+
+		# return image_url.image
+
+		return imageUrl
 
 
 		# cart_items = CartItem.objects.filter(cart_id=cart.id)

@@ -70,7 +70,9 @@ from orders.views import (
                     SendQuotationApiView,
                     CartOrderApiView, 
                     UserOrderView,
-                    UserOrderDetailView
+                    UserOrderDetailView,
+                    OrderLists,
+                    CartOrderLists
                     )
 
 from products.views import (
@@ -88,6 +90,10 @@ from products.views import (
 
     )
 
+from prescription.views import(
+
+    FileUploaderViewSet
+    )
 
 from inquiry.views import (
     InquiryApiView,
@@ -115,6 +121,7 @@ urlpatterns = [
     re_path(r'^api/register/', RegisterAPI.as_view(), name="register"),
     re_path(r'^api/reset_password/', ResetPasswordAPIView.as_view(), name="reset_password"),
     re_path(r'^api/change_password/', ChangePasswordAPIView.as_view(), name="change_password"),
+    re_path(r'^api/file_upload/$', FileUploaderViewSet.as_view({'get': 'list'}), name='file_upload'),
 
     re_path(r'^api/cart/$', CartAPIView.as_view(), name='cart_api'),
     re_path(r'^api/checkout/$', CheckoutAPIView.as_view(), name='checkout_api'),
@@ -127,6 +134,10 @@ urlpatterns = [
     re_path(r'^api/categories/$', CategoryListAPIView.as_view(), name='categories_api'),
     re_path(r'^api/categories/(?P<pk>\d+)/$', CategoryRetrieveAPIView.as_view(), name='category_detail_api'),
     re_path(r'^api/orders/$', OrderListAPIView.as_view(), name='orders_api'),
+
+    re_path(r'^api/store_orders/$', OrderLists.as_view(), name='orders_store'),
+    re_path(r'^api/orders_lists/$', CartOrderLists.as_view(), name='orders_lists'),
+
     re_path(r'^api/orders/(?P<pk>\d+)/$', OrderRetrieveAPIView.as_view(), name='order_detail_api'),
     re_path(r'^api/products/$', ProductListAPIView.as_view(), name='products_api'),
     re_path(r'^api/products/(?P<pk>\d+)/$', ProductRetrieveAPIView.as_view(), name='products_detail_api'),

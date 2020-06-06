@@ -20,10 +20,12 @@ from .forms import AddressForm, UserAddressForm, UserOrderForm
 from .mixins import CartOrderMixin, LoginRequiredMixin
 from .models import UserAddress, UserCheckout, Order, Quotation
 from .permissions import IsOwnerAndAuth
-from .serializers import UserAddressSerializer, OrderSerializer, OrderDetailSerializer, QuotationSerializer, CartOrderSerializer
+from .serializers import UserAddressSerializer, OrderSerializer, OrderDetailSerializer, QuotationSerializer, CartOrderSerializer, OrderListStoreSerializer, CartOrderListStoreSerializer, CartItemSerializer
 import requests
 from carts.models import Cart, CartItem
+from store.models import Store
 from products.models import Product
+from django.conf import settings
 User = get_user_model()
 
 
@@ -176,7 +178,6 @@ class UserCheckoutAPI(UserCheckoutMixin, APIView):
 
 class OrderDetail(DetailView):
 	model = Order
-
 	def dispatch(self, request, *args, **kwargs):
 		try:
 			user_check_id = self.request.session.get("user_checkout_id")
@@ -204,6 +205,58 @@ class OrderList(LoginRequiredMixin, ListView):
 		return super(OrderList, self).get_queryset().filter(user=user_checkout)
 
 
+
+
+class OrderLists(ListAPIView):
+	# queryset = Order.objects.all()
+	serializer_class = OrderListStoreSerializer
+	def get_queryset(self):
+		orders = Order.objects.filter(status=1)			
+		if settings.CAN_STORE_SEE_ALL_ORDERS==False:
+			user_id = self.request.user.id
+			store = Store.objects.filter(fk_user_id=user_id).first()
+			if store is None:
+				orders = []
+			else:
+				orders = orders.filter(fk_ordered_store=store)
+		
+		return orders
+
+class CartOrderLists(ListAPIView):
+	def get(self, request):
+		order_id = request.query_params['order_id']
+		order = Order.objects.get(id=order_id)
+		cart = Cart.objects.get(id=order.cart_id)
+
+		# self.cart = cart
+		# self.update_cart()
+		#token = self.create_token(cart.id)
+		# items = CartItemSerializer(cart.cartitem_set.all(), many=True)
+		items = CartItemSerializer(cart.cartitem_set.all(), many=True)
+		print(items)
+		print(cart.items.all())
+		data = {
+		# "token": self.token,
+		"cart" : cart.id,
+		"total": cart.total,
+		"subtotal": cart.subtotal,
+		"tax_total": cart.tax_total,
+		"count": cart.items.count(),
+		"items": items.data,
+		# "product_id": items.id,
+		}
+		return Response(data)
+		# print(cart.items)
+		# return Response(len(data))
+
+	# queryset = Order.objects.all()
+
+		# user_id = self.request.user.id
+		# cart_id = 22
+		# cart_items = CartItem.objects.all()
+		# orders = Order.objects.filter(status=1, fk_ordered_store=1)
+		# print(orders.__dict__)
+		# return orders
 
 
 class UserAddressCreateView(CreateView):
