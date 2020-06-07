@@ -92,7 +92,11 @@ from products.views import (
 
 from prescription.views import(
 
-    FileUploaderViewSet
+    FileUploaderViewSet,
+    MyUploadView,
+    # FileUploadView
+    upload_file,
+    ApiPostFile
     )
 
 from inquiry.views import (
@@ -121,7 +125,10 @@ urlpatterns = [
     re_path(r'^api/register/', RegisterAPI.as_view(), name="register"),
     re_path(r'^api/reset_password/', ResetPasswordAPIView.as_view(), name="reset_password"),
     re_path(r'^api/change_password/', ChangePasswordAPIView.as_view(), name="change_password"),
-    re_path(r'^api/file_upload/$', FileUploaderViewSet.as_view({'get': 'list'}), name='file_upload'),
+    re_path(r'^api/file_upload/$', ApiPostFile.as_view(), name='file_upload'),
+    # re_path(r'^api/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
+    # re_path(r'^api/upload/$', FileUploadView.as_view()),
+    re_path(r'^api/upload/$', upload_file),
 
     re_path(r'^api/cart/$', CartAPIView.as_view(), name='cart_api'),
     re_path(r'^api/checkout/$', CheckoutAPIView.as_view(), name='checkout_api'),
