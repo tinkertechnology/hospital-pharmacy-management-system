@@ -6,6 +6,17 @@ from rest_framework import viewsets
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
+
+from rest_framework.exceptions import ParseError
+from rest_framework.parsers import FileUploadParser
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from rest_framework import permissions
+# from .forms import UploadFileForm
+from django.contrib.auth.decorators import login_required
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 User = get_user_model()
 
 class FileUploaderViewSet(viewsets.ModelViewSet):
@@ -21,77 +32,22 @@ class FileUploaderViewSet(viewsets.ModelViewSet):
         return qs
 
 
-from rest_framework.exceptions import ParseError
-from rest_framework.parsers import FileUploadParser
-from rest_framework.response import Response
-from rest_framework.views import APIView
-
-class MyUploadView(generics.ListCreateAPIView):
-	parser_class = (FileUploadParser,)
-	# serializer = FileSerializer(data=request.data)
-	# serializer_class = FileUploaderSerializer
-
-	def put(self, request, format=None):
-		serializer_class = FileSerializer(data=self.request.data)
-		# serializer_class = FileUploaderSerializer
-		print('jpt')
-		if 'photo' not in request.data:
-			raise ParseError("Empty content")
-
-		f = request.data['photo']
-
-		Prescription.file.save(f.name, f, save=True)
-		return Response(status=status.HTTP_201_CREATED)
-
-# views.py
-# from rest_framework.views import APIView
-# class FileUploadView(requ):
-# 	parser_classes = [FileUploadParser]
-
-# 	def put(self, request, filename, format=None):
-# 		file_obj = request.data['file']
-# # ...
-# # do some stuff with uploaded file
-# # ...
-# 		return Response(status=204)
 
 
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
-# from .forms import UploadFileForm
-from django.contrib.auth.decorators import login_required
 
-
-@csrf_exempt
-@login_required
-def upload_file(request):
-	if request.method == 'POST':
-		print(request.FILES)
-
-        # form = UploadFileForm(request.POST, request.FILES)
-        # if form.is_valid():
-
-		instance = Prescription(file=request.FILES['file'])
-		instance.user_id = request.user.id
-		print(request.user.id)
-		instance.save()
-            # instance.save()
-		return HttpResponseRedirect('/success/url/')
-	else:
-        # form = UploadFileForm()
-
-		print('jpt')
-	return render(request, 'upload.html', {'form': form})
 
 class ApiPostFile(APIView):
-
+	permission_classes = [permissions.IsAuthenticated]
 	def  post(self, request, *args, **kwargs):
 		print(request.FILES)
+		print(request.POST)
 		instance = Prescription(file=request.FILES['file'])
 		instance.user_id = request.user.id
-		print(request.user.id)
+		instance.doctor_name = request.POST.get('doctor_name')
+		instance.hospital_name = request.POST.get('hospital_name')
 		instance.save()
 		return Response({
-							'status': True,
-							'detail': 'OTP sent to '
-							})
+			'status': True,
+			'detail': 'Saved Prescription'
+			})
+

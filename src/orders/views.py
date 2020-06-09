@@ -211,19 +211,27 @@ class OrderLists(ListAPIView):
 	# queryset = Order.objects.all()
 	serializer_class = OrderListStoreSerializer
 	def get_queryset(self):
-		orders = Order.objects.filter(status=1)			
-		if settings.CAN_STORE_SEE_ALL_ORDERS==False:
-			user_id = self.request.user.id
-			store = Store.objects.filter(fk_user_id=user_id).first()
-			if store is None:
-				orders = []
-			else:
-				orders = orders.filter(fk_ordered_store=store)
+		non_store_user = Store.objects.filter(fk_user_id=self.request.user.id).first()
+		print(non_store_user)
+		if non_store_user is None:
+			# user_checkouts = UserCheckout.objects.filter(user_id=self.request.user.id).id
+			# print(user_checkouts.__dict__)
+			orders= Order.objects.filter(fk_auth_user_id=self.request.user.id)
+		else:
+			orders = Order.objects.filter(status=1)			
+			if settings.CAN_STORE_SEE_ALL_ORDERS==False:
+				user_id = self.request.user.id
+				store = Store.objects.filter(fk_user_id=user_id).first()
+				if store is None:
+					orders = []
+				else:
+					orders = orders.filter(fk_ordered_store=store)
 		
 		return orders
 
 class CartOrderLists(ListAPIView):
 	def get(self, request):
+
 		order_id = request.query_params['order_id']
 		order = Order.objects.get(id=order_id)
 		cart = Cart.objects.get(id=order.cart_id)

@@ -8,6 +8,9 @@ from .models import UserAddress, Order, Quotation, UserCheckout
 from products.models import Product, ProductImage
 from carts.models import Cart, CartItem
 import pprint
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 # parse order token
 # check order not complete
@@ -145,14 +148,15 @@ class CartOrderSerializer(serializers.ModelSerializer):
 
 	def create(self, validated_data):
 		#pprint.pprint(self.context['request'].__dict__)
-		pprint.pprint(validated_data)
+		# pprint.pprint(validated_data)
 		user =  self.context['request'].user
+		print(user.id)
 		
 		# item_quantity = validated_data.pop('item_quantity')
 		cart = Cart.objects.filter(user_id=user.id).filter(active=1).first()
 		if cart is None:
 			raise serializers.ValidationError("This is not a valid cart, first make cart, /api/cart/ or add item to cart ")
-		usercheckout_user = UserCheckout.objects.filter(user_id=user).first()
+		usercheckout_user = UserCheckout.objects.filter(user_id=user.id).first()
 		if usercheckout_user is None:
 			usercheckout_user = UserCheckout()
 			usercheckout_user.user_id = user.id
@@ -176,6 +180,7 @@ class CartOrderSerializer(serializers.ModelSerializer):
 		order.shipping_address = useraddress
 		order.user_id = usercheckout_user.id
 		order.cart_id = cart.id
+		order.fk_auth_user_id = user.id
 		order.order_latitude = validated_data.get("order_latitude")
 		order.order_longitude = validated_data.get("order_longitude")
 

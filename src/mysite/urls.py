@@ -92,10 +92,7 @@ from products.views import (
 
 from prescription.views import(
 
-    FileUploaderViewSet,
-    MyUploadView,
-    # FileUploadView
-    upload_file,
+
     ApiPostFile
     )
 
@@ -128,7 +125,7 @@ urlpatterns = [
     re_path(r'^api/file_upload/$', ApiPostFile.as_view(), name='file_upload'),
     # re_path(r'^api/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
     # re_path(r'^api/upload/$', FileUploadView.as_view()),
-    re_path(r'^api/upload/$', upload_file),
+
 
     re_path(r'^api/cart/$', CartAPIView.as_view(), name='cart_api'),
     re_path(r'^api/checkout/$', CheckoutAPIView.as_view(), name='checkout_api'),
