@@ -20,7 +20,7 @@ from .forms import AddressForm, UserAddressForm, UserOrderForm
 from .mixins import CartOrderMixin, LoginRequiredMixin
 from .models import UserAddress, UserCheckout, Order, Quotation
 from .permissions import IsOwnerAndAuth
-from .serializers import UserAddressSerializer, OrderSerializer, OrderDetailSerializer, QuotationSerializer, CartOrderSerializer, OrderListStoreSerializer, CartOrderListStoreSerializer, CartItemSerializer
+from .serializers import UserAddressSerializer, OrderSerializer, OrderDetailSerializer, QuotationSerializer, CartOrderSerializer, OrderListStoreSerializer, CartOrderListStoreSerializer, CartItemSerializer, UpdateOrderStatusSerializer
 import requests
 from carts.models import Cart, CartItem
 from store.models import Store
@@ -361,4 +361,34 @@ def UserOrderDetailView(request, id):
 	# print(cart_items.item)
 	print(cart_items.__dict__)
 	return render(request, 'orders/order_detail.html', {'cart_items':cart_items, 'order':order, 'cart':cart, 'total_price':total_price})
+
 	# return HttpResponse('User Order Detail View')
+
+class UpdateOrderStatusApiView(CreateAPIView):
+	# permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+	queryset=Order.objects.all()
+	serializer_class = UpdateOrderStatusSerializer
+
+	def post(self, request):
+		import pprint
+		pprint.pprint(request.POST)
+		order_id = request.POST.get('order_id')
+		status = request.POST.get('status')
+		print(status)
+		print(order_id)
+		order = Order.objects.filter(pk=order_id).first() 
+		if order:
+			if status == "paid":
+				order.is_paid = 1;
+			if status == "delivered":
+				order.is_delivered = 1;
+			order.save()
+
+			return Response({
+							'status': True,
+							'detail': 'Order is marked as '+status
+							})
+		else:
+			Response({"Fail": "Error updating order status"}, status.HTTP_400_BAD_REQUEST)
+
+

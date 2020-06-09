@@ -217,6 +217,11 @@ class OrderListStoreSerializer(serializers.ModelSerializer):
 
 
 
+class UpdateOrderStatusSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Order
+		fields = '__all__'
+
 class CartOrderListStoreSerializer(serializers.ModelSerializer):
 	# cart_orders = serializers.SerializerMethodField()
 	class Meta:

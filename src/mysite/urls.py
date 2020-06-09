@@ -72,7 +72,8 @@ from orders.views import (
                     UserOrderView,
                     UserOrderDetailView,
                     OrderLists,
-                    CartOrderLists
+                    CartOrderLists,
+                    UpdateOrderStatusApiView
                     )
 
 from products.views import (
@@ -141,6 +142,7 @@ urlpatterns = [
 
     re_path(r'^api/store_orders/$', OrderLists.as_view(), name='orders_store'),
     re_path(r'^api/orders_lists/$', CartOrderLists.as_view(), name='orders_lists'),
+    re_path(r'^api/orders_status/$', UpdateOrderStatusApiView.as_view(), name='orders_status_update'),
 
     re_path(r'^api/orders/(?P<pk>\d+)/$', OrderRetrieveAPIView.as_view(), name='order_detail_api'),
     re_path(r'^api/products/$', ProductListAPIView.as_view(), name='products_api'),
