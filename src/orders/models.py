@@ -107,6 +107,8 @@ class Order(models.Model):
 	fk_delivery_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='fk_delivery_user', on_delete=models.CASCADE, null=True, blank=True)
 	is_paid = models.BooleanField(default=False)
 	fk_payment_method = models.ForeignKey(PaymentMethod, related_name='fk_ordered_store', on_delete=models.CASCADE, null=True, blank=True)
+	created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	updated_at = models.DateTimeField(blank=True, null=True)
 	order_latitude = models.CharField(max_length=200, null=True, blank=True)
 	order_longitude = models.CharField(max_length=200, null=True, blank=True)
 
