@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'store',
     'payment',
     'prescription',
+    'wsc',
     'crispy_forms',
     'django_filters',
     'rest_framework',
@@ -183,10 +184,10 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
       'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
         "rest_framework_jwt.authentication.JSONWebTokenAuthentication",
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
         
     ),
       'DEFAULT_PAGINATION_CLASS': 'products.pagination.ProductPagination',

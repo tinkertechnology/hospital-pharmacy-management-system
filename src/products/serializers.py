@@ -1,9 +1,11 @@
 from rest_framework import serializers
+from django.conf import settings
 
+from .models import Category, Product, Variation, ProductFeatured, Company, GenericName, Brand, ProductUnit, ProductImage, ProductCommon
 
-from .models import Category, Product, Variation, ProductFeatured, Company, GenericName, Brand, ProductUnit, ProductImage
-
-
+from wsc.models import WaterSupplyCompany
+from store.models import Store
+from store.serializers import *
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -24,7 +26,8 @@ class VariationSerializer(serializers.ModelSerializer):
 			"title",
 			"price",
 			'sale_price',
-			'discount'
+			'discount',
+			'inventory'
 		]
 
 	def get_discount(self, obj):
@@ -56,6 +59,7 @@ class ProductDetailUpdateSerializer(serializers.ModelSerializer):
 			"description",
 			"price",
 			"image",
+
 			"variation_set",
 			
 		]
@@ -109,6 +113,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
 	url = serializers.HyperlinkedIdentityField(view_name='products_detail_api')
 	variation_set = VariationSerializer(many=True)
+	fk_store = StoreSerializer(read_only=True)
 	image = serializers.SerializerMethodField()
 	productimage_set = ImageSerializer(many=True, read_only=True)
 	class Meta:
@@ -118,15 +123,20 @@ class ProductSerializer(serializers.ModelSerializer):
 			"id",
 			"title",
 			"image",
+			"price",
+			"description",
 			"variation_set",
-			"productimage_set"
+			"productimage_set",
+			'fk_common_product_id',
+			"fk_store"
 		]
 
 	def get_image(self, obj):
 		try:
-			return obj.productimage_set.first().image.url
+			return  obj.productimage_set.first().image.url
 		except:
 			return None
+
 
 	# def get_images_set(self, obj):
 	# 	try:
@@ -210,6 +220,37 @@ class CategorySerializer(serializers.ModelSerializer):
 			#"default_category",
 
 		]
+
+
+class WSCSerializer(serializers.ModelSerializer):
+	url = serializers.HyperlinkedIdentityField(view_name='wscs_detail_api')
+	product_set = ProductSerializer(many=True)
+	# fk_category = SubCategorySerializer(many=True)
+	# children_list = serializers.SerializerMethodField('_get_children')
+	# zer.datadef _get_children(self, obj):
+	# 	serializer = SubCategorySerializer(Category.objects.filter(fk_category=obj.id), many=True)
+	# 	return seriali
+
+
+	class Meta:
+		model = Store
+		fields = [
+			"url",
+			"id",
+			"title",
+			# "image",
+			# "description",
+			"product_set", ## obj.product_set.all()
+			# "children_list"
+			# 'fk_category'
+			#"default_category",
+
+		]
+
+class CommonProductSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = ProductCommon
+		fields = ['id','title'] 
 
 
 class CompanySerializer(serializers.ModelSerializer):

@@ -87,7 +87,11 @@ from products.views import (
         CompanyListAPIView,
         BrandListAPIView,
         GenericNameListAPIView,
-        ProductUnitListAPIView
+        ProductUnitListAPIView,
+        WSCListAPIView,
+        WSCRetrieveAPIView,
+        CreateProductAPIView,
+        CommonProductListAPIView
         
 
     )
@@ -139,7 +143,11 @@ urlpatterns = [
     re_path(r'^api/user/checkout/$', UserCheckoutAPI.as_view(), name='user_checkout_api'),
     re_path(r'^api/categories/$', CategoryListAPIView.as_view(), name='categories_api'),
     re_path(r'^api/categories/(?P<pk>\d+)/$', CategoryRetrieveAPIView.as_view(), name='category_detail_api'),
+
+    re_path(r'^api/wscs/$', WSCListAPIView.as_view(), name='wscs_api'),
+    re_path(r'^api/wscs/(?P<pk>\d+)/$', WSCRetrieveAPIView.as_view(), name='wscs_detail_api'),
     re_path(r'^api/orders/$', OrderListAPIView.as_view(), name='orders_api'),
+
 
     re_path(r'^api/store_orders/$', OrderLists.as_view(), name='orders_store'),
     re_path(r'^api/orders_lists/$', CartOrderLists.as_view(), name='orders_lists'),
@@ -148,6 +156,9 @@ urlpatterns = [
     
     re_path(r'^api/orders/(?P<pk>\d+)/$', OrderRetrieveAPIView.as_view(), name='order_detail_api'),
     re_path(r'^api/products/$', ProductListAPIView.as_view(), name='products_api'),
+    re_path(r'^api/products_create/$', CreateProductAPIView.as_view(), name='products_create_api'),
+    re_path(r'^api/products_common/$', CommonProductListAPIView.as_view(), name='products_common_api'),
+
     re_path(r'^api/products/(?P<pk>\d+)/$', ProductRetrieveAPIView.as_view(), name='products_detail_api'),
     re_path(r'^api/quotation/$', SendQuotationApiView.as_view(), name="send_quotation_api"),
     re_path(r'^api/featured/$', ProductFeaturedListAPIView.as_view(), name='product_featured_api'),

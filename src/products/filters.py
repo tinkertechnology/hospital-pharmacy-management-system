@@ -14,6 +14,8 @@ class ProductFilter(FilterSet):
 	amount = CharFilter(field_name='amount', lookup_expr='icontains', distinct=True)
 	product_unit_id = CharFilter(field_name='product_unit__id', lookup_expr='icontains', distinct=True)
 	sale_price_gt = NumberFilter(field_name='variation__sale_price', lookup_expr='gt', distinct=True)
+	fk_store = NumberFilter(field_name='fk_store__id', lookup_expr='icontains', distinct=True)
+	# owner = NumberFilter(field_name='fk_store__id', lookup_expr='icontains', distinct=True)
 	
 
 
@@ -30,5 +32,7 @@ class ProductFilter(FilterSet):
 			'brand_id',
 			'amount',
 			'product_unit_id',
-			'sale_price_gt'
+			'sale_price_gt',
+			'fk_store',
+			# 'owner'
 		]
