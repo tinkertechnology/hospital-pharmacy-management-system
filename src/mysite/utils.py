@@ -44,6 +44,7 @@ def jwt_response_payload_handler(token, user, request, *args, **kwargs):
 		"user": user.id,
 		"username": user.username,
 		"email": user.email,
+		"mobile": user.mobile,
 		"superuser" : user.is_superuser,
 		'code': 20000,
 		"staff": user.is_staff,
