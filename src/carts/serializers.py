@@ -203,8 +203,10 @@ class CartItemModelSerializer(serializers.ModelSerializer):
 		model = CartItem
 		fields ='__all__'
 
-	def create(self,validated_data):
 
+	def create(self, validated_data):
+		request = self.context['request']
+		print(request.GET.get('is_add_sub_qty'))
 		user =  self.context['request'].user
 		print(user)
 		# item_quantity = validated_data.pop('item_quantity')
@@ -224,8 +226,14 @@ class CartItemModelSerializer(serializers.ModelSerializer):
 		aitem = CartItem.objects.filter(item_id=validated_data['item']).filter(cart_id=cart.id).first() #CartItem.objects.filter(item_id=validated_data['item'], cart_id=cart.id).first()
 
 
-		if aitem:
+		if aitem:		
 			quantity = validated_data['quantity']
+			is_add_sub_qty = request.GET.get('is_add_sub_qty', None)
+			if is_add_sub_qty:
+				aitem.quantity = quantity
+				aitem.save()
+				return aitem
+
 			update_cart_items = quantity + aitem.quantity
 
 			#cartItems = aitem.update(quantity=update_cart_items)
@@ -254,6 +262,8 @@ class CartItemModelSerializer(serializers.ModelSerializer):
 		# 	cart.save()
 
 		return cartItems
+
+
 
 class RemoveCartItemFromCartSerializer(serializers.ModelSerializer):
 	class Meta:
