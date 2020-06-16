@@ -22,7 +22,7 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 from django.conf import settings
 
 from personal.views import (
-	home_screen_view,
+	home_screen_view, dashboard_view
 )
 
 from account.views import (
@@ -35,7 +35,8 @@ from account.views import (
     ValidatePhoneSendOTP,
     ValidateOTP,
     RegisterAPI,
-    ResetPasswordAPIView
+    ResetPasswordAPIView,
+    ChangePasswordAPIView
 )
 
 
@@ -67,7 +68,13 @@ from orders.views import (
                     OrderDetail,
                     OrderRetrieveAPIView,
                     SendQuotationApiView,
-                    CartOrderApiView
+                    CartOrderApiView, 
+                    UserOrderView,
+                    UserOrderDetailView,
+                    OrderLists,
+                    OrderHistoryLists,
+                    CartOrderLists,
+                    UpdateOrderStatusApiView
                     )
 
 from products.views import (
@@ -80,11 +87,20 @@ from products.views import (
         CompanyListAPIView,
         BrandListAPIView,
         GenericNameListAPIView,
-        ProductUnitListAPIView
+        ProductUnitListAPIView,
+        WSCListAPIView,
+        WSCRetrieveAPIView,
+        CreateProductAPIView,
+        CommonProductListAPIView
         
 
     )
 
+from prescription.views import(
+
+
+    ApiPostFile
+    )
 
 from inquiry.views import (
     InquiryApiView,
@@ -109,8 +125,12 @@ urlpatterns = [
     re_path(r'^api/$', APIHomeView.as_view(), name='home_api'),
     re_path(r'^api/validate_mobile/', ValidatePhoneSendOTP.as_view(), name="validate_mobile"),
     re_path(r'^api/validate_otp/', ValidateOTP.as_view(), name="validate_otp"),
-    re_path(r'^api/register/', RegisterAPI.as_view(), name="registerAPIView"),
-    re_path(r'^api/reset_password/', ResetPasswordAPIView.as_view(), name="registerAPIView"),
+    re_path(r'^api/register/', RegisterAPI.as_view(), name="register"),
+    re_path(r'^api/reset_password/', ResetPasswordAPIView.as_view(), name="reset_password"),
+    re_path(r'^api/change_password/', ChangePasswordAPIView.as_view(), name="change_password"),
+    re_path(r'^api/file_upload/$', ApiPostFile.as_view(), name='file_upload'),
+    # re_path(r'^api/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
+    # re_path(r'^api/upload/$', FileUploadView.as_view()),
 
 
     re_path(r'^api/cart/$', CartAPIView.as_view(), name='cart_api'),
@@ -123,9 +143,22 @@ urlpatterns = [
     re_path(r'^api/user/checkout/$', UserCheckoutAPI.as_view(), name='user_checkout_api'),
     re_path(r'^api/categories/$', CategoryListAPIView.as_view(), name='categories_api'),
     re_path(r'^api/categories/(?P<pk>\d+)/$', CategoryRetrieveAPIView.as_view(), name='category_detail_api'),
+
+    re_path(r'^api/wscs/$', WSCListAPIView.as_view(), name='wscs_api'),
+    re_path(r'^api/wscs/(?P<pk>\d+)/$', WSCRetrieveAPIView.as_view(), name='wscs_detail_api'),
     re_path(r'^api/orders/$', OrderListAPIView.as_view(), name='orders_api'),
+
+
+    re_path(r'^api/store_orders/$', OrderLists.as_view(), name='orders_store'),
+    re_path(r'^api/orders_lists/$', CartOrderLists.as_view(), name='orders_lists'),
+    re_path(r'^api/orders_status/$', UpdateOrderStatusApiView.as_view(), name='orders_status_update'),
+    re_path(r'^api/orders_history/$', OrderHistoryLists.as_view(), name='orders_history'),
+    
     re_path(r'^api/orders/(?P<pk>\d+)/$', OrderRetrieveAPIView.as_view(), name='order_detail_api'),
     re_path(r'^api/products/$', ProductListAPIView.as_view(), name='products_api'),
+    re_path(r'^api/products_create/$', CreateProductAPIView.as_view(), name='products_create_api'),
+    re_path(r'^api/products_common/$', CommonProductListAPIView.as_view(), name='products_common_api'),
+
     re_path(r'^api/products/(?P<pk>\d+)/$', ProductRetrieveAPIView.as_view(), name='products_detail_api'),
     re_path(r'^api/quotation/$', SendQuotationApiView.as_view(), name="send_quotation_api"),
     re_path(r'^api/featured/$', ProductFeaturedListAPIView.as_view(), name='product_featured_api'),
@@ -241,8 +274,8 @@ urlpatterns += [
 urlpatterns += [
     path(r'admin/', admin.site.urls),
     path('', home_screen_view, name="home"),
+    path('dashboard', dashboard_view, name="dashboard"),
     path('account/', account_view, name="account"),
-    path('jpt', account_jpt, name="jpt"),
     path('blog/', include('blog.urls', 'blog')),
     path('login/', login_view, name="login"),
     path('logout/', logout_view, name="logout"),
@@ -264,6 +297,9 @@ urlpatterns += [
     
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'),
      name='password_reset_complete'),
+
+    path('user_order', UserOrderView, name='user_order'),
+    path('user_order_detail/<int:id>/', UserOrderDetailView, name='user_order_detail'),
 ]
 
 if settings.DEBUG:

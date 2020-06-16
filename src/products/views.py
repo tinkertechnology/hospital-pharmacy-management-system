@@ -6,11 +6,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-
-
-
-
-
+from rest_framework import status
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
@@ -20,12 +16,15 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse as api_reverse
 from rest_framework.views import APIView
 
+
 # Create your views here.
 from .filters import ProductFilter
 from .forms import VariationInventoryFormSet, ProductFilterForm
 from .mixins import StaffRequiredMixin
-from .models import Product, Variation, Category, ProductFeatured, Company, Brand, GenericName, ProductUnit
-from .pagination import ProductPagination, CategoryPagination
+from .models import Product, Variation, Category, ProductFeatured, Company, Brand, GenericName, ProductUnit, ProductCommon
+from wsc.models import WaterSupplyCompany
+from store.models import Store
+from .pagination import ProductPagination, CategoryPagination, WSCPagination
 from .serializers import (
 		CategorySerializer, 
 		ProductSerializer,
@@ -35,7 +34,9 @@ from .serializers import (
 		 CompanySerializer,
 		 BrandSerializer,
 		 GenericNameSerializer,
-		 ProductUnitSerializer
+		 ProductUnitSerializer,
+		 WSCSerializer,
+		 CommonProductSerializer
 		)
 
 
@@ -101,6 +102,10 @@ class APIHomeView(APIView):
 		}
 		return Response(data)
 
+class CommonProductListAPIView(generics.ListAPIView):
+	queryset = ProductCommon.objects.all()
+	serializer_class = ProductUnitSerializer
+
 class CompanyListAPIView(generics.ListAPIView):
 	queryset = Company.objects.all()
 	serializer_class = CompanySerializer
@@ -130,12 +135,26 @@ class CategoryListAPIView(generics.ListAPIView):
 	pagination_class = CategoryPagination
 
 
+
 class CategoryRetrieveAPIView(generics.RetrieveAPIView):
 	#authentication_classes = [SessionAuthentication]
 	#permission_classes = [IsAuthenticated]
 	queryset = Category.objects.all()
 	serializer_class = CategorySerializer
 
+
+class WSCListAPIView(generics.ListAPIView):
+	queryset = Store.objects.all()
+	serializer_class = WSCSerializer
+	pagination_class = CategoryPagination
+
+
+
+class WSCRetrieveAPIView(generics.RetrieveAPIView):
+	#authentication_classes = [SessionAuthentication]
+	#permission_classes = [IsAuthenticated]
+	queryset = WaterSupplyCompany.objects.all()
+	serializer_class = WSCSerializer
 
 class ProductListAPIView(generics.ListAPIView):
 	#permission_classes = [IsAuthenticated]
@@ -152,11 +171,24 @@ class ProductListAPIView(generics.ListAPIView):
 	filter_class = ProductFilter
 
 	def get_queryset(self):
+		user_store = Store.objects.filter(fk_user_id=self.request.user.id).first() #
+		
+		if user_store is not None:
+			if self.request.GET.get('view_my_products', None):
+				queryset = Product.objects.filter(fk_store_id=user_store.id)
+				return queryset
+			# Depo login bhayeko cha bhane 
+			# water supply company ko matrai product dekhnu paryo
+
+			queryset = Product.objects.exclude(fk_store_id=None).exclude(fk_store__fk_store_type_id=None).exclude(fk_store__fk_store_type_id=2)
+			print(queryset.query)
+			return queryset
 		if self.request.query_params.get('id'):
 			id = self.request.query_params.get('id')
 			queryset = Product.objects.filter(id__gte=id)
 		queryset = Product.objects.all()
 		return queryset
+
 
 
 
@@ -186,9 +218,61 @@ class ProductFeaturedListAPIView(generics.ListAPIView):
 	ordering_fields  = ["title", "id"]
 	# filter_class = ProductFilter
 	#pagination_class = ProductPagination
+
 # class ProductCreateAPIView(generics.CreateAPIView):
 # 	queryset = Product.objects.all()
 # 	serializer_class = ProductDetailUpdateSerializer
+	
+### Product insertion from api #####
+class CreateProductAPIView(APIView):
+	# authentication_classes = [SessionAuthentication]
+	permission_classes = [IsAuthenticated]
+	def post(self, request, *args, **kwargs):
+		common_product = request.data.get('common_product', False)
+		description = request.data.get('description', False)
+		price = request.data.get('price', False)
+		categories = request.data.get('categories', False)
+		product_id = request.data.get('product_id', None)
+		print(product_id)
+
+		if common_product is None:
+			return Response({"Fail": "common name must be provided"}, status.HTTP_400_BAD_REQUEST)
+		if description is None:
+			return Response({"Fail": "product description must be provided"}, status.HTTP_400_BAD_REQUEST)
+		if price is None:
+			return Response({"Fail": "product price must be provided"}, status.HTTP_400_BAD_REQUEST)
+		# if categories is None:
+		# 	return Response({"Fail": "Select product categories"}, status.HTTP_400_BAD_REQUEST)
+
+		else:
+			common = ProductCommon.objects.filter(pk=common_product).first()
+			if product_id:
+				print(product_id)
+				instance = Product.objects.filter(pk=product_id).first()
+				variation = Variation.objects.filter(product_id=product_id).first()
+				variation.price = price
+				variation.save()
+			else:
+				instance = Product()
+			if common:
+				fk_store = Store.objects.filter(fk_user_id=request.user.id).first()
+				if not fk_store:
+					return Response({"Fail": "Permission denied"}, status.HTTP_400_BAD_REQUEST)
+
+				instance.fk_common_product_id = common_product
+				instance.description = description
+				instance.price = price
+				instance.title = common.title
+				instance.fk_store_id = fk_store.id
+				instance.save()
+				return Response({
+							'status': True,
+							'detail': 'Product Saved successfully'
+							})
+			else:
+				return Response({"Fail": "You must select one common name "}, status.HTTP_400_BAD_REQUEST)
+
+
 
 
 
@@ -348,3 +432,4 @@ def product_detail_view_func(request, id):
 		"object": product_instance
 	}
 	return render(request, template, context)
+

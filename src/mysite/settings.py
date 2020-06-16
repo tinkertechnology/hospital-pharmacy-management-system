@@ -55,7 +55,12 @@ INSTALLED_APPS = [
     'membership',
     'store',
     'payment',
+
     'payment_esewa',
+
+
+    'prescription',
+    'wsc',
 
     'crispy_forms',
     'django_filters',
@@ -147,7 +152,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+CAN_STORE_SEE_ALL_ORDERS = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATICFILES_DIRS = [
@@ -156,13 +161,20 @@ STATICFILES_DIRS = [
 ]
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')
 
-EMAIL_HOST = 'smtp.mailtrap.io'
-EMAIL_HOST_USER = 'f472a1b791bc03'
-EMAIL_HOST_PASSWORD = 'efe5fe413946a6'
-EMAIL_PORT = 2525
+# EMAIL_HOST = 'smtp.mailtrap.io'
+# EMAIL_HOST_USER = 'f472a1b791bc03'
+# EMAIL_HOST_PASSWORD = 'efe5fe413946a6'
+# EMAIL_PORT = 2525
+# EMAIL_USE_TLS = True
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' 
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'xunilparajuli2002@gmail.com'
+EMAIL_HOST_PASSWORD = 'vnnuasmkmapqzvur'
+EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 
@@ -177,10 +189,10 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
       'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
         "rest_framework_jwt.authentication.JSONWebTokenAuthentication",
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
         
     ),
       'DEFAULT_PAGINATION_CLASS': 'products.pagination.ProductPagination',
@@ -221,6 +233,7 @@ REST_REGISTRATION = {
 
     'VERIFICATION_FROM_EMAIL': EMAIL_HOST_USER,
 }
+LOGIN_REDIRECT_URL = '/dashboard/'
 
 # AUTHENTICATION_BACKENDS = (
 #     'mysite.backends.UsernameOrEmailBackend',

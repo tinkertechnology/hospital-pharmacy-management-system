@@ -4,11 +4,13 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
+from wsc.models import WaterSupplyCompany
+from store.models import Store
 
 # Create your models here.
 
 class ProductQuerySet(models.query.QuerySet):
-	def active(self):
+	def active(self): 
 		return self.filter(active=True)
 
 
@@ -26,7 +28,14 @@ class ProductManager(models.Manager):
 		return qs
 
 
+class ProductCommon(models.Model):
+	title = models.CharField(max_length=120, null=True, blank=True)
+
+	def __str__(self):
+		return self.title
+
 class Product(models.Model):
+	fk_common_product = models.ForeignKey(ProductCommon, on_delete=models.CASCADE, null=True, blank=True)
 	title = models.CharField(max_length=120)
 	description = models.TextField(blank=True, null=True)
 	price = models.DecimalField(decimal_places=2, max_digits=20)
@@ -38,7 +47,8 @@ class Product(models.Model):
 	company = models.ForeignKey('Company', on_delete=models.CASCADE, blank=True, null=True)
 	amount = models.FloatField(null=True, default=0.0, blank=True)
 	product_unit = models.ForeignKey('ProductUnit', on_delete=models.CASCADE, blank=True, null=True)
-
+	fk_wsc = models.ForeignKey(WaterSupplyCompany, on_delete=models.CASCADE, blank=True, null=True)
+	fk_store = models.ForeignKey(Store, on_delete=models.CASCADE, blank=True, null=True)
 	is_featured = models.BooleanField(default = False, blank=True)
 	default = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='default_category', null=True, blank=True)
 
@@ -223,7 +233,6 @@ class ProductFeatured(models.Model):
 
 	def __str__(self):
 		return self.product.title
-
 
 
 

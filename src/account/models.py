@@ -37,6 +37,7 @@ class MyAccountManager(BaseUserManager):
 
 
 class Account(AbstractBaseUser):
+	phone_regex = RegexValidator(regex=r'^\+?1?\d{9,14}$', message="Phone number must be entered in the format: '+977999999'. Up to 15 digits allowed.")
 	email 					= models.EmailField(verbose_name="email", max_length=60, unique=True)
 	username 				= models.CharField(max_length=30, unique=True)
 	date_joined				= models.DateTimeField(verbose_name='date joined', auto_now_add=True)
@@ -45,7 +46,7 @@ class Account(AbstractBaseUser):
 	is_active				= models.BooleanField(default=True)
 	is_staff				= models.BooleanField(default=False)
 	is_superuser			= models.BooleanField(default=False)
-	mobile 					= models.CharField(max_length=30, unique=True)
+	mobile 					= models.CharField(validators=[phone_regex],max_length=15, unique=True)
 
 
 	USERNAME_FIELD = 'mobile'
@@ -57,7 +58,7 @@ class Account(AbstractBaseUser):
 		return self.email
 
 	def __str__(self):
-		return self.mobile
+		return  self.mobile + self.email + self.username
 
 	# For checking permissions. to keep it simple all admin have ALL permissons
 	def has_perm(self, perm, obj=None):
@@ -69,8 +70,8 @@ class Account(AbstractBaseUser):
 
 
 class PhoneOTP(models.Model):
-	phone_regex = RegexValidator( regex =r'^\+?1?\d{9,14}$', message="phone number must be entered in the form of....")
-	mobile = models.CharField(validators=[phone_regex], max_length=17, unique=True)
+	phone_regex = RegexValidator( regex =r'^\+?1?\d{9,14}$', message="phone number must be entered in the format: '+97799999'. Up to 15 digits allowed")
+	mobile = models.CharField(validators=[phone_regex], max_length=15, unique=True)
 	otp = models.CharField(max_length=9, blank=True, null=True)
 	count = models.IntegerField(default=0, help_text='No. of otp sent')
 	validated = models.BooleanField(default=False, help_text='if true, user validated otp in secount api')

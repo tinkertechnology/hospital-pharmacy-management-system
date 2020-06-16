@@ -1,10 +1,11 @@
 from rest_framework import serializers
 from .models import  UserType, UserTypes
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
 from inquiry.models import Message
 from django.db.models import Q, Count
-
+User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -29,8 +30,8 @@ class InqueryUserSerializer(serializers.ModelSerializer):
 	def get_user(self,obj):
 		get_user = User.objects.get(pk=obj.user_id)
 		user_dict = {
-			"first_name": get_user.first_name,
-			"last_name" : get_user.last_name,
+			"first_name": get_user.username,
+			"last_name" : get_user.mobile,
 			"username": get_user.username,
 			"email": get_user.email
 		}
@@ -39,7 +40,7 @@ class InqueryUserSerializer(serializers.ModelSerializer):
 class UsersSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = User
-		fields = ["id", "first_name"]
+		fields = ["id", "username"]
 
 
 
@@ -82,8 +83,7 @@ class InquiryUsersListForPharmacistSerializer(serializers.ModelSerializer):
 		fields = [
 		
 		"id",
-		"first_name",
-		"last_name",
+		"mobile",
 		"username",
 		"email"
 

@@ -1,6 +1,8 @@
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from users.models import UserType
+from store.models import Store
+from wsc.models import WaterSupplyCompany
 #from orders.models import UserCheckout
 
 def jwt_response_payload_handler(token, user, request, *args, **kwargs):
@@ -8,6 +10,17 @@ def jwt_response_payload_handler(token, user, request, *args, **kwargs):
 	user_type=""
 	user_type1 = UserType.objects.filter(user=user.id).first()
 
+	is_store =  Store.objects.filter(fk_user_id=user.id).filter(fk_store_type_id=2).first()
+	# is_store = store.fk_store_type
+
+	is_wsc = ""
+	is_wsc = Store.objects.filter(fk_user_id=user.id).filter(fk_store_type_id=1).first()
+	if is_wsc is not None:
+		is_wsc = True
+	is_store = ""
+	if is_store is not None:
+		print('jpt')
+		is_store = True
 	# print(user.__dict__)
 	# if 'usertype' in user.__dict__ :
 	if user_type1:
@@ -24,11 +37,14 @@ def jwt_response_payload_handler(token, user, request, *args, **kwargs):
 	
 	data = {
 		"user_type": user_type,
+		"is_store": is_store,
+		"is_supply_company" : is_wsc,
 		# "user_description": user.usertype,
 		"token": token,
 		"user": user.id,
 		"username": user.username,
 		"email": user.email,
+		"mobile": user.mobile,
 		"superuser" : user.is_superuser,
 		'code': 20000,
 		"staff": user.is_staff,

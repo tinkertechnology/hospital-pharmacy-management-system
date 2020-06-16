@@ -10,6 +10,8 @@ from products.models import Product
 
 from payment.models import PaymentMethod
 from store.models import Store
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 import braintree
 
@@ -93,18 +95,22 @@ ORDER_STATUS_CHOICES = (
 class Order(models.Model):
 	status = models.CharField(max_length=120, choices=ORDER_STATUS_CHOICES, default='created')
 	cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-	user = models.ForeignKey(UserCheckout,on_delete=models.CASCADE, null=True)
+	user = models.ForeignKey(UserCheckout,on_delete=models.CASCADE, null=True, )
 	billing_address = models.ForeignKey(UserAddress,on_delete=models.CASCADE, related_name='billing_address', blank=True, null=True)
 	shipping_address = models.ForeignKey(UserAddress, on_delete=models.CASCADE, related_name='shipping_address', blank=True, null=True)
 	shipping_total_price = models.DecimalField(max_digits=50, decimal_places=2, default=5.99)
 	order_total = models.DecimalField(max_digits=50, decimal_places=2, )
 	order_id = models.CharField(max_length=20, null=True, blank=True)
-
+	fk_auth_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
 	is_delivered = models.BooleanField(default=False)
 	fk_ordered_store = models.ForeignKey(Store, related_name='fk_ordered_store', on_delete=models.CASCADE, null=True, blank=True)
 	fk_delivery_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='fk_delivery_user', on_delete=models.CASCADE, null=True, blank=True)
 	is_paid = models.BooleanField(default=False)
 	fk_payment_method = models.ForeignKey(PaymentMethod, related_name='fk_ordered_store', on_delete=models.CASCADE, null=True, blank=True)
+	created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	updated_at = models.DateTimeField(blank=True, null=True)
+	order_latitude = models.CharField(max_length=200, null=True, blank=True)
+	order_longitude = models.CharField(max_length=200, null=True, blank=True)
 
 	def __str__(self):
 		return "Order_id: %s, Cart_id: %s"%(self.id, self.cart.id)
