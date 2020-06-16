@@ -186,8 +186,10 @@ urlpatterns += [
 
 # esewa payment
 from payment_esewa import views as payment_esewa_views
-urlpatterns = [
-    path('payment_esewa_client_accept',payment_esewa_views.payment_esewa_client_accept)
+urlpatterns += [
+    path('payment/payment_esewa_confirm',payment_esewa_views.payment_esewa_confirm),
+    path('payment/payment_esewa_success',payment_esewa_views.payment_esewa_success),
+    path('payment/payment_esewa_fail',payment_esewa_views.payment_esewa_fail),
 ]
 
 
