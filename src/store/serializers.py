@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Store
 
 class StoreSerializer(serializers.ModelSerializer):
+	distance =  serializers.FloatField(required=False)
 	class Meta:
 		model = Store
 		fields= '__all__'
