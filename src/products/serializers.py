@@ -101,8 +101,11 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 		]
 
 	def get_image(self, obj):
-		image_url = obj.productimage_set.first().image.url
-		return image_url
+		image_url = obj.productimage_set.first()
+		url = '/no-image.jpg'
+		if image_url is not None:
+			url=image_url.image.url
+		return url
 		#return obj.productimage_set.first().image.url
 		 
 
