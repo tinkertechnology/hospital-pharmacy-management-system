@@ -32,6 +32,7 @@ if DEBUG:
 
 
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -104,6 +105,8 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+SHIPPING_PRICE = 0
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -148,6 +151,9 @@ USE_L10N = True
 USE_TZ = True
 
 CAN_STORE_SEE_ALL_ORDERS = False
+
+IS_MULTI_VENDOR=True
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATICFILES_DIRS = [

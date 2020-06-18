@@ -201,10 +201,12 @@ urlpatterns += [
 from store.views import (
         StoreListCreateApiView,
         StoreRetrieveUpdateDestroyApiView,
+        ListCompaniesApiView
 )
 urlpatterns += [
     re_path(r'^api/store/$', StoreListCreateApiView.as_view(), name='api-store'),
     re_path(r'^api/store/(?P<pk>\d+)/$', StoreRetrieveUpdateDestroyApiView.as_view(), name='api-store-retrieve'),
+    re_path(r'^api/stores/$', ListCompaniesApiView.as_view(), name='api-stores-list'),
 ]
 
 # store api

@@ -4,11 +4,12 @@ from carts.mixins import TokenMixin
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from .models import UserAddress, Order, Quotation, UserCheckout
+from .models import UserAddress, Order, Quotation, UserCheckout, StoreWiseOrder
 from products.models import Product, ProductImage
 from carts.models import Cart, CartItem
 import pprint
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 User = get_user_model()
 
@@ -146,6 +147,8 @@ class CartOrderSerializer(serializers.ModelSerializer):
 		model = Order
 		fields = '__all__'
 
+
+
 	def create(self, validated_data):
 		#pprint.pprint(self.context['request'].__dict__)
 		# pprint.pprint(validated_data)
@@ -174,7 +177,7 @@ class CartOrderSerializer(serializers.ModelSerializer):
 		order = Order()
 		order.order_id = cart.id
 		order.status = 1
-		order.shipping_total_price = 100
+		order.shipping_total_price = settings.SHIPPING_PRICE
 		order.order_total = cart.total
 		order.billing_address = useraddress
 		order.shipping_address = useraddress
@@ -183,8 +186,6 @@ class CartOrderSerializer(serializers.ModelSerializer):
 		order.fk_auth_user_id = user.id
 		order.order_latitude = validated_data.get("order_latitude")
 		order.order_longitude = validated_data.get("order_longitude")
-
-		print(self.context['request'].__dict__)
 		order.fk_ordered_store = validated_data.get("fk_ordered_store")
 		order.fk_payment_method = validated_data.get("fk_payment_method")
 
@@ -194,8 +195,37 @@ class CartOrderSerializer(serializers.ModelSerializer):
 
 		cart.active=0
 		cart.save()
+		if settings.IS_MULTI_VENDOR:
+			self.saveStoreWiseOrder(order)
 
 		return order
+
+	def saveStoreWiseOrder(self, order):
+		print('order::')
+		print(order)
+		cart = order.cart
+		cart_items = cart.items
+		cart_items = CartItem.objects.filter(cart_id=cart.id)
+
+
+		print(cart_items)
+		print('asdasdasdasd')
+		for variation in cart_items:
+			store_wise = StoreWiseOrder()
+			store_wise.order_id = order.order_id
+			store_wise.order_total = order.order_total
+			store_wise.billing_address = order.billing_address
+			store_wise.shipping_address = order.shipping_address
+			store_wise.user_id = order.user_id
+			store_wise.cart_id = order.cart_id
+			store_wise.fk_auth_user_id = order.fk_auth_user_id
+			store_wise.order_latitude = order.order_latitude
+			store_wise.order_longitude = order.order_longitude
+			store_wise.fk_ordered_store = order.fk_ordered_store
+			store_wise.fk_payment_method = order.fk_payment_method
+			store_wise.save()
+			# print(variation.product)
+
 
 
 
