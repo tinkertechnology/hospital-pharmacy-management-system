@@ -4,6 +4,8 @@ from django.conf import settings
 from django.urls import reverse
 from django.db import models
 from django.db.models.signals import pre_save, post_save, post_delete
+# from orders.models import StoreWiseOrder
+
 
 
 from products.models import Variation
@@ -12,6 +14,7 @@ from products.models import Variation
 
 class CartItem(models.Model):
 	cart = models.ForeignKey("Cart", on_delete=models.CASCADE, blank=True)
+	fk_storewise_order = models.ForeignKey("orders.StoreWiseOrder", on_delete=models.CASCADE, blank=True, null=True)
 	item = models.ForeignKey(Variation, on_delete=models.CASCADE)
 	quantity = models.PositiveIntegerField(default=1)
 	line_item_total = models.DecimalField(max_digits=10, decimal_places=2, blank=True)

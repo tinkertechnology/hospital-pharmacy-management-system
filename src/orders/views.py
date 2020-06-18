@@ -20,10 +20,11 @@ from .forms import AddressForm, UserAddressForm, UserOrderForm
 from .mixins import CartOrderMixin, LoginRequiredMixin
 from .models import UserAddress, UserCheckout, Order, Quotation
 from .permissions import IsOwnerAndAuth
-from .serializers import UserAddressSerializer, OrderSerializer, OrderDetailSerializer, QuotationSerializer, CartOrderSerializer, OrderListStoreSerializer, CartOrderListStoreSerializer, CartItemSerializer, UpdateOrderStatusSerializer
+from .serializers import UserAddressSerializer, OrderSerializer, OrderDetailSerializer, QuotationSerializer, CartOrderSerializer, OrderListStoreSerializer, CartOrderListStoreSerializer, CartItemSerializer, UpdateOrderStatusSerializer, StoreWiseOrderListSerializer
 import requests
 from carts.models import Cart, CartItem
 from store.models import Store
+from orders.models import StoreWiseOrder
 from products.models import Product
 from django.conf import settings
 from django.db.models import Q
@@ -229,6 +230,38 @@ class OrderLists(ListAPIView):
 					orders = []
 				else:
 					orders = orders.filter(fk_ordered_store=store)
+		
+		return orders
+
+
+
+class StoreWiseOrderLists(ListAPIView):
+	# queryset = Order.objects.all()
+	permission_classes = [permissions.IsAuthenticated]
+	serializer_class = StoreWiseOrderListSerializer
+
+	def get_queryset(self):
+		user=self.request.user
+		
+		supply_store_user = Store.objects.filter(fk_user_id=self.request.user.id).first()
+		
+		
+		if supply_store_user is  None:
+			
+			# user_checkouts = UserCheckout.objects.filter(user_id=self.request.user.id).id
+			# print(user_checkouts.__dict__)
+			orders= Order.objects.filter(fk_auth_user_id=self.request.user.id)
+		else:
+			print(3)
+			orders = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id)
+
+			# if settings.CAN_STORE_SEE_ALL_ORDERS==False:
+			# 	user_id = self.request.user.id
+			# 	store = Store.objects.filter(fk_user_id=user_id).first()
+			# 	if store is None:
+			# 		orders = []
+			# 	else:
+			# 		orders = orders.filter(fk_ordered_store=store)
 		
 		return orders
 

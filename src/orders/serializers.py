@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import UserAddress, Order, Quotation, UserCheckout, StoreWiseOrder
 from products.models import Product, ProductImage
 from carts.models import Cart, CartItem
+from store.models import Store
 import pprint
 from django.contrib.auth import get_user_model
 from django.conf import settings
@@ -193,25 +194,34 @@ class CartOrderSerializer(serializers.ModelSerializer):
 		order.save()
 
 
-		cart.active=0
+		# cart.active=0
 		cart.save()
 		if settings.IS_MULTI_VENDOR:
-			self.saveStoreWiseOrder(order)
+			self.saveStoreWiseOrder(order, user)
 
 		return order
 
-	def saveStoreWiseOrder(self, order):
+	def saveStoreWiseOrder(self, order, user):
 		print('order::')
 		print(order)
 		cart = order.cart
 		cart_items = cart.items
 		cart_items = CartItem.objects.filter(cart_id=cart.id)
+		ordered_by = Store.objects.filter(fk_user_id=user.id).first()
+		ordered_by_store = ordered_by.id
+		print(ordered_by_store)
 
 
 		print(cart_items)
 		print('asdasdasdasd')
 		for variation in cart_items:
-			store_wise = StoreWiseOrder()
+			print(variation)
+			store = variation.item.product.fk_store
+			order_id = order.order_id
+			store_id = store.id
+			store_wise = StoreWiseOrder.objects.filter(order_id=order_id).filter(fk_ordered_store_id=store_id).first()
+			if store_wise is None:			
+				store_wise = StoreWiseOrder()
 			store_wise.order_id = order.order_id
 			store_wise.order_total = order.order_total
 			store_wise.billing_address = order.billing_address
@@ -221,9 +231,12 @@ class CartOrderSerializer(serializers.ModelSerializer):
 			store_wise.fk_auth_user_id = order.fk_auth_user_id
 			store_wise.order_latitude = order.order_latitude
 			store_wise.order_longitude = order.order_longitude
-			store_wise.fk_ordered_store = order.fk_ordered_store
+			store_wise.fk_ordered_store = store
+			store_wise.fk_ordered_by_store = ordered_by
 			store_wise.fk_payment_method = order.fk_payment_method
 			store_wise.save()
+			variation.fk_storewise_order_id = store_wise.id
+			variation.save()
 			# print(variation.product)
 
 
@@ -245,6 +258,20 @@ class OrderListStoreSerializer(serializers.ModelSerializer):
 	def get_mobile(self, obj):
 		return obj.user.user.mobile
 
+
+
+class StoreWiseOrderListSerializer(serializers.ModelSerializer):
+	# billing_address = serializers.SerializerMethodField()
+	# mobile = serializers.SerializerMethodField()
+	class Meta:
+		model = StoreWiseOrder
+		fields = '__all__'
+
+	# def get_billing_address(self, obj):
+	# 	return str(obj.billing_address.street)
+
+	# def get_mobile(self, obj):
+	# 	return obj.user.user.mobile
 
 
 class UpdateOrderStatusSerializer(serializers.ModelSerializer):
