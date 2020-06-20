@@ -72,7 +72,9 @@ from orders.views import (
                     UserOrderView,
                     UserOrderDetailView,
                     OrderLists,
-                    CartOrderLists
+                    OrderHistoryLists,
+                    CartOrderLists,
+                    UpdateOrderStatusApiView
                     )
 
 from products.views import (
@@ -85,14 +87,19 @@ from products.views import (
         CompanyListAPIView,
         BrandListAPIView,
         GenericNameListAPIView,
-        ProductUnitListAPIView
+        ProductUnitListAPIView,
+        WSCListAPIView,
+        WSCRetrieveAPIView,
+        CreateProductAPIView,
+        CommonProductListAPIView
         
 
     )
 
 from prescription.views import(
 
-    FileUploaderViewSet
+
+    ApiPostFile
     )
 
 from inquiry.views import (
@@ -121,7 +128,10 @@ urlpatterns = [
     re_path(r'^api/register/', RegisterAPI.as_view(), name="register"),
     re_path(r'^api/reset_password/', ResetPasswordAPIView.as_view(), name="reset_password"),
     re_path(r'^api/change_password/', ChangePasswordAPIView.as_view(), name="change_password"),
-    re_path(r'^api/file_upload/$', FileUploaderViewSet.as_view({'get': 'list'}), name='file_upload'),
+    re_path(r'^api/file_upload/$', ApiPostFile.as_view(), name='file_upload'),
+    # re_path(r'^api/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
+    # re_path(r'^api/upload/$', FileUploadView.as_view()),
+
 
     re_path(r'^api/cart/$', CartAPIView.as_view(), name='cart_api'),
     re_path(r'^api/checkout/$', CheckoutAPIView.as_view(), name='checkout_api'),
@@ -133,13 +143,22 @@ urlpatterns = [
     re_path(r'^api/user/checkout/$', UserCheckoutAPI.as_view(), name='user_checkout_api'),
     re_path(r'^api/categories/$', CategoryListAPIView.as_view(), name='categories_api'),
     re_path(r'^api/categories/(?P<pk>\d+)/$', CategoryRetrieveAPIView.as_view(), name='category_detail_api'),
+
+    re_path(r'^api/wscs/$', WSCListAPIView.as_view(), name='wscs_api'),
+    re_path(r'^api/wscs/(?P<pk>\d+)/$', WSCRetrieveAPIView.as_view(), name='wscs_detail_api'),
     re_path(r'^api/orders/$', OrderListAPIView.as_view(), name='orders_api'),
+
 
     re_path(r'^api/store_orders/$', OrderLists.as_view(), name='orders_store'),
     re_path(r'^api/orders_lists/$', CartOrderLists.as_view(), name='orders_lists'),
-
+    re_path(r'^api/orders_status/$', UpdateOrderStatusApiView.as_view(), name='orders_status_update'),
+    re_path(r'^api/orders_history/$', OrderHistoryLists.as_view(), name='orders_history'),
+    
     re_path(r'^api/orders/(?P<pk>\d+)/$', OrderRetrieveAPIView.as_view(), name='order_detail_api'),
     re_path(r'^api/products/$', ProductListAPIView.as_view(), name='products_api'),
+    re_path(r'^api/products_create/$', CreateProductAPIView.as_view(), name='products_create_api'),
+    re_path(r'^api/products_common/$', CommonProductListAPIView.as_view(), name='products_common_api'),
+
     re_path(r'^api/products/(?P<pk>\d+)/$', ProductRetrieveAPIView.as_view(), name='products_detail_api'),
     re_path(r'^api/quotation/$', SendQuotationApiView.as_view(), name="send_quotation_api"),
     re_path(r'^api/featured/$', ProductFeaturedListAPIView.as_view(), name='product_featured_api'),
@@ -182,10 +201,12 @@ urlpatterns += [
 from store.views import (
         StoreListCreateApiView,
         StoreRetrieveUpdateDestroyApiView,
+        ListCompaniesApiView
 )
 urlpatterns += [
     re_path(r'^api/store/$', StoreListCreateApiView.as_view(), name='api-store'),
     re_path(r'^api/store/(?P<pk>\d+)/$', StoreRetrieveUpdateDestroyApiView.as_view(), name='api-store-retrieve'),
+    re_path(r'^api/stores/$', ListCompaniesApiView.as_view(), name='api-stores-list'),
 ]
 
 # store api
@@ -196,6 +217,15 @@ from payment.views import (
 urlpatterns += [
     re_path(r'^api/paymentmethod/$', PaymentMethodListCreateApiView.as_view(), name='api-paymentmethod'),
     re_path(r'^api/paymentmethod/(?P<pk>\d+)/$', PaymentMethodRetrieveUpdateDestroyApiView.as_view(), name='api-paymentmethod-retrieve'),
+]
+
+# esewa payment
+from payment_esewa import views as payment_esewa_views
+urlpatterns += [
+    path('payment/payment_esewa_confirm',payment_esewa_views.payment_esewa_confirm),
+    path('payment/payment_esewa_success',payment_esewa_views.payment_esewa_success),
+    path('payment/payment_esewa_fail',payment_esewa_views.payment_esewa_fail),
+    path('payment/payment-esewa-app-request', payment_esewa_views.payment_esewa_app_request)
 ]
 
 

@@ -1,0 +1,20 @@
+<body>
+    <form action="/payment/payment_esewa_confirm" method="GET" id="myForm">
+    Confirm Your amount by esewa: {{amt}} <br>
+   
+   <input value="{{cart_id}}" name="cart_id" type="hidden">
+   <input value="{{amt}}" name="amt" type="hidden">
+    <input value="Submit" type="submit">
+    </form>
+</body>
+
+<script>
+//auto submit form
+var auto_refresh = setInterval(function() { submitform(); }, 2000);
+
+function submitform()
+{
+  // alert('test');
+  document.getElementById("myForm").submit();
+}
+</script>

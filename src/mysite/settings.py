@@ -32,6 +32,7 @@ if DEBUG:
 
 
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -55,7 +56,13 @@ INSTALLED_APPS = [
     'membership',
     'store',
     'payment',
+
+    'payment_esewa',
+
+
     'prescription',
+    'wsc',
+
     'crispy_forms',
     'django_filters',
     'rest_framework',
@@ -103,6 +110,8 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+SHIPPING_PRICE = 0
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -147,6 +156,9 @@ USE_L10N = True
 USE_TZ = True
 
 CAN_STORE_SEE_ALL_ORDERS = False
+
+IS_MULTI_VENDOR=True
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATICFILES_DIRS = [
@@ -183,10 +195,10 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
       'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
         "rest_framework_jwt.authentication.JSONWebTokenAuthentication",
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
         
     ),
       'DEFAULT_PAGINATION_CLASS': 'products.pagination.ProductPagination',

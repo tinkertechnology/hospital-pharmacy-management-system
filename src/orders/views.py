@@ -20,12 +20,13 @@ from .forms import AddressForm, UserAddressForm, UserOrderForm
 from .mixins import CartOrderMixin, LoginRequiredMixin
 from .models import UserAddress, UserCheckout, Order, Quotation
 from .permissions import IsOwnerAndAuth
-from .serializers import UserAddressSerializer, OrderSerializer, OrderDetailSerializer, QuotationSerializer, CartOrderSerializer, OrderListStoreSerializer, CartOrderListStoreSerializer, CartItemSerializer
+from .serializers import UserAddressSerializer, OrderSerializer, OrderDetailSerializer, QuotationSerializer, CartOrderSerializer, OrderListStoreSerializer, CartOrderListStoreSerializer, CartItemSerializer, UpdateOrderStatusSerializer
 import requests
 from carts.models import Cart, CartItem
 from store.models import Store
 from products.models import Product
 from django.conf import settings
+from django.db.models import Q
 User = get_user_model()
 
 
@@ -210,20 +211,57 @@ class OrderList(LoginRequiredMixin, ListView):
 class OrderLists(ListAPIView):
 	# queryset = Order.objects.all()
 	serializer_class = OrderListStoreSerializer
+
 	def get_queryset(self):
-		orders = Order.objects.filter(status=1)			
-		if settings.CAN_STORE_SEE_ALL_ORDERS==False:
-			user_id = self.request.user.id
-			store = Store.objects.filter(fk_user_id=user_id).first()
-			if store is None:
-				orders = []
-			else:
-				orders = orders.filter(fk_ordered_store=store)
+		
+		non_store_user = Store.objects.filter(fk_user_id=self.request.user.id).first()
+		print(non_store_user)
+		if non_store_user is None:
+			# user_checkouts = UserCheckout.objects.filter(user_id=self.request.user.id).id
+			# print(user_checkouts.__dict__)
+			orders= Order.objects.filter(fk_auth_user_id=self.request.user.id)
+		else:
+			orders = Order.objects.filter(status=1)			
+			if settings.CAN_STORE_SEE_ALL_ORDERS==False:
+				user_id = self.request.user.id
+				store = Store.objects.filter(fk_user_id=user_id).first()
+				if store is None:
+					orders = []
+				else:
+					orders = orders.filter(fk_ordered_store=store)
+		
+		return orders
+
+class OrderHistoryLists(ListAPIView):
+	from django.db.models import Q
+	# queryset = Order.objects.all()
+	serializer_class = OrderListStoreSerializer
+
+	def get_queryset(self):
+		
+		non_store_user = Store.objects.filter(fk_user_id=self.request.user.id).first()
+		print(non_store_user)
+		if non_store_user is None:
+			# user_checkouts = UserCheckout.objects.filter(user_id=self.request.user.id).id
+			# print(user_checkouts.__dict__)
+			orders= Order.objects.filter(fk_auth_user_id=self.request.user.id).filter(Q(is_paid=True) | Q(is_delivered=True))
+			
+			
+		else:
+			orders = Order.objects.filter(status=1)			
+			if settings.CAN_STORE_SEE_ALL_ORDERS==False:
+				user_id = self.request.user.id
+				store = Store.objects.filter(fk_user_id=user_id).first()
+				if store is None:
+					orders = []
+				else:
+					orders = orders.filter(fk_ordered_store=store).filter(Q(is_paid=True) | Q(is_delivered=True))
 		
 		return orders
 
 class CartOrderLists(ListAPIView):
 	def get(self, request):
+
 		order_id = request.query_params['order_id']
 		order = Order.objects.get(id=order_id)
 		cart = Cart.objects.get(id=order.cart_id)
@@ -353,4 +391,34 @@ def UserOrderDetailView(request, id):
 	# print(cart_items.item)
 	print(cart_items.__dict__)
 	return render(request, 'orders/order_detail.html', {'cart_items':cart_items, 'order':order, 'cart':cart, 'total_price':total_price})
+
 	# return HttpResponse('User Order Detail View')
+
+class UpdateOrderStatusApiView(CreateAPIView):
+	# permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+	queryset=Order.objects.all()
+	serializer_class = UpdateOrderStatusSerializer
+
+	def post(self, request):
+		import pprint
+		pprint.pprint(request.POST)
+		order_id = request.POST.get('order_id')
+		status = request.POST.get('status')
+		print(status)
+		print(order_id)
+		order = Order.objects.filter(pk=order_id).first() 
+		if order:
+			if status == "paid":
+				order.is_paid = 1;
+			if status == "delivered":
+				order.is_delivered = 1;
+			order.save()
+
+			return Response({
+							'status': True,
+							'detail': 'Order is marked as '+status
+							})
+		else:
+			Response({"Fail": "Error updating order status"}, status.HTTP_400_BAD_REQUEST)
+
+

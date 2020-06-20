@@ -10,4 +10,6 @@ class Prescription(models.Model):
     version = models.IntegerField(default=0)
     upload_date = models.DateTimeField(auto_now=True, db_index=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uploaded_files')
+    doctor_name = models.CharField(max_length=200, null=True, blank=True)
+    hospital_name = models.CharField(max_length=200, null=True, blank=True)
     size = models.IntegerField(default=0)

@@ -22,3 +22,6 @@ class FileUploaderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Prescription.objects.create(**validated_data)
+
+class FileSerializer(serializers.Serializer):
+    file = serializers.FileField()

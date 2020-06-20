@@ -71,3 +71,10 @@ class StoreRetrieveUpdateDestroyApiView(RetrieveUpdateDestroyAPIView):
     serializer_class = StoreSerializer
     def get_queryset(self, *args, **kwargs):
         return Store.objects.all()
+
+
+class ListCompaniesApiView(ListAPIView):
+    serializer_class = StoreSerializer
+    def get_queryset(self, *args, **kwargs):
+        companies = Store.objects.filter(fk_store_type=1)
+        return companies
