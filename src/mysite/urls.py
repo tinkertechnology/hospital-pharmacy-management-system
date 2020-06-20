@@ -225,6 +225,7 @@ urlpatterns += [
     path('payment/payment_esewa_confirm',payment_esewa_views.payment_esewa_confirm),
     path('payment/payment_esewa_success',payment_esewa_views.payment_esewa_success),
     path('payment/payment_esewa_fail',payment_esewa_views.payment_esewa_fail),
+    path('payment/payment-esewa-app-request', payment_esewa_views.payment_esewa_app_request)
 ]
 
 
