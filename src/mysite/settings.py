@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'payment',
 
     'payment_esewa',
+    'routes',
 
 
     'prescription',
