@@ -174,6 +174,7 @@ class ProductListAPIView(generics.ListAPIView):
 		user_store = Store.objects.filter(fk_user_id=self.request.user.id).first() #
 		
 		if user_store is not None:
+			print(1)
 			if self.request.GET.get('view_my_products', None):
 				queryset = Product.objects.filter(fk_store_id=user_store.id)
 				return queryset
@@ -247,9 +248,10 @@ class CreateProductAPIView(APIView):
 		else:
 			common = ProductCommon.objects.filter(pk=common_product).first()
 			if product_id:
-				print(product_id)
+				# print(product_id)
 				instance = Product.objects.filter(pk=product_id).first()
 				variation = Variation.objects.filter(product_id=product_id).first()
+				print(price)
 				variation.price = price
 				variation.save()
 			else:
