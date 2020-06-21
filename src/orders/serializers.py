@@ -5,9 +5,11 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated
 
 from .models import UserAddress, Order, Quotation, UserCheckout, StoreWiseOrder
+
 from products.models import Product, ProductImage
 from carts.models import Cart, CartItem
 from store.models import Store
+from store.serializers import StoreWiseOrderSerializer, StoreSerializer
 import pprint
 from django.contrib.auth import get_user_model
 from django.conf import settings
@@ -213,7 +215,7 @@ class CartOrderSerializer(serializers.ModelSerializer):
 
 
 		print(cart_items)
-		print('asdasdasdasd')
+		# print('asdasdasdasd')
 		for variation in cart_items:
 			print(variation)
 			store = variation.item.product.fk_store
@@ -237,6 +239,16 @@ class CartOrderSerializer(serializers.ModelSerializer):
 			store_wise.save()
 			variation.fk_storewise_order_id = store_wise.id
 			variation.save()
+		store_wise_orders = StoreWiseOrder.objects.filter(order_id=order_id) 
+		for store_wise_order in store_wise_orders:
+			sw_cart_items =  CartItem.objects.filter(fk_storewise_order_id=store_wise_order.id) #store_wise_order.fk_storewise_order_id
+			store_wise_order.order_total = 0
+			for cart_item in sw_cart_items:
+				store_wise_order.order_total+=cart_item.line_item_total
+
+			store_wise_order.save()
+
+
 			# print(variation.product)
 
 
@@ -245,12 +257,13 @@ class CartOrderSerializer(serializers.ModelSerializer):
 class OrderListStoreSerializer(serializers.ModelSerializer):
 	billing_address = serializers.SerializerMethodField()
 	mobile = serializers.SerializerMethodField()
+	payment_method = serializers.SerializerMethodField()
 	class Meta:
 		model = Order
 		fields = ['id', 'status', 'is_delivered', 'is_paid', 
 		'order_longitude', 'order_latitude', 'cart', 'user', 'order_total',
 		'billing_address', 'fk_ordered_store', 'fk_delivery_user',
-		 'fk_payment_method', 'mobile']
+		 'fk_payment_method', 'mobile', "payment_method"]
 
 	def get_billing_address(self, obj):
 		return str(obj.billing_address.street)
@@ -258,15 +271,62 @@ class OrderListStoreSerializer(serializers.ModelSerializer):
 	def get_mobile(self, obj):
 		return obj.user.user.mobile
 
+	def get_payment_method(self, obj):
+		return obj.fk_payment_method.title
+
 
 
 class StoreWiseOrderListSerializer(serializers.ModelSerializer):
 	# billing_address = serializers.SerializerMethodField()
-	# mobile = serializers.SerializerMethodField()
+	ordered_stored_name = serializers.SerializerMethodField()
+	total_order_price = serializers.SerializerMethodField()
 	class Meta:
 		model = StoreWiseOrder
-		fields = '__all__'
+		fields = [
 
+			"id",
+            "shipping_total_price",
+            "order_total",
+            "order_id",
+            "is_delivered",
+            "is_paid",
+            "created_at",
+            "updated_at",
+            "order_latitude",
+            "order_longitude",
+            "cart",
+            "fk_auth_user",
+            "fk_ordered_store",
+            "fk_delivery_user",
+            "fk_payment_method",
+            "fk_ordered_by_store_id",
+            "ordered_stored_name",
+            "total_order_price"
+            
+
+		]
+
+	def get_ordered_stored_name(self, obj):
+		abc = ""
+		abc = Store.objects.filter(pk=obj.fk_ordered_by_store_id).first()
+	
+		if abc:
+			return abc.title
+
+		return abc
+
+	def get_total_order_price(self, obj):
+		total_price = ""
+		total_price = Order.objects.filter(order_id=obj.order_id).first()
+		if total_price:
+			total_price = total_price.order_total
+		return total_price
+		# def get_ordered_by(self, obj):
+		# 	print(obj)
+		# 	ordered_by = ""
+		# 	if obj.fk_ordered_by_store_id:
+		# 		ordered_by = Store.objects.filter(pk=obj.fk_ordered_by_store_id)
+		# 	return ordered_by
 	# def get_billing_address(self, obj):
 	# 	return str(obj.billing_address.street)
 
@@ -278,6 +338,16 @@ class UpdateOrderStatusSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Order
 		fields = '__all__'
+
+
+
+class UpdateStoreWiseOrderStatusSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = StoreWiseOrder
+		fields = '__all__'
+
+
+
 
 class CartOrderListStoreSerializer(serializers.ModelSerializer):
 	# cart_orders = serializers.SerializerMethodField()
