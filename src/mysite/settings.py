@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'prescription',
     'wsc',
     'crispy_forms',
+    'slider',
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',

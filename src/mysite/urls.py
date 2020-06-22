@@ -203,6 +203,17 @@ from membership.views import (
         UserMembershipRetrieveUpdateDestroyApiView,
         UserMembershipRetrieveApiView
 )
+
+from slider.views import(
+        SliderListAPIView
+    )
+
+
+urlpatterns += [
+    re_path(r'^api/sliders/$', SliderListAPIView.as_view(), name='sliders_api'),
+    ]
+
+
 urlpatterns += [
     re_path(r'^api/membership-type/$', MembershipTypeListCreateApiView.as_view(), name='api-membership-type'),
     re_path(r'^api/membership-type/(?P<pk>\d+)/$', MembershipTypeRetrieveUpdateDestroyApiView.as_view(), name='api-membership-type'),
