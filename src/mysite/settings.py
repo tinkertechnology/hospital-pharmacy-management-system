@@ -218,6 +218,13 @@ JWT_AUTH = {
 }
 
 
+# SPARROW_SMS_TOKEN = 'dakZyk9lTu56uck0uTZx'
+# SMS_FROM = 'pharmacy'
+
+
+
+
+
 
 REST_REGISTRATION = {
     'SEND_RESET_PASSWORD_LINK_SERIALIZER_USE_EMAIL': True,

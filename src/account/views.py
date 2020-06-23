@@ -165,7 +165,7 @@ class ValidatePhoneSendOTP(APIView):
 					if old.exists():
 						old = old.first()
 						count = old.count
-						if count > 10:
+						if count > 5:
 							return Response({"Fail": "OTP sent limit, Please contact support"}, status.HTTP_400_BAD_REQUEST)
 						old.count = count + 1
 						old.otp = key
@@ -176,26 +176,26 @@ class ValidatePhoneSendOTP(APIView):
 							mobile = mobile,
 							otp = key,
 							)
-					# r = requests.post(
-					# "http://api.sparrowsms.com/v2/sms/",
-					# data={'token' : 'ZkikH0ihw90CzvR2yAOn',
-					# 'from'  : 'Demo',
-					# 'to'    : '1234567890',
-					# 'text'  : 'your mobile verification code is  ' + str(key)})
+					r = requests.post(
+					"http://api.sparrowsms.com/v2/sms/",
+					data={'token' : settings.SPARROW_SMS_TOKEN,
+					'from'  : settings.SMS_FROM,
+					'to'    : mobile,
+					'text'  : 'your mobile verification code is  ' + str(key)})
 
-					# status_code = r.status_code
-					# response = r.text
-					# response_json = r.json()
-					# print(status_code)
-					# print(response_json)
-					send_mail(
-					'Thank you for your registration',
-					'Your registered mobile nuymber is '+mobile+' .Use this OTP code for Verification. '+ str(key),
-					settings.EMAIL_HOST_USER,
-					['sunilparajuli2002@gmail.com'],
-					#['gehendras52@gmail.com'],
-					fail_silently=False,
-					)
+					status_code = r.status_code
+					response = r.text
+					response_json = r.json()
+					print(status_code)
+					print(response_json)
+					# send_mail(
+					# 'Thank you for your registration',
+					# 'Your registered mobile nuymber is '+mobile+' .Use this OTP code for Verification. '+ str(key),
+					# settings.EMAIL_HOST_USER,
+					# ['sunilparajuli2002@gmail.com'],
+					# #['gehendras52@gmail.com'],
+					# fail_silently=False,
+					# )
 					return Response({
 							'status': True,
 							'detail': 'OTP sent to ' + mobile
@@ -212,7 +212,7 @@ class ValidatePhoneSendOTP(APIView):
 
 def send_otp(mobile):
 	if mobile:
-		key = random.randint(9999, 999999)
+		key = random.randint(111111, 999999)
 		print(key)
 		return key
 	else :
@@ -328,18 +328,29 @@ class ResetPasswordAPIView(APIView):
 				# }
 				# serializer = UpdateUserSerializer(data = temp_data)
 				# serializer.is_valid(raise_exception = True)
-				print(old.mobile)
+				# print(old.mobile)
 				old.password = make_password(new_password)
 				old.save()
+				r = requests.post(
+				"http://api.sparrowsms.com/v2/sms/",
+				data={'token' : settings.SPARROW_SMS_TOKEN,
+				'from'  : settings.SMS_FROM,
+				'to'    : mobile,
+				'text'  : 'your new password is  '+new_password
 
-				send_mail(
-					'A reset password has been sent',
-					'A reset password has been sent to your mobile number '+ mobile + '. Use this '+new_password+ ' code for login',
-					settings.EMAIL_HOST_USER,
-					['sunilparajuli2002@gmail.com'],
-					#['gehendras52@gmail.com'],
-					fail_silently=False,
-					)
+				status_code = r.status_code
+				response = r.text
+				response_json = r.json()
+				print(status_code)
+				print(response_json)
+				# send_mail(
+				# 	'A reset password has been sent',
+				# 	'A reset password has been sent to your mobile number '+ mobile + '. Use this '+new_password+ ' code for login',
+				# 	settings.EMAIL_HOST_USER,
+				# 	['sunilparajuli2002@gmail.com'],
+				# 	#['gehendras52@gmail.com'],
+				# 	fail_silently=False,
+				# 	)
 
 				# user = serializer.save()
 				return Response({
