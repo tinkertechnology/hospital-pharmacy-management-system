@@ -10,6 +10,7 @@ from products.models import Product
 
 from payment.models import PaymentMethod
 from store.models import Store
+from routes.models import Route
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -113,6 +114,7 @@ class Order(models.Model):
 	order_latitude = models.CharField(max_length=200, null=True, blank=True)
 	order_longitude = models.CharField(max_length=200, null=True, blank=True)
 
+
 	def __str__(self):
 		return "Order_id: %s, Cart_id: %s"%(self.id, self.cart.id)
 
@@ -165,6 +167,7 @@ class StoreWiseOrder(models.Model):
 	updated_at = models.DateTimeField(blank=True, null=True)
 	order_latitude = models.CharField(max_length=200, null=True, blank=True)
 	order_longitude = models.CharField(max_length=200, null=True, blank=True)
+	fk_route = models.ForeignKey(Route, related_name='fk_route_storewiseorder', on_delete=models.CASCADE, null=True, blank=True)
 
 
 

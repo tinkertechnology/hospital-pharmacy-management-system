@@ -56,8 +56,14 @@ INSTALLED_APPS = [
     'membership',
     'store',
     'payment',
+
+    'payment_esewa',
+    'routes',
+
+
     'prescription',
     'wsc',
+
     'crispy_forms',
     'slider',
     'django_filters',

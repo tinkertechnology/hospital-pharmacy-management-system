@@ -1,0 +1,55 @@
+<body>
+    <form action="{{action}}" method="POST">
+        Confirm Your amount by esewa: {{amt}} <br>
+        Cannot be undone after <br>
+    <input value="{{tAmt}}" name="tAmt" type="hidden">
+
+    <input value="{{amt}}" name="amt" type="hidden">
+    <input value="{{txAmt}}" name="txAmt" type="hidden">
+    <input value="{{psc}}" name="psc" type="hidden">
+    <input value="{{pdc}}" name="pdc" type="hidden">
+    <input value="{{scd}}" name="scd" type="hidden">
+    <input value="{{pid}}" name="pid" type="hidden">
+    
+    <input value="{{su}}" type="hidden" name="su">
+    <input value="{{fu}}" type="hidden" name="fu">
+    
+    <input value="Submit" type="submit">
+    </form>
+</body>
+
+{% comment %}
+<body>
+    <form action="https://uat.esewa.com.np/epay/main" method="POST">
+    <input value="100" name="tAmt" type="hidden">
+    <input value="90" name="amt" type="hidden">
+    <input value="5" name="txAmt" type="hidden">
+    <input value="2" name="psc" type="hidden">
+    <input value="3" name="pdc" type="hidden">
+    <input value="epay_payment" name="scd" type="hidden">
+    <input value="ee2c3ca1-696b-4cc5-a6be-2c40d929d453-hawa-hawa-hawa" name="pid" type="hidden">
+    <input value="http://google.com" type="hidden" name="su">
+    <input value="http://google.com?q=fu" type="hidden" name="fu">
+    <input value="Submit" type="submit">
+    </form>
+</body>
+
+<body>
+    <form action="https://uat.esewa.com.np/epay/main" method="POST">
+    <input value="10" name="tAmt" type="hidden">
+    <input value="9" name="amt" type="hidden">
+    <input value="0.5" name="txAmt" type="hidden">
+    <input value="0.2" name="psc" type="hidden">
+    <input value="0.3" name="pdc" type="hidden">
+    <input value="epay_payment" name="scd" type="hidden">
+    <input value="ee2c3ca1-696b-4cc5-a6be-2c40d929d453-order1" name="pid" type="hidden">
+    
+    <input value="localhost:8000/payment/esewa?q=fu" type="hidden" name="su">
+    <input value="localhost:8000/payment/esewa?q=fu" type="hidden" name="fu">
+    
+    <input value="http://merchant.com.np/page/esewa_payment_success?q=su" type="hidden" name="su1">
+    <input value="http://merchant.com.np/page/esewa_payment_failed?q=fu" type="hidden" name="fu1">
+    <input value="Submit" type="submit">
+    </form>
+</body>
+{% endcomment %}

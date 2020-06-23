@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
-
+from routes.models import Route
 User = get_user_model()
 
 class StoreType(models.Model):
@@ -20,3 +20,9 @@ class Store(models.Model):
 
     def __str__(self):
     	return self.title
+
+class StoreUser(models.Model):
+    fk_store = models.ForeignKey(Store, null=True, blank=True, on_delete=models.CASCADE)
+    fk_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
+    #fk_store_usertype #Delivery/Manager
+    fk_route = models.ForeignKey(Route, on_delete=models.CASCADE, blank=True)
