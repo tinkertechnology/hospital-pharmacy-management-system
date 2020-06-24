@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
-
+from django.db.models.expressions import RawSQL
 
 User = get_user_model()
 
@@ -59,6 +59,7 @@ def get_nearyby_routes(latitude, longitude, store_id=None, max_distance=None):
     return qs
 
 def get_nearest_route(lat,lng,store_id=None, max_dis=None):
+    print('get_nearyby_routes')
     qs_route_details = get_nearyby_routes(lat, lng, store_id, max_dis)
     route_details = qs_route_details.first()
     if route_details is None:

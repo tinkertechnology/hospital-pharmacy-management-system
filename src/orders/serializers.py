@@ -13,7 +13,7 @@ from store.serializers import StoreWiseOrderSerializer, StoreSerializer
 import pprint
 from django.contrib.auth import get_user_model
 from django.conf import settings
-
+from routes.models import get_nearest_route
 User = get_user_model()
 
 # parse order token
@@ -211,10 +211,7 @@ class CartOrderSerializer(serializers.ModelSerializer):
 		cart_items = CartItem.objects.filter(cart_id=cart.id)
 		ordered_by = Store.objects.filter(fk_user_id=user.id).first()
 		ordered_by_store = ordered_by.id
-		print(ordered_by_store)
 
-
-		print(cart_items)
 		# print('asdasdasdasd')
 		for variation in cart_items:
 			print(variation)
@@ -243,10 +240,11 @@ class CartOrderSerializer(serializers.ModelSerializer):
 		for store_wise_order in store_wise_orders:
 			sw_cart_items =  CartItem.objects.filter(fk_storewise_order_id=store_wise_order.id) #store_wise_order.fk_storewise_order_id
 			store_wise_order.order_total = 0
+
 			store_wise_order.fk_route = get_nearest_route(
-				store_wise_order.latitude,
-				store_wise_order.lontitude,
-				store_wise_order.fk_ordered_store,
+				store_wise_order.order_latitude,
+				store_wise_order.order_longitude,
+				store_wise_order.fk_ordered_store.id,
 				None
 			)
 			for cart_item in sw_cart_items:
