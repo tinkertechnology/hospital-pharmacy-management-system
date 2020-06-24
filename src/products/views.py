@@ -174,6 +174,7 @@ class ProductListAPIView(generics.ListAPIView):
 		user_store = Store.objects.filter(fk_user_id=self.request.user.id).first() #
 		
 		if user_store is not None:
+			print(1)
 			if self.request.GET.get('view_my_products', None):
 				queryset = Product.objects.filter(fk_store_id=user_store.id)
 				return queryset
@@ -228,15 +229,15 @@ class CreateProductAPIView(APIView):
 	# authentication_classes = [SessionAuthentication]
 	permission_classes = [IsAuthenticated]
 	def post(self, request, *args, **kwargs):
-		common_product = request.data.get('common_product', False)
+		product_title = request.data.get('title', False)
 		description = request.data.get('description', False)
 		price = request.data.get('price', False)
 		categories = request.data.get('categories', False)
 		product_id = request.data.get('product_id', None)
 		print(product_id)
 
-		if common_product is None:
-			return Response({"Fail": "common name must be provided"}, status.HTTP_400_BAD_REQUEST)
+		if product_title is None:
+			return Response({"Fail": "Product name must be provided"}, status.HTTP_400_BAD_REQUEST)
 		if description is None:
 			return Response({"Fail": "product description must be provided"}, status.HTTP_400_BAD_REQUEST)
 		if price is None:
@@ -245,32 +246,39 @@ class CreateProductAPIView(APIView):
 		# 	return Response({"Fail": "Select product categories"}, status.HTTP_400_BAD_REQUEST)
 
 		else:
-			common = ProductCommon.objects.filter(pk=common_product).first()
+			# common = ProductCommon.objects.filter(pk=common_product).first()
 			if product_id:
-				print(product_id)
-				instance = Product.objects.filter(pk=product_id).first()
+				# print(product_id)
+				product = Product.objects.filter(pk=product_id).first()
 				variation = Variation.objects.filter(product_id=product_id).first()
+				print(price)
 				variation.price = price
 				variation.save()
 			else:
-				instance = Product()
-			if common:
+				product = Product()
+				common_product = ProductCommon()
+
+			# if common:
 				fk_store = Store.objects.filter(fk_user_id=request.user.id).first()
 				if not fk_store:
 					return Response({"Fail": "Permission denied"}, status.HTTP_400_BAD_REQUEST)
 
-				instance.fk_common_product_id = common_product
-				instance.description = description
-				instance.price = price
-				instance.title = common.title
-				instance.fk_store_id = fk_store.id
-				instance.save()
+				common_product.title = product_title
+				common_product.save()
+
+				product.fk_common_product_id = common_product.id
+				product.description = description
+				product.price = price
+				product.title = common_product.title
+				product.fk_store_id = fk_store.id
+				product.save()
+				
+
 				return Response({
 							'status': True,
 							'detail': 'Product Saved successfully'
 							})
-			else:
-				return Response({"Fail": "You must select one common name "}, status.HTTP_400_BAD_REQUEST)
+			
 
 
 

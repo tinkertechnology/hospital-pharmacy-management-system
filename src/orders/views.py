@@ -20,11 +20,14 @@ from .forms import AddressForm, UserAddressForm, UserOrderForm
 from .mixins import CartOrderMixin, LoginRequiredMixin
 from .models import UserAddress, UserCheckout, Order, Quotation
 from .permissions import IsOwnerAndAuth
-from .serializers import UserAddressSerializer, OrderSerializer, OrderDetailSerializer, QuotationSerializer, CartOrderSerializer, OrderListStoreSerializer, CartOrderListStoreSerializer, CartItemSerializer, UpdateOrderStatusSerializer
+from .serializers import UserAddressSerializer, OrderSerializer, OrderDetailSerializer, QuotationSerializer, CartOrderSerializer, \
+		OrderListStoreSerializer, CartOrderListStoreSerializer, CartItemSerializer, UpdateOrderStatusSerializer, \
+		StoreWiseOrderListSerializer, UpdateStoreWiseOrderStatusSerializer
 import requests
 from carts.models import Cart, CartItem
 from store.models import Store
-from products.models import Product
+from orders.models import StoreWiseOrder
+from products.models import Product, Variation
 from django.conf import settings
 from django.db.models import Q
 User = get_user_model()
@@ -214,9 +217,10 @@ class OrderLists(ListAPIView):
 
 	def get_queryset(self):
 		
-		non_store_user = Store.objects.filter(fk_user_id=self.request.user.id).first()
-		print(non_store_user)
-		if non_store_user is None:
+		store_user = Store.objects.filter(fk_user_id=self.request.user.id).first()
+		print(store_user)
+		print(self.request.user.id)
+		if not store_user:
 			# user_checkouts = UserCheckout.objects.filter(user_id=self.request.user.id).id
 			# print(user_checkouts.__dict__)
 			orders= Order.objects.filter(fk_auth_user_id=self.request.user.id)
@@ -229,6 +233,38 @@ class OrderLists(ListAPIView):
 					orders = []
 				else:
 					orders = orders.filter(fk_ordered_store=store)
+		
+		return orders
+
+
+
+class StoreWiseOrderLists(ListAPIView):
+	# queryset = Order.objects.all()
+	permission_classes = [permissions.IsAuthenticated]
+	serializer_class = StoreWiseOrderListSerializer
+
+	def get_queryset(self):
+		user=self.request.user
+		
+		supply_store_user = Store.objects.filter(fk_user_id=self.request.user.id).first()
+		
+		
+		if supply_store_user is  None:
+			
+			# user_checkouts = UserCheckout.objects.filter(user_id=self.request.user.id).id
+			# print(user_checkouts.__dict__)
+			orders= Order.objects.filter(fk_auth_user_id=self.request.user.id)
+		else:
+			
+			orders = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id)
+
+			# if settings.CAN_STORE_SEE_ALL_ORDERS==False:
+			# 	user_id = self.request.user.id
+			# 	store = Store.objects.filter(fk_user_id=user_id).first()
+			# 	if store is None:
+			# 		orders = []
+			# 	else:
+			# 		orders = orders.filter(fk_ordered_store=store)
 		
 		return orders
 
@@ -296,6 +332,99 @@ class CartOrderLists(ListAPIView):
 		# print(orders.__dict__)
 		# return orders
 
+
+
+
+##Storewise_CART_ORDER_LIST 
+class StoreWiseCartOrderLists(ListAPIView):
+	def get(self, request):
+
+		order_id = request.GET.get('order_id', False) #fk_storewise_order_id passed here
+		print('aaaaaaaaaaaa')
+		print(order_id)
+		cart_items = CartItem.objects.filter(fk_storewise_order_id=order_id)
+		# cart = Cart.objects.filter(id=cart_items)
+		orders_list = []
+		# total_item = {len(cart_items)}
+		items = CartItemSerializer(cart_items, many=True)
+		# print(items)
+		cart = Cart()
+		# print(cart.items.all())
+		data = {
+		# "token": self.token,
+		"cart" : cart.id,
+		"total": cart.total,
+		"subtotal": cart.subtotal,
+		"tax_total": cart.tax_total,
+		"count": cart_items.count(),
+		"items": items.data,
+		# "product_id": items.id,
+		}
+		return Response(data)
+
+		# # print(total_item)
+		# for item in cart_items:
+
+		# 	data = {
+		# 	"line_item_total": item.line_item_total,
+		# 	"id": item.id,
+		# 	"product_title": item.item.product.title,
+		# 	"quantity": item.quantity,
+		# 	"price": item.item.product.price,
+		# 	"fk_storewise_order_id": item.fk_storewise_order_id
+
+		# 	}
+		# # 	print(a)
+		# # 	b = a.update(a)
+		# # 	print(b)
+
+		# # return Response(b)
+		# 	orders_list.append(data)
+		# 	print(orders_list)
+
+		# return Response(orders_list)
+
+	def get_queryset(self):
+		return 
+# 		alist = []
+# for x in range(100):
+#     adict = {1:x}
+#     alist.append(adict)
+# print(alist)
+		# print(cart)
+
+		# self.cart = cart
+		# self.update_cart()
+		#token = self.create_token(cart.id)
+		# items = CartItemSerializer(cart.cartitem_set.all(), many=True)
+		# a = {}
+		# for item in cart_items:
+		# 	items = CartItemSerializer(item.cartitem_set.all(), many=True)
+		# 	data = {
+		# 	# "token": self.token,
+		# 	"cart" : item.id,
+		# 	"total": item.total,
+		# 	"subtotal": item.subtotal,
+		# 	"tax_total": item.tax_total,
+		# 	"count": item.items.count(),
+		# 	"items": items.data,
+		# 	# "product_id": items.id,
+		# 	}
+		# 	a = a.update(data)
+		# return Response(a)
+
+
+		# print(cart.items)
+		# return Response(len(data))
+
+	# queryset = Order.objects.all()
+
+		# user_id = self.request.user.id
+		# cart_id = 22
+		# cart_items = CartItem.objects.all()
+		# orders = Order.objects.filter(status=1, fk_ordered_store=1)
+		# print(orders.__dict__)
+		# return orders
 
 class UserAddressCreateView(CreateView):
 	form_class = UserAddressForm
@@ -422,3 +551,59 @@ class UpdateOrderStatusApiView(CreateAPIView):
 			Response({"Fail": "Error updating order status"}, status.HTTP_400_BAD_REQUEST)
 
 
+
+class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
+	# permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+	queryset=Order.objects.all()
+	serializer_class = UpdateStoreWiseOrderStatusSerializer
+
+	def post(self, request):
+		import pprint
+		pprint.pprint(request.POST)
+		storewiseorder_id = request.POST.get('order_id') ### id of StoreWiseOrder model's.
+		status = request.POST.get('status')
+		storewiseorder = StoreWiseOrder.objects.filter(pk=storewiseorder_id).first()
+		if storewiseorder:
+			# for storewise_order in storewiseorder:
+			if status == "paid":
+				storewiseorder.is_paid = True;
+			if status == "delivered":
+				storewiseorder.is_delivered = True;
+			storewiseorder.save()
+
+		#if settings.IS_MULTI_VENDOR:
+			self.addProductinStore(storewiseorder)
+
+			return Response({
+							'status': True,
+							'detail': 'Order is marked as '+status
+							})
+		else:
+			Response({"Fail": "Error updating order status"}, status.HTTP_400_BAD_REQUEST)
+
+
+	def addProductinStore(self,storewiseorder):
+		buyer_store_id = storewiseorder.fk_ordered_by_store_id
+		cartitems = CartItem.objects.filter(fk_storewise_order_id=storewiseorder.id)
+		for cartitem in cartitems:
+			seller_product = cartitem.item.product
+			common_product = seller_product.fk_common_product
+			buyer_product = Product.objects.filter(fk_store_id = buyer_store_id).filter(fk_common_product=common_product).first()
+
+			if buyer_product is None:
+				dict_buyer_product = seller_product.__dict__
+				import pprint
+				pprint.pprint(dict_buyer_product)
+				dict_buyer_product.pop('id')
+				dict_buyer_product.pop('_state')
+				dict_buyer_product['fk_store_id'] = buyer_store_id
+				buyer_product = Product.objects.create(**dict_buyer_product)
+			buyer_variation = Variation.objects.filter(product_id=buyer_product.id).first()
+			if buyer_variation.inventory is None:
+				buyer_variation.inventory=0
+			buyer_variation.inventory += cartitem.quantity
+			buyer_variation.save()
+
+
+
+				

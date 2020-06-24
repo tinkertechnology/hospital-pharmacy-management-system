@@ -206,7 +206,7 @@ class ValidatePhoneSendOTP(APIView):
 						'detail': 'error sending OTP'
 						})
 		else:
-			Response({"Fail": "Please enter phone number to continue"}, status.HTTP_400_BAD_REQUEST)
+			return Response({"Fail": "Please enter phone number to continue"}, status.HTTP_400_BAD_REQUEST)
 
 
 

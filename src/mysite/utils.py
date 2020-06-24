@@ -7,20 +7,19 @@ from wsc.models import WaterSupplyCompany
 
 def jwt_response_payload_handler(token, user, request, *args, **kwargs):
 
-	user_type=""
+	user_type=None
+	is_depo = None
+	is_supply_company = None
+
 	user_type1 = UserType.objects.filter(user=user.id).first()
 
-	is_store =  Store.objects.filter(fk_user_id=user.id).filter(fk_store_type_id=2).first()
-	# is_store = store.fk_store_type
-
-	is_wsc = ""
-	is_wsc = Store.objects.filter(fk_user_id=user.id).filter(fk_store_type_id=1).first()
-	if is_wsc is not None:
-		is_wsc = True
-	is_store = ""
-	if is_store is not None:
-		print('jpt')
-		is_store = True
+	depo =  Store.objects.filter(fk_user_id=user.id).filter(fk_store_type_id=2).first()
+	is_supply_company = Store.objects.filter(fk_user_id=user.id).filter(fk_store_type_id=1).first()
+	if is_supply_company is not None:
+		is_supply_company = True
+	
+	if depo is not None:
+		is_depo = True
 	# print(user.__dict__)
 	# if 'usertype' in user.__dict__ :
 	if user_type1:
@@ -37,8 +36,8 @@ def jwt_response_payload_handler(token, user, request, *args, **kwargs):
 	
 	data = {
 		"user_type": user_type,
-		"is_store": is_store,
-		"is_supply_company" : is_wsc,
+		"is_depo": is_depo,
+		"is_supply_company" : is_supply_company,
 		# "user_description": user.usertype,
 		"token": token,
 		"user": user.id,

@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'wsc',
 
     'crispy_forms',
+    'slider',
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
@@ -158,7 +159,7 @@ USE_TZ = True
 
 CAN_STORE_SEE_ALL_ORDERS = False
 
-IS_MULTI_VENDOR=True
+IS_MULTI_VENDOR=False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/

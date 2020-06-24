@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from orders.models import UserAddress, UserCheckout
 from products.models import Variation
-
+from store.serializers import StoreSerializer
 
 from .models import CartItem, Cart
 from products.models import Product,ProductImage
@@ -119,6 +119,9 @@ class CartItemSerializer(serializers.ModelSerializer):
 	product = serializers.SerializerMethodField()
 	price = serializers.SerializerMethodField()
 	image = serializers.SerializerMethodField()
+	fk_store_title = serializers.SerializerMethodField() #StoreSerializer(read_only=True)
+
+
 	class Meta:
 		model = CartItem
 		fields = [
@@ -131,6 +134,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 			"product",
 			"quantity",
 			"line_item_total",
+			"fk_store_title"
 		]
 
 	def get_item(self,obj):
@@ -144,6 +148,10 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 	def get_product(self, obj):
 		return obj.item.product.id
+
+	def get_fk_store_title(self, obj):
+		#return  StoreSerializer(obj.item.product.fk_store)
+		return obj.item.product.fk_store.title 
 
 	def get_price(self, obj):
 		print(obj.item.sale_price)
