@@ -25,7 +25,7 @@ from .serializers import UserAddressSerializer, OrderSerializer, OrderDetailSeri
 		StoreWiseOrderListSerializer, UpdateStoreWiseOrderStatusSerializer
 import requests
 from carts.models import Cart, CartItem
-from store.models import Store
+from store.models import Store, StoreUser
 from orders.models import StoreWiseOrder
 from products.models import Product, Variation
 from django.conf import settings
@@ -244,27 +244,21 @@ class StoreWiseOrderLists(ListAPIView):
 	serializer_class = StoreWiseOrderListSerializer
 
 	def get_queryset(self):
+		print(1)
 		user=self.request.user
-		
+		orders= Order.objects.filter(fk_auth_user_id=self.request.user.id)
 		supply_store_user = Store.objects.filter(fk_user_id=self.request.user.id).first()
+		delivery_user = StoreUser.objects.filter(fk_user_id=user.id).filter(fk_store_usertypes_id=2).first()
 		
-		
-		if supply_store_user is  None:
-			
-			# user_checkouts = UserCheckout.objects.filter(user_id=self.request.user.id).id
-			# print(user_checkouts.__dict__)
-			orders= Order.objects.filter(fk_auth_user_id=self.request.user.id)
-		else:
+		if supply_store_user is not  None:
 			
 			orders = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id)
+			
+		
+		if delivery_user is not None:
+			orders = StoreWiseOrder.objects.filter(fk_route_id=delivery_user.fk_route_id)
 
-			# if settings.CAN_STORE_SEE_ALL_ORDERS==False:
-			# 	user_id = self.request.user.id
-			# 	store = Store.objects.filter(fk_user_id=user_id).first()
-			# 	if store is None:
-			# 		orders = []
-			# 	else:
-			# 		orders = orders.filter(fk_ordered_store=store)
+
 		
 		return orders
 
@@ -340,8 +334,6 @@ class StoreWiseCartOrderLists(ListAPIView):
 	def get(self, request):
 
 		order_id = request.GET.get('order_id', False) #fk_storewise_order_id passed here
-		print('aaaaaaaaaaaa')
-		print(order_id)
 		cart_items = CartItem.objects.filter(fk_storewise_order_id=order_id)
 		# cart = Cart.objects.filter(id=cart_items)
 		orders_list = []
