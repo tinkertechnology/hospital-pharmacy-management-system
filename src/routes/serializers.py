@@ -3,9 +3,15 @@ from rest_framework import serializers
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from .models import PaymentMethod
+from .models import Route, RouteDetail
 
-class PaymentMethodSerializer(serializers.ModelSerializer):
+
+class RouteSerializer(serializers.ModelSerializer):
 	class Meta:
-		model = PaymentMethod
+		model = Route
+		fields= '__all__'
+
+class RouteDetailSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = RouteDetail
 		fields= '__all__'

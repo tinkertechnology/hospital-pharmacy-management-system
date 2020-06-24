@@ -243,6 +243,12 @@ class CartOrderSerializer(serializers.ModelSerializer):
 		for store_wise_order in store_wise_orders:
 			sw_cart_items =  CartItem.objects.filter(fk_storewise_order_id=store_wise_order.id) #store_wise_order.fk_storewise_order_id
 			store_wise_order.order_total = 0
+			store_wise_order.fk_route = get_nearest_route(
+				store_wise_order.latitude,
+				store_wise_order.lontitude,
+				store_wise_order.fk_ordered_store,
+				None
+			)
 			for cart_item in sw_cart_items:
 				store_wise_order.order_total+=cart_item.line_item_total
 
