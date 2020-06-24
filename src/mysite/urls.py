@@ -228,6 +228,18 @@ urlpatterns += [
     path('payment/payment-esewa-app-request', payment_esewa_views.payment_esewa_app_request)
 ]
 
+# routes
+from routes import views as routes_views
+urlpatterns += [
+    re_path(r'^api/route/$', routes_views.RouteListCreateApiView.as_view(), name='api-route'),
+    re_path(r'^api/route/(?P<pk>\d+)/$', routes_views.RouteRetrieveUpdateDestroyApiView.as_view(), name='api-route-retrieve'),
+
+    re_path(r'^api/routedetail/$', routes_views.RouteDetailListCreateApiView.as_view(), name='api-routedetail'),
+    re_path(r'^api/routedetail/(?P<pk>\d+)/$', routes_views.RouteDetailRetrieveUpdateDestroyApiView.as_view(), name='api-routedetail-retrieve'),
+]
+
+
+
 
 urlpatterns += [
  
