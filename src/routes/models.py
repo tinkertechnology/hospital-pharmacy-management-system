@@ -46,7 +46,8 @@ def get_nearyby_routes(latitude, longitude, store_id=None, max_distance=None):
         gcd_formula,
         ()
     )
-    qs = RouteDetail.objects.all() \
+    qs = Route.objects.all() \
+    .select_related() \
     .annotate(distance=distance_raw_sql)\
     .order_by('distance')
     if max_distance is not None:

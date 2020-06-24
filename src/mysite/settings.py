@@ -1,3 +1,6 @@
+# Project specific configuration
+#IS_MULTI_VENDOR = True
+
 """
 Django settings for mysite project.
 
@@ -159,7 +162,7 @@ USE_TZ = True
 
 CAN_STORE_SEE_ALL_ORDERS = False
 
-IS_MULTI_VENDOR=False
+IS_MULTI_VENDOR=True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
