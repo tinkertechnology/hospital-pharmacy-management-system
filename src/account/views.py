@@ -336,7 +336,7 @@ class ResetPasswordAPIView(APIView):
 				data={'token' : settings.SPARROW_SMS_TOKEN,
 				'from'  : settings.SMS_FROM,
 				'to'    : mobile,
-				'text'  : 'your new password is  '+new_password
+				'text'  : 'your new password is  '+new_password})
 
 				status_code = r.status_code
 				response = r.text
