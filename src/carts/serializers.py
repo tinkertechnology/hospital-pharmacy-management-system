@@ -150,8 +150,11 @@ class CartItemSerializer(serializers.ModelSerializer):
 		return obj.item.product.id
 
 	def get_fk_store_title(self, obj):
+		title=""
+		if obj.item.product.fk_store:
+			title = obj.item.product.fk_store.title 
 		#return  StoreSerializer(obj.item.product.fk_store)
-		return obj.item.product.fk_store.title 
+		return title
 
 	def get_price(self, obj):
 		print(obj.item.sale_price)

@@ -159,7 +159,7 @@ USE_TZ = True
 
 CAN_STORE_SEE_ALL_ORDERS = False
 
-IS_MULTI_VENDOR=True
+IS_MULTI_VENDOR=False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
@@ -225,7 +225,7 @@ JWT_AUTH = {
 
 
 # SPARROW_SMS_TOKEN = 'dakZyk9lTu56uck0uTZx'
-# SMS_FROM = 'pharmacy'
+# SMS_FROM = 'InfoSMS'
 
 
 

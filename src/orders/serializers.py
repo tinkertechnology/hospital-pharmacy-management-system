@@ -196,7 +196,7 @@ class CartOrderSerializer(serializers.ModelSerializer):
 		order.save()
 
 
-		# cart.active=0
+		cart.active=0
 		cart.save()
 		if settings.IS_MULTI_VENDOR:
 			self.saveStoreWiseOrder(order, user)
@@ -276,7 +276,10 @@ class OrderListStoreSerializer(serializers.ModelSerializer):
 		return obj.user.user.mobile
 
 	def get_payment_method(self, obj):
-		return obj.fk_payment_method.title
+		title=""
+		if obj.fk_payment_method:
+			title = obj.fk_payment_method.title		
+		return title
 
 
 

@@ -21,7 +21,7 @@ from rest_framework.views import APIView
 from .filters import ProductFilter
 from .forms import VariationInventoryFormSet, ProductFilterForm
 from .mixins import StaffRequiredMixin
-from .models import Product, Variation, Category, ProductFeatured, Company, Brand, GenericName, ProductUnit, ProductCommon
+from .models import Product, Variation, Category, ProductFeatured, Company, Brand, GenericName, ProductUnit, ProductCommon, ProductImage
 from wsc.models import WaterSupplyCompany
 from store.models import Store
 from .pagination import ProductPagination, CategoryPagination, WSCPagination
@@ -229,12 +229,14 @@ class CreateProductAPIView(APIView):
 	# authentication_classes = [SessionAuthentication]
 	permission_classes = [IsAuthenticated]
 	def post(self, request, *args, **kwargs):
+		print(request.POST)
 		product_title = request.data.get('title', False)
 		description = request.data.get('description', False)
 		price = request.data.get('price', False)
 		categories = request.data.get('categories', False)
 		product_id = request.data.get('product_id', None)
-		print(product_id)
+		image  = request.FILES['file']
+		
 
 		if product_title is None:
 			return Response({"Fail": "Product name must be provided"}, status.HTTP_400_BAD_REQUEST)
@@ -242,6 +244,10 @@ class CreateProductAPIView(APIView):
 			return Response({"Fail": "product description must be provided"}, status.HTTP_400_BAD_REQUEST)
 		if price is None:
 			return Response({"Fail": "product price must be provided"}, status.HTTP_400_BAD_REQUEST)
+
+		if image is None:
+			return Response({"Fail": "Select product image"}, status.HTTP_400_BAD_REQUEST)
+
 		# if categories is None:
 		# 	return Response({"Fail": "Select product categories"}, status.HTTP_400_BAD_REQUEST)
 
@@ -272,6 +278,11 @@ class CreateProductAPIView(APIView):
 				product.title = common_product.title
 				product.fk_store_id = fk_store.id
 				product.save()
+
+				product_image = ProductImage()
+				product_image.product = product
+				product_image.image = image
+				product_image.save()
 				
 
 				return Response({
