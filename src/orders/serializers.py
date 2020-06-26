@@ -195,9 +195,9 @@ class CartOrderSerializer(serializers.ModelSerializer):
 		print(order.__dict__)
 		order.save()
 
-
-		cart.active=0
+		cart.active=0 #(COMMENT TO DEBUG / and prevent MULTIPLE boring ORDER to add to cart)
 		cart.save()
+		print(settings.IS_MULTI_VENDOR)
 		if settings.IS_MULTI_VENDOR:
 			self.saveStoreWiseOrder(order, user)
 
@@ -210,7 +210,8 @@ class CartOrderSerializer(serializers.ModelSerializer):
 		cart_items = cart.items
 		cart_items = CartItem.objects.filter(cart_id=cart.id)
 		ordered_by = Store.objects.filter(fk_user_id=user.id).first()
-		ordered_by_store = ordered_by.id
+		#ordered_by_store = ordered_by.id
+		#print(ordered_by_store)
 
 		# print('asdasdasdasd')
 		for variation in cart_items:

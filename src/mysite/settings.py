@@ -1,3 +1,6 @@
+# Project specific configuration
+#IS_MULTI_VENDOR = True
+
 """
 Django settings for mysite project.
 
