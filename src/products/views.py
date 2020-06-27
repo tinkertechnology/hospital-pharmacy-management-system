@@ -235,8 +235,13 @@ class CreateProductAPIView(APIView):
 		price = request.data.get('price', False)
 		categories = request.data.get('categories', False)
 		product_id = request.data.get('product_id', None)
-		image  = request.FILES['file']
-		
+		image  = request.FILES.get('file', None)
+		print(image)
+		if product_id:
+			pass
+		else:
+			if image is None:
+				return Response({"Fail": "Select product image"}, status.HTTP_400_BAD_REQUEST)
 
 		if product_title is None:
 			return Response({"Fail": "Product name must be provided"}, status.HTTP_400_BAD_REQUEST)
@@ -245,51 +250,54 @@ class CreateProductAPIView(APIView):
 		if price is None:
 			return Response({"Fail": "product price must be provided"}, status.HTTP_400_BAD_REQUEST)
 
-		if image is None:
-			return Response({"Fail": "Select product image"}, status.HTTP_400_BAD_REQUEST)
+
 
 		# if categories is None:
 		# 	return Response({"Fail": "Select product categories"}, status.HTTP_400_BAD_REQUEST)
 
-		else:
 			# common = ProductCommon.objects.filter(pk=common_product).first()
-			if product_id:
-				# print(product_id)
-				product = Product.objects.filter(pk=product_id).first()
-				variation = Variation.objects.filter(product_id=product_id).first()
-				print(price)
-				variation.price = price
-				variation.save()
-			else:
-				product = Product()
-				common_product = ProductCommon()
+	
+		if product_id:
+			print(product_id)
+			product = Product.objects.filter(pk=product_id).first()
 
-			# if common:
-				fk_store = Store.objects.filter(fk_user_id=request.user.id).first()
-				if not fk_store:
-					return Response({"Fail": "Permission denied"}, status.HTTP_400_BAD_REQUEST)
+			variation = Variation.objects.filter(product_id=product_id).first()
+			common_product = ProductCommon.objects.filter(pk=product.fk_common_product_id).first()
+			print(price)
+			product_image = ProductImage.objects.filter(product_id=product.id).first()
+			variation.price = price
+			variation.save()
+		else:
+			print(3)
+			product = Product()
+			common_product = ProductCommon()
+			product_image = ProductImage()
 
-				common_product.title = product_title
-				common_product.save()
+		# if common:
+		fk_store = Store.objects.filter(fk_user_id=request.user.id).first()
+		if not fk_store:
+			return Response({"Fail": "Permission denied"}, status.HTTP_400_BAD_REQUEST)
 
-				product.fk_common_product_id = common_product.id
-				product.description = description
-				product.price = price
-				product.title = common_product.title
-				product.fk_store_id = fk_store.id
-				product.save()
+		common_product.title = product_title
+		common_product.save()
 
-				product_image = ProductImage()
-				product_image.product = product
-				product_image.image = image
-				product_image.save()
-				
+		product.fk_common_product_id = common_product.id
+		product.description = description
+		product.price = price
+		product.title = common_product.title
+		product.fk_store_id = fk_store.id
+		product.save()
 
-				return Response({
-							'status': True,
-							'detail': 'Product Saved successfully'
-							})
+		if image:
+			product_image.product = product
+			product_image.image = image
+			product_image.save()
 			
+
+		return Response({
+					'status': True,
+					'detail': 'Product Saved successfully'
+					})
 
 
 
