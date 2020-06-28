@@ -78,7 +78,8 @@ from orders.views import (
                     UpdateOrderStatusApiView,
                     UpdateStoreWiseOrderStatusApiView,
 
-                    StoreWiseOrderLists
+                    StoreWiseOrderLists,
+                    myStoreName
                     )
 
 from products.views import (
@@ -154,10 +155,13 @@ urlpatterns = [
 
 
     re_path(r'^api/store_orders/$', OrderLists.as_view(), name='orders_store'),
-    re_path(r'^api/storewise_orders/$', StoreWiseOrderLists.as_view(), name='storewise_orders_store'),
+    
 
     re_path(r'^api/orders_lists/$', CartOrderLists.as_view(), name='orders_lists'), ###uptech_
+
+    re_path(r'^api/storewise_orders/$', StoreWiseOrderLists.as_view(), name='storewise_orders_store'),
     re_path(r'^api/storewise_orders_lists/$', StoreWiseCartOrderLists.as_view(), name='storewise_orders_lists'),
+    re_path(r'^api/store_name/$', myStoreName.as_view(), name='store_name'),
 
     
 

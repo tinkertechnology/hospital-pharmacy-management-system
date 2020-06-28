@@ -288,6 +288,9 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
 	# billing_address = serializers.SerializerMethodField()
 	ordered_stored_name = serializers.SerializerMethodField()
 	total_order_price = serializers.SerializerMethodField()
+	customer_name = serializers.SerializerMethodField()
+	address = serializers.SerializerMethodField()
+
 	class Meta:
 		model = StoreWiseOrder
 		fields = [
@@ -309,7 +312,9 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
             "fk_payment_method",
             "fk_ordered_by_store_id",
             "ordered_stored_name",
-            "total_order_price"
+            "total_order_price",
+            "customer_name",
+            "address"
             
 
 		]
@@ -322,6 +327,21 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
 			return abc.title
 
 		return abc
+	def get_address(self, obj):
+		cutomer_address = ""
+		customer_address = UserAddress.objects.filter(user_id=obj.fk_auth_user_id).first()
+		if customer_address:
+			return str(customer_address.city + customer_address.street)
+		return cutomer_address
+
+	def get_customer_name(self, obj):
+
+		customer_name = ""
+		customer_name = User.objects.filter(pk=obj.fk_auth_user_id).first()
+		print(customer_name)
+		if customer_name:
+			return customer_name.username
+		return customer_name
 
 	def get_total_order_price(self, obj):
 		total_price = ""
