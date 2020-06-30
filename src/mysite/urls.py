@@ -30,6 +30,7 @@ from account.views import (
     logout_view,
     login_view,
     account_view,
+    privacy_policy,
     account_jpt,
 	must_authenticate_view,
     ValidatePhoneSendOTP,
@@ -78,7 +79,8 @@ from orders.views import (
                     UpdateOrderStatusApiView,
                     UpdateStoreWiseOrderStatusApiView,
 
-                    StoreWiseOrderLists
+                    StoreWiseOrderLists,
+                    myStoreName
                     )
 
 from products.views import (
@@ -154,10 +156,13 @@ urlpatterns = [
 
 
     re_path(r'^api/store_orders/$', OrderLists.as_view(), name='orders_store'),
-    re_path(r'^api/storewise_orders/$', StoreWiseOrderLists.as_view(), name='storewise_orders_store'),
+    
 
     re_path(r'^api/orders_lists/$', CartOrderLists.as_view(), name='orders_lists'), ###uptech_
+
+    re_path(r'^api/storewise_orders/$', StoreWiseOrderLists.as_view(), name='storewise_orders_store'),
     re_path(r'^api/storewise_orders_lists/$', StoreWiseCartOrderLists.as_view(), name='storewise_orders_lists'),
+    re_path(r'^api/store_name/$', myStoreName.as_view(), name='store_name'),
 
     
 
@@ -226,12 +231,14 @@ urlpatterns += [
 from store.views import (
         StoreListCreateApiView,
         StoreRetrieveUpdateDestroyApiView,
-        ListCompaniesApiView
+        ListCompaniesApiView,
+        DeliverUserList
 )
 urlpatterns += [
     re_path(r'^api/store/$', StoreListCreateApiView.as_view(), name='api-store'),
     re_path(r'^api/store/(?P<pk>\d+)/$', StoreRetrieveUpdateDestroyApiView.as_view(), name='api-store-retrieve'),
     re_path(r'^api/stores/$', ListCompaniesApiView.as_view(), name='api-stores-list'),
+    re_path(r'^api/delivery-users/$', DeliverUserList.as_view(), name='delivery-users-list'),
 ]
 
 # store api
@@ -319,6 +326,7 @@ urlpatterns += [
     path('blog/', include('blog.urls', 'blog')),
     path('login/', login_view, name="login"),
     path('logout/', logout_view, name="logout"),
+    path('privacy-policy/', privacy_policy, name="privacy_policy"),
 	path('must_authenticate/', must_authenticate_view, name="must_authenticate"),
     path('register/', registration_view, name="register"),
 

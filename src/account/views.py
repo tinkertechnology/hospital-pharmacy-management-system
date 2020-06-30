@@ -45,6 +45,9 @@ def logout_view(request):
 	logout(request)
 	return redirect('/')
 
+def privacy_policy(request):
+	return render(request, 'account/privacy.html')
+
 
 def login_view(request):
 	print('login')

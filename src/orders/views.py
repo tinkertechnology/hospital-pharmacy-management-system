@@ -257,9 +257,7 @@ class StoreWiseOrderLists(ListAPIView):
 		
 		if delivery_user is not None:
 			orders = StoreWiseOrder.objects.filter(fk_route_id=delivery_user.fk_route_id)
-
-
-		
+	
 		return orders
 
 class OrderHistoryLists(ListAPIView):
@@ -596,6 +594,16 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 			buyer_variation.inventory += cartitem.quantity
 			buyer_variation.save()
 
+
+
+class myStoreName(APIView):
+	def get(self, request, *args, **kwargs):
+		print(request.user.id)
+		store_name=""
+		get_store_name = Store.objects.filter(fk_user_id=request.user.id).first()
+		if get_store_name:
+			store_name = get_store_name.title
+		return Response(store_name)
 
 
 				
