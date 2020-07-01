@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .serializers import MembershipTypeSerializer, UserMembershipSerializer
-from .models import MembershipType, UserMembership
+from .serializers import MembershipTypeSerializer, UserMembershipSerializer, UserMembershipAutoOrderSerializer
+from .models import MembershipType, UserMembership, UserMembershipAutoOrder
 
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.generics import CreateAPIView, ListAPIView,ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
@@ -63,3 +63,11 @@ class UserMembershipRetrieveApiView(RetrieveAPIView):
         return obj
 
 # https://stackoverflow.com/questions/43859053/django-rest-framework-assertionerror-fix-your-url-conf-or-set-the-lookup-fi
+
+
+#http://localhost:8000/api/user-membership/
+class UserMembershipAutoOrderListCreateApiView(ListCreateAPIView):
+    serializer_class = UserMembershipAutoOrderSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        return UserMembershipAutoOrder.objects.all()

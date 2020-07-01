@@ -14,7 +14,10 @@ from products.models import Variation
 
 class CartItem(models.Model):
 	cart = models.ForeignKey("Cart", on_delete=models.CASCADE, blank=True)
-	fk_storewise_order = models.ForeignKey("orders.StoreWiseOrder", on_delete=models.CASCADE, blank=True, null=True)
+
+	# will be filled later
+	# after this cart item is added to storewiseorder table
+	fk_storewise_order = models.ForeignKey("orders.StoreWiseOrder", on_delete=models.CASCADE, blank=True, null=True) 
 	item = models.ForeignKey(Variation, on_delete=models.CASCADE)
 	quantity = models.PositiveIntegerField(default=1)
 	line_item_total = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
