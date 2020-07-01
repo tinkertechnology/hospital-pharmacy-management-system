@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .serializers import StoreSerializer, StoreUserTypeSerializer
+from .serializers import StoreSerializer, StoreUserTypeSerializer, StoreUserListSerializer
 from .models import Store, StoreUser
 
 from rest_framework.authentication import SessionAuthentication
@@ -81,7 +81,7 @@ class ListCompaniesApiView(ListAPIView):
         return companies
 
 
-class DeliverUserList(ListAPIView):
+class DeliverUserList1(ListAPIView):
     
     def get(self, request):
         store = Store.objects.get(fk_user_id=self.request.user.id)
@@ -100,6 +100,28 @@ class DeliverUserList(ListAPIView):
             "users": data
         }
         return Response(jzx)
+
+class StoreDeliverUserList(ListAPIView):
+    serializer_class = StoreUserListSerializer
+    def get_queryset(self, *args, **kwargs):
+
+        store = Store.objects.get(fk_user_id=self.request.user.id)
+        deliver_users = StoreUser.objects.filter(fk_store_id=store.id)
+        return deliver_users
+        # abc = []
+        # for jpt in deliver_users:
+        #     abc.append(jpt.fk_user_id)
+
+        
+        # users = User.objects.filter(id__in=abc)
+        # serializer = StoreUserTypeSerializer(users, many=True)
+        # # print(serializer)
+        # data = serializer.data[:]
+        # jzx = {
+        #     "total": users.count(),
+        #     "users": data
+        # }
+        # return Response(jzx)
         # user_id_list = []
         # # user_route_id = []
         # for delu in deliver_users:

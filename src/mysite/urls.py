@@ -232,13 +232,13 @@ from store.views import (
         StoreListCreateApiView,
         StoreRetrieveUpdateDestroyApiView,
         ListCompaniesApiView,
-        DeliverUserList
+        StoreDeliverUserList
 )
 urlpatterns += [
     re_path(r'^api/store/$', StoreListCreateApiView.as_view(), name='api-store'),
     re_path(r'^api/store/(?P<pk>\d+)/$', StoreRetrieveUpdateDestroyApiView.as_view(), name='api-store-retrieve'),
     re_path(r'^api/stores/$', ListCompaniesApiView.as_view(), name='api-stores-list'),
-    re_path(r'^api/delivery-users/$', DeliverUserList.as_view(), name='delivery-users-list'),
+    re_path(r'^api/store-delivery-users-list/$', StoreDeliverUserList.as_view(), name='delivery-users-list'),
 ]
 
 # store api
