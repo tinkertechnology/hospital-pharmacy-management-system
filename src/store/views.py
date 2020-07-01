@@ -8,6 +8,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
+from rest_framework.response import Response
+from rest_framework import status
 User = get_user_model()
 #https://stackoverflow.com/questions/19703975/django-sort-by-distance
 from django.db import models
@@ -100,6 +102,24 @@ class DeliverUserList1(ListAPIView):
             "users": data
         }
         return Response(jzx)
+
+
+class ChangeDeliveryUserRoute(APIView):
+    def get(self, request):
+        route_id = request.GET.get('id')
+        print(route_id)
+        if route_id:
+            delivery_user_id = request.GET.get('fk_user_id')
+            route_selected = StoreUser.objects.filter(fk_user_id=delivery_user_id).first()
+            route_selected.fk_route_id = route_id
+            route_selected.save()
+            return Response({
+                        'status': True,
+                        'detail': 'route changed'
+                        })
+        else:
+            return Response({"Fail": "Something went error"}, status.HTTP_400_BAD_REQUEST)
+
 
 class StoreDeliverUserList(ListAPIView):
     serializer_class = StoreUserListSerializer

@@ -265,6 +265,9 @@ class CreateProductAPIView(APIView):
 			common_product = ProductCommon.objects.filter(pk=product.fk_common_product_id).first()
 			print(price)
 			product_image = ProductImage.objects.filter(product_id=product.id).first()
+			print(product_image)
+			if product_image is None:
+				product_image = ProductImage()
 			variation.price = price
 			variation.save()
 		else:
