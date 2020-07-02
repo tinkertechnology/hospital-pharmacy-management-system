@@ -14,6 +14,7 @@ import pprint
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from routes.models import get_nearest_route
+from mysite.utils import jwt_response_payload_handler
 User = get_user_model()
 
 # parse order token
@@ -241,13 +242,15 @@ class CartOrderSerializer(serializers.ModelSerializer):
 		for store_wise_order in store_wise_orders:
 			sw_cart_items =  CartItem.objects.filter(fk_storewise_order_id=store_wise_order.id) #store_wise_order.fk_storewise_order_id
 			store_wise_order.order_total = 0
-
-			store_wise_order.fk_route = get_nearest_route(
-				store_wise_order.order_latitude,
-				store_wise_order.order_longitude,
-				store_wise_order.fk_ordered_store.id,
-				None
-			)
+			# is_depo = Store.objects.filter(fk_user_id=user.id).filter(fk_store_type_id=2).first()
+			# if not is_depo:
+			if store_wise_order.order_latitude and store_wise_order.order_longitude:
+				store_wise_order.fk_route = get_nearest_route(
+					store_wise_order.order_latitude,
+					store_wise_order.order_longitude,
+					store_wise_order.fk_ordered_store.id,
+					None
+				)
 			for cart_item in sw_cart_items:
 				store_wise_order.order_total+=cart_item.line_item_total
 
@@ -433,16 +436,17 @@ class CartItemSerializer(serializers.ModelSerializer):
 		product = variation.product
 
 		image_url = ProductImage.objects.filter(product=product).first()
-		print(obj.item.id)
-		print(obj.__dict__)
-		print(image_url)
+		# print(obj.item.id)
+		# print(obj.__dict__)
+		# print(image_url)
 		# return ""
 		# print(list(image_url.values('image')))
 		
 		imageUrl = "/static/no-image.jpg"
-		d = image_url.__dict__
-		if 'image' in d:
-			imageUrl = d['image']
+		if image_url:
+			d = image_url.__dict__
+			if 'image' in d:
+				imageUrl = d['image']
 
 
 
