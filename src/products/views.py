@@ -36,7 +36,8 @@ from .serializers import (
 		 GenericNameSerializer,
 		 ProductUnitSerializer,
 		 WSCSerializer,
-		 CommonProductSerializer
+		 CommonProductSerializer,
+		 AllProductSerializer
 		)
 
 
@@ -191,6 +192,39 @@ class ProductListAPIView(generics.ListAPIView):
 		return queryset
 
 
+class AllProductListAPIView(generics.ListAPIView): ##for pharma
+	#permission_classes = [IsAuthenticated]
+	queryset = Product.objects.all()
+	serializer_class = AllProductSerializer
+	filter_backends = [
+					filters.SearchFilter, 
+					filters.OrderingFilter, 
+					DjangoFilterBackend
+					]
+	# search_fields = ["title", "description"] // old version
+	filterset_fields = ["title", "description"]
+	ordering_fields  = ["title", "id"]
+	filter_class = ProductFilter
+
+	def get_queryset(self):
+		user_store = Store.objects.filter(fk_user_id=self.request.user.id).first() #
+		
+		if user_store is not None:
+			print(1)
+			if self.request.GET.get('view_my_products', None):
+				queryset = Product.objects.all().order_by('-id')
+				return queryset
+			# Depo login bhayeko cha bhane 
+			# water supply company ko matrai product dekhnu paryo
+
+			queryset = Product.objects.exclude(fk_store_id=None).exclude(fk_store__fk_store_type_id=None).exclude(fk_store__fk_store_type_id=2)
+			print(queryset.query)
+			return queryset
+		if self.request.query_params.get('id'):
+			id = self.request.query_params.get('id')
+			queryset = Product.objects.filter(id__gte=id)
+		queryset = Product.objects.all()
+		return queryset
 
 
 	#pagination_class = ProductPagination
@@ -302,6 +336,113 @@ class CreateProductAPIView(APIView):
 					'detail': 'Product Saved successfully'
 					})
 
+
+
+#### Medical 
+class AddProductAPIView(APIView):
+	# authentication_classes = [SessionAuthentication]
+	permission_classes = [IsAuthenticated]
+	def post(self, request, *args, **kwargs):
+		print(request.POST)
+		product_title = request.data.get('title', '')
+		description = request.data.get('description', '')
+		price = request.data.get('price', '')
+		category_id = request.data.get('category_id', None)
+		brand_id = request.data.get('brand_id', None)
+		product_unit_id =request.data.get('product_unit_id', None)
+		product_quantity =  request.data.get('product_quantity', None)
+		product_id = request.data.get('product_id', None)
+		product_amount = request.data.get('product_amount', '')
+		generic_names_id =request.data.get('generic_names_id', None)
+		company_id =request.data.get('company_id', None)
+		image  = request.FILES.get('file', None)
+		
+		print(image)
+		if product_id:
+			pass
+		else:
+			if image is None:
+				return Response({"Fail": "Select product image"}, status.HTTP_400_BAD_REQUEST)
+
+		if product_title is None:
+			return Response({"Fail": "Product name must be provided"}, status.HTTP_400_BAD_REQUEST)
+		if description is None:
+			return Response({"Fail": "product description must be provided"}, status.HTTP_400_BAD_REQUEST)
+		if price is None:
+			return Response({"Fail": "product price must be provided"}, status.HTTP_400_BAD_REQUEST)
+		if category_id is None:
+			return Response({"Fail": "category must be provided"}, status.HTTP_400_BAD_REQUEST)
+		if brand_id is None:
+			return Response({"Fail": "brand must be provided"}, status.HTTP_400_BAD_REQUEST)
+		if product_unit_id is None:
+			return Response({"Fail": "product unit must be provided"}, status.HTTP_400_BAD_REQUEST)
+		if generic_names_id is None:
+			return Response({"Fail": "Generic name must be provided"}, status.HTTP_400_BAD_REQUEST)
+		if company_id is None:
+			return Response({"Fail": "Company name must be provided"}, status.HTTP_400_BAD_REQUEST)
+
+
+
+		# if categories is None:
+		# 	return Response({"Fail": "Select product categories"}, status.HTTP_400_BAD_REQUEST)
+
+			# common = ProductCommon.objects.filter(pk=common_product).first()
+	
+		if product_id:
+			print(product_id)
+			product = Product.objects.filter(pk=product_id).first()
+
+			variation = Variation.objects.filter(product_id=product_id).first()
+			common_product = ProductCommon.objects.filter(pk=product.fk_common_product_id).first()
+			print(price)
+			product_image = ProductImage.objects.filter(product_id=product.id).first()
+			print(product_image)
+			if product_image is None:
+				product_image = ProductImage()
+			variation.price = price
+			variation.save()
+		else:
+			print(3)
+			product = Product()
+			common_product = ProductCommon()
+			product_image = ProductImage()
+
+		# if common:
+		# fk_store = Store.objects.filter(fk_user_id=request.user.id).first()
+		# if not fk_store:
+		# 	return Response({"Fail": "Permission denied"}, status.HTTP_400_BAD_REQUEST)
+
+		common_product.title = product_title
+		common_product.save()
+
+		product.fk_common_product_id = common_product.id
+		product.description = description
+		product.price = price
+		product.title = common_product.title
+		product.product_unit_id = product_unit_id
+		product.generic_name_id = generic_names_id
+		product.company_id = company_id
+		product.brand_id = brand_id
+		product.amount = product_amount
+		# product.fk_store_id = fk_store.id
+		product.save()
+
+		if product_quantity:
+			variation = Variation.objects.filter(product_id=product.id).first()
+			variation.inventory = product_quantity
+			variation.save()
+
+
+		if image:
+			product_image.product = product
+			product_image.image = image
+			product_image.save()
+			
+
+		return Response({
+					'status': True,
+					'detail': 'Product Saved successfully'
+					})
 
 
 
