@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .serializers import StoreSerializer, StoreUserTypeSerializer
+from .serializers import StoreSerializer, StoreUserTypeSerializer, StoreUserListSerializer
 from .models import Store, StoreUser
 
 from rest_framework.authentication import SessionAuthentication
@@ -8,6 +8,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
+from rest_framework.response import Response
+from rest_framework import status
 User = get_user_model()
 #https://stackoverflow.com/questions/19703975/django-sort-by-distance
 from django.db import models
@@ -81,7 +83,7 @@ class ListCompaniesApiView(ListAPIView):
         return companies
 
 
-class DeliverUserList(ListAPIView):
+class DeliverUserList1(ListAPIView):
     
     def get(self, request):
         store = Store.objects.get(fk_user_id=self.request.user.id)
@@ -100,6 +102,46 @@ class DeliverUserList(ListAPIView):
             "users": data
         }
         return Response(jzx)
+
+
+class ChangeDeliveryUserRoute(APIView):
+    def get(self, request):
+        route_id = request.GET.get('id')
+        print(route_id)
+        if route_id:
+            delivery_user_id = request.GET.get('fk_user_id')
+            route_selected = StoreUser.objects.filter(fk_user_id=delivery_user_id).first()
+            route_selected.fk_route_id = route_id
+            route_selected.save()
+            return Response({
+                        'status': True,
+                        'detail': 'route changed'
+                        })
+        else:
+            return Response({"Fail": "Something went error"}, status.HTTP_400_BAD_REQUEST)
+
+
+class StoreDeliverUserList(ListAPIView):
+    serializer_class = StoreUserListSerializer
+    def get_queryset(self, *args, **kwargs):
+
+        store = Store.objects.get(fk_user_id=self.request.user.id)
+        deliver_users = StoreUser.objects.filter(fk_store_id=store.id)
+        return deliver_users
+        # abc = []
+        # for jpt in deliver_users:
+        #     abc.append(jpt.fk_user_id)
+
+        
+        # users = User.objects.filter(id__in=abc)
+        # serializer = StoreUserTypeSerializer(users, many=True)
+        # # print(serializer)
+        # data = serializer.data[:]
+        # jzx = {
+        #     "total": users.count(),
+        #     "users": data
+        # }
+        # return Response(jzx)
         # user_id_list = []
         # # user_route_id = []
         # for delu in deliver_users:

@@ -171,16 +171,15 @@ class CartItemSerializer(serializers.ModelSerializer):
 		product = variation.product
 
 		image_url = ProductImage.objects.filter(product=product).first()
-		print(obj.item.id)
-		print(obj.__dict__)
-		print(image_url)
 		# return ""
 		# print(list(image_url.values('image')))
 		
 		imageUrl = "/static/no-image.jpg"
-		d = image_url.__dict__
-		if 'image' in d:
-			imageUrl = d['image']
+		if image_url:
+			d = image_url.__dict__
+		
+			if 'image' in d:
+				imageUrl = d['image']
 
 
 
