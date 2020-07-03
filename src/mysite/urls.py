@@ -97,7 +97,9 @@ from products.views import (
         WSCListAPIView,
         WSCRetrieveAPIView,
         CreateProductAPIView,
-        CommonProductListAPIView
+        CommonProductListAPIView,
+        AddProductAPIView,
+        AllProductListAPIView
         
 
     )
@@ -175,7 +177,12 @@ urlpatterns = [
     
     re_path(r'^api/orders/(?P<pk>\d+)/$', OrderRetrieveAPIView.as_view(), name='order_detail_api'),
     re_path(r'^api/products/$', ProductListAPIView.as_view(), name='products_api'),
+    re_path(r'^api/all_products/$', AllProductListAPIView.as_view(), name='all_products_api'), ## for pharma
+    
+    
     re_path(r'^api/products_create/$', CreateProductAPIView.as_view(), name='products_create_api'),
+    re_path(r'^api/products_add/$', AddProductAPIView.as_view(), name='products_create_api'), ##pharmas
+    
     re_path(r'^api/products_common/$', CommonProductListAPIView.as_view(), name='products_common_api'),
 
     re_path(r'^api/products/(?P<pk>\d+)/$', ProductRetrieveAPIView.as_view(), name='products_detail_api'),

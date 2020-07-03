@@ -119,6 +119,7 @@ class ProductSerializer(serializers.ModelSerializer):
 	fk_store = StoreSerializer(read_only=True)
 	image = serializers.SerializerMethodField()
 	productimage_set = ImageSerializer(many=True, read_only=True)
+
 	class Meta:
 		model = Product
 		fields = [
@@ -139,6 +140,8 @@ class ProductSerializer(serializers.ModelSerializer):
 			return  obj.productimage_set.first().image.url
 		except:
 			return None
+
+
 
 
 	# def get_images_set(self, obj):
@@ -294,5 +297,51 @@ class ProductUnitSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ProductUnit
 		fields = ['id','title'] 
+
+class CategoriesSerializer(serializers.ModelSerializer):
+	# company_id = serializers.SerializerMethodField()
+	# title = serializers.SerializerMethodField()
+
+
+	class Meta:
+		model = Category
+		fields = '__all__'
+
+
+class AllProductSerializer(serializers.ModelSerializer): ##pharma
+	url = serializers.HyperlinkedIdentityField(view_name='products_detail_api')
+	variation_set = VariationSerializer(many=True)
+	image = serializers.SerializerMethodField()
+	productimage_set = ImageSerializer(many=True, read_only=True)
+	company = CompanySerializer()
+	brand = BrandSerializer()
+	category = serializers.SerializerMethodField()
+	generic_name = GenericNameSerializer()
+	
+	class Meta:
+		model = Product
+		fields = [
+			"url",
+			"id",
+			"title",
+			"image",
+			"price",
+			"description",
+			"variation_set",
+			"productimage_set",
+			"company",
+			"brand",
+			"generic_name",
+			"category"
+		]
+
+	def get_image(self, obj):
+		try:
+			return  obj.productimage_set.first().image.url
+		except:
+			return None
+	def get_category(self, obj):
+		serializer = SubCategorySerializer(Category.objects.filter(fk_category=obj.id), many=True)
+		return serializer.data
 
 #CREATE RETRIEVE UPDATE DESTROY
