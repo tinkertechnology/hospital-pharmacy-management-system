@@ -161,6 +161,7 @@ class StoreWiseOrder(models.Model):
 	fk_ordered_store = models.ForeignKey(Store, related_name='fk_ordered_store_storewiseorder', on_delete=models.CASCADE, null=True, blank=True)
 	fk_delivery_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='fk_delivery_user_storewiseorder', on_delete=models.CASCADE, null=True, blank=True)
 	is_paid = models.BooleanField(default=False)
+	is_transit = models.BooleanField(default=False)
 	fk_payment_method = models.ForeignKey(PaymentMethod, related_name='fk_ordered_store_storewiseorder', on_delete=models.CASCADE, null=True, blank=True)
 	fk_ordered_by_store = models.ForeignKey(Store, related_name='fk_ordered_by_store_storewiseorder', on_delete=models.CASCADE, null=True, blank=True)
 	created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)

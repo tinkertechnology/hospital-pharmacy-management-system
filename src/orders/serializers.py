@@ -293,6 +293,7 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
 	total_order_price = serializers.SerializerMethodField()
 	customer_name = serializers.SerializerMethodField()
 	address = serializers.SerializerMethodField()
+	status = serializers.SerializerMethodField()
 
 	class Meta:
 		model = StoreWiseOrder
@@ -304,6 +305,7 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
             "order_id",
             "is_delivered",
             "is_paid",
+            "is_transit",
             "created_at",
             "updated_at",
             "order_latitude",
@@ -317,10 +319,20 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
             "ordered_stored_name",
             "total_order_price",
             "customer_name",
-            "address"
+            "address",
+            "status"
             
 
 		]
+
+	def get_status(self, obj):
+		status = "pending"
+		if obj.is_delivered:
+			status = "delivered"
+		elif obj.is_transit:
+			status = "transit"
+
+		return status
 
 	def get_ordered_stored_name(self, obj):
 		abc = ""

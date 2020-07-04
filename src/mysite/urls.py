@@ -157,7 +157,7 @@ urlpatterns = [
     re_path(r'^api/orders/$', OrderListAPIView.as_view(), name='orders_api'),
 
 
-    re_path(r'^api/store_orders/$', OrderLists.as_view(), name='orders_store'),
+    re_path(r'^api/store_orders/$', OrderLists.as_view(), name='orders_store'), ##for_customer
     
 
     re_path(r'^api/orders_lists/$', CartOrderLists.as_view(), name='orders_lists'), ###uptech_
