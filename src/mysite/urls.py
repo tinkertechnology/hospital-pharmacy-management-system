@@ -264,6 +264,8 @@ urlpatterns += [
 
     re_path(r'^api/routedetail/$', routes_views.RouteDetailListCreateApiView.as_view(), name='api-routedetail'),
     re_path(r'^api/routedetail/(?P<pk>\d+)/$', routes_views.RouteDetailRetrieveUpdateDestroyApiView.as_view(), name='api-routedetail-retrieve'),
+
+    path('route_detail_view',routes_views.route_detail_view),
 ]
 
 

@@ -35,3 +35,12 @@ class RouteDetailRetrieveUpdateDestroyApiView(RetrieveUpdateDestroyAPIView):
     serializer_class = RouteDetailSerializer
     def get_queryset(self, *args, **kwargs):
         return RouteDetail.objects.all()
+
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def route_detail_view(request):
+    context={}
+    rget = request.POST
+    print(rget)
+    return render(request, 'route_detail_view.html', context)
