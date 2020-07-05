@@ -21,6 +21,17 @@
     
   </div>
   <script>
+    function addMarkers(){
+      {% for i in fk_route_details %}
+      addMarker( 
+        new google.maps.LatLng( lat= {{i.order_latitude}} , lng= {{i.order_longitude}} ),
+        {{i.id}} ) ;
+      {% endfor %}
+      drawPolyline();
+    }
+  </script>
+
+  <script>
     let map;
     let markersArray = [];
     let polyline = null;
@@ -37,13 +48,27 @@
         addMarker(e.latLng);
         drawPolyline();
       });
+
+      map.addListener(map, 'idle', function(){
+          // do something only the first time the map is loaded
+          // 
+          
+          console.log('map loaded');
+      });
+
+      map.addListener('tilesloaded', function () { 
+        console.log('map loaded1'); 
+        addMarkers();
+      })
     }
 
     // define function to add marker at given lat & lng
-    function addMarker(latLng) {
+    function addMarker(latLng, fk_routedetail_id=0) {
       console.log(latLng);
       counter++;
+
       let marker = new google.maps.Marker({
+          fk_route_detail_id: fk_routedetail_id ? fk_routedetail_id : 0,
           id:counter,
           map: map,
           position: latLng,
@@ -118,8 +143,11 @@ function getLatLngArray() {
       // obtain latlng of all markers on map
       markersArray.forEach(function(e) {
         if(e.map == null){return;} //dont use null map to draw
-        markersPositionArray.push({lat:e.position.lat(), lng: e.position.lng()});
-        console.log(e.position.lat(), e.position.lng())
+        var o = {fk_route_detail_id: e.fk_route_detail_id, order_latitude:e.position.lat(), order_longitude: e.position.lng()};
+        console.log(o);
+        markersPositionArray.push(o);
+
+        
       });
 
       return markersPositionArray;
@@ -154,11 +182,10 @@ function getLatLngArray() {
     $('#save-route').on('click',function(){
       var fk_route_id = getUrlParameter('fk_route_id');
       console.log('fk_route_id', fk_route_id);
-      getLatLngArray();
 
       var send={
         'fk_route_id': fk_route_id,
-        'latlngs' : getLatLngArray()
+        'fk_route_details' : getLatLngArray()
       };
 
       var str = JSON.stringify(send); //$.param(send)
@@ -170,7 +197,7 @@ function getLatLngArray() {
           url: '/route_detail_view',
           data: str,
           success: function(msg){
-            
+
           },
           error: function(){
             //alert("failure");
