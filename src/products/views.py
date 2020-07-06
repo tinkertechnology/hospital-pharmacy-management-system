@@ -37,7 +37,8 @@ from .serializers import (
 		 ProductUnitSerializer,
 		 WSCSerializer,
 		 CommonProductSerializer,
-		 AllProductSerializer
+		 AllProductSerializer,
+		 AllProductDetailSerializer
 		)
 
 
@@ -157,7 +158,7 @@ class WSCRetrieveAPIView(generics.RetrieveAPIView):
 	queryset = WaterSupplyCompany.objects.all()
 	serializer_class = WSCSerializer
 
-class ProductListAPIView(generics.ListAPIView):
+class ProductListAPIView(generics.ListAPIView): 
 	#permission_classes = [IsAuthenticated]
 	queryset = Product.objects.all()
 	serializer_class = ProductSerializer
@@ -207,22 +208,6 @@ class AllProductListAPIView(generics.ListAPIView): ##for pharma
 	filter_class = ProductFilter
 
 	def get_queryset(self):
-		user_store = Store.objects.filter(fk_user_id=self.request.user.id).first() #
-		
-		if user_store is not None:
-			print(1)
-			if self.request.GET.get('view_my_products', None):
-				queryset = Product.objects.all().order_by('-id')
-				return queryset
-			# Depo login bhayeko cha bhane 
-			# water supply company ko matrai product dekhnu paryo
-
-			queryset = Product.objects.exclude(fk_store_id=None).exclude(fk_store__fk_store_type_id=None).exclude(fk_store__fk_store_type_id=2)
-			print(queryset.query)
-			return queryset
-		if self.request.query_params.get('id'):
-			id = self.request.query_params.get('id')
-			queryset = Product.objects.filter(id__gte=id)
 		queryset = Product.objects.all()
 		return queryset
 
@@ -233,6 +218,10 @@ class AllProductListAPIView(generics.ListAPIView): ##for pharma
 class ProductRetrieveAPIView(generics.RetrieveAPIView):
 	queryset = Product.objects.all()
 	serializer_class = ProductDetailSerializer
+
+class AllProductRetrieveAPIView(generics.RetrieveAPIView):
+	queryset = Product.objects.all()
+	serializer_class = AllProductDetailSerializer
 
 
 class ProductFeaturedListAPIView(generics.ListAPIView):
@@ -350,15 +339,18 @@ class AddProductAPIView(APIView):
 		category_id = request.data.get('category_id', None)
 		brand_id = request.data.get('brand_id', None)
 		product_unit_id =request.data.get('product_unit_id', None)
-		product_quantity =  request.data.get('product_quantity', None)
+		product_quantity =  request.data.get('product_quantity', 0)
 		product_id = request.data.get('product_id', None)
-		product_amount = request.data.get('product_amount', '')
+		product_amount = request.data.get('product_amount', 0.0)
 		generic_names_id =request.data.get('generic_names_id', None)
 		company_id =request.data.get('company_id', None)
+		sale_price = request.data.get('sale_price', None)
 		image  = request.FILES.get('file', None)
 		
 		print(image)
 		if product_id:
+			print('yes product')
+			print(product_id);
 			pass
 		else:
 			if image is None:
@@ -381,17 +373,17 @@ class AddProductAPIView(APIView):
 		if company_id is None:
 			return Response({"Fail": "Company name must be provided"}, status.HTTP_400_BAD_REQUEST)
 
-
-
 		# if categories is None:
 		# 	return Response({"Fail": "Select product categories"}, status.HTTP_400_BAD_REQUEST)
 
 			# common = ProductCommon.objects.filter(pk=common_product).first()
-	
 		if product_id:
 			print(product_id)
 			product = Product.objects.filter(pk=product_id).first()
-
+			# product.brand_id = brand_id
+			# product.company_id = company_id
+			# product.generic_name_id = generic_names_id
+			# product.
 			variation = Variation.objects.filter(product_id=product_id).first()
 			common_product = ProductCommon.objects.filter(pk=product.fk_common_product_id).first()
 			print(price)
@@ -423,15 +415,23 @@ class AddProductAPIView(APIView):
 		product.generic_name_id = generic_names_id
 		product.company_id = company_id
 		product.brand_id = brand_id
-		product.amount = product_amount
-		# product.fk_store_id = fk_store.id
+		product.amount = float(product_amount)
 		product.save()
+		if category_id:
+			if product.categories:
+				cat = product.categories.clear()
+			product.categories.add(category_id)
+			product.save()
+		# product.fk_store_id = fk_store.id
+	
 
 		if product_quantity:
 			variation = Variation.objects.filter(product_id=product.id).first()
 			variation.inventory = product_quantity
 			variation.save()
-
+			if sale_price:
+				variation.sale_price = sale_price
+				variation.save()
 
 		if image:
 			product_image.product = product

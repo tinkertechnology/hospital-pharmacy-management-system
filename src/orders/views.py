@@ -216,23 +216,26 @@ class OrderLists(ListAPIView):
 	serializer_class = OrderListStoreSerializer
 
 	def get_queryset(self):
-		
-		store_user = Store.objects.filter(fk_user_id=self.request.user.id).first()
-		print(store_user)
-		print(self.request.user.id)
-		if not store_user:
-			# user_checkouts = UserCheckout.objects.filter(user_id=self.request.user.id).id
-			# print(user_checkouts.__dict__)
-			orders= Order.objects.filter(fk_auth_user_id=self.request.user.id)
+		super_user = self.request.user.is_superuser
+		filter_query = self.request.GET.get('status')
+		if super_user:
+			orders = orders = Order.objects.filter(status=1)
+			if filter_query=="pending":
+				print(1)
+				orders = Order.objects.filter(status=1)
+			if filter_query=="delivered":
+				print(2)
+				orders = Order.objects.filter(status=0)	
+				print(orders.count())
+
+
 		else:
-			orders = Order.objects.filter(status=1)			
-			if settings.CAN_STORE_SEE_ALL_ORDERS==False:
-				user_id = self.request.user.id
-				store = Store.objects.filter(fk_user_id=user_id).first()
-				if store is None:
-					orders = []
-				else:
-					orders = orders.filter(fk_ordered_store=store)
+			orders = Order.objects.filter(fk_auth_user_id=self.request.user.id).filter(status=1)
+			if filter_query=="pending":
+				orders = Order.objects.filter(fk_auth_user_id=self.request.user.id).filter(status=1)
+			if filter_query=="delivered":
+				orders = Order.objects.filter(fk_auth_user_id=self.request.user.id).filter(status=0)
+
 		
 		return orders
 
@@ -549,19 +552,19 @@ class UpdateOrderStatusApiView(CreateAPIView): ## YO USE BHAKO CHAINA //STOREWIS
 		pprint.pprint(request.POST)
 		order_id = request.POST.get('order_id')
 		status = request.POST.get('status')
-		print(status)
 		print(order_id)
 		order = Order.objects.filter(pk=order_id).first() 
 		if order:
-			if status == "paid":
-				order.is_paid = 1;
-			if status == "delivered":
-				order.is_delivered = 1;
+			# if status == "paid":
+			# 	order.is_paid = 1;
+			# if status == "delivered":
+			# 	order.is_delivered = 1;
+			order.status=0
 			order.save()
 
 			return Response({
 							'status': True,
-							'detail': 'Order is marked as '+status
+							'detail': 'Order is marked as Delivered'
 							})
 		else:
 			Response({"Fail": "Error updating order status"}, status.HTTP_400_BAD_REQUEST)
