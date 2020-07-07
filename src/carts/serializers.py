@@ -171,16 +171,15 @@ class CartItemSerializer(serializers.ModelSerializer):
 		product = variation.product
 
 		image_url = ProductImage.objects.filter(product=product).first()
-		print(obj.item.id)
-		print(obj.__dict__)
-		print(image_url)
 		# return ""
 		# print(list(image_url.values('image')))
 		
 		imageUrl = "/static/no-image.jpg"
-		d = image_url.__dict__
-		if 'image' in d:
-			imageUrl = d['image']
+		if image_url:
+			d = image_url.__dict__
+		
+			if 'image' in d:
+				imageUrl = d['image']
 
 
 
@@ -208,71 +207,24 @@ class AddToCartSerializer(serializers.ModelSerializer):
 
 
 		
-
+from . import service as CartService
 class CartItemModelSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CartItem
 		fields ='__all__'
 
-
 	def create(self, validated_data):
 		request = self.context['request']
-		print(request.GET.get('is_add_sub_qty'))
 		user =  self.context['request'].user
-		print(user)
-		# item_quantity = validated_data.pop('item_quantity')
-		# return Cart.objects.create(user_id=user.id, **validated_data)
-		cart = Cart.objects.filter(user_id=user.id).filter(active=1).first()
-		# cart_id = cart.id
-		# if cart_id == None:
 
-		if cart == None:
-			dict_cart = {}
-			cart = Cart.objects.create(user_id=user.id,  **dict_cart)
-			cart.active = 1
-			cart.tax_percentage = 0.13
-			cart.save()
+		data = {}
+		data['user_id'] = user.id
+		data['item_id'] = validated_data.get('item').id
+		data['quantity'] = validated_data['quantity']
+		data['is_add_sub_qty'] = request.GET.get('is_add_sub_qty', None)
+		cartItem = CartService.CartItemCreateService(data)
 
-		active_cart_id = cart.id
-		aitem = CartItem.objects.filter(item_id=validated_data['item']).filter(cart_id=cart.id).first() #CartItem.objects.filter(item_id=validated_data['item'], cart_id=cart.id).first()
-
-
-		if aitem:		
-			quantity = validated_data['quantity']
-			is_add_sub_qty = request.GET.get('is_add_sub_qty', None)
-			if is_add_sub_qty:
-				aitem.quantity = quantity
-				aitem.save()
-				return aitem
-
-			update_cart_items = quantity + aitem.quantity
-
-			#cartItems = aitem.update(quantity=update_cart_items)
-			aitem.quantity = update_cart_items
-			aitem.save()
-			return aitem
-			
-
-
-
-		cart_items = {
-			"quantity": validated_data['quantity'],
-			"item" : validated_data['item'],
-			"cart_id" : cart.id
-		}
-
-		cartItems= CartItem.objects.create(**cart_items)
-			# cart_id = cart.id
-
-			# self.request.session["cart_id"] = cart_id
-			# Cart.objects.filter(user_id=self.request.user.id).first().id= cart_id
-		# cart_id = cart.id
-		# cart = Cart.objects.get(id=cart_id)
-		# if self.request.user.is_authenticated:
-		# 	cart.user = self.request.user
-		# 	cart.save()
-
-		return cartItems
+		return cartItem
 
 
 
