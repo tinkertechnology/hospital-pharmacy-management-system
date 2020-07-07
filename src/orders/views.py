@@ -287,6 +287,36 @@ class OrderHistoryLists(ListAPIView):
 		
 		return orders
 
+
+class StoreWiseOrderHistoryLists(ListAPIView):
+	from django.db.models import Q
+	# queryset = Order.objects.all()
+	serializer_class = StoreWiseOrderListSerializer
+
+	def get_queryset(self):
+		
+		store_user = Store.objects.filter(fk_user_id=self.request.user.id).first()
+	
+		if store_user is None:
+			# user_checkouts = UserCheckout.objects.filter(user_id=self.request.user.id).id
+			# print(user_checkouts.__dict__)
+			orders= StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(Q(is_paid=True) | Q(is_delivered=True))
+			
+			
+		else:
+			orders = StoreWiseOrder.objects.all()			
+			if settings.CAN_STORE_SEE_ALL_ORDERS==False:
+				user_id = self.request.user.id
+				store = Store.objects.filter(fk_user_id=user_id).first()
+				if store is None:
+					orders = []
+				else:
+					orders = orders.filter(fk_ordered_store=store).filter(Q(is_paid=True) | Q(is_delivered=True))
+		
+		return orders
+
+
+
 class CartOrderLists(ListAPIView):
 	def get(self, request):
 
