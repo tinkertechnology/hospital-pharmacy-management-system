@@ -142,66 +142,22 @@ class UserAddressSerializer(serializers.ModelSerializer):
 		return useraddress
 
 
-
-
-
+from . import service as OrderService
 class CartOrderSerializer(serializers.ModelSerializer):
 	order_total = serializers.DecimalField(required=False, max_digits=50, decimal_places=2,)
 	class Meta:
 		model = Order
 		fields = '__all__'
 
-
-
 	def create(self, validated_data):
 		#pprint.pprint(self.context['request'].__dict__)
-		# pprint.pprint(validated_data)
+		#pprint.pprint(validated_data)
 		user =  self.context['request'].user
-		print(user.id)
-		
-		# item_quantity = validated_data.pop('item_quantity')
-		cart = Cart.objects.filter(user_id=user.id).filter(active=1).first()
-		if cart is None:
-			raise serializers.ValidationError("This is not a valid cart, first make cart, /api/cart/ or add item to cart ")
-		usercheckout_user = UserCheckout.objects.filter(user_id=user.id).first()
-		if usercheckout_user is None:
-			usercheckout_user = UserCheckout()
-			usercheckout_user.user_id = user.id
-			usercheckout_user.email = user.email
-			usercheckout_user.braintree_id = '0'
+		print( type(validated_data))
+		#pprint.pprint(validated_data)
+		validated_data['user_id'] = user.id
 
-			usercheckout_user.save()
-
-		useraddress = UserAddress.objects.filter(user_id=usercheckout_user.id).first()
-		if useraddress is None:
-			useraddress = UserAddress()
-			useraddress.user_id = usercheckout_user.id
-			useraddress.save()
-
-		order = Order()
-		order.order_id = cart.id
-		order.status = 1
-		order.shipping_total_price = settings.SHIPPING_PRICE
-		order.order_total = cart.total
-		order.billing_address = useraddress
-		order.shipping_address = useraddress
-		order.user_id = usercheckout_user.id
-		order.cart_id = cart.id
-		order.fk_auth_user_id = user.id
-		order.order_latitude = validated_data.get("order_latitude")
-		order.order_longitude = validated_data.get("order_longitude")
-		order.fk_ordered_store = validated_data.get("fk_ordered_store")
-		order.fk_payment_method = validated_data.get("fk_payment_method")
-
-		print(order.__dict__)
-		order.save()
-
-		cart.active=0 #(COMMENT TO DEBUG / and prevent MULTIPLE boring ORDER to add to cart)
-		cart.save()
-		print(settings.IS_MULTI_VENDOR)
-		if settings.IS_MULTI_VENDOR:
-			self.saveStoreWiseOrder(order, user)
-
+		order = OrderService.CreateOrderFromCart(validated_data)
 		return order
 
 	def saveStoreWiseOrder(self, order, user):
@@ -293,6 +249,7 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
 	total_order_price = serializers.SerializerMethodField()
 	customer_name = serializers.SerializerMethodField()
 	address = serializers.SerializerMethodField()
+	status = serializers.SerializerMethodField()
 
 	class Meta:
 		model = StoreWiseOrder
@@ -304,6 +261,7 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
             "order_id",
             "is_delivered",
             "is_paid",
+            "is_transit",
             "created_at",
             "updated_at",
             "order_latitude",
@@ -317,10 +275,20 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
             "ordered_stored_name",
             "total_order_price",
             "customer_name",
-            "address"
+            "address",
+            "status"
             
 
 		]
+
+	def get_status(self, obj):
+		status = "pending"
+		if obj.is_delivered:
+			status = "delivered"
+		elif obj.is_transit:
+			status = "transit"
+
+		return status
 
 	def get_ordered_stored_name(self, obj):
 		abc = ""

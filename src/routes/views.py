@@ -8,6 +8,8 @@ from rest_framework.generics import CreateAPIView, ListAPIView,ListCreateAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+import json
+from django.http import JsonResponse
 
 #http://localhost:8000/api/route/
 class RouteListCreateApiView(ListCreateAPIView):
@@ -51,3 +53,31 @@ class StoreWiseRouteListApiView(ListAPIView):
 
     
 
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def route_detail_view(request):
+    if request.method == 'POST':
+        rec_json = json.loads(request.body)
+        fk_route_id = rec_json['fk_route_id']
+        fk_route_details = rec_json['fk_route_details']
+        
+        for d in fk_route_details:
+            print(fk_route_id, d['order_latitude'], d['order_longitude'], d['fk_route_detail_id'])
+
+            fk_route_detail = None
+            id = d['fk_route_detail_id']
+            if id:
+                fk_route_detail = RouteDetail.objects.filter(pk=id).first()
+            else:
+                fk_route_detail =  RouteDetail()
+            fk_route_detail.order_latitude = d['order_latitude']
+            fk_route_detail.order_longitude = d['order_longitude']
+            fk_route_detail.fk_route_id = fk_route_id
+            fk_route_detail.save()
+        return JsonResponse({'success':'true'})
+    else:
+        context={}
+        fk_route_id = request.GET.get('fk_route_id')
+        context['fk_route_details'] = RouteDetail.objects.filter(fk_route_id=fk_route_id)
+        return render(request, 'route_detail_view.html', context)

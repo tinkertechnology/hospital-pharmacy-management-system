@@ -3,8 +3,10 @@ from rest_framework import serializers
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from .models import MembershipType, UserMembership
+from .models import MembershipType, UserMembership, UserMembershipAutoOrder
 # from carts.models import Cart #importing from other folders
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 class MembershipTypeSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -22,20 +24,34 @@ class UserMembershipSerializer(serializers.ModelSerializer):
 	
 	def create(self, validated_data):
 		user =  self.context['request'].user
-
-		db_membership = UserMembership.objects.filter(fk_member_user_id = user.id).first()
-		if( db_membership != None): #dont create new if membership already exists
-			return db_membership;
-		
-
+		membership_user = user
 		print(validated_data)
-		u = UserMembership()
-		u.fk_member_user_id = user.id
+		print(user)
+
+		if(user.is_superuser): # superuser le jallai ni banauna paucha member
+			fk_member_user_id = validated_data.get('fk_member_user').id
+			membership_user = User.objects.filter(pk=fk_member_user_id).first()
+
+		db_membership = UserMembership.objects.filter(fk_member_user_id = membership_user.id).first()
+		if( db_membership != None): #dont create new if membership already exists
+			u = db_membership
+		else:
+			u = UserMembership()
+	
+		u.fk_member_user_id = membership_user.id
 		u.fk_membership_type = validated_data.get('fk_membership_type')
+		u.is_active = validated_data.get('is_active')
+		u.is_auto_order = validated_data.get('is_auto_order')
+		u.auto_order_duration = validated_data.get('auto_order_duration')
 		u.save()
 		
 		return u
 	
 	class Meta:
 		model = UserMembership
+		fields= '__all__'
+
+class UserMembershipAutoOrderSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = UserMembershipAutoOrder
 		fields= '__all__'

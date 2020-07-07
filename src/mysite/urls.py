@@ -99,7 +99,8 @@ from products.views import (
         CreateProductAPIView,
         CommonProductListAPIView,
         AddProductAPIView,
-        AllProductListAPIView
+        AllProductListAPIView,
+        AllProductRetrieveAPIView
         
 
     )
@@ -157,7 +158,7 @@ urlpatterns = [
     re_path(r'^api/orders/$', OrderListAPIView.as_view(), name='orders_api'),
 
 
-    re_path(r'^api/store_orders/$', OrderLists.as_view(), name='orders_store'),
+    re_path(r'^api/store_orders/$', OrderLists.as_view(), name='orders_store'), ##for_customer
     
 
     re_path(r'^api/orders_lists/$', CartOrderLists.as_view(), name='orders_lists'), ###uptech_
@@ -168,7 +169,7 @@ urlpatterns = [
 
     
 
-    re_path(r'^api/orders_status/$', UpdateOrderStatusApiView.as_view(), name='orders_status_update'),
+    re_path(r'^api/orders_status/$', UpdateOrderStatusApiView.as_view(), name='orders_status_update'), ##pharms
 
     re_path(r'^api/storwise_change_orders_status/$', UpdateStoreWiseOrderStatusApiView.as_view(), name='storewise_orders_status_update'),
 
@@ -186,6 +187,8 @@ urlpatterns = [
     re_path(r'^api/products_common/$', CommonProductListAPIView.as_view(), name='products_common_api'),
 
     re_path(r'^api/products/(?P<pk>\d+)/$', ProductRetrieveAPIView.as_view(), name='products_detail_api'),
+    re_path(r'^api/all_products/(?P<pk>\d+)/$', AllProductRetrieveAPIView.as_view(), name='all_products_detail_api'),##Pharmas
+
     re_path(r'^api/quotation/$', SendQuotationApiView.as_view(), name="send_quotation_api"),
     re_path(r'^api/featured/$', ProductFeaturedListAPIView.as_view(), name='product_featured_api'),
     re_path(r'^api/create_cart/$', AddToCartView.as_view(), name="create_cart_api"),
@@ -207,14 +210,7 @@ urlpatterns = [
 
 ]
 
-# Membership api
-from membership.views import (
-        MembershipTypeListCreateApiView,
-        MembershipTypeRetrieveUpdateDestroyApiView,
-        UserMembershipListCreateApiView,
-        UserMembershipRetrieveUpdateDestroyApiView,
-        UserMembershipRetrieveApiView
-)
+
 
 from slider.views import(
         SliderListAPIView
@@ -226,12 +222,22 @@ urlpatterns += [
     ]
 
 
+# Membership api
+from membership.views import (
+        MembershipTypeListCreateApiView,
+        MembershipTypeRetrieveUpdateDestroyApiView,
+        UserMembershipListCreateApiView,
+        UserMembershipRetrieveUpdateDestroyApiView,
+        UserMembershipRetrieveApiView
+)
+from membership import views as membership_views
 urlpatterns += [
     re_path(r'^api/membership-type/$', MembershipTypeListCreateApiView.as_view(), name='api-membership-type'),
     re_path(r'^api/membership-type/(?P<pk>\d+)/$', MembershipTypeRetrieveUpdateDestroyApiView.as_view(), name='api-membership-type'),
     re_path(r'^api/user-membership/$', UserMembershipListCreateApiView.as_view(), name='api-user-membership'),
     re_path(r'^api/user-membership/(?P<pk>\d+)/$', UserMembershipRetrieveUpdateDestroyApiView.as_view(), name='api-membership-type'),
     re_path(r'^api/user-membership-retrieve/$', UserMembershipRetrieveApiView.as_view(), name='api-user-membership-retrieve'),
+    re_path(r'^api/user_membership_auto_order/$', membership_views.UserMembershipAutoOrderListCreateApiView.as_view(), name='api-user-membership-retrieve'),
 ]
 
 # store api
@@ -280,6 +286,8 @@ urlpatterns += [
     re_path(r'^api/routedetail/(?P<pk>\d+)/$', routes_views.RouteDetailRetrieveUpdateDestroyApiView.as_view(), name='api-routedetail-retrieve'),
     re_path(r'^api/storewise_route/$', routes_views.StoreWiseRouteListApiView.as_view(), name='api-storewise_routedetail'),
     
+
+    path('route_detail_view',routes_views.route_detail_view),
 ]
 
 
