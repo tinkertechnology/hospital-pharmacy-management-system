@@ -36,7 +36,9 @@ class VariationSerializer(serializers.ModelSerializer):
 		else:
 			price = obj.price
 			sale_price = obj.sale_price
-			discount = round(((float(price)-float(sale_price))/float(price))*100, 2)			
+			discount=0
+			if price!=0:
+				discount = round(((float(price)-float(sale_price))/float(price))*100, 2)			
 			return discount
 
 
@@ -375,6 +377,7 @@ class AllProductDetailSerializer(serializers.ModelSerializer):
 	product_unit_id = serializers.SerializerMethodField()
 	category_id = serializers.SerializerMethodField()
 	brand_id = serializers.SerializerMethodField()
+
 	
 	class Meta:
 		model = Product
@@ -389,7 +392,8 @@ class AllProductDetailSerializer(serializers.ModelSerializer):
 			"category_id",
 			"product_unit_id",
 			"company_id",
-			"generic_name_id"
+			"generic_name_id",
+			"amount"
 
 		]
 
