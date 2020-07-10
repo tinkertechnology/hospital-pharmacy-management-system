@@ -203,6 +203,8 @@ class ProductListAPIView(generics.ListAPIView):
 			queryset = Product.objects.filter(id__gte=id)
 			return queryset
 
+		#pass customer latitude and longitude to api
+		#http://localhost:8000/api/products/?latitude=1&longitude=1
 		if users_store is  None: #this user must be customer
 			# ulat=, ulng=, 
 			latitude=self.request.GET.get('latitude', None);
