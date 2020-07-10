@@ -17,13 +17,15 @@ from rest_framework.reverse import reverse as api_reverse
 from rest_framework.views import APIView
 
 
+from store import service as StoreService
+
 # Create your views here.
 from .filters import ProductFilter
 from .forms import VariationInventoryFormSet, ProductFilterForm
 from .mixins import StaffRequiredMixin
 from .models import Product, Variation, Category, ProductFeatured, Company, Brand, GenericName, ProductUnit, ProductCommon, ProductImage
 from wsc.models import WaterSupplyCompany
-from store.models import Store
+from store.models import Store, StoreUser
 from .pagination import ProductPagination, CategoryPagination, WSCPagination
 from .serializers import (
 		CategorySerializer, 
@@ -41,7 +43,7 @@ from .serializers import (
 		 AllProductDetailSerializer
 		)
 
-
+from django.core.exceptions import ValidationError 
 
 
 
@@ -173,22 +175,60 @@ class ProductListAPIView(generics.ListAPIView):
 	filter_class = ProductFilter
 
 	def get_queryset(self):
-		user_store = Store.objects.filter(fk_user_id=self.request.user.id).first() #
+		users_store = None #user ko store (instance of Store)
+		main_users_store = Store.objects.filter(fk_user_id=self.request.user.id).first() #company / depo ko main user #(instance Store)
 		
-		if user_store is not None:
+		#todo: make service for getting store of user, isUserStore, isUserCustomer
+		if main_users_store is not None:
+			users_store = main_user_store
+		else:
+			storeUser = StoreUser.objects.filter(fk_user_id=self.request.user.id).first()
+			if(storeUser is not None):
+				users_store = storeUser.fk_store
+
+		if users_store is not None:
 			print(1)
 			if self.request.GET.get('view_my_products', None):
-				queryset = Product.objects.filter(fk_store_id=user_store.id)
+				queryset = Product.objects.filter(fk_store_id=users_store.id)
 				return queryset
+			
 			# Depo login bhayeko cha bhane 
 			# water supply company ko matrai product dekhnu paryo
-
-			queryset = Product.objects.exclude(fk_store_id=None).exclude(fk_store__fk_store_type_id=None).exclude(fk_store__fk_store_type_id=2)
+			queryset = Product.objects.exclude(fk_store_id=None) \
+				.exclude(fk_store__fk_store_type_id=None) \
+				.exclude(fk_store__fk_store_type_id=2) #exclude products from depo
 			print(queryset.query)
 			return queryset
+		
 		if self.request.query_params.get('id'):
 			id = self.request.query_params.get('id')
 			queryset = Product.objects.filter(id__gte=id)
+			return queryset
+
+		#pass customer latitude and longitude to api
+		#http://localhost:8000/api/products/?latitude=1&longitude=1
+		if users_store is  None: #this user must be customer
+			# ulat=, ulng=, 
+			latitude=self.request.GET.get('latitude', None);
+			longitude=self.request.GET.get('longitude', None);
+			max_distance=None #setting. store max distance
+
+			nearest_store = None
+			if(latitude and longitude ):
+				storeQs = StoreService.get_qs_store_locations_nearby_coords(latitude, longitude, max_distance, 2) #2: depo
+				nearest_store = storeQs.first()
+
+			if nearest_store is not None:
+				print(nearest_store.__dict__)
+				queryset = Product.objects.filter(fk_store_id=nearest_store.id).all()
+				return queryset
+			else:
+				raise ValidationError(
+					"Products View require: latitude and longitude, within distance limit, for customer user, to find nearest store"
+				)
+
+
+		#
 		queryset = Product.objects.all()
 		return queryset
 
