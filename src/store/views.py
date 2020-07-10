@@ -13,34 +13,9 @@ from django.db import models
 from django.db.models.expressions import RawSQL
 from django.db.models.functions import Greatest
 
+from . import service as StoreService
 def get_locations_nearby_coords(latitude, longitude, max_distance=None):
-    """
-    Return objects sorted by distance to specified coordinates
-    which distance is less than max_distance given in kilometers
-    """
-    # Great circle distance formula
-    gcd_formula = """
-	    6371 * 
-	        acos(
-	            cos( radians( %s ) ) * cos( radians( latitude ) ) * cos ( radians(longitude) - radians(%s) ) +
-	            sin( radians(%s) ) * sin( radians( latitude ) )
-	        )
-    """ % (latitude, longitude, latitude) 
-
-    distance_raw_sql = RawSQL(
-        gcd_formula,
-        ()
-    )
-    qs = Store.objects.all() \
-    .annotate(distance=distance_raw_sql)\
-    .order_by('distance')
-    if max_distance is not None:
-    	qs = qs.filter( distance__lt= float(max_distance) )
-
-
-    print(qs.query)
-    print(qs.all())
-    return qs
+    return StoreService.get_qs_store_locations_nearby_coords(latitude, longitude, max_distance)
 
 
 #http://localhost:8000/api/store/
