@@ -228,7 +228,8 @@ from membership.views import (
         MembershipTypeRetrieveUpdateDestroyApiView,
         UserMembershipListCreateApiView,
         UserMembershipRetrieveUpdateDestroyApiView,
-        UserMembershipRetrieveApiView
+        UserMembershipRetrieveApiView,
+        
 )
 from membership import views as membership_views
 urlpatterns += [
@@ -238,6 +239,7 @@ urlpatterns += [
     re_path(r'^api/user-membership/(?P<pk>\d+)/$', UserMembershipRetrieveUpdateDestroyApiView.as_view(), name='api-membership-type'),
     re_path(r'^api/user-membership-retrieve/$', UserMembershipRetrieveApiView.as_view(), name='api-user-membership-retrieve'),
     re_path(r'^api/user_membership_auto_order/$', membership_views.UserMembershipAutoOrderListCreateApiView.as_view(), name='api-user-membership-retrieve'),
+    re_path(r'^api/user_membership_user_auto_orders_list/$', membership_views.UserMembershipUserAutoOrdersListApiView.as_view(), name='api-user-membership-auto-order-list'),
 ]
 
 # store api

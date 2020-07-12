@@ -180,7 +180,7 @@ class ProductListAPIView(generics.ListAPIView):
 		
 		#todo: make service for getting store of user, isUserStore, isUserCustomer
 		if main_users_store is not None:
-			users_store = main_user_store
+			users_store = main_users_store
 		else:
 			storeUser = StoreUser.objects.filter(fk_user_id=self.request.user.id).first()
 			if(storeUser is not None):
