@@ -197,10 +197,10 @@ function getLatLngArray() {
           url: '/route_detail_view',
           data: str,
           success: function(msg){
-
+            alert('Route saved');
           },
           error: function(){
-            //alert("failure");
+            alert("Route not saved");
           }
         });
 

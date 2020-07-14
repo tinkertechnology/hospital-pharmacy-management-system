@@ -40,6 +40,7 @@ class RouteDetailRetrieveUpdateDestroyApiView(RetrieveUpdateDestroyAPIView):
 
 from django.views.decorators.csrf import csrf_exempt
 
+# http://localhost:8000/route_detail_view?fk_route_id=2
 @csrf_exempt
 def route_detail_view(request):
     if request.method == 'POST':
@@ -47,10 +48,12 @@ def route_detail_view(request):
         fk_route_id = rec_json['fk_route_id']
         fk_route_details = rec_json['fk_route_details']
         
+        remain_undel_ids = [];
         for d in fk_route_details:
             print(fk_route_id, d['order_latitude'], d['order_longitude'], d['fk_route_detail_id'])
 
             fk_route_detail = None
+            
             id = d['fk_route_detail_id']
             if id:
                 fk_route_detail = RouteDetail.objects.filter(pk=id).first()
@@ -60,6 +63,12 @@ def route_detail_view(request):
             fk_route_detail.order_longitude = d['order_longitude']
             fk_route_detail.fk_route_id = fk_route_id
             fk_route_detail.save()
+
+            remain_undel_ids.append(fk_route_detail.id) #natra new id , create / delete huncha
+
+        # delete ids which are not sent by form/web page
+        RouteDetail.objects.filter(fk_route_id=fk_route_id).exclude(id__in=remain_undel_ids).delete()
+
         return JsonResponse({'success':'true'})
     else:
         context={}
