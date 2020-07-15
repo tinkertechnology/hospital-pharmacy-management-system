@@ -24,6 +24,7 @@ from django.conf import settings
 from personal.views import (
 	home_screen_view, dashboard_view
 )
+# from sarovara_web import urls as sarovara_urls
 
 from account.views import (
     registration_view,
@@ -345,7 +346,8 @@ urlpatterns += [
 
 urlpatterns += [
     path(r'admin/', admin.site.urls),
-    path('', home_screen_view, name="home"),
+    path('', include('sarovara_web.urls')),
+    # path('', home_screen_view, name="home"),
     path('dashboard', dashboard_view, name="dashboard"),
     path('account/', account_view, name="account"),
     path('blog/', include('blog.urls', 'blog')),

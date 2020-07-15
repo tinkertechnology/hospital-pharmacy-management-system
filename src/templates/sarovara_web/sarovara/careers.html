@@ -1,0 +1,95 @@
+{% extends 'base_layout.html' %}
+
+{% load static %}
+
+{% block content %}
+
+	<!-- Breadcrumbs -->
+    <section class="breadcrumbs-custom bg-image context-dark" style="background-image: url({% static 'assets/images/breadcrumbs-image-01.jpg' %});">
+        <div class="breadcrumbs-custom-inner">
+            <div class="container breadcrumbs-custom-container">
+                <div class="breadcrumbs-custom-main">
+                    <!-- <h6 class="breadcrumbs-custom-subtitle title-decorated">Pages</h6> -->
+                    <h1 class="breadcrumbs-custom-title">Careers</h1>
+                </div>
+                <ul class="breadcrumbs-custom-path">
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li class="active">Careers</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Working at CaseCraft-->
+    <section class="section section-lg">
+        <div class="container">
+            <div class="row row-50 justify-content-center justify-content-lg-between flex-lg-row-reverse">
+                <div class="col-md-10 col-lg-6 col-xl-5">
+                    <h3>Working at Sarovara</h3>
+                    <p style="text-align: justify;">In non pellentesque leo. Vivamus lobortis, dui eu facilisis pellentesque, urna nulla rhoncus purus, eget egestas nisl lacus id nibh. Integer imperdiet, eros vel vehicula porttitor, tortor leo luctus justo, eu placerat nisi quam id dolor. Mauris tempus, erat vel pharetra vehicula, orci eros ornare tortor, vulputate condimentum metus purus et metus.</p>
+                    <a class="button button-lg button-primary button-winona" href="about-us.html">Learn more</a>
+                </div>
+                <div class="col-md-10 col-lg-6 col-xl-6">
+                    <img class="img-responsive" src="{% static 'assets/images/careers-1-570x368.jpg' %}" alt="" width="570" height="368"/>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Available Vacancies-->
+    <section class="section section-lg bg-gray-100 text-center section-wave-offset">
+        <div class="container">
+            <h3>Available Vacancies</h3>
+            <div class="row row-45">
+                <div class="col-md-12 col-lg-12">
+                    <!-- Career Classic-->
+                    <article class="career-classic">
+                        <h4 class="career-classic-title">
+                            <a href="#">Delivery Boy [15]</a>
+                        </h4>
+                        <div class="career-classic-divider"></div>
+                        <ul class="career-classic-list">
+                            <li>
+                                <span class="icon mdi mdi-calendar-clock"></span><span>Full Time : 6:30AM - 6:30PM </span>
+                            </li>
+                            <li>
+                                <span class="icon mdi mdi-map-marker"></span><span>Inside Kathmandu Valley</span>
+                            </li>
+                            <li>
+                                <span class="icon mdi mdi-calendar-clock"></span><span>Salary: 18000</span>
+                            </li>
+                        </ul>
+                        <p>Water Jar should be distributed to the Home or Offices in Bicycle or Rickshaw.</p>
+
+                        <h6 style="margin-top: 20px;">Excluding Monthly Salary</h6>
+                        <div class="career-classic-divider" style="margin-top: 10px;"></div>
+                        <ul class="career-classic-list">
+                            <li>
+                                <span>Daily Morning BreakFast: Rs. 60</span>
+                            </li>
+                            <li>
+                                <span>Daily Lunch: Rs. 180</span>
+                            </li>
+                            <li>
+                                <span>Daily Evening Breakfast: Rs.60</span>
+                            </li>
+                        </ul>
+
+                        <h6 style="margin-top: 20px;">Additional Benefits after One Year</h6>
+                        <div class="career-classic-divider" style="margin-top: 10px;"></div>
+                        <ul class="list-unstyled" style="margin-top: 20px;">
+                            <li>Festival Bonus</li>
+                            <li>Bonus according to Company's Benefit</li>
+                            <li>Education fee Rs.2000 for children and families</li>
+                            <li>Employee's Health Insurance</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+            <!-- <a class="button button-lg button-primary button-winona" href="#">Join Us</a> -->
+        </div>
+    </section>
+
+
+{% endblock %}

@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '!p1ai_b373g3bmz-**m@%h9+0_8xm7*41etdbi+t266-mogm08'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -59,9 +59,9 @@ INSTALLED_APPS = [
     'membership',
     'store',
     'payment',
+    'sarovara_web',
     'payment_esewa',
     'routes',
-    'appointments',
     'prescription',
     'wsc',
     'crispy_forms',
@@ -93,7 +93,7 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates/sarovara_web')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

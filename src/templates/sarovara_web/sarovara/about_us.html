@@ -1,0 +1,94 @@
+{% extends 'base_layout.html' %}
+
+{% load static %}
+
+{% block content %}
+
+	<!-- Breadcrumbs -->
+    <section class="breadcrumbs-custom bg-image context-dark" style="background-image: url({% static 'assets/images/breadcrumbs-image-01.jpg' %});">
+        <div class="breadcrumbs-custom-inner">
+            <div class="container breadcrumbs-custom-container">
+                <div class="breadcrumbs-custom-main">
+                    <!-- <h6 class="breadcrumbs-custom-subtitle title-decorated">Pages</h6> -->
+                    <h1 class="breadcrumbs-custom-title">About Us</h1>
+                </div>
+                <ul class="breadcrumbs-custom-path">
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li class="active">About Us</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Overview-->
+    <section class="section section-lg-custom">
+        <div class="container">
+            <div class="row row-50 justify-content-center justify-content-lg-between">
+                <div class="col-md-10 col-lg-6 column-ethereal">
+                    <h3>Overview</h3>
+                    <h4 class="offset-top-3">Provide quality pure drinking water at affordable prices.</h4>
+                    <p style="text-align: justify;">The main objective of this company is to provide high quality drinking water at a reasonable price.</p>
+                    <p style="text-align: justify;">This company works to test whether the drinking water processed and purified by various companies meet the Guidelines on Processed Drinking Water Production Standards 2017, to publish the test results to the public for information, to routinely inspect water processing and purifying facilities to check their sanitation level, to provide a platform to buy the drinking water--that meet our quality standard--through our mobile app and deliver the purchased drinking water to homes and offices of our customers.</p>
+                    <p style="text-align: justify;">This company is providing drinking water at a 20% less than the market price and delivers it to the doorstep of customer’s homes and offices, setting competition for drinking water quality in the market.</p>
+                    <p style="text-align: justify;">For now this service is available within few places of Kathmandu valley but it hopes to extend it’s service area in near future.</p>
+                    <!-- <div class="group group-middle"><a class="button button-primary button-winona" href="#our-history" data-waypoint-to="#our-history">View our History</a><a class="button button-primary-outline button-winona" href="careers.html">Join our Team</a></div> -->
+                </div>
+                <div class="col-md-10 col-lg-6 col-xl-5 align-self-end">
+                    <img class="img-responsive" src="{% static 'assets/images/about-01.png' %}" alt="" width="510" height="482"/>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section section-lg bg-gray-100 section-wave-offset" id="our-history">
+        <div class="container">
+            <!-- Timeline Classic-->
+            <article class="timeline-classic">
+                <div class="timeline-classic-item">
+                    <div class="timeline-classic-item-aside"><img class="timeline-classic-item-image" src="{% static 'assets/images/timeline-1-390x250.jpg' %}" alt="" width="390" height="250"/>
+                    </div>
+                    <div class="timeline-classic-item-divider"></div>
+                    <div class="timeline-classic-item-main">
+                        <p class="timeline-classic-item-title">Regular Quality Check</p>
+                        <p class="thumbnail-classic-item-subtitle">We do quality check of drinking water processed and purified by the companies that sell or want to sell drinking water through sarovara.</p>
+                    </div>
+                </div>
+                <div class="timeline-classic-item">
+                    <div class="timeline-classic-item-aside"><img class="timeline-classic-item-image" src="{% static 'assets/images/timeline-2-390x250.jpg' %}" alt="" width="390" height="250"/>
+                    </div>
+                    <div class="timeline-classic-item-divider"></div>
+                    <div class="timeline-classic-item-main">
+                        <p class="timeline-classic-item-title">Regular Inspection</p>
+                        <p class="thumbnail-classic-item-subtitle">We routinely inspect water processing and purifiying facilities of the companies that sell or want to sell drinking water through Sarovara.</p>
+                    </div>
+                </div>
+                <div class="timeline-classic-item">
+                    <div class="timeline-classic-item-aside"><img class="timeline-classic-item-image" src="{% static 'assets/images/timeline-3-390x250.jpg' %}" alt="" width="390" height="250"/>
+                    </div>
+                    <div class="timeline-classic-item-divider"></div>
+                    <div class="timeline-classic-item-main">
+                        <p class="timeline-classic-item-title">Details Public</p>
+                        <p class="thumbnail-classic-item-subtitle">We regularly publish information about drinking water quality and sanitation information of the companies that sell or want to sell drinking water through Sarovara.</p>
+                    </div>
+                </div>
+                <div class="timeline-classic-item">
+                    <div class="timeline-classic-item-aside"><img class="timeline-classic-item-image" src="{% static 'assets/images/timeline-4-390x250.jpg' %}" alt="" width="390" height="250"/>
+                    </div>
+                    <div class="timeline-classic-item-divider"></div>
+                    <div class="timeline-classic-item-main">
+                        <p class="timeline-classic-item-title">Buy Water</p>
+                        <p class="thumbnail-classic-item-subtitle">We will only sell drinking water from the companies that comply with the Guidelines on Processed Drinking Water Production Standards 2017.</p>
+                    </div>
+                </div>
+                <div class="timeline-classic-item">
+                    <div class="timeline-classic-item-aside"><img class="timeline-classic-item-image" src="{% static 'assets/images/timeline-4-390x250.jpg' %}" alt="" width="390" height="250"/>
+                    </div>
+                    <div class="timeline-classic-item-divider"></div>
+                    <div class="timeline-classic-item-main">
+                        <p class="timeline-classic-item-title">Sales Distribution</p>
+                        <p class="thumbnail-classic-item-subtitle">From our depots, we provide door-to-door delivery service of drinking water to our customers who purchase through our Sarovara app and other means.</p>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+{% endblock %}
