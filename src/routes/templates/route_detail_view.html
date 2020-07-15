@@ -36,6 +36,8 @@
     let markersArray = [];
     let polyline = null;
      counter=0;
+     _IS_MAP_LOADED_ = false;
+
 
     function initMap() {
       map = new google.maps.Map(document.getElementById('map'), {
@@ -58,13 +60,17 @@
 
       map.addListener('tilesloaded', function () { 
         console.log('map loaded1'); 
-        addMarkers();
+        if(_IS_MAP_LOADED_ == false){  // prevent map to load multiple times
+          addMarkers(); 
+        }        
+        _IS_MAP_LOADED_ = true;
       })
     }
 
     // define function to add marker at given lat & lng
     function addMarker(latLng, fk_routedetail_id=0) {
       console.log(latLng);
+      console.log(JSON.stringify(latLng));
       counter++;
 
       let marker = new google.maps.Marker({
