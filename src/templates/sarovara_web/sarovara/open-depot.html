@@ -1,0 +1,319 @@
+{% extends 'base_layout.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+	<!-- Breadcrumbs -->
+    <section class="breadcrumbs-custom bg-image context-dark" style="background-image: url({% static 'assets/images/breadcrumbs-image-01.jpg' %});">
+        <div class="breadcrumbs-custom-inner">
+            <div class="container breadcrumbs-custom-container">
+                <div class="breadcrumbs-custom-main">
+                    <h6 class="breadcrumbs-custom-subtitle title-decorated">What We Offer</h6>
+                    <h1 class="breadcrumbs-custom-title">Open Depot</h1>
+                </div>
+                <ul class="breadcrumbs-custom-path">
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li class="active">Open Depot</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Policy-->
+    <section class="section section-lg section-wave-offset">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-xl-12">
+                    <!-- Terms list -->
+                    <dl class="list-terms">
+                        <dt>Thank you for your interest in opening a Sarovara depot. From this page you will receive the following information.</dt>
+                        <ul>
+                        	<!-- Terms and Conditions -->
+                        	<li>
+                        		<div class="row" style="margin-top: 10px;">
+                        			<div class="col-md-1" style="max-width: 0.83%">
+                        				<h5>1. </h5>
+                        			</div>
+                        			<div class="col-md-11">
+                        				<h5>What are the terms and conditions to open a Sarovara depot ?</h5>
+                        				<ul>
+                        					<dd>You will have to meet the following conditions to open a depot.</dd>
+                        					<li>
+                        						<div class="row">
+                        							<div class="col-md-1" style="max-width: 0.83%">
+                        								a) 
+                        							</div>
+                        							<div class="col-md-11">
+                        								You are allowed only to sell drinking water that is processed, produced and purified according to standard provided by the Guidelines on Processed Drinking Water Production Standards 2017.
+                        							</div>
+                        						</div>
+                        					</li>
+                        					<li>
+                        						<div class="row">
+                        							<div class="col-md-1" style="max-width: 0.83%">
+                        								b) 
+                        							</div>
+                        							<div class="col-md-11">
+                        								You are allowed only to sell drinking water from the companies that allow Sarovara to inspect their water producing and purifying facilities. 
+                        							</div>
+                        						</div>
+                        					</li>
+                        					<li>
+                        						<div class="row">
+                        							<div class="col-md-1" style="max-width: 0.83%">
+                        								c) 
+                        							</div>
+                        							<div class="col-md-11">
+                        								You are not allowed to sell at a higher price than what Sarovara has predetermined but you are allowed to sell at a lower price
+                        							</div>
+                        						</div>
+                        					</li>
+                        					<li>
+                        						<div class="row">
+                        							<div class="col-md-1" style="max-width: 0.83%">
+                        								d) 
+                        							</div>
+                        							<div class="col-md-11">
+                        								In regular basis, you are required to bring water sample of drinking water that you are selling or want to sell from Sarovara depot to Sarovara for a regular test
+                        							</div>
+                        						</div>
+                        					</li>
+                        					<li>
+                        						<div class="row">
+                        							<div class="col-md-1" style="max-width: 0.83%">
+                        								e) 
+                        							</div>
+                        							<div class="col-md-11">
+                        								You must address any advice, suggestion or complaint from customers immediately. 
+                        							</div>
+                        						</div>
+                        					</li>
+                        					<li>
+                        						<div class="row">
+                        							<div class="col-md-1" style="max-width: 0.83%">
+                        								f) 
+                        							</div>
+                        							<div class="col-md-11">
+                        								You must comply with any rules and regulations aimed to improve customer service and company’s growth
+                        							</div>
+                        						</div>
+                        					</li>
+                        				</ul>
+                        			</div>
+                        		</div>
+                        	</li>
+
+                        	<!-- Services for Depot -->
+                        	<li>
+                        		<div class="row" style="margin-top: 10px;">
+                        			<div class="col-md-1" style="max-width: 0.83%">
+                        				<h5>2. </h5>
+                        			</div>
+                        			<div class="col-md-11">
+                        				<h5> What are the services you will receive from Sarovara after you open a depot ?</h5>
+                        				<ul>
+                        					<dd>Sarovara will provide the following services for the depot you open.</dd>
+                        					<li>
+                        						<div class="row">
+                        							<div class="col-md-1" style="max-width: 0.83%">
+                        								a) 
+                        							</div>
+                        							<div class="col-md-11">
+                        								The amount of drinking water your depot needs from various companies will be delivered to your depot.
+                        							</div>
+                        						</div>
+                        					</li>
+                        					<li>
+                        						<div class="row">
+                        							<div class="col-md-1" style="max-width: 0.83%">
+                        								b) 
+                        							</div>
+                        							<div class="col-md-11">
+                        								We will test the drinking water your depot sells for free. 
+                        							</div>
+                        						</div>
+                        					</li>
+                        					<li>
+                        						<div class="row">
+                        							<div class="col-md-1" style="max-width: 0.83%">
+                        								c) 
+                        							</div>
+                        							<div class="col-md-11">
+                        								We will promote and advertise your depot.
+                        							</div>
+                        						</div>
+                        					</li>
+                        					<li>
+                        						<div class="row">
+                        							<div class="col-md-1" style="max-width: 0.83%">
+                        								d) 
+                        							</div>
+                        							<div class="col-md-11">
+                        								We will provide features your depot needs in our Sarovara app.
+                        							</div>
+                        						</div>
+                        					</li>
+                        					<li>
+                        						<div class="row">
+                        							<div class="col-md-1" style="max-width: 0.83%">
+                        								e) 
+                        							</div>
+                        							<div class="col-md-11">
+                        								In Sarovara app, we will provide a platform to sell drinking water to your customer. 
+                        							</div>
+                        						</div>
+                        					</li>
+                        					<li>
+                        						<div class="row">
+                        							<div class="col-md-1" style="max-width: 0.83%">
+                        								f) 
+                        							</div>
+                        							<div class="col-md-11">
+                        								We will provide a service that allows customer to pay via Sarovara itself.
+                        							</div>
+                        						</div>
+                        					</li>
+                        					<li>
+                        						<div class="row">
+                        							<div class="col-md-1" style="max-width: 0.83%">
+                        								g) 
+                        							</div>
+                        							<div class="col-md-11">
+                        								We will add additional feature according to depot’s demand. 
+                        							</div>
+                        						</div>
+                        					</li>
+                        					<li>
+                        						<div class="row">
+                        							<div class="col-md-1" style="max-width: 0.83%">
+                        								h) 
+                        							</div>
+                        							<div class="col-md-11">
+                        								Depots that sell at a lower price than Sarovara has determined will receive a discount that is proportionate to service charge.
+                        							</div>
+                        						</div>
+                        					</li>
+                        				</ul>
+                        			</div>
+                        		</div>
+                        	</li>
+                        	
+
+                        	<!-- Service Fee -->
+                        	<li>
+                        		<div class="row" style="margin-top: 10px;">
+                        			<div class="col-md-1" style="max-width: 0.83%">
+                        				<h5>3. </h5>
+                        			</div>
+                        			<div class="col-md-11">
+                        				<h5>What is the service fee of Sarovara ?</h5>
+                        				<ul>
+                        					<!-- <dd>You will have to meet the following conditions to open a depot.</dd> -->
+                        					<li>
+                        						<div class="row">
+                        							<div class="col-md-1" style="max-width: 0.83%">
+                        								a) 
+                        							</div>
+                        							<div class="col-md-11">
+                        								If depot sells 250 or less water jars a day, the monthly charge would Rs.5000.
+                        							</div>
+                        						</div>
+                        					</li>
+                        					<li>
+                        						<div class="row">
+                        							<div class="col-md-1" style="max-width: 0.83%">
+                        								b) 
+                        							</div>
+                        							<div class="col-md-11">
+                        								If a depot sells more than 251 or less than 500 jars a day, the charge would be Rs.1 per jar. 
+                        							</div>
+                        						</div>
+                        					</li>
+                        					<li>
+                        						<div class="row">
+                        							<div class="col-md-1" style="max-width: 0.83%">
+                        								c) 
+                        							</div>
+                        							<div class="col-md-11">
+                        								If a depot sells more than 501 jars a day, the charge would be Rs.2 per jar.
+                        							</div>
+                        						</div>
+                        					</li>
+                        				</ul>
+                        			</div>
+                        		</div>
+                        	</li>
+                        </ul>
+                        
+                        <!-- <dd style="margin-top: 20px;">My company agrees with the mentioned terms and conditions.</dd> -->
+
+                        <p style="margin-top: 20px;">If you are interested in opening a depot in Sarovara, Please fill up the form. <a href="#" data-toggle="modal" data-target="#request-for-depot" style="font-weight: bold;">Click Here</a>.</p>
+                    </dl>  
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal modal-custom fade" id="request-for-depot">
+        <div class="modal-dialog modal-dialog-custom" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Request for Depot</h3>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                </div>
+                <div class="modal-body">
+                    <p>Please kindly fill up the form below.</p>
+                    <!-- RD Mailform-->
+                    <form class="open-depot-form" data-form-output="form-output-global" data-form-type="contact" method="POST" 
+                    action="{% url 'request-open-depot' %}">
+						{% csrf_token %}
+						<div class="row" style="margin-top: 10px;">
+							<div class="col-md-12">
+								<div class="form-wrap">
+									<label class="form-label-outside" for="contact-2-first-name">Full Name</label>
+									<input class="form-input" id="id_full_name" type="text" name="full_name" data-constraints="@Required">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-wrap">
+									<label class="form-label-outside" for="contact-2-email">Email</label>
+									<input class="form-input" id="id_email" type="email" name="email" data-constraints="@Email @Required">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-wrap">
+									<label class="form-label-outside" for="contact-2-phone">Phone</label>
+									<input class="form-input" id="id_phone" type="text" name="phone" data-constraints="@PhoneNumber @Required">
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="form-wrap">
+									<label class="form-label-outside" for="contact-2-phone">Location</label>
+									<input class="form-input" id="id_location" type="text" name="location" data-constraints="@Required">
+								</div>
+							</div>
+							<div class="col-12">
+								<div class="form-wrap">
+									<label class="form-label-outside" for="contact-2-message">Your Message</label>
+									<textarea class="form-input" id="id_message" name="message" data-constraints="@Required"></textarea>
+								</div>
+							</div>
+						</div>
+						<!-- Google captcha-->
+						<!-- <div class="form-wrap text-left form-validation-left">
+							<div class="recaptcha" id="captcha1" data-sitekey="6LfZlSETAAAAAC5VW4R4tQP8Am_to4bM3dddxkEt"></div>
+						</div> -->
+						<div class="group group-middle">
+							<button class="button button-primary button-winona" type="submit">Send Message</button>
+						</div>
+					</form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+{% endblock %}

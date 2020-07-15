@@ -1,0 +1,94 @@
+{% extends 'base_layout.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+	<!-- Breadcrumbs -->
+    <section class="breadcrumbs-custom bg-image context-dark" style="background-image: url({% static 'assets/images/breadcrumbs-image-01.jpg' %});">
+        <div class="breadcrumbs-custom-inner">
+            <div class="container breadcrumbs-custom-container">
+                <div class="breadcrumbs-custom-main">
+                    <h6 class="breadcrumbs-custom-subtitle title-decorated">What We Offer</h6>
+                    <h1 class="breadcrumbs-custom-title">Feedback</h1>
+                </div>
+                <ul class="breadcrumbs-custom-path">
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li class="active">Feedback</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Policy-->
+    <section class="section section-lg section-wave-offset">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-xl-12">
+                    <!-- Terms list -->
+                    <dl class="list-terms">
+                        <dt>Thank you for coming to this page to give Sarovara a feedback or suggestion. </dt>
+
+                        <dd style="margin-top: 20px;">Your feedback or suggestion is very important to us. We will make our services more sophisticated based on your feedback or suggestion.</dd>
+                                                
+                        <p style="margin-top: 20px;">If you are interested in providing a suggestion or feedback, Please. <a href="#" data-toggle="modal" data-target="#request-for-feedback" style="font-weight: bold;">Click Here</a>.</p>
+                    </dl>  
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal modal-custom fade" id="request-for-feedback">
+        <div class="modal-dialog modal-dialog-custom" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Request for Feedback</h3>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                </div>
+                <div class="modal-body">
+                    <!-- RD Mailform-->
+                    <form class="request-feedback-form" data-form-output="form-output-global" data-form-type="contact" method="POST" 
+                    action="{% url 'request-feedback' %}">
+                        {% csrf_token %}
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="col-md-12">
+                                <div class="form-wrap">
+                                    <label class="form-label-outside" for="contact-2-first-name">Full Name</label>
+                                    <input class="form-input" id="id_full_name" type="text" name="full_name" data-constraints="@Required">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-wrap">
+                                    <label class="form-label-outside" for="contact-2-email">Email</label>
+                                    <input class="form-input" id="id_email" type="email" name="email" data-constraints="@Email @Required">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-wrap">
+                                    <label class="form-label-outside" for="contact-2-phone">Phone</label>
+                                    <input class="form-input" id="id_phone" type="text" name="phone" data-constraints="@PhoneNumber @Required">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-wrap">
+                                    <label class="form-label-outside" for="contact-2-message">Your Message</label>
+                                    <textarea class="form-input" id="id_message" name="message" data-constraints="@Required"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Google captcha-->
+                        <!-- <div class="form-wrap text-left form-validation-left">
+                            <div class="recaptcha" id="captcha1" data-sitekey="6LfZlSETAAAAAC5VW4R4tQP8Am_to4bM3dddxkEt"></div>
+                        </div> -->
+                        <div class="group group-middle">
+                            <button class="button button-primary button-winona" type="submit">Send Message</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+{% endblock %}
