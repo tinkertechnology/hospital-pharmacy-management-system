@@ -59,14 +59,11 @@ INSTALLED_APPS = [
     'membership',
     'store',
     'payment',
-
     'payment_esewa',
     'routes',
-
-
+    'appointments',
     'prescription',
     'wsc',
-
     'crispy_forms',
     'slider',
     'django_filters',
@@ -123,6 +120,17 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql', 
+#         'NAME': 'db_django',
+#         'USER': 'root',
+#         'PASSWORD': '',
+#         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+#         'PORT': '3307',
+#     }
+# }
 
 BRAINTREE_PUBLIC = "qn3p5n7njksw47r3"
 BRAINTREE_PRIVATE = "d14ac944794c0df1c81991ecf49221ff"

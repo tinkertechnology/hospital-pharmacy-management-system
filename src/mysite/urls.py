@@ -127,7 +127,6 @@ from users.views import (
 
 
 
-
 #API Patterns
 urlpatterns = [
     url(r'^accounts/', include('rest_registration.api.urls')),
@@ -139,6 +138,8 @@ urlpatterns = [
     re_path(r'^api/reset_password/', ResetPasswordAPIView.as_view(), name="reset_password"),
     re_path(r'^api/change_password/', ChangePasswordAPIView.as_view(), name="change_password"),
     re_path(r'^api/file_upload/$', ApiPostFile.as_view(), name='file_upload'),
+
+    
     # re_path(r'^api/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
     # re_path(r'^api/upload/$', FileUploadView.as_view()),
 
