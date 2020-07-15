@@ -1,0 +1,147 @@
+{% extends 'base_layout.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+	<!-- Breadcrumbs -->
+    <section class="breadcrumbs-custom bg-image context-dark" style="background-image: url({% static 'assets/images/breadcrumbs-image-01.jpg' %});">
+        <div class="breadcrumbs-custom-inner">
+            <div class="container breadcrumbs-custom-container">
+                <div class="breadcrumbs-custom-main">
+                    <h6 class="breadcrumbs-custom-subtitle title-decorated">What We Offer</h6>
+                    <h1 class="breadcrumbs-custom-title">Sell Drinking Water</h1>
+                </div>
+                <ul class="breadcrumbs-custom-path">
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li class="active">Sell Drinking Water</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Policy-->
+    <section class="section section-lg section-wave-offset">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-xl-12">
+                    <!-- Terms list -->
+                    <dl class="list-terms">
+                        <dt>Thank you for your interest in selling your company’s drinking water through Sarovara.</dt>
+                        <dd>Any company that processes and purifies drinking water can sell its drinking water through Sarovara, if it meets Sarovara’s guidelines.  Sarovara will test the quality of drinking water provided by any company that want to sell drinking water through Sarovara, it will routinely inspect water processing and purifying facilities and it will only sell and distribute drinking water that meet our quality standard. On daily basis, Sarovara will publish information about drinking water quality based on their companies and we will sell and distribute drinking water from companies that our customers choose. </dd>
+                        <dd style="margin-top: 20px;">In order to sell your company’s drinking water through Sarovara, please read thoroughly the following terms and conditions.</dd>
+                        <ul>
+                        	<li>
+                        		<div class="row" style="margin-top: 10px;">
+                        			<div class="col-md-1" style="max-width: 0.83%">
+                        				1. 
+                        			</div>
+                        			<div class="col-md-11">
+                        				I produce, process and purify drinking water in accordance with the standard set by the Government of Nepal and its subordinate offices (the Guidelines on Processed Drinking Water Production Standards 2017).
+                        			</div>
+                        		</div>
+                        	</li>
+                        	<li>
+                        		<div class="row" style="margin-top: 10px;">
+                        			<div class="col-md-1" style="max-width: 0.83%">
+                        				2. 
+                        			</div>
+                        			<div class="col-md-11">
+                        				I follow the sanitation guidelines set by the Government of Nepal and its subordinate offices (the Guidelines on Processed Drinking Water Production Standards 2017) while producing and processing, filling and cleaning water jars and also for factory sanitation.
+                        			</div>
+                        		</div>
+                        	</li>
+                        	<li>
+                        		<div class="row" style="margin-top: 10px;">
+                        			<div class="col-md-1" style="max-width: 0.83%">
+                        				3. 
+                        			</div>
+                        			<div class="col-md-11">
+                        				I will regularly pay taxes or any fees that is required by the Government of Nepal.
+                        			</div>
+                        		</div>
+                        	</li>
+                        	<li>
+                        		<div class="row" style="margin-top: 10px;">
+                        			<div class="col-md-1" style="max-width: 0.83%">
+                        				4. 
+                        			</div>
+                        			<div class="col-md-11">
+                        				I will allow Sarovara Drinking Water Pvt. Ltd. to inspect whether the drinking water my company produces, processes and purifies meet the standards set by (the Guidelines on Processed Drinking Water Production Standards 2017) and to publish such information through Sarovara app. 
+                        			</div>
+                        		</div>
+                        	</li>
+                        	<li>
+                        		<div class="row" style="margin-top: 10px;">
+                        			<div class="col-md-1" style="max-width: 0.83%">
+                        				5. 
+                        			</div>
+                        			<div class="col-md-11">
+                        				I will allow Sarovara Drinking Water Pvt. Ltd. to make inspection about drinking water production, processing, purifying and sanitation work at any time.  
+                        			</div>
+                        		</div>
+                        	</li>
+                        	<li>
+                        		<div class="row" style="margin-top: 10px;">
+                        			<div class="col-md-1" style="max-width: 0.83%">
+                        				6. 
+                        			</div>
+                        			<div class="col-md-11">
+                        				Once Sarovara Drinking Water Pvt. Ltd. examines the product my company produces, I will allow to put a Sarovara sticker to verify that it was tested and verified by this company. 
+                        			</div>
+                        		</div>
+                        	</li>
+                        	<li>
+                        		<div class="row" style="margin-top: 10px;">
+                        			<div class="col-md-1" style="max-width: 0.83%">
+                        				7. 
+                        			</div>
+                        			<div class="col-md-11">
+                        				I will comply with the mentioned terms and conditions. I am aware that in case of non-compliance of the terms and conditions, Sarovara can ban my company from selling drinking water through Sarovara app.  
+                        			</div>
+                        		</div>
+                        	</li>
+                        </ul>
+                        
+                        <dd style="margin-top: 20px;">My company agrees with the mentioned terms and conditions.</dd>
+
+                        <p style="margin-top: 20px;">If you accept the terms and conditions, Please <a href="{% static 'assets/downloads/agreement.pdf' %}" style="font-weight: bold;" >Click Here</a>.</p>
+
+                        <p style="margin-top: 20px;">Fill out the printed form and upload here, Please 
+                        	<a href="#" style="font-weight: bold;" data-toggle="modal" data-target="#upload-document">Upload Here</a>.
+                        </p>
+
+                        <dd style="margin-top: 20px;"><span style="font-weight: bold;">Pay service fee via Esewa:</span> <br/>Only if your company and Sarovara have made buying-selling agreement, we will be able to return your fee</dd>
+                    </dl>  
+                </div>
+            </div>
+        </div>
+    </section>
+
+     <div class="modal modal-custom fade" id="upload-document">
+            <div class="modal-dialog modal-dialog-custom" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Upload Document</h3>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- <p>Please leave your phone number in the field below and we will call you back soon.</p> -->
+                        <form class="rd-form rd-mailform form-inline form-inline-custom" data-form-output="form-output-global" data-form-type="subscribe" method="post" action="bat/rd-mailform.php">
+                            <div class="form-wrap">
+                                <input class="form-input" id="header-phone" type="file" name="file" >
+                                <!-- <label class="form-label" for="header-phone">Upload Document</label> -->
+                            </div>
+                            <div class="form-button">
+                                <button class="button button-primary button-icon button-icon-only button-winona" type="submit" aria-label="submit"><span class="icon mdi mdi-file"></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    
+
+{% endblock %}

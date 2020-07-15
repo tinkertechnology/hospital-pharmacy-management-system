@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .serializers import MembershipTypeSerializer, UserMembershipSerializer, UserMembershipAutoOrderSerializer
+from .serializers import MembershipTypeSerializer, UserMembershipSerializer, UserMembershipAutoOrderSerializer, UserMembershipUserAutoOrdersListSerializer
 from .models import MembershipType, UserMembership, UserMembershipAutoOrder
 
 from rest_framework.authentication import SessionAuthentication
@@ -71,3 +71,11 @@ class UserMembershipAutoOrderListCreateApiView(ListCreateAPIView):
 
     def get_queryset(self, *args, **kwargs):
         return UserMembershipAutoOrder.objects.all()
+
+class UserMembershipUserAutoOrdersListApiView(ListAPIView):
+    serializer_class = UserMembershipUserAutoOrdersListSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        return UserMembershipAutoOrder.objects.all()
+
+

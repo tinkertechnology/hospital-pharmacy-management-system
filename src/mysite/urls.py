@@ -24,6 +24,7 @@ from django.conf import settings
 from personal.views import (
 	home_screen_view, dashboard_view
 )
+# from sarovara_web import urls as sarovara_urls
 
 from account.views import (
     registration_view,
@@ -77,6 +78,7 @@ from orders.views import (
                     CartOrderLists,
                     StoreWiseCartOrderLists,
                     UpdateOrderStatusApiView,
+                    StoreWiseOrderHistoryLists,
                     UpdateStoreWiseOrderStatusApiView,
 
                     StoreWiseOrderLists,
@@ -126,7 +128,6 @@ from users.views import (
 
 
 
-
 #API Patterns
 urlpatterns = [
     url(r'^accounts/', include('rest_registration.api.urls')),
@@ -138,6 +139,8 @@ urlpatterns = [
     re_path(r'^api/reset_password/', ResetPasswordAPIView.as_view(), name="reset_password"),
     re_path(r'^api/change_password/', ChangePasswordAPIView.as_view(), name="change_password"),
     re_path(r'^api/file_upload/$', ApiPostFile.as_view(), name='file_upload'),
+
+    
     # re_path(r'^api/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
     # re_path(r'^api/upload/$', FileUploadView.as_view()),
 
@@ -165,6 +168,7 @@ urlpatterns = [
 
     re_path(r'^api/storewise_orders/$', StoreWiseOrderLists.as_view(), name='storewise_orders_store'),
     re_path(r'^api/storewise_orders_lists/$', StoreWiseCartOrderLists.as_view(), name='storewise_orders_lists'),
+    re_path(r'^api/storewise_orders_history_lists/$', StoreWiseOrderHistoryLists.as_view(), name='storewise_orders_history_lists'),
     re_path(r'^api/store_name/$', myStoreName.as_view(), name='store_name'),
 
     
@@ -228,7 +232,8 @@ from membership.views import (
         MembershipTypeRetrieveUpdateDestroyApiView,
         UserMembershipListCreateApiView,
         UserMembershipRetrieveUpdateDestroyApiView,
-        UserMembershipRetrieveApiView
+        UserMembershipRetrieveApiView,
+        
 )
 from membership import views as membership_views
 urlpatterns += [
@@ -238,6 +243,7 @@ urlpatterns += [
     re_path(r'^api/user-membership/(?P<pk>\d+)/$', UserMembershipRetrieveUpdateDestroyApiView.as_view(), name='api-membership-type'),
     re_path(r'^api/user-membership-retrieve/$', UserMembershipRetrieveApiView.as_view(), name='api-user-membership-retrieve'),
     re_path(r'^api/user_membership_auto_order/$', membership_views.UserMembershipAutoOrderListCreateApiView.as_view(), name='api-user-membership-retrieve'),
+    re_path(r'^api/user_membership_user_auto_orders_list/$', membership_views.UserMembershipUserAutoOrdersListApiView.as_view(), name='api-user-membership-auto-order-list'),
 ]
 
 # store api
@@ -340,7 +346,8 @@ urlpatterns += [
 
 urlpatterns += [
     path(r'admin/', admin.site.urls),
-    path('', home_screen_view, name="home"),
+    path('', include('sarovara_web.urls')),
+    # path('', home_screen_view, name="home"),
     path('dashboard', dashboard_view, name="dashboard"),
     path('account/', account_view, name="account"),
     path('blog/', include('blog.urls', 'blog')),

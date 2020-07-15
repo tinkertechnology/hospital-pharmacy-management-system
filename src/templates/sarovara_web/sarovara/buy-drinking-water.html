@@ -1,0 +1,138 @@
+{% extends 'base_layout.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+	<!-- Breadcrumbs -->
+    <section class="breadcrumbs-custom bg-image context-dark" style="background-image: url({% static 'assets/images/breadcrumbs-image-01.jpg' %});">
+        <div class="breadcrumbs-custom-inner">
+            <div class="container breadcrumbs-custom-container">
+                <div class="breadcrumbs-custom-main">
+                    <h6 class="breadcrumbs-custom-subtitle title-decorated">What We Offer</h6>
+                    <h1 class="breadcrumbs-custom-title">Buy Drinking Water</h1>
+                </div>
+                <ul class="breadcrumbs-custom-path">
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li class="active">Buy Drinking Water</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Policy-->
+    <section class="section section-lg section-wave-offset">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <!-- Terms list -->
+                    <dl class="list-terms">
+                        <dt>Thank you for your interest in buying drinking water through Sarovara, water that is processed and purified by various companies.</dt>
+                        <dd>12.5% discount is available for annual advance payment or 10% discount for monthly advance payment.</dd>
+                        <dd style="margin-top: 20px;">To become a monthly or an annually customer, fill up the form below.</dd>
+                    </dl>  
+                </div>
+            </div>
+
+            <div class="row">
+            	<div class="col-sm-12 col-lg-8">
+            		<!-- RD Mailform-->
+                    <form class="buy-drinking-water-form" data-form-output="form-output-global" data-form-type="contact" method="POST" 
+                    action="{% url 'buy-drinking-water' %}">
+						{% csrf_token %}
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-wrap">
+									<label class="form-label-outside" for="contact-2-first-name">Location that you want to buy drinking water from</label>
+									<select class="form-control" id="id_select_location" name="select_location">
+										<option>Select Location</option>
+										<option value="Singamangal">Sinamangal</option>
+										<option value="Gaushala">Gaushala</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-wrap">
+									<label class="form-label-outside" for="contact-2-first-name">Full Name</label>
+									<input class="form-input" id="id_full_name" type="text" name="full_name" data-constraints="@Required">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-wrap">
+									<label class="form-label-outside" for="contact-2-email">E-mail</label>
+									<input class="form-input" id="id_email" type="email" name="email" data-constraints="@Email @Required">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-wrap">
+									<label class="form-label-outside" for="contact-2-phone">Phone</label>
+									<input class="form-input" id="id_phone" type="text" name="phone" data-constraints="@PhoneNumber">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-wrap">
+									<label class="form-label-outside" for="contact-2-nearest-depot">Select Nearest Depot</label>
+									<select class="form-control" id="id_select_depot" name="select_depot">
+										<option>Select Depot</option>
+										<option>Sinamangal Depot</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-wrap">
+									<label class="form-label-outside" for="contact-2-nearest-depot">Select Water Brand</label>
+									<select class="form-control" id="id_select_brand" name="select_brand">
+										<option>Select Brand</option>
+										<option>Karuwa</option>
+										<option>Kuwa</option>
+										<option>Kuwa Plus</option>
+										<option>Patanjali Divya Jal</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-wrap">
+									<label class="form-label-outside" for="contact-2-nearest-depot">Select Purchase Type</label>
+									<select class="form-control" id="id_select_purchase_type" name="select_purchase_type">
+										<option>Select Purchase Type</option>
+										<option>Monthly</option>
+										<option>Quarterly</option>
+										<option>Semi-Annually</option>
+										<option>Annually</option>
+									</select>
+								</div>
+							</div>
+							<!-- <div class="col-12">
+								<div class="form-wrap">
+									<label class="form-label-outside" for="contact-2-message">Your Message</label>
+									<textarea class="form-input" id="contact-2-message" name="message" data-constraints="@Required"></textarea>
+								</div>
+							</div> -->
+						</div>
+						<!-- Google captcha-->
+						<!-- <div class="form-wrap text-left form-validation-left">
+							<div class="recaptcha" id="captcha1" data-sitekey="6LfZlSETAAAAAC5VW4R4tQP8Am_to4bM3dddxkEt"></div>
+						</div> -->
+						<div class="group group-middle">
+							<button class="button button-primary button-winona" type="submit">Send Message</button>
+						</div>
+					</form>
+
+					<!-- <p class="form-messege"></p>
+					{% for message in messages %}
+                      	<div class="alert {{ message.tags }} alert-dismissible" role="alert">
+	                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	                          <span aria-hidden="true">&times;</span>
+	                        </button>
+	                        {{ message }}
+	                    </div>
+                    {% endfor %} -->
+            	</div>
+            </div>
+        </div>
+    </section>
+
+    
+
+{% endblock %}
