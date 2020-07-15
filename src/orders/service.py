@@ -57,13 +57,13 @@ def SaveStoreWiseOrder(order, user_id):
 	for store_wise_order in store_wise_orders:
 		sw_cart_items =  CartItem.objects.filter(fk_storewise_order_id=store_wise_order.id) #store_wise_order.fk_storewise_order_id
 		store_wise_order.order_total = 0
-
-		store_wise_order.fk_route = get_nearest_route(
-			store_wise_order.order_latitude,
-			store_wise_order.order_longitude,
-			store_wise_order.fk_ordered_store.id,
-			None
-		)
+		if store_wise_order.order_latitude and store_wise_order.order_longitude:
+			store_wise_order.fk_route = get_nearest_route(
+				store_wise_order.order_latitude,
+				store_wise_order.order_longitude,
+				store_wise_order.fk_ordered_store.id,
+				None
+			)
 
 		print(store_wise_order.fk_route)
 		for cart_item in sw_cart_items:

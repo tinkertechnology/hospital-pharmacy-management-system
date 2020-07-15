@@ -250,6 +250,7 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
 	customer_name = serializers.SerializerMethodField()
 	address = serializers.SerializerMethodField()
 	status = serializers.SerializerMethodField()
+	created_at = serializers.DateTimeField(read_only=True, format="%Y-%m-%d")
 
 	class Meta:
 		model = StoreWiseOrder

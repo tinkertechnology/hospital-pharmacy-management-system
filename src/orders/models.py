@@ -170,6 +170,9 @@ class StoreWiseOrder(models.Model):
 	order_longitude = models.CharField(max_length=200, null=True, blank=True)
 	fk_route = models.ForeignKey(Route, related_name='fk_route_storewiseorder', on_delete=models.CASCADE, null=True, blank=True)
 
+	class Meta:
+		ordering = ['-created_at']
+
 
 
 class Quotation(models.Model):
