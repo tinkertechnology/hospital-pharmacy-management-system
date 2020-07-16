@@ -492,7 +492,7 @@ p [style*='max-width'] {
 
 p a {
 	/*color: inherit;*/
-	color: #108CA8;
+	color: #fff;
 }
 
 p a:hover {
@@ -604,6 +604,11 @@ a[href*='tel'], a[href*='mailto'] {
 .link-default:hover {
 	color: #108CA8;
 }
+
+.contact-link-default:hover {
+	color: #00B8D0;
+}
+
 
 .context-dark .link-default, .bg-gray-700 .link-default, .bg-gray-800 .link-default, .bg-primary .link-default, .bg-primary-darker .link-default {
 	color: #aeb1be;
@@ -9311,7 +9316,7 @@ Custom style
 	/*color: #fff;
 	background: #108CA8;*/
 	color: #108CA8;
-	background: #DFF3FD;
+	background: #fff;
 	overflow: hidden;
 	text-align: center;
 	text-decoration: none;
@@ -18228,13 +18233,19 @@ body:not(.lg-from-hash) .lg-outer.lg-start-zoom .lg-item.lg-complete .lg-object 
 	height: auto;
 }
 
-.button.button-primary-newsletter, .button.button-primary-newsletter:focus {
+
+.button-block {
+	display: block;
+	width: 100%;
+}
+
+.button.button-primary, .button.button-primary-newsletter:focus {
 	color: #fff;
 	background-color: #108CA8;
 	border-color: #fff;
 }
 
-.button.button-primary-newsletter:hover, .button.button-primary-newsletter:active {
+.button.button-primary:hover, .button.button-primary-newsletter:active {
 	color: #fff;
 	background-color: #00B8D0;
 }
