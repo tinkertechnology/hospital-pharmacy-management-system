@@ -1792,7 +1792,8 @@ html .list-inline-md > * {
 }
 
 .list-footer a, .list-footer .icon {
-	color: rgba(21, 21, 21, 0.8);
+	/*color: rgba(21, 21, 21, 0.8);*/
+	color: #ffffff;
 }
 
 /*
@@ -8326,7 +8327,8 @@ html [class*='section-'].section-bottom-0 {
 }
 
 .section-wave svg {
-	fill: #e1eafd;
+	/*fill: #e1eafd;*/
+	fill: #108CA8;
 	width: 100%;
 	height: 20px;
 }
@@ -8539,7 +8541,8 @@ html [class*='section-'].section-bottom-0 {
 }
 
 .bg-gray-modern {
-	background-color: #e1eafd;
+	/*background-color: #e1eafd;*/
+	background-color: #108CA8;
 }
 
 /**
@@ -9305,8 +9308,10 @@ Custom style
 	width: 48px;
 	height: 48px;
 	border-radius: 6px;
-	color: #fff;
-	background: #108CA8;
+	/*color: #fff;
+	background: #108CA8;*/
+	color: #108CA8;
+	background: #DFF3FD;
 	overflow: hidden;
 	text-align: center;
 	text-decoration: none;
@@ -18221,4 +18226,15 @@ body:not(.lg-from-hash) .lg-outer.lg-start-zoom .lg-item.lg-complete .lg-object 
 
 .modal-popup .modal-content {
 	height: auto;
+}
+
+.button.button-primary-newsletter, .button.button-primary-newsletter:focus {
+	color: #fff;
+	background-color: #108CA8;
+	border-color: #fff;
+}
+
+.button.button-primary-newsletter:hover, .button.button-primary-newsletter:active {
+	color: #fff;
+	background-color: #00B8D0;
 }

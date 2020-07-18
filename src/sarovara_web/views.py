@@ -61,6 +61,11 @@ def careers(request):
 	return render(request, 'sarovara/careers.html', {'title_content':page_title})
 
 
+def vacancy_apply_now(request):
+	page_title = 'Apply Now'
+	return render(request, 'sarovara/vacancy_apply_now.html', {'title_content':page_title})
+
+
 def buy_drinking_water(request):
 	if request.method == 'GET':
 		form = BuyDrinkingWaterForm()
@@ -105,6 +110,7 @@ def buy_drinking_water(request):
 			messages.warning(request, 'Error occured. Please try again later.')
 	return render(request, 'sarovara/buy-drinking-water.html', {'form': form})
 
+
 def request_open_depot(request):
 	if request.method == 'GET':
 		form = OpenDepotForm()
@@ -145,6 +151,7 @@ def request_open_depot(request):
 			messages.warning(request, 'Error occured. Please try again later.')
 	return render(request, 'sarovara/open-depot.html', {'form': form})
 
+
 def request_feedback(request):
 	if request.method == 'GET':
 		form = FeedbackForm()
@@ -183,6 +190,7 @@ def request_feedback(request):
 		else:
 			messages.warning(request, 'Error occured. Please try again later.')
 	return render(request, 'sarovara/feedback.html', {'form': form})
+
 
 def request_complaint(request):
 	if request.method == 'GET':
@@ -223,6 +231,53 @@ def request_complaint(request):
 		else:
 			messages.warning(request, 'Error occured. Please try again later.')
 	return render(request, 'sarovara/complaint.html', {'form': form})
+
+
+def apply_vacancy_now(request):
+	if request.method == 'POST':
+		print (1234)
+		# success = False
+		form = VacancyForm(request.POST, request.FILES)
+		print(form.errors)
+		# print(VacancyForm())
+		if form.is_valid():
+			print(12345)
+			full_name = form.cleaned_data['full_name']
+			email = form.cleaned_data['email']
+			phone = form.cleaned_data['phone']
+			address = form.cleaned_data['address']
+			cv = request.FILES['cv']
+			citizenship = request.FILES['citizenship']
+			# message_body = form.cleaned_data['message']
+			message = (
+                'Dear Sarovara, \nYou have received mail from '+ full_name + '\n' 
+	                + 'Phone: ' + phone + '\n' 
+	                + 'Email: ' + email + '\n'
+	                + 'Address: ' + address + '\n'
+	                # + 'Curriculum Vitae: ' + cv + '\n'
+	                # + 'Citizenship: ' + citizenship + '\n'
+                )
+			from_email = email
+			to_email = ['asndesh28@gmail.com', settings.EMAIL_HOST_USER]
+			subject = 'Request for Vacancy'
+			try:
+				print(123456)
+				# to_list = ['info@wonderwheels.com.np', settings.EMAIL_HOST_USER]
+				# messages.success(request, 'Your message has been successfully!')
+				mail = EmailMessage(subject, message, from_email, to_email)
+				mail.attach(cv.name, cv.read(), cv.content_type)
+				mail.attach(citizenship.name, citizenship.read(), citizenship.content_type)
+				mail.send()
+				# return JsonResponse('Success', safe=False)
+				# return HttpResponseRedirect('apply-vacancy-now')
+				return render(request, 'sarovara/vacancy_apply_now.html', {'form': form, 'error_message':'Mail sent successfully !!!'})
+			except BadHeaderError:
+				print(1234567)
+				return HttpResponse('Invalid header found.')
+			# return redirect('success')
+		else:
+			messages.warning(request, 'Error occured. Please try again later.')
+	return render(request, 'sarovara/vacancy_apply_now.html', {'form': form})
 
 # def success(request):
 # 	return HttpResponse('Success! Thank you for your email.')
