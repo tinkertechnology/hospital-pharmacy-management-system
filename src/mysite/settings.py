@@ -59,13 +59,6 @@ INSTALLED_APPS = [
     'membership',
     'store',
     'payment',
-<<<<<<< HEAD
-    'payment_esewa',
-    'routes',
-    'sarovara_web',
-    'prescription',
-    'wsc',
-=======
 
     'payment_esewa',
     'routes',
@@ -74,7 +67,6 @@ INSTALLED_APPS = [
     'prescription',
     'wsc',
 
->>>>>>> 4d900a9a520033f28256db6bb67b1cd9c29522d8
     'crispy_forms',
     'slider',
     'django_filters',
@@ -82,10 +74,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     # 'drfpasswordless',
     'rest_registration',
-<<<<<<< HEAD
-=======
     'sarovara_web'
->>>>>>> 4d900a9a520033f28256db6bb67b1cd9c29522d8
 
 
  
@@ -189,20 +178,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')
 
 # EMAIL_HOST = 'smtp.mailtrap.io'
-<<<<<<< HEAD
-# EMAIL_HOST_USER = 'f472a1b791bc03'
-# EMAIL_HOST_PASSWORD = 'efe5fe413946a6'
-# EMAIL_PORT = 2525
-# EMAIL_USE_TLS = True
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' 
-=======
 # EMAIL_HOST_USER = 'a2b88d5a140f35'
 # EMAIL_HOST_PASSWORD = '1eaecb0140e538'
 # EMAIL_PORT = 2525
 # EMAIL_USE_TLS = True
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' 
 
->>>>>>> 4d900a9a520033f28256db6bb67b1cd9c29522d8
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'xunilparajuli2002@gmail.com'
 EMAIL_HOST_PASSWORD = 'vnnuasmkmapqzvur'
@@ -251,13 +232,6 @@ JWT_AUTH = {
 # SPARROW_SMS_TOKEN = 'dakZyk9lTu56uck0uTZx'
 # SMS_FROM = 'InfoSMS'
 
-<<<<<<< HEAD
-SPARROW_SMS_TOKEN = '18E21OPSs9OPnt1Z9ABU' ##for_sarovara
-SMS_FROM = 'Demo'
-
-
-=======
->>>>>>> 4d900a9a520033f28256db6bb67b1cd9c29522d8
 
 
 

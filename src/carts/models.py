@@ -40,13 +40,11 @@ def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
 			pass	# price = instance.ordered_price
 		else:
 			instance.orginal_price = price
-			if qty>=3:
-				price = price-Decimal(float(price)*(3/10))
-			elif qty>=2:
-				price = price-Decimal(float(price)*(2/10))
-
+			# if qty>=3:
+			# 	price = price-Decimal(float(price)*(3/10))
+			# elif qty>=2:
+			# 	price = price-Decimal(float(price)*(2/10))
 			instance.ordered_price = price
-
 			line_item_total = Decimal(qty) * Decimal(price)
 			instance.line_item_total = line_item_total
 			instance.tax_amount = Decimal(float(line_item_total)*0.13)
