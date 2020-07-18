@@ -17,10 +17,12 @@ urlpatterns = [
     path('feedback', views.feedback, name='feedback'),
     path('complaint', views.complaint, name='complaint'),
     path('careers', views.careers, name='careers'),
+    path('careers/vacancy-apply-now', views.vacancy_apply_now, name='vacancy-apply-now'),
 
     # path('success', views.success, name='success'),
     path('buy-drinking-water', views.buy_drinking_water, name='buy-drinking-water'),
     path('request-open-depot', views.request_open_depot, name='request-open-depot'),
     path('request-feedback', views.request_feedback, name='request-feedback'),
     path('request-complaint', views.request_complaint, name='request-complaint'),
+    path('apply-vacancy-now', views.apply_vacancy_now, name='apply-vacancy-now'),
 ]
