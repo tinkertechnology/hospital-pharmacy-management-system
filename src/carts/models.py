@@ -20,7 +20,10 @@ class CartItem(models.Model):
 	fk_storewise_order = models.ForeignKey("orders.StoreWiseOrder", on_delete=models.CASCADE, blank=True, null=True) 
 	item = models.ForeignKey(Variation, on_delete=models.CASCADE)
 	quantity = models.PositiveIntegerField(default=1)
+	tax_amount = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	line_item_total = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
+	orginal_price = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
+	ordered_price = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)	
 
 	def __unicode__(self):
 		return self.item.title
@@ -33,8 +36,21 @@ def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
 	qty = instance.quantity
 	if Decimal(qty) >= 1:
 		price = instance.item.get_price()
-		line_item_total = Decimal(qty) * Decimal(price)
-		instance.line_item_total = line_item_total
+		if instance.fk_storewise_order is not None:	
+			pass	# price = instance.ordered_price
+		else:
+			instance.orginal_price = price
+			if qty>=3:
+				price = price-Decimal(float(price)*(3/10))
+			elif qty>=2:
+				price = price-Decimal(float(price)*(2/10))
+
+			instance.ordered_price = price
+
+			line_item_total = Decimal(qty) * Decimal(price)
+			instance.line_item_total = line_item_total
+			instance.tax_amount = Decimal(float(line_item_total)*0.13)
+
 
 pre_save.connect(cart_item_pre_save_receiver, sender=CartItem)
 
