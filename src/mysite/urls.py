@@ -297,7 +297,8 @@ urlpatterns += [
 ]
 
 
-
+from sarovara_web import views
+handler404 = views.handler404
 
 urlpatterns += [
  

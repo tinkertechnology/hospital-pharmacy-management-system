@@ -1796,6 +1796,10 @@ html .list-inline-md > * {
 	color: #ffffff;
 }
 
+.list-medium a, .list-medium .icon {
+	color: rgba(21, 21, 21, 0.8);
+}
+
 /*
 *
 * Images
@@ -7225,7 +7229,8 @@ Keyframe animation for bubble
 	font-size: 18px;
 	line-height: 1;
 	font-weight: 500;
-	color: rgba(40, 110, 252, 0.8);
+	/*color: rgba(40, 110, 252, 0.8);*/
+	color: #00B8D0;
 }
 
 .card-modern-info {
@@ -7524,6 +7529,10 @@ p + hr {
 }
 
 * + .list-sm {
+	margin-top: 25px;
+}
+
+* + .list-md {
 	margin-top: 25px;
 }
 

@@ -3,6 +3,10 @@ from django.contrib import admin
 from django.urls import path
 from .import views
 
+
+# Error Handling 404
+handler404 = views.handler404
+
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('', views.index, name='index'),
@@ -18,6 +22,9 @@ urlpatterns = [
     path('complaint', views.complaint, name='complaint'),
     path('careers', views.careers, name='careers'),
     path('careers/vacancy-apply-now', views.vacancy_apply_now, name='vacancy-apply-now'),
+    path('kuwa-drinking-water', views.kuwa_drinking_water, name='kuwa-drinking-water'),
+    path('karuwa-premium-drinking-water', views.karuwa_premium_drinking_water, name='karuwa-premium-drinking-water'),
+    path('patanjali-dibyajal', views.patanjali_dibyajal, name='patanjali-dibyajal'),
 
     # path('success', views.success, name='success'),
     path('buy-drinking-water', views.buy_drinking_water, name='buy-drinking-water'),
@@ -26,3 +33,5 @@ urlpatterns = [
     path('request-complaint', views.request_complaint, name='request-complaint'),
     path('apply-vacancy-now', views.apply_vacancy_now, name='apply-vacancy-now'),
 ]
+
+

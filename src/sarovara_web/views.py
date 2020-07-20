@@ -7,6 +7,7 @@ from io import BytesIO
 import mimetypes
 import smtplib
 
+
 from .forms import * 
 
 def index(request):
@@ -60,11 +61,25 @@ def careers(request):
 	page_title = 'Careers'
 	return render(request, 'sarovara/careers.html', {'title_content':page_title})
 
-
 def vacancy_apply_now(request):
 	page_title = 'Apply Now'
 	return render(request, 'sarovara/vacancy_apply_now.html', {'title_content':page_title})
 
+def kuwa_drinking_water(request):
+	page_title = 'Kuwa Drinking Water'
+	return render(request, 'sarovara/kuwa-drinking-water.html', {'title_content':page_title})
+
+def karuwa_premium_drinking_water(request):
+	page_title = 'Karuwa Premium Drinking Water'
+	return render(request, 'sarovara/karuwa-premium-drinking-water.html', {'title_content':page_title})
+
+def patanjali_dibyajal(request):
+	page_title = 'Patanjali Dibyajal'
+	return render(request, 'sarovara/patanjali-dibyajal.html', {'title_content':page_title})
+
+def handler404(request, exception):
+    # return HttpResponse('404 Page Error')
+    return render(request, 'sarovara/404.html')
 
 def buy_drinking_water(request):
 	if request.method == 'GET':
@@ -281,3 +296,10 @@ def apply_vacancy_now(request):
 
 # def success(request):
 # 	return HttpResponse('Success! Thank you for your email.')
+
+
+# def handler404(request, *args, **argv):
+#     response = render_to_response('sarovara_web/404.html', {}, context_instance=RequestContext(request))
+#     response.status_code = 404
+#     return response
+
