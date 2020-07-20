@@ -138,6 +138,7 @@ class Order(models.Model):
 
 
 def order_pre_save(sender, instance, *args, **kwargs):
+	print('noobs')
 	shipping_total_price = instance.shipping_total_price
 	cart_total = instance.cart.total
 	order_total = Decimal(shipping_total_price) + Decimal(cart_total)
