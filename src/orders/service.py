@@ -79,7 +79,9 @@ def CreateOrderFromCart(validated_data):
 	# pprint.pprint(validated_data)
 	##user =  self.context['request'].user ##
 	##print(user.id)##
+
 	user_id = validated_data.get('user_id')
+	user = User.objects.get(pk=user_id)
 	order_latitude = validated_data.get("order_latitude")
 	order_longitude = validated_data.get("order_longitude")
 	fk_ordered_store  = validated_data.get("fk_ordered_store")
