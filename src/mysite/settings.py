@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'wsc',
     'crispy_forms',
     'slider',
+    'reports',
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
