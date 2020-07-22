@@ -248,6 +248,11 @@ class StoreWiseOrderLists(ListAPIView):
 
 	def get_queryset(self):
 		filter = self.request.GET.get('filter')
+		# from_date = self.request.GET.get('from_date')
+		# to_date = self.request.GET.get('to_date')
+		# from_date = '2020-07-18 00:00:00';
+		# to_date = '2020-07-19 00:00:00';
+
 
 		user=self.request.user
 		# orders= Order.objects.filter(fk_auth_user_id=self.request.user.id)
@@ -286,7 +291,20 @@ class StoreWiseOrderLists(ListAPIView):
 						qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(is_transit=1)
 					if filter=='delivered':
 						qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(is_delivered=1)
-	
+		# from datetime import datetime, timedelta, time
+		# from django.utils.dateparse import parse_date
+		# import dateutil.parser
+		# if from_date:
+		# 	print(12)
+		# 	from_date = dateutil.parser.parse(from_date)
+		# 	qs = qs.filter(created_at__gte=from_date) #(created_at__range=[from_date, to_date])
+		# 	print(from_date)
+		# if to_date:
+		# 	print(21)
+		# 	print(to_date)
+		# 	to_date = dateutil.parser.parse(to_date)
+		# 	qs = qs.filter(created_at__lt=to_date)
+		print(qs.query)
 		return qs
 
 class OrderHistoryLists(ListAPIView):

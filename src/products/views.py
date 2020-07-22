@@ -175,6 +175,8 @@ class ProductListAPIView(generics.ListAPIView):
 	filter_class = ProductFilter
 
 	def get_queryset(self):
+		# queryset = Product.objects.all() ##debug if not working location
+		# return queryset
 		users_store = None #user ko store (instance of Store)
 		main_users_store = Store.objects.filter(fk_user_id=self.request.user.id).first() #company / depo ko main user #(instance Store)
 		
