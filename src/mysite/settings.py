@@ -59,16 +59,14 @@ INSTALLED_APPS = [
     'membership',
     'store',
     'payment',
-
     'payment_esewa',
     'routes',
-
-
+    'sarovara_web',
     'prescription',
     'wsc',
-
     'crispy_forms',
     'slider',
+    'reports',
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
@@ -96,7 +94,7 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates/sarovara_web')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -228,7 +226,11 @@ JWT_AUTH = {
 
 
 # SPARROW_SMS_TOKEN = 'dakZyk9lTu56uck0uTZx'
-# SMS_FROM = 'pharmacy'
+# SMS_FROM = 'InfoSMS'
+
+SPARROW_SMS_TOKEN = '18E21OPSs9OPnt1Z9ABU' ##for_sarovara
+SMS_FROM = 'Demo'
+
 
 
 

@@ -1,0 +1,528 @@
+{% extends 'base_layout.html' %}
+
+{% load static %}
+
+{% block content %}
+
+    <!-- Slider-->
+    <section class="section swiper-container swiper-slider swiper-slider-business bg-gray-700" data-loop="true" data-slide-effect="fade" data-autoplay="5000" data-simulate-touch="false" data-custom-slide-effect="inter-leave-effect">
+        <div class="swiper-wrapper context-dark">
+            <div class="swiper-slide" data-slide-bg="{% static 'assets/images/slider-business-slide-1-1920x800.jpg' %}">
+                <div class="slide-inner">
+                    <div class="swiper-slide-caption">
+                        <div class="container">
+                            <h1 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="big">Quality</span></span></h1>
+                            <h2 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="compressed fown-weight-light">Drinking Water</span></span></h2>
+                            <div class="swiper-caption-text-sm swiper-caption-wrap">
+                                <div class="swiper-caption-text-inner">
+                                    <p class="text-op-gentle wow" data-caption-animate="slideInLeft">We sell only the best quality drinking water based on our quality standard and bring it to your doorstep, whether it is your home or office.</p>
+                                </div>
+                            </div>
+                            <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow" href="{% url 'about-us' %}" data-caption-animate="slideInUp">Read more</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-slide" data-slide-bg="{% static 'assets/images/slider-business-slide-2-1920x800.jpg' %}">
+                <div class="slide-inner">
+                    <div class="swiper-slide-caption">
+                        <div class="container">
+                            <h1 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="big">Everyday</span></span></h1>
+                            <h2 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="compressed fown-weight-light">Water Quality Check</span></span></h2>
+                            <div class="swiper-caption-text-sm swiper-caption-wrap">
+                                <div class="swiper-caption-text-inner">
+                                    <p class="text-op-gentle wow" data-caption-animate="slideInLeft">We test drinking water quality everyday in our high-tech laboratory and we sell and distribute only from those companies that meet our quality standard.</p>
+                                </div>
+                            </div>
+                            <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow" href="{% url 'about-us' %}" data-caption-animate="slideInUp">Read more</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-slide" data-slide-bg="{% static 'assets/images/slider-business-slide-2-1920x800.jpg' %}">
+                <div class="slide-inner">
+                    <div class="swiper-slide-caption">
+                        <div class="container">
+                            <h1 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="big">Hygiene</span></span></h1>
+                            <h2 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="compressed fown-weight-light">Regular Inspection</span></span></h2>
+                            <div class="swiper-caption-text-sm swiper-caption-wrap">
+                                <div class="swiper-caption-text-inner">
+                                    <p class="text-op-gentle wow" data-caption-animate="slideInLeft">We routinely inspect water processing and purifying facilities to check whether they are serious about their sanitation.</p>
+                                </div>
+                            </div>
+                            <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow" href="{% url 'about-us' %}" data-caption-animate="slideInUp">Read more</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="swiper-slider-nav container">
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
+    </section>
+    
+    <!-- A Few Words About Us-->
+    <section class="section section-md">
+        <div class="section-wave section-wave-white">
+            <svg x="0px" y="0px" viewBox="0 0 1920 45" width="1920" height="45px" preserveAspectRatio="none">
+                <style type="text/css"></style>
+                <path d="M1920,0c-82.8,0-108.8,44.4-192,44.4c-78.8,0-116.5-43.7-192-43.7c-77.1,0-115.9,44.4-192,44.4c-78.2,0-114.6-44.4-192-44.4c-78.4,0-115.3,44.4-192,44.4C883.1,45,841,0.6,768,0.6C691,0.6,652.8,45,576,45C502.4,45,461.9,0.6,385,0.6C306.5,0.6,267.9,45,191,45C115.1,45,78,0.6,0,0.6V45h1920V0z"></path>
+            </svg>
+        </div>
+        <div class="container">
+            <div class="row row-50 justify-content-center justify-content-xl-between flex-xl-row-reverse text-center text-xl-left">
+                <div class="col-lg-6 col-xl-5">
+                    <div class="inset-right-3">
+                        <h3 class="wow-outer"><span class="wow slideInDown">Quality Drinking Water at a Reasonable Price</span></h3>
+                        <p class="text-op-amaranthine wow-outer"><span class="wow slideInDown" data-wow-delay=".05s">Our company works to test whether the drinking water processed and purified by various companies meet the Guidelines on Processed Drinking Water Production Standards 2017, to publish the test results to the public for information, to routinely inspect water processing and purifying facilities to check their sanitation level, to provide a platform to buy the drinking water--that meet our quality standard--through our mobile app and deliver the purchased drinking water to homes and offices of our customers. </span></p>
+                        <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow slideInDown" data-wow-delay=".1s" href="{% url 'about-us' %}">Read more</a></div>
+                    </div>
+                </div>
+                <div class="col-lg-7"><img src="{% static 'assets/images/banner-bg-1.jpg' %}" alt="" width="711" height="429"/>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- What we do -->
+    <section class="section section-lg bg-gray-100">
+        <div class="container">
+            <h3 class="text-center">What we do?</h3>
+            <div class="row row-30">
+                <div class="col-sm-6 col-lg-4 wow-outer">
+                    <!-- Box Minimal-->
+                    <article class="box-minimal">
+                        <div class="box-minimal-icon mdi mdi-checkbox-marked-circle wow fadeIn"></div>
+                        <div class="box-minimal-main wow-outer">
+                            <h4 class="box-minimal-title wow slideInDown">Regular Quality Check</h4>
+                            <p class="wow fadeInUpSmall">We do quality check of drinking water processed and purified by the companies that sell or want to sell drinking water through sarovara.</p>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-sm-6 col-lg-4 wow-outer">
+                    <!-- Box Minimal-->
+                    <article class="box-minimal">
+                        <div class="box-minimal-icon mdi mdi-checkbox-multiple-marked wow fadeIn" data-wow-delay=".1s"></div>
+                        <div class="box-minimal-main wow-outer">
+                            <h4 class="box-minimal-title wow slideInDown" data-wow-delay=".1s">Regular Inspection</h4>
+                            <p class="wow fadeInUpSmall" data-wow-delay=".1s">We routinely inspect water processing and purifying facilities of the companies that sell or want to sell drinking water through Sarovara.</p>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-sm-6 col-lg-4 wow-outer">
+                    <!-- Box Minimal-->
+                    <article class="box-minimal">
+                        <div class="box-minimal-icon mdi mdi-information wow fadeIn" data-wow-delay=".2s"></div>
+                        <div class="box-minimal-main wow-outer">
+                            <h4 class="box-minimal-title wow slideInDown" data-wow-delay=".2s">Make Information Public</h4>
+                            <p class="wow fadeInUpSmall" data-wow-delay=".2s">We regularly publish information about drinking water quality and sanitation information of the companies that sell or want to sell drinking water through Sarovara.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <div class="row row-30">
+                <div class="col-sm-6 col-lg-6 wow-outer">
+                    <!-- Box Minimal-->
+                    <article class="box-minimal">
+                        <div class="box-minimal-icon mdi mdi-water wow fadeIn"></div>
+                        <div class="box-minimal-main wow-outer">
+                            <h4 class="box-minimal-title wow slideInDown">Buy Drinking Water</h4>
+                            <p class="wow fadeInUpSmall">We will only buy drinking water from the companies that comply with the Guidelines on Processed Drinking Water Production Standards 2017.</p>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-sm-6 col-lg-6 wow-outer">
+                    <!-- Box Minimal-->
+                    <article class="box-minimal">
+                        <div class="box-minimal-icon mdi mdi-sale wow fadeIn" data-wow-delay=".1s"></div>
+                        <div class="box-minimal-main wow-outer">
+                            <h4 class="box-minimal-title wow slideInDown" data-wow-delay=".1s">Sales and Distributions</h4>
+                            <p class="wow fadeInUpSmall" data-wow-delay=".1s">From our depots, we provide door-to-door delivery service of drinking water to our customers who purchase through our Sarovara app and other means.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Depot Location -->
+    <section class="section section-xl bg-gray-700 bg-image bg-image-1" style="background-image: url({% static 'assets/images/banner-bg-2.jpg' %});">
+        <div class="container">
+            <div class="row justify-content-sm-end">
+                <div class="col-sm-9 col-md-7 col-lg-6">
+                    <div class="box-6">
+                        <div class="wow-outer">
+                            <div class="wow slideInUp">
+                                <h3 class="font-weight-semibold">Where are we located?</h3>
+                            </div>
+                        </div>
+                        <div class="wow-outer offset-top-4">
+                            <div class="wow slideInDown">
+                                <p>Singamangal (Bhatkeko Pul), Old Baneshwor, Gaushala, Tilganga, Seto Pul, Raato Pul, Maitidevi, Gyaneshwor</p>
+                                <a class="button button-primary button-winona" href="{% url 'our-depot' %}">Our Depot</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- We Sales -->
+    <section class="section section-lg section-wave-offset">
+        <div class="container">
+            <h3 class="text-center">We Sales</h3>
+            <div class="row row-30 row-md-50">
+                <div class="col-md-6">
+                    <article class="card-modern wow fadeInUp" data-wow-delay=".05s">
+                        <div class="card-modern-left"><img src="{% static 'assets/images/kuwa-water.png' %}" alt="" width="138" height="197"/>
+                        </div>
+                        <div class="card-modern-body">
+                            <h4><a class="card-modern-title" href="{% url 'kuwa-drinking-water' %}">Kuwa</a></h4>
+                            <div class="card-modern-price"><span>Rs. 37</span></div>
+                            <!-- <div class="card-modern-info">
+                                <span class="icon icon-sm mdi mdi-information-outline"></span>
+                                <span class="card-modern-info-text">Fresh and Pure Drinking Water</span>
+                            </div> -->
+                            <div class="card-modern-text">
+                                <p>Kuwa is a finest water source of Nepal. It is a fresh and pure drinking water having perfect level of Minerals needs for Our Body. Kuwa is the original source of Drinking Water for you.</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-md-6">
+                    <article class="card-modern wow fadeInUp second" data-wow-delay=".05s">
+                        <div class="card-modern-left"><img src="{% static 'assets/images/divyajal-water.png' %}" alt="" width="138" height="197"/>
+                        </div>
+                        <div class="card-modern-body">
+                            <h4><a class="card-modern-title" href="{% url 'patanjali-dibyajal' %}">Patanjali Dibyajal</a></h4>
+                            <div class="card-modern-price"><span>Rs. 125</span></div>
+                            <!-- <div class="card-modern-info">
+                                <span class="icon icon-sm mdi mdi-information-outline"></span>
+                                <span class="card-modern-info-text">Purest and Safest</span>
+                            </div> -->
+                            <div class="card-modern-text">
+                                <p>Patanjali is a world wide legendary brand. Purest and Safest Processed Drinking water available in 250ml, 500ml, 1ltr., 20ltr.</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-md-6">
+                    <article class="card-modern wow fadeInUp third" data-wow-delay=".05s">
+                        <div class="card-modern-left"><img src="{% static 'assets/images/kuwa-plus-water.png' %}" alt="" width="138" height="197"/>
+                        </div>
+                        <div class="card-modern-body">
+                            <h4><a class="card-modern-title" href="{% url 'kuwa-drinking-water' %}">Kuwa Plus</a></h4>
+                            <div class="card-modern-price"><span>Rs. 65</span></div>
+                            <!-- <div class="card-modern-info"><span class="icon icon-sm mdi mdi-information-outline"></span><span class="card-modern-info-text">for daily use</span></div> -->
+                            <div class="card-modern-text">
+                                <p>Kuwa Plus is one of the products of the Kuwa processed as per the Drinking Water Production Standards 2017. New Clean jar with additional plastic wrapping on jar and water label has been added on jar.</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-md-6">
+                    <article class="card-modern wow fadeInUp fourth" data-wow-delay=".05s">
+                        <div class="card-modern-left"><img src="{% static 'assets/images/karuwa-water.png' %}" alt="" width="138" height="197"/>
+                        </div>
+                        <div class="card-modern-body">
+                            <h4><a class="card-modern-title" href="{% url 'karuwa-premium-drinking-water' %}">Karuwa</a></h4>
+                            <div class="card-modern-price"><span>Rs. 85</span></div>
+                           <!--  <div class="card-modern-info"><span class="icon icon-sm mdi mdi-information-outline"></span><span class="card-modern-info-text">Nepalese drinking water</span></div> -->
+                            <div class="card-modern-text">
+                                <p>Karuwa is a Nepalese drinking water manufacturing company with a production plant located in Bhaisepati, Lalitpur, Nepal. We are Nepal's first brand to pass "Processed  Drinking Water Production Standard Regulation, 2074".</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <div class="row justify-content-center text-center row-offset-custom-1">
+                <div class="col-12">
+                    <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow slideInDown" data-wow-delay=".1s" href="{% url 'we-sales' %}">View more</a></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Buy -->
+    <section class="section section-lg bg-gray-100 text-center">
+        <div class="container">
+            <div class="box-4">
+                <h3 class="wow-outer"><span class="wow slideInUp">How to Buy ?</span></h3>
+            </div>
+            <div class="row row-30">
+                <div class="col-sm-6 col-lg-4 wow-outer">
+                    <!-- Box Creative-->
+                    <article class="box-creative wow slideInLeft">
+                        <div class="box-creative-icon mdi mdi-cellphone-android"></div>
+                        <h4 class="box-creative-title"><a href="#">Through Application</a></h4>
+                        <p>Go to Google Playstore or Appstore and download Sarovara app</p>
+                    </article>
+                </div>
+                <div class="col-sm-6 col-lg-4 wow-outer">
+                    <!-- Box Creative-->
+                    <article class="box-creative wow slideInLeft" data-wow-delay=".1s">
+                        <div class="box-creative-icon mdi mdi-account"></div>
+                        <h4 class="box-creative-title"><a href="#">Free Account</a></h4>
+                        <p>Open an account on Sarovara</p>
+                    </article>
+                </div>
+                <div class="col-sm-6 col-lg-4 wow-outer">
+                    <!-- Box Creative-->
+                    <article class="box-creative wow slideInLeft" data-wow-delay=".2s">
+                        <div class="box-creative-icon mdi mdi-login"></div>
+                        <h4 class="box-creative-title"><a href="#">Friendly Login</a></h4>
+                        <p>Login to Sarovara app with your register account</p>
+                    </article>
+                </div>
+                <div class="col-sm-6 col-lg-4 wow-outer">
+                    <!-- Box Creative-->
+                    <article class="box-creative wow slideInLeft" data-wow-delay=".1s">
+                        <div class="box-creative-icon mdi mdi-home"></div>
+                        <h4 class="box-creative-title"><a href="#">Choose Company</a></h4>
+                        <p> Choose a company by evaluating their drinking water quality and buy it</p>
+                    </article>
+                </div>
+                <div class="col-sm-6 col-lg-4 wow-outer">
+                    <!-- Box Creative-->
+                    <article class="box-creative wow slideInLeft" data-wow-delay=".2s">
+                        <div class="box-creative-icon mdi mdi-truck-delivery"></div>
+                        <h4 class="box-creative-title"><a href="#">Delivered</a></h4>
+                        <p> We immediately deliver the drinking water you purchase to your home or office</p>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What we do -->
+    <section class="section section-lg">
+        <div class="container">
+            <h3 class="text-center">Contact Us for Quality Drinking Water</h3>
+            <div class="row row-30">
+                <div class="col-sm-6 col-lg-4 wow-outer">
+                    <!-- Box Minimal-->
+                    <article class="box-minimal">
+                        <div class="box-minimal-icon mdi mdi-water wow fadeIn"></div>
+                        <div class="box-minimal-main wow-outer">
+                            <h5 class="box-minimal-title wow slideInDown">Buy Drinking Water</h5>
+                            <p>If you want to buy drinking water from Sarovara, <a href="{% url 'buy-drinking-water' %}" style="font-weight: bold;">Click Here</a></p>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-sm-6 col-lg-4 wow-outer">
+                    <!-- Box Minimal-->
+                    <article class="box-minimal">
+                        <div class="box-minimal-icon mdi mdi-sale wow fadeIn" data-wow-delay=".1s"></div>
+                        <div class="box-minimal-main wow-outer">
+                            <h5 class="box-minimal-title wow slideInDown">Sell Drinking Water</h5>
+                            <p> If you want to sell drinking water from Sarovara, <a href="{% url 'sell-drinking-water' %}" style="font-weight: bold;">Click Here</a></p>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-sm-6 col-lg-4 wow-outer">
+                    <!-- Box Minimal-->
+                    <article class="box-minimal">
+                        <div class="box-minimal-icon mdi mdi-home wow fadeIn" data-wow-delay=".2s"></div>
+                        <div class="box-minimal-main wow-outer">
+                            <h5 class="box-minimal-title wow slideInDown">Open Depot</h5>
+                            <p>If you want to open a Sarovara depot, <a href="{% url 'open-depot' %}" style="font-weight: bold;">Click Here</a></p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <div class="row row-30">
+                <div class="col-sm-6 col-lg-4 wow-outer">
+                    <!-- Box Minimal-->
+                    <article class="box-minimal">
+                        <div class="box-minimal-icon wow fadeIn"><img src="{% static 'assets/images/feedback.png' %}" height="48px;" width="48px;"></div>
+                        <div class="box-minimal-main wow-outer">
+                            <h5 class="box-minimal-title wow slideInDown">Feedback</h5>
+                            <p>If you want to provide suggestion or feedback, <a href="{% url 'feedback' %}" style="font-weight: bold;">Click Here</a></p>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-sm-6 col-lg-4 wow-outer">
+                    <!-- Box Minimal-->
+                    <article class="box-minimal">
+                        <div class="box-minimal-icon wow fadeIn" data-wow-delay=".1s"><img src="{% static 'assets/images/icon-complaint.png' %}"></div>
+                        <div class="box-minimal-main wow-outer">
+                            <h5 class="box-minimal-title wow slideInDown">Complaint</h5>
+                            <p>If you want to file a complaint or grievance, <a href="{% url 'complaint' %}" style="font-weight: bold;">Click Here</a></p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials-->
+    <!-- <section class="section section-lg text-center">
+        <div class="container">
+            <h3>Testimonials</h3>
+            <div class="owl-carousel" data-items="1" data-md-items="2" data-dots="true" data-nav="false" data-loop="true" data-margin="30" data-stage-padding="0" data-mouse-drag="false">
+                <div class="wow-outer">
+                    <blockquote class="quote-modern quote-modern-big wow slideInLeft">
+                        <svg class="quote-modern-mark" x="0px" y="0px" width="35px" height="25px" viewbox="0 0 35 25">
+                            <path d="M27.461,10.206h7.5v15h-15v-15L25,0.127h7.5L27.461,10.206z M7.539,10.206h7.5v15h-15v-15L4.961,0.127h7.5                L7.539,10.206z"></path>
+                        </svg>
+                        <div class="quote-modern-text">
+                            <p>I am so grateful for this water delivery to our home! We’ve got our energy back after just a short time and we feel vibrant again! I especially like sparkling water.</p>
+                        </div>
+                        <div class="quote-modern-meta">
+                            <div class="quote-modern-avatar"><img src="{% static 'assets/images/testimonials-person-1-96x96.jpg' %}" alt="" width="96" height="96"/>
+                            </div>
+                            <div class="quote-modern-info">
+                                <cite class="quote-modern-cite">Kelly McMillan</cite>
+                                <p class="quote-modern-caption">Regular Client</p>
+                            </div>
+                        </div>
+                    </blockquote>
+                </div>
+                <div class="wow-outer">
+                    <blockquote class="quote-modern quote-modern-big wow slideInLeft">
+                        <svg class="quote-modern-mark" x="0px" y="0px" width="35px" height="25px" viewbox="0 0 35 25">
+                            <path d="M27.461,10.206h7.5v15h-15v-15L25,0.127h7.5L27.461,10.206z M7.539,10.206h7.5v15h-15v-15L4.961,0.127h7.5                L7.539,10.206z"></path>
+                        </svg>
+                        <div class="quote-modern-text">
+                            <p>I have looked far and wide in Los Angeles County for the purest water, and Water is without a doubt the cleanest, freshest, most vital water available and it is also affordable.</p>
+                        </div>
+                        <div class="quote-modern-meta">
+                            <div class="quote-modern-avatar"><img src="{% static 'assets/images/testimonials-person-2-96x96.jpg' %}" alt="" width="96" height="96"/>
+                            </div>
+                            <div class="quote-modern-info">
+                                <cite class="quote-modern-cite">Harold Barnett</cite>
+                                <p class="quote-modern-caption">Regular Client</p>
+                            </div>
+                        </div>
+                    </blockquote>
+                </div>
+                <div class="wow-outer">
+                    <blockquote class="quote-modern quote-modern-big wow slideInLeft">
+                        <svg class="quote-modern-mark" x="0px" y="0px" width="35px" height="25px" viewbox="0 0 35 25">
+                            <path d="M27.461,10.206h7.5v15h-15v-15L25,0.127h7.5L27.461,10.206z M7.539,10.206h7.5v15h-15v-15L4.961,0.127h7.5                L7.539,10.206z"></path>
+                        </svg>
+                        <div class="quote-modern-text">
+                            <p>I have been drinking your spring water since November and I love it! The water is so delicious and the Water team is so wonderful and helpful.</p>
+                        </div>
+                        <div class="quote-modern-meta">
+                            <div class="quote-modern-avatar"><img src="{% static 'assets/images/testimonials-person-3-96x96.jpg' %}" alt="" width="96" height="96"/>
+                            </div>
+                            <div class="quote-modern-info">
+                                <cite class="quote-modern-cite">Albert Webb</cite>
+                                <p class="quote-modern-caption">Regular Client</p>
+                            </div>
+                        </div>
+                    </blockquote>
+                </div>
+                <div class="wow-outer">
+                    <blockquote class="quote-modern quote-modern-big wow slideInLeft">
+                        <svg class="quote-modern-mark" x="0px" y="0px" width="35px" height="25px" viewbox="0 0 35 25">
+                            <path d="M27.461,10.206h7.5v15h-15v-15L25,0.127h7.5L27.461,10.206z M7.539,10.206h7.5v15h-15v-15L4.961,0.127h7.5                L7.539,10.206z"></path>
+                        </svg>
+                        <div class="quote-modern-text">
+                            <p>Could not be happier with this service, the water, and the people involved. I have been using them for almost a year. The water tastes incredible and I like it!</p>
+                        </div>
+                        <div class="quote-modern-meta">
+                            <div class="quote-modern-avatar"><img src="{% static 'assets/images/testimonials-person-4-96x96.jpg' %}" alt="" width="96" height="96"/>
+                            </div>
+                            <div class="quote-modern-info">
+                                <cite class="quote-modern-cite">Samantha Lee</cite>
+                                <p class="quote-modern-caption">Regular Client</p>
+                            </div>
+                        </div>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Latest Blog Posts-->
+    <section class="section section-lg bg-gray-100 section-wave-offset">
+        <div class="container">
+            <h3 class="wow-outer text-center"><span class="wow slideInDown">Latest Blog Posts</span></h3>
+            <div class="row row-50 justify-content-center justify-content-lg-start">
+                <div class="col-md-10 col-lg-7 wow-outer">
+                    <!-- Post Block-->
+                    <article class="post-block bg-gray-700">
+                        <img class="post-block-image" src="{% static 'assets/images/blog-layouts-5-637x456.jpg' %}" alt="" width="637" height="456"/>
+                        <div class="post-block-caption">
+                            <ul class="post-block-meta">
+                                <li class="wow-outer"><span class="wow slideInLeft">by Theresa Barnes</span></li>
+                                <li class="wow-outer"><a class="button-winona wow slideInLeft" href="#">News</a></li>
+                                <li class="wow-outer">
+                                    <time class="wow slideInLeft" datetime="2018">April 2, 2018</time>
+                                </li>
+                            </ul>
+                            <h4 class="post-block-title"><a href="single-blog-post.html">The Health Benefits of Drinking Spring Water</a></h4>
+                        </div>
+                        <div class="post-block-dummy"></div>
+                    </article>
+                </div>
+                <div class="col-md-10 col-lg-5">
+                    <div class="post-light-group wow-outer">
+                        <!-- Post Light-->
+                        <article class="post-light wow slideInLeft">
+                            <time class="post-light-time" datetime="2018"><span class="post-light-time-big">29</span><span class="post-light-time-small">April</span></time>
+                            <div class="post-light-main">
+                                <h4 class="post-light-title"><a href="single-blog-post.html">The Secrets of Modern  Spring Water</a></h4>
+                                <ul class="post-light-meta">
+                                    <li>by Theresa Barnes</li>
+                                    <li><a class="button-winona" href="#">News</a></li>
+                                </ul>
+                            </div>
+                        </article>
+                        <!-- Post Light-->
+                        <article class="post-light wow slideInLeft">
+                            <time class="post-light-time" datetime="2018"><span class="post-light-time-big">30</span><span class="post-light-time-small">April</span></time>
+                            <div class="post-light-main">
+                                <h4 class="post-light-title"><a href="single-blog-post.html">Top 10 Facts About Our Bottled Water</a></h4>
+                                <ul class="post-light-meta">
+                                    <li>by Theresa Barnes</li>
+                                    <li><a class="button-winona" href="#">News</a></li>
+                                </ul>
+                            </div>
+                        </article>
+                        <!-- Post Light-->
+                        <article class="post-light wow slideInLeft">
+                            <time class="post-light-time" datetime="2018"><span class="post-light-time-big">2</span><span class="post-light-time-small">May</span></time>
+                            <div class="post-light-main">
+                                <h4 class="post-light-title"><a href="single-blog-post.html">Spring Water vs. Sparkling     Water: What to Choose?</a></h4>
+                                <ul class="post-light-meta">
+                                    <li>by Theresa Barnes</li>
+                                    <li><a class="button-winona" href="#">News</a></li>
+                                </ul>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="wow-outer button-outer"><a class="button button-primary button-winona wow slideInDown" href="blog.html">View all posts</a></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Popup Box -->
+    <!-- <div class="modal fade" id="popupModal" tabindex="-1" role="dialog" aria-labelledby="popupModal" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="{% static 'assets/images/coming-soon-banner.jpg' %}" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="modal modal-popup fade" id="popupModal">
+        <div class="modal-dialog modal-dialog-popup" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="{% static 'assets/images/coming-soon-banner.jpg' %}" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

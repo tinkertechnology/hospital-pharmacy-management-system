@@ -24,12 +24,14 @@ from django.conf import settings
 from personal.views import (
 	home_screen_view, dashboard_view
 )
+# from sarovara_web import urls as sarovara_urls
 
 from account.views import (
     registration_view,
     logout_view,
     login_view,
     account_view,
+    privacy_policy,
     account_jpt,
 	must_authenticate_view,
     ValidatePhoneSendOTP,
@@ -76,9 +78,11 @@ from orders.views import (
                     CartOrderLists,
                     StoreWiseCartOrderLists,
                     UpdateOrderStatusApiView,
+                    StoreWiseOrderHistoryLists,
                     UpdateStoreWiseOrderStatusApiView,
 
-                    StoreWiseOrderLists
+                    StoreWiseOrderLists,
+                    myStoreName
                     )
 
 from products.views import (
@@ -95,7 +99,10 @@ from products.views import (
         WSCListAPIView,
         WSCRetrieveAPIView,
         CreateProductAPIView,
-        CommonProductListAPIView
+        CommonProductListAPIView,
+        AddProductAPIView,
+        AllProductListAPIView,
+        AllProductRetrieveAPIView
         
 
     )
@@ -121,10 +128,10 @@ from users.views import (
 
 
 
-
 #API Patterns
 urlpatterns = [
     url(r'^accounts/', include('rest_registration.api.urls')),
+    url('', include('reports.urls')),
 
     re_path(r'^api/$', APIHomeView.as_view(), name='home_api'),
     re_path(r'^api/validate_mobile/', ValidatePhoneSendOTP.as_view(), name="validate_mobile"),
@@ -133,6 +140,8 @@ urlpatterns = [
     re_path(r'^api/reset_password/', ResetPasswordAPIView.as_view(), name="reset_password"),
     re_path(r'^api/change_password/', ChangePasswordAPIView.as_view(), name="change_password"),
     re_path(r'^api/file_upload/$', ApiPostFile.as_view(), name='file_upload'),
+
+    
     # re_path(r'^api/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
     # re_path(r'^api/upload/$', FileUploadView.as_view()),
 
@@ -153,15 +162,19 @@ urlpatterns = [
     re_path(r'^api/orders/$', OrderListAPIView.as_view(), name='orders_api'),
 
 
-    re_path(r'^api/store_orders/$', OrderLists.as_view(), name='orders_store'),
-    re_path(r'^api/storewise_orders/$', StoreWiseOrderLists.as_view(), name='storewise_orders_store'),
+    re_path(r'^api/store_orders/$', OrderLists.as_view(), name='orders_store'), ##for_customer
+    
 
     re_path(r'^api/orders_lists/$', CartOrderLists.as_view(), name='orders_lists'), ###uptech_
+
+    re_path(r'^api/storewise_orders/$', StoreWiseOrderLists.as_view(), name='storewise_orders_store'),
     re_path(r'^api/storewise_orders_lists/$', StoreWiseCartOrderLists.as_view(), name='storewise_orders_lists'),
+    re_path(r'^api/storewise_orders_history_lists/$', StoreWiseOrderHistoryLists.as_view(), name='storewise_orders_history_lists'),
+    re_path(r'^api/store_name/$', myStoreName.as_view(), name='store_name'),
 
     
 
-    re_path(r'^api/orders_status/$', UpdateOrderStatusApiView.as_view(), name='orders_status_update'),
+    re_path(r'^api/orders_status/$', UpdateOrderStatusApiView.as_view(), name='orders_status_update'), ##pharms
 
     re_path(r'^api/storwise_change_orders_status/$', UpdateStoreWiseOrderStatusApiView.as_view(), name='storewise_orders_status_update'),
 
@@ -170,10 +183,17 @@ urlpatterns = [
     
     re_path(r'^api/orders/(?P<pk>\d+)/$', OrderRetrieveAPIView.as_view(), name='order_detail_api'),
     re_path(r'^api/products/$', ProductListAPIView.as_view(), name='products_api'),
+    re_path(r'^api/all_products/$', AllProductListAPIView.as_view(), name='all_products_api'), ## for pharma
+    
+    
     re_path(r'^api/products_create/$', CreateProductAPIView.as_view(), name='products_create_api'),
+    re_path(r'^api/products_add/$', AddProductAPIView.as_view(), name='products_create_api'), ##pharmas
+    
     re_path(r'^api/products_common/$', CommonProductListAPIView.as_view(), name='products_common_api'),
 
     re_path(r'^api/products/(?P<pk>\d+)/$', ProductRetrieveAPIView.as_view(), name='products_detail_api'),
+    re_path(r'^api/all_products/(?P<pk>\d+)/$', AllProductRetrieveAPIView.as_view(), name='all_products_detail_api'),##Pharmas
+
     re_path(r'^api/quotation/$', SendQuotationApiView.as_view(), name="send_quotation_api"),
     re_path(r'^api/featured/$', ProductFeaturedListAPIView.as_view(), name='product_featured_api'),
     re_path(r'^api/create_cart/$', AddToCartView.as_view(), name="create_cart_api"),
@@ -206,6 +226,8 @@ urlpatterns += [
     re_path(r'^api/sliders/$', SliderListAPIView.as_view(), name='sliders_api'),
     ]
 
+#Report URLS
+
 
 # Membership api
 from membership.views import (
@@ -213,7 +235,8 @@ from membership.views import (
         MembershipTypeRetrieveUpdateDestroyApiView,
         UserMembershipListCreateApiView,
         UserMembershipRetrieveUpdateDestroyApiView,
-        UserMembershipRetrieveApiView
+        UserMembershipRetrieveApiView,
+        
 )
 from membership import views as membership_views
 urlpatterns += [
@@ -223,18 +246,24 @@ urlpatterns += [
     re_path(r'^api/user-membership/(?P<pk>\d+)/$', UserMembershipRetrieveUpdateDestroyApiView.as_view(), name='api-membership-type'),
     re_path(r'^api/user-membership-retrieve/$', UserMembershipRetrieveApiView.as_view(), name='api-user-membership-retrieve'),
     re_path(r'^api/user_membership_auto_order/$', membership_views.UserMembershipAutoOrderListCreateApiView.as_view(), name='api-user-membership-retrieve'),
+    re_path(r'^api/user_membership_user_auto_orders_list/$', membership_views.UserMembershipUserAutoOrdersListApiView.as_view(), name='api-user-membership-auto-order-list'),
 ]
 
 # store api
 from store.views import (
         StoreListCreateApiView,
         StoreRetrieveUpdateDestroyApiView,
-        ListCompaniesApiView
+        ListCompaniesApiView,
+        StoreDeliverUserList,
+        ChangeDeliveryUserRoute
 )
 urlpatterns += [
     re_path(r'^api/store/$', StoreListCreateApiView.as_view(), name='api-store'),
     re_path(r'^api/store/(?P<pk>\d+)/$', StoreRetrieveUpdateDestroyApiView.as_view(), name='api-store-retrieve'),
     re_path(r'^api/stores/$', ListCompaniesApiView.as_view(), name='api-stores-list'),
+    re_path(r'^api/store-delivery-users-list/$', StoreDeliverUserList.as_view(), name='delivery-users-list'),
+    re_path(r'^api/store-user-change-route/$', ChangeDeliveryUserRoute.as_view(), name='store-user-change-route'),
+    
 ]
 
 # store api
@@ -264,12 +293,15 @@ urlpatterns += [
 
     re_path(r'^api/routedetail/$', routes_views.RouteDetailListCreateApiView.as_view(), name='api-routedetail'),
     re_path(r'^api/routedetail/(?P<pk>\d+)/$', routes_views.RouteDetailRetrieveUpdateDestroyApiView.as_view(), name='api-routedetail-retrieve'),
+    re_path(r'^api/storewise_route/$', routes_views.StoreWiseRouteListApiView.as_view(), name='api-storewise_routedetail'),
+    
 
     path('route_detail_view',routes_views.route_detail_view),
 ]
 
 
-
+from sarovara_web import views
+handler404 = views.handler404
 
 urlpatterns += [
  
@@ -318,12 +350,14 @@ urlpatterns += [
 
 urlpatterns += [
     path(r'admin/', admin.site.urls),
-    path('', home_screen_view, name="home"),
+    path('', include('sarovara_web.urls')),
+    # path('', home_screen_view, name="home"),
     path('dashboard', dashboard_view, name="dashboard"),
     path('account/', account_view, name="account"),
     path('blog/', include('blog.urls', 'blog')),
     path('login/', login_view, name="login"),
     path('logout/', logout_view, name="logout"),
+    path('privacy-policy/', privacy_policy, name="privacy_policy"),
 	path('must_authenticate/', must_authenticate_view, name="must_authenticate"),
     path('register/', registration_view, name="register"),
 

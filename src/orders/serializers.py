@@ -14,6 +14,7 @@ import pprint
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from routes.models import get_nearest_route
+from mysite.utils import jwt_response_payload_handler
 User = get_user_model()
 
 # parse order token
@@ -159,6 +160,64 @@ class CartOrderSerializer(serializers.ModelSerializer):
 		order = OrderService.CreateOrderFromCart(validated_data)
 		return order
 
+	def saveStoreWiseOrder(self, order, user):
+		print('order::')
+		print(order)
+		cart = order.cart
+		cart_items = cart.items
+		cart_items = CartItem.objects.filter(cart_id=cart.id)
+		ordered_by = Store.objects.filter(fk_user_id=user.id).first()
+		#ordered_by_store = ordered_by.id
+		#print(ordered_by_store)
+
+		# print('asdasdasdasd')
+		for variation in cart_items:
+			print(variation)
+			store = variation.item.product.fk_store
+			order_id = order.order_id
+			store_id = store.id
+			store_wise = StoreWiseOrder.objects.filter(order_id=order_id).filter(fk_ordered_store_id=store_id).first()
+			if store_wise is None:			
+				store_wise = StoreWiseOrder()
+			store_wise.order_id = order.order_id
+			store_wise.order_total = order.order_total
+			store_wise.billing_address = order.billing_address
+			store_wise.shipping_address = order.shipping_address
+			store_wise.user_id = order.user_id
+			store_wise.cart_id = order.cart_id
+			store_wise.fk_auth_user_id = order.fk_auth_user_id
+			store_wise.order_latitude = order.order_latitude
+			store_wise.order_longitude = order.order_longitude
+			store_wise.fk_ordered_store = store
+			store_wise.fk_ordered_by_store = ordered_by
+			store_wise.fk_payment_method = order.fk_payment_method
+			store_wise.save()
+			variation.fk_storewise_order_id = store_wise.id
+			variation.save()
+		store_wise_orders = StoreWiseOrder.objects.filter(order_id=order_id) 
+		for store_wise_order in store_wise_orders:
+			sw_cart_items =  CartItem.objects.filter(fk_storewise_order_id=store_wise_order.id) #store_wise_order.fk_storewise_order_id
+			store_wise_order.order_total = 0
+			# is_depo = Store.objects.filter(fk_user_id=user.id).filter(fk_store_type_id=2).first()
+			# if not is_depo:
+			if store_wise_order.order_latitude and store_wise_order.order_longitude:
+				store_wise_order.fk_route = get_nearest_route(
+					store_wise_order.order_latitude,
+					store_wise_order.order_longitude,
+					store_wise_order.fk_ordered_store.id,
+					None
+				)
+			for cart_item in sw_cart_items:
+				store_wise_order.order_total+=cart_item.line_item_total
+
+			store_wise_order.save()
+
+
+			# print(variation.product)
+
+
+
+
 class OrderListStoreSerializer(serializers.ModelSerializer):
 	billing_address = serializers.SerializerMethodField()
 	mobile = serializers.SerializerMethodField()
@@ -177,7 +236,10 @@ class OrderListStoreSerializer(serializers.ModelSerializer):
 		return obj.user.user.mobile
 
 	def get_payment_method(self, obj):
-		return obj.fk_payment_method.title
+		title=""
+		if obj.fk_payment_method:
+			title = obj.fk_payment_method.title		
+		return title
 
 
 
@@ -185,6 +247,11 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
 	# billing_address = serializers.SerializerMethodField()
 	ordered_stored_name = serializers.SerializerMethodField()
 	total_order_price = serializers.SerializerMethodField()
+	customer_name = serializers.SerializerMethodField()
+	address = serializers.SerializerMethodField()
+	status = serializers.SerializerMethodField()
+	created_at = serializers.DateTimeField(read_only=True, format="%Y-%m-%d")
+
 	class Meta:
 		model = StoreWiseOrder
 		fields = [
@@ -195,6 +262,7 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
             "order_id",
             "is_delivered",
             "is_paid",
+            "is_transit",
             "created_at",
             "updated_at",
             "order_latitude",
@@ -206,10 +274,22 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
             "fk_payment_method",
             "fk_ordered_by_store_id",
             "ordered_stored_name",
-            "total_order_price"
+            "total_order_price",
+            "customer_name",
+            "address",
+            "status"
             
 
 		]
+
+	def get_status(self, obj):
+		status = "pending"
+		if obj.is_delivered:
+			status = "delivered"
+		elif obj.is_transit:
+			status = "transit"
+
+		return status
 
 	def get_ordered_stored_name(self, obj):
 		abc = ""
@@ -219,6 +299,21 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
 			return abc.title
 
 		return abc
+	def get_address(self, obj):
+		cutomer_address = ""
+		customer_address = UserAddress.objects.filter(user_id=obj.fk_auth_user_id).first()
+		if customer_address:
+			return str(customer_address.city + customer_address.street)
+		return cutomer_address
+
+	def get_customer_name(self, obj):
+
+		customer_name = ""
+		customer_name = User.objects.filter(pk=obj.fk_auth_user_id).first()
+		print(customer_name)
+		if customer_name:
+			return customer_name.username
+		return customer_name
 
 	def get_total_order_price(self, obj):
 		total_price = ""
@@ -310,16 +405,17 @@ class CartItemSerializer(serializers.ModelSerializer):
 		product = variation.product
 
 		image_url = ProductImage.objects.filter(product=product).first()
-		print(obj.item.id)
-		print(obj.__dict__)
-		print(image_url)
+		# print(obj.item.id)
+		# print(obj.__dict__)
+		# print(image_url)
 		# return ""
 		# print(list(image_url.values('image')))
 		
 		imageUrl = "/static/no-image.jpg"
-		d = image_url.__dict__
-		if 'image' in d:
-			imageUrl = d['image']
+		if image_url:
+			d = image_url.__dict__
+			if 'image' in d:
+				imageUrl = d['image']
 
 
 

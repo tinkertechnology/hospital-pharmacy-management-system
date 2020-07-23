@@ -1,0 +1,107 @@
+{% extends 'base_layout.html' %}
+
+{% load static %}
+
+{% block content %}
+
+	<!-- Breadcrumbs -->
+    <section class="breadcrumbs-custom bg-image context-dark" style="background-image: url({% static 'assets/images/breadcrumbs-image-01.jpg' %});">
+        <div class="breadcrumbs-custom-inner">
+            <div class="container breadcrumbs-custom-container">
+                <div class="breadcrumbs-custom-main">
+                    <h6 class="breadcrumbs-custom-subtitle title-decorated">Careers</h6>
+                    <h1 class="breadcrumbs-custom-title">Apply Now</h1>
+                </div>
+                <ul class="breadcrumbs-custom-path">
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li><a href="{% url 'careers' %}">Careers</a></li>
+                    <li class="active">Apply Now</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="section section-lg" style="padding-top: 20px;">
+        <div class="container">
+            <!-- <h3 class="text-center">Apply Now</h3> -->
+            <!-- <p>If you like to see our depot near to your location. Kindly call us by submitting below form.  We will try to come near to your location as soon as possible.</p> -->
+            <div class="row">
+                <div class="col-sm-12 col-lg-8">
+                    <!-- {% if error_message %}
+                        <div class="alert alert-success" role="alert">
+                            {{error_message}}
+                        </div>
+                    {% endif %} -->
+
+                    {% if error_message %}
+                        <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            {{ error_message }}
+                        </div>
+                    {% endif %}
+                    <!-- RD Mailform-->
+                    <form class="apply-vacancy-now-form" method="POST" action="{% url 'apply-vacancy-now' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-wrap">
+                                    <label class="form-label-outside" for="contact-2-full-name">Full Name</label>
+                                    <input class="form-input" id="id_full_name" type="text" name="full_name" data-constraints="@Required">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-wrap">
+                                    <label class="form-label-outside" for="contact-2-email">Email Address</label>
+                                    <input class="form-input" id="id_email" type="email" name="email" data-constraints="@Email @Required">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-wrap">
+                                    <label class="form-label-outside" for="contact-2-phone">Phone Number</label>
+                                    <input class="form-input" id="id_phone" type="text" name="phone" data-constraints="@PhoneNumber @Required">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="form-wrap">
+                                    <label class="form-label-outside" for="contact-2-phone">Address</label>
+                                    <input class="form-input" id="id_address" type="text" name="address" data-constraints="@Required">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-wrap">
+                                    <label class="form-label-outside" for="contact-2-phone">Upload Your CV</label>
+                                    <input class="form-input" id="id_cv" type="file" name="cv" data-constraints="@Required">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-wrap">
+                                    <label class="form-label-outside" for="contact-2-phone">Upload Your Citizenship</label>
+                                    <input class="form-input" id="id_citizenship" type="file" name="citizenship" data-constraints="@Required">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Google captcha-->
+                        <div class="form-wrap text-left form-validation-left">
+                            <div class="recaptcha" id="captcha1" data-sitekey="6LfZlSETAAAAAC5VW4R4tQP8Am_to4bM3dddxkEt"></div>
+                        </div>
+                        
+                        <div class="group group-middle">
+                            <button class="button button-primary button-winona" type="submit">Send Message</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+{% endblock %}

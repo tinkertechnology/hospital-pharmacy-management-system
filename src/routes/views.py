@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from .serializers import RouteSerializer, RouteDetailSerializer
 from .models import Route, RouteDetail
+from store.models import Store
 
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.generics import CreateAPIView, ListAPIView,ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 import json
 from django.http import JsonResponse
 
@@ -14,8 +15,38 @@ from django.http import JsonResponse
 class RouteListCreateApiView(ListCreateAPIView):
     serializer_class = RouteSerializer
 
+    def post(self, request, *args, **kwargs):
+        print(request.data)
+        title = request.data.get('title', None)
+        route_id = request.data.get('route_id', None)
+        route_code = request.data.get('routeCode', None)
+        fk_store = Store.objects.filter(fk_user_id=request.user.id).first()
+        if not fk_store:
+            return Response({"Fail": "Couldn't find any Depo associated with your account"}, status.HTTP_400_BAD_REQUEST)
+        if not title:
+            return Response({"Fail": "Insert title "}, status.HTTP_400_BAD_REQUEST)
+        if not route_code:
+            return Response({"Fail": "Insert title"}, status.HTTP_400_BAD_REQUEST)
+        if route_id:
+            route = Route.objects.filter(pk=route_id).first()
+        else:
+            route = Route()
+        route.title = title
+        route.code = route_code
+        route.fk_store_id = fk_store.id
+        route.save()
+        return Response({
+                        'status': True,
+                        'detail': 'Route Added',
+                        'fk_route_id': route.id
+                        })
+
     def get_queryset(self, *args, **kwargs):
-        return Route.objects.all()
+        routes = ""
+        fk_store = Store.objects.filter(fk_user_id=self.request.user.id).first()
+        if fk_store:
+            routes = Route.objects.filter(fk_store_id=fk_store.id)
+        return routes
 
 #http://localhost:8000/api/route/<pk>/
 #
@@ -37,6 +68,20 @@ class RouteDetailRetrieveUpdateDestroyApiView(RetrieveUpdateDestroyAPIView):
     serializer_class = RouteDetailSerializer
     def get_queryset(self, *args, **kwargs):
         return RouteDetail.objects.all()
+
+
+class StoreWiseRouteListApiView(ListAPIView):
+    serializer_class = RouteSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        store = Store.objects.filter(fk_user_id=self.request.user.id).first()
+        print(store)
+        storewise_route = Route.objects.filter(fk_store_id=store.id)
+        print(storewise_route)
+
+        return storewise_route
+
+    
 
 from django.views.decorators.csrf import csrf_exempt
 

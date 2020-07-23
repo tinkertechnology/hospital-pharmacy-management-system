@@ -19,7 +19,7 @@ User = get_user_model()
 
 def SaveStoreWiseOrder(order, user_id):
 	print('order::')
-	print(order)
+	print(order.__dict__)
 	cart = order.cart
 	cart_items = cart.items
 	cart_items = CartItem.objects.filter(cart_id=cart.id)
@@ -36,7 +36,7 @@ def SaveStoreWiseOrder(order, user_id):
 		store_wise = StoreWiseOrder.objects.filter(order_id=order_id).filter(fk_ordered_store_id=store_id).first()
 		if store_wise is None:			
 			store_wise = StoreWiseOrder()
-		store_wise.order_id = order.order_id
+		store_wise.order_id = order.id
 		store_wise.order_total = order.order_total
 		store_wise.billing_address = order.billing_address
 		store_wise.shipping_address = order.shipping_address
@@ -52,17 +52,20 @@ def SaveStoreWiseOrder(order, user_id):
 		variation.fk_storewise_order_id = store_wise.id
 		variation.save()
 	store_wise_orders = StoreWiseOrder.objects.filter(order_id=order.id) 
-
+	print('store-wise-order')
+	print(store_wise_orders)
 	for store_wise_order in store_wise_orders:
 		sw_cart_items =  CartItem.objects.filter(fk_storewise_order_id=store_wise_order.id) #store_wise_order.fk_storewise_order_id
 		store_wise_order.order_total = 0
+		if store_wise_order.order_latitude and store_wise_order.order_longitude:
+			store_wise_order.fk_route = get_nearest_route(
+				store_wise_order.order_latitude,
+				store_wise_order.order_longitude,
+				store_wise_order.fk_ordered_store.id,
+				None
+			)
 
-		store_wise_order.fk_route = get_nearest_route(
-			store_wise_order.order_latitude,
-			store_wise_order.order_longitude,
-			store_wise_order.fk_ordered_store.id,
-			None
-		)
+		print(store_wise_order.fk_route)
 		for cart_item in sw_cart_items:
 			store_wise_order.order_total+=cart_item.line_item_total
 
@@ -76,11 +79,20 @@ def CreateOrderFromCart(validated_data):
 	# pprint.pprint(validated_data)
 	##user =  self.context['request'].user ##
 	##print(user.id)##
+
 	user_id = validated_data.get('user_id')
+	user = User.objects.get(pk=user_id)
 	order_latitude = validated_data.get("order_latitude")
 	order_longitude = validated_data.get("order_longitude")
-	fk_ordered_store_id  = validated_data.get("fk_ordered_store")
-	fk_payment_method_id = validated_data.get("fk_payment_method")
+	fk_ordered_store  = validated_data.get("fk_ordered_store")
+	fk_ordered_store_id = fk_ordered_store 
+	if not isinstance(fk_ordered_store, int):
+		fk_ordered_store_id = fk_ordered_store.id
+	fk_payment_method = validated_data.get("fk_payment_method")
+
+	fk_payment_method_id = fk_payment_method
+	if not isinstance(fk_payment_method_id, int):
+		fk_payment_method_id = fk_payment_method.id
 
 	# item_quantity = validated_data.pop('item_quantity')
 	cart = Cart.objects.filter(user_id=user_id).filter(active=1).first()

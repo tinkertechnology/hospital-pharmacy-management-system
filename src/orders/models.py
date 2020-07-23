@@ -138,6 +138,7 @@ class Order(models.Model):
 
 
 def order_pre_save(sender, instance, *args, **kwargs):
+	print('noobs')
 	shipping_total_price = instance.shipping_total_price
 	cart_total = instance.cart.total
 	order_total = Decimal(shipping_total_price) + Decimal(cart_total)
@@ -161,6 +162,7 @@ class StoreWiseOrder(models.Model):
 	fk_ordered_store = models.ForeignKey(Store, related_name='fk_ordered_store_storewiseorder', on_delete=models.CASCADE, null=True, blank=True)
 	fk_delivery_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='fk_delivery_user_storewiseorder', on_delete=models.CASCADE, null=True, blank=True)
 	is_paid = models.BooleanField(default=False)
+	is_transit = models.BooleanField(default=False)
 	fk_payment_method = models.ForeignKey(PaymentMethod, related_name='fk_ordered_store_storewiseorder', on_delete=models.CASCADE, null=True, blank=True)
 	fk_ordered_by_store = models.ForeignKey(Store, related_name='fk_ordered_by_store_storewiseorder', on_delete=models.CASCADE, null=True, blank=True)
 	created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -168,6 +170,9 @@ class StoreWiseOrder(models.Model):
 	order_latitude = models.CharField(max_length=200, null=True, blank=True)
 	order_longitude = models.CharField(max_length=200, null=True, blank=True)
 	fk_route = models.ForeignKey(Route, related_name='fk_route_storewiseorder', on_delete=models.CASCADE, null=True, blank=True)
+
+	class Meta:
+		ordering = ['-created_at']
 
 
 

@@ -27,3 +27,6 @@ class StoreUser(models.Model):
     fk_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
     fk_store_usertypes = models.ForeignKey(UserTypes, null=True, blank=True, on_delete=models.CASCADE) #Delivery/Manager
     fk_route = models.ForeignKey(Route, on_delete=models.CASCADE, blank=True)
+
+    def __str__(self):
+        return str(self.fk_route.title + ' mobile : ' +self.fk_user.mobile)

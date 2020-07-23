@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html class="wide wow-animation" lang="en">
+    <head>
+        <title>Sarovara</title>
+        <meta name="format-detection" content="telephone=no">
+        <meta name="viewport" content="width=device-width height=device-height initial-scale=1.0 maximum-scale=1.0 user-scalable=0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta charset="utf-8">
+        {% load static %}
+        <link rel="icon" href="{% static 'assets/images/favicon.png' %}" type="image/x-icon">
+
+        <!-- Stylesheets-->
+        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Work+Sans:300,400,500,700,800%7COswald:300,400,500">
+        
+        <link rel="stylesheet" href="{% static 'assets/css/bootstrap.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/fonts.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'assets/css/material-design-iconic-font.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'assets/css/font-awesome.min.css' %}">
+
+        <!-- <style type="text/css">
+            .modal-content{
+                max-height: 60%;
+            }
+        </style> -->
+
+        <!--[if lt IE 10]>
+        <div style="background: #212121; padding: 10px 0; box-shadow: 3px 3px 5px 0 rgba(0,0,0,.3); clear: both; text-align:center; position: relative; z-index:1;"><a href="https://windows.microsoft.com/en-US/internet-explorer/"><img src="images/ie8-panel/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a></div>
+        <script src="js/html5shiv.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <!-- Page -->
+        <div class="page">
+            <!-- Page Header-->
+            <header class="section page-header">
+                <!-- RD Navbar-->
+                <div class="rd-navbar-wrap">
+                    <nav class="rd-navbar rd-navbar-minimal" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fixed" data-md-device-layout="rd-navbar-fixed" data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-fixed" data-xl-layout="rd-navbar-static" data-xl-device-layout="rd-navbar-static" data-xxl-layout="rd-navbar-static" data-xxl-device-layout="rd-navbar-static" data-lg-stick-up-offset="46px" data-xl-stick-up-offset="46px" data-xxl-stick-up-offset="46px" data-lg-stick-up="true" data-xl-stick-up="true" data-xxl-stick-up="true">
+                        <div class="rd-navbar-main-outer">
+                            <div class="rd-navbar-main">
+                                <!-- RD Navbar Panel-->
+                                <div class="rd-navbar-panel">
+                                    <!-- RD Navbar Toggle-->
+                                    <button class="rd-navbar-toggle" data-rd-navbar-toggle="#rd-navbar-nav-wrap-1"><span></span></button>
+                                    <!-- RD Navbar Brand-->
+                                    <a class="rd-navbar-brand" href="{% url 'index' %}">
+                                        <img src="{% static 'assets/images/logo.png' %}" alt="" width="132" height="34" srcset="{% static 'assets/images/logo.png' %}"/>
+                                    </a>
+                                </div>
+                                <div class="rd-navbar-main-element">
+                                    <div class="rd-navbar-nav-wrap" id="rd-navbar-nav-wrap-1">
+                                        <!-- RD Navbar Nav-->
+                                        <ul class="rd-navbar-nav">
+                                            <!-- <li class="rd-nav-item {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
+                                                <a class="rd-nav-link" href="{% url 'index' %}">Home</a>
+                                            </li> -->
+                                            <li class="rd-nav-item {% if request.resolver_match.url_name == 'we-sales' %}active{% endif %}">
+                                                <a class="rd-nav-link" href="{% url 'we-sales' %}">We Sales</a>
+                                            </li>
+                                            <li class="rd-nav-item {% if request.resolver_match.url_name == 'our-depot' %}active{% endif %}">
+                                                <a class="rd-nav-link" href="{% url 'our-depot' %}">Our Depot</a>
+                                            </li>
+                                            <li class="rd-nav-item {% if request.resolver_match.url_name == 'careers' %}active{% endif %}">
+                                                <a class="rd-nav-link" href="{% url 'careers' %}">Careers</a>
+                                            </li>
+                                            <li class="rd-nav-item {% if request.resolver_match.url_name == 'about-us' %}active{% endif %}">
+                                                <a class="rd-nav-link" href="{% url 'about-us' %}">About Us</a>
+                                                <ul class="rd-menu rd-navbar-dropdown">
+                                                    <li class="rd-dropdown-item {% if request.resolver_match.url_name == 'about-us' %}active{% endif %}">
+                                                        <a class="rd-dropdown-link" href="{% url 'contacts' %}">Contact Us</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <!-- <li class="rd-nav-item"><a class="rd-nav-link" href="{% url 'contacts' %}">Contacts</a>
+                                            </li> -->
+                                        </ul>
+                                    </div>
+                                    <!-- Callback link-->
+                                    <div class="rd-navbar-call">
+                                        <button class="icon icon-md mdi mdi-phone" data-toggle="modal" data-target="#call-form"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </header>
+            
+            {% block content %}
+
+
+            {% endblock %}
+
+            <!-- Page Footer-->
+            <footer class="section footer-standard bg-gray-modern">
+                <div class="section-wave">
+                    <svg x="0px" y="0px" viewBox="0 0 1920 45" width="1920" height="45px" preserveAspectRatio="none">
+                        <style type="text/css"></style>
+                        <path d="M1920,0c-82.8,0-108.8,44.4-192,44.4c-78.8,0-116.5-43.7-192-43.7c-77.1,0-115.9,44.4-192,44.4c-78.2,0-114.6-44.4-192-44.4c-78.4,0-115.3,44.4-192,44.4C883.1,45,841,0.6,768,0.6C691,0.6,652.8,45,576,45C502.4,45,461.9,0.6,385,0.6C306.5,0.6,267.9,45,191,45C115.1,45,78,0.6,0,0.6V45h1920V0z"></path>
+                    </svg>
+                </div>
+                <div class="footer-standard-main">
+                    <div class="container">
+                        <div class="row row-50">
+                            <div class="col-lg-4">
+                                <div class="inset-right-1">
+                                    <!-- <h4>About Us</h4>
+                                    <p>Sarovara is one of water providers in the Nepal. We provide high quality drinking water at a reasonable price and delivers it to the doorstep of customer’s homes and offices, setting competition for drinking water quality in the market !</p> -->
+                                    <h4>Available On</h4>
+                                    <div class="form-inline">
+                                        <img src="{% static 'assets/images/app-store.png' %}" class="img-responsive" style="max-width: 50%; margin-right: 5px;">
+                                        <img src="{% static 'assets/images/google-playstore.png' %}" class="img-responsive" style="max-width: 50%;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-5 col-lg-4">
+                                <div class="box-1">
+                                    <h4>Contact Information</h4>
+                                    <ul class="list-sm list-footer">
+                                        <li class="object-inline"><span class="icon icon-sm mdi mdi-map-marker text-gray-700"></span><a class="contact-link-default" href="#">Hadigaun  <br> Kathmandu, Nepal</a></li>
+                                        <li class="object-inline"><span class="icon icon-sm mdi mdi-phone text-gray-700"></span><a class="contact-link-default" href="tel:#">1-660-014-440-221</a></li>
+                                        <li class="object-inline"><span class="icon icon-sm mdi mdi-email text-gray-700"></span><a class="contact-link-default" href="mailto:#">info@sarovara.com.np</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-7 col-lg-4">
+                                <h4>Newsletter</h4>
+                                <p style="color: #fff;">Sign up to our newsletter and be the first to know about latest news, special offers, events, and discounts.</p>
+                                <!-- RD Mailform-->
+                                <form class="rd-form rd-mailform form-inline" data-form-output="form-output-global" data-form-type="subscribe" method="post" action="bat/rd-mailform.php">
+                                    <div class="form-wrap">
+                                        <input class="form-input" id="subscribe-form-2-email" type="email" name="email" data-constraints="@Email @Required">
+                                        <label class="form-label" for="subscribe-form-2-email">E-mail</label>
+                                    </div>
+                                    <div class="form-button">
+                                        <button class="button button-primary-newsletter button-icon button-icon-only button-winona" type="submit" aria-label="submit"><span class="icon mdi mdi-email-outline"></span></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="footer-standard-aside justify-content-center">
+                        <!-- Rights-->
+                        <p class="rights" style="color: #fff;"><span>&copy;&nbsp;</span><span class="copyright-year"></span><span>&nbsp;</span><span>All Rights Reserved.</span><span>&nbsp;</span><br class="d-sm-none"/><a href="{% url 'terms-of-use' %}" style="color: #fff;">Terms of Use</a><span> and</span><span>&nbsp;</span><a href="{% url 'terms-of-use' %}" style="color: #fff;">Privacy Policy</a></p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        <!-- Page -->
+
+        <!-- Pre Loader -->
+        <div class="preloader">
+            <div class="preloader-body">
+                <div class="cssload-container">
+                    <div class="cssload-double-torus"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Pre Loader -->
+
+        <!-- Call Form Modal -->
+        <div class="modal modal-custom fade" id="call-form">
+            <div class="modal-dialog modal-dialog-custom" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Request for Depot</h3>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>If you like to see our depot near to your location. Kindly call us by submitting below form.  We will try to come near to your location as soon as possible.</p>
+                        <form class="open-depot-form" data-form-output="form-output-global" data-form-type="contact" method="POST" 
+                            action="{% url 'request-open-depot' %}">
+                            {% csrf_token %}
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col-md-12">
+                                    <div class="form-wrap">
+                                        <label class="form-label-outside" for="contact-2-first-name">Full Name</label>
+                                        <input class="form-input" id="id_full_name" type="text" name="full_name" data-constraints="@Required">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-wrap">
+                                        <label class="form-label-outside" for="contact-2-email">Email</label>
+                                        <input class="form-input" id="id_email" type="email" name="email" data-constraints="@Email @Required">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-wrap">
+                                        <label class="form-label-outside" for="contact-2-phone">Phone</label>
+                                        <input class="form-input" id="id_phone" type="text" name="phone" data-constraints="@PhoneNumber @Required">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-wrap">
+                                        <label class="form-label-outside" for="contact-2-phone">Location</label>
+                                        <input class="form-input" id="id_location" type="text" name="location" data-constraints="@Required">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-wrap">
+                                        <label class="form-label-outside" for="contact-2-message">Your Message</label>
+                                        <textarea class="form-input" id="id_message" name="message" data-constraints="@Required"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Google captcha-->
+                            <!-- <div class="form-wrap text-left form-validation-left">
+                                <div class="recaptcha" id="captcha1" data-sitekey="6LfZlSETAAAAAC5VW4R4tQP8Am_to4bM3dddxkEt"></div>
+                            </div> -->
+                            <div class="group group-middle">
+                                <button class="button button-primary button-winona" type="submit">Send Message</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Call Form Modal -->
+
+        <!-- Global Mailform Output-->
+        <div class="snackbars" id="form-output-global"></div>
+        
+        <!-- Javascript-->
+        <script src="{% static 'assets/js/core.min.js' %}"></script>
+        <script src="{% static 'assets/js/script.js' %}"></script>
+        <script type="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/js/fontawesome.min.js"></script>
+        <script type="text/javascript">
+            $(window).on('load',function(){
+                $('#popupModal').modal('show');
+
+                // Set a timeout to hide the element again
+                setTimeout(function(){
+                    $('#popupModal').modal('hide')
+                },3000);
+            });
+        </script>
+    </body>
+</html>

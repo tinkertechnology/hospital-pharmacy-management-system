@@ -14,13 +14,14 @@ def jwt_response_payload_handler(token, user, request, *args, **kwargs):
 
 	user_type1 = UserType.objects.filter(user=user.id).first()
 
-	depo =  Store.objects.filter(fk_user_id=user.id).filter(fk_store_type_id=2).first()
+	is_depo =  Store.objects.filter(fk_user_id=user.id).filter(fk_store_type_id=2).first()
+	# is_depo = StoreUser.objects.filter(fk_user_id=user.id).filter(fk_store_usertypes_id=3).first() #3_for manager
 	is_supply_company = Store.objects.filter(fk_user_id=user.id).filter(fk_store_type_id=1).first()
 	is_delivery_user = StoreUser.objects.filter(fk_user_id=user.id).filter(fk_store_usertypes_id=2).first() #2_is_delivery_user
 	if is_supply_company is not None:
 		is_supply_company = True
 	
-	if depo is not None:
+	if is_depo is not None:
 		is_depo = True
 
 	if is_delivery_user is not None:

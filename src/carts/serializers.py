@@ -150,8 +150,11 @@ class CartItemSerializer(serializers.ModelSerializer):
 		return obj.item.product.id
 
 	def get_fk_store_title(self, obj):
+		title=""
+		if obj.item.product.fk_store:
+			title = obj.item.product.fk_store.title 
 		#return  StoreSerializer(obj.item.product.fk_store)
-		return obj.item.product.fk_store.title 
+		return title
 
 	def get_price(self, obj):
 		print(obj.item.sale_price)
@@ -168,16 +171,15 @@ class CartItemSerializer(serializers.ModelSerializer):
 		product = variation.product
 
 		image_url = ProductImage.objects.filter(product=product).first()
-		print(obj.item.id)
-		print(obj.__dict__)
-		print(image_url)
 		# return ""
 		# print(list(image_url.values('image')))
 		
 		imageUrl = "/static/no-image.jpg"
-		d = image_url.__dict__
-		if 'image' in d:
-			imageUrl = d['image']
+		if image_url:
+			d = image_url.__dict__
+		
+			if 'image' in d:
+				imageUrl = d['image']
 
 
 

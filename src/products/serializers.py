@@ -36,7 +36,9 @@ class VariationSerializer(serializers.ModelSerializer):
 		else:
 			price = obj.price
 			sale_price = obj.sale_price
-			discount = round(((float(price)-float(sale_price))/float(price))*100, 2)			
+			discount=0
+			if price!=0:
+				discount = round(((float(price)-float(sale_price))/float(price))*100, 2)			
 			return discount
 
 
@@ -111,9 +113,30 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 			url=image_url.image.url
 		return url
 		#return obj.productimage_set.first().image.url
-		 
 
 
+
+# class AllProductDetailSerializer(serializers.ModelSerializer):
+# 	variation_set = VariationSerializer(many=True, read_only=True)
+# 	image = serializers.SerializerMethodField()
+# 	class Meta:
+# 		model = Product
+# 		fields = [
+# 			"id",
+# 			"title",
+# 			"description",
+# 			"price",
+# 			"image",
+# 			"variation_set",
+# 		]
+
+# 	def get_image(self, obj):
+# 		image_url = obj.productimage_set.first()
+# 		url = '/no-image.jpg'
+# 		if image_url is not None:
+# 			url=image_url.image.url
+# 		return url
+# 		#return obj.productimage_set.first().image.url
 
 
 
@@ -123,6 +146,7 @@ class ProductSerializer(serializers.ModelSerializer):
 	fk_store = StoreSerializer(read_only=True)
 	image = serializers.SerializerMethodField()
 	productimage_set = ImageSerializer(many=True, read_only=True)
+
 	class Meta:
 		model = Product
 		fields = [
@@ -143,6 +167,8 @@ class ProductSerializer(serializers.ModelSerializer):
 			return  obj.productimage_set.first().image.url
 		except:
 			return None
+
+
 
 
 	# def get_images_set(self, obj):
@@ -299,4 +325,107 @@ class ProductUnitSerializer(serializers.ModelSerializer):
 		model = ProductUnit
 		fields = ['id','title'] 
 
+class CategoriesSerializer(serializers.ModelSerializer):
+	# company_id = serializers.SerializerMethodField()
+	# title = serializers.SerializerMethodField()
+
+
+	class Meta:
+		model = Category
+		fields = '__all__'
+
+
+class AllProductSerializer(serializers.ModelSerializer): ##pharma
+	url = serializers.HyperlinkedIdentityField(view_name='all_products_detail_api')
+	variation_set = VariationSerializer(many=True)
+	image = serializers.SerializerMethodField()
+	productimage_set = ImageSerializer(many=True, read_only=True)
+	company = CompanySerializer()
+	brand = BrandSerializer()
+	category = serializers.SerializerMethodField()
+	generic_name = GenericNameSerializer()
+	
+	class Meta:
+		model = Product
+		fields = [
+			"url",
+			"id",
+			"title",
+			"image",
+			"price",
+			"description",
+			"variation_set",
+			"productimage_set",
+			"company",
+			"brand",
+			"generic_name",
+			"category"
+		]
+
+	def get_image(self, obj):
+		try:
+			return  obj.productimage_set.first().image.url
+		except:
+			return None
+	def get_category(self, obj):
+		serializer = SubCategorySerializer(Category.objects.filter(fk_category=obj.id), many=True)
+		return serializer.data
+
 #CREATE RETRIEVE UPDATE DESTROY
+
+class AllProductDetailSerializer(serializers.ModelSerializer):
+	variation_set = VariationSerializer(many=True, read_only=True)
+	image = serializers.SerializerMethodField()
+	generic_name_id = serializers.SerializerMethodField()
+	company_id = serializers.SerializerMethodField()
+	product_unit_id = serializers.SerializerMethodField()
+	category_id = serializers.SerializerMethodField()
+	brand_id = serializers.SerializerMethodField()
+
+	
+	class Meta:
+		model = Product
+		fields = [
+			"id",
+			"title",
+			"description",
+			"price",
+			"image",
+			"variation_set",
+			"brand_id",
+			"category_id",
+			"product_unit_id",
+			"company_id",
+			"generic_name_id",
+			"amount"
+
+		]
+
+	def get_company_id(self, obj):
+		return obj.company_id
+
+	def get_product_unit_id(self, obj):
+		return obj.product_unit_id
+
+	def get_generic_name_id(self, obj):
+		return obj.brand_id
+
+	def get_company_id(self, obj):
+		return obj.company_id
+	
+	def get_brand_id(self, obj):
+		return obj.brand_id
+
+	def get_category_id(self, obj):
+		cat = obj.categories.all().first()
+		if cat:
+			return cat.id
+		return None
+
+	def get_image(self, obj):
+		image_url = obj.productimage_set.first()
+		url = '/no-image.jpg'
+		if image_url is not None:
+			url=image_url.image.url
+		return url
+		#return obj.productimage_set.first().image.url	 

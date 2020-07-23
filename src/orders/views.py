@@ -216,23 +216,26 @@ class OrderLists(ListAPIView):
 	serializer_class = OrderListStoreSerializer
 
 	def get_queryset(self):
-		
-		store_user = Store.objects.filter(fk_user_id=self.request.user.id).first()
-		print(store_user)
-		print(self.request.user.id)
-		if not store_user:
-			# user_checkouts = UserCheckout.objects.filter(user_id=self.request.user.id).id
-			# print(user_checkouts.__dict__)
-			orders= Order.objects.filter(fk_auth_user_id=self.request.user.id)
+		super_user = self.request.user.is_superuser
+		filter_query = self.request.GET.get('status')
+		if super_user:
+			orders = orders = Order.objects.filter(status=1)
+			if filter_query=="pending":
+				print(1)
+				orders = Order.objects.filter(status=1)
+			if filter_query=="delivered":
+				print(2)
+				orders = Order.objects.filter(status=0)	
+				print(orders.count())
+
+
 		else:
-			orders = Order.objects.filter(status=1)			
-			if settings.CAN_STORE_SEE_ALL_ORDERS==False:
-				user_id = self.request.user.id
-				store = Store.objects.filter(fk_user_id=user_id).first()
-				if store is None:
-					orders = []
-				else:
-					orders = orders.filter(fk_ordered_store=store)
+			orders = Order.objects.filter(fk_auth_user_id=self.request.user.id).filter(status=1)
+			if filter_query=="pending":
+				orders = Order.objects.filter(fk_auth_user_id=self.request.user.id).filter(status=1)
+			if filter_query=="delivered":
+				orders = Order.objects.filter(fk_auth_user_id=self.request.user.id).filter(status=0)
+
 		
 		return orders
 
@@ -244,23 +247,65 @@ class StoreWiseOrderLists(ListAPIView):
 	serializer_class = StoreWiseOrderListSerializer
 
 	def get_queryset(self):
-		print(1)
+		filter = self.request.GET.get('filter')
+		# from_date = self.request.GET.get('from_date')
+		# to_date = self.request.GET.get('to_date')
+		# from_date = '2020-07-18 00:00:00';
+		# to_date = '2020-07-19 00:00:00';
+
+
 		user=self.request.user
-		orders= Order.objects.filter(fk_auth_user_id=self.request.user.id)
+		# orders= Order.objects.filter(fk_auth_user_id=self.request.user.id)
 		supply_store_user = Store.objects.filter(fk_user_id=self.request.user.id).first()
 		delivery_user = StoreUser.objects.filter(fk_user_id=user.id).filter(fk_store_usertypes_id=2).first()
 		
 		if supply_store_user is not  None:
-			
-			orders = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id)
-			
+			print(supply_store_user.id)
+			qs = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id).filter(is_delivered=0)
+			print(1) #.filter(is_delivered=0)
+			if filter:
+				if filter=='pending':
+					qs = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id).filter(is_delivered=0, is_transit=0)
+				if filter=='transit':
+					qs = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id).filter(is_transit=1)
+				if filter=='delivered':
+					qs = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id).filter(is_delivered=1)
 		
 		if delivery_user is not None:
-			orders = StoreWiseOrder.objects.filter(fk_route_id=delivery_user.fk_route_id)
+			qs = StoreWiseOrder.objects.filter(fk_route_id=delivery_user.fk_route_id).filter(is_delivered=0)
+			if filter:
+				if filter=='pending':
+					qs = StoreWiseOrder.objects.filter(fk_route_id=delivery_user.fk_route_id).filter(is_delivered=0, is_transit=0)
+				if filter=='transit':
+					qs = StoreWiseOrder.objects.filter(fk_route_id=delivery_user.fk_route_id).filter(is_transit=1)
+				if filter=='delivered':
+					qs = StoreWiseOrder.objects.filter(fk_route_id=delivery_user.fk_route_id).filter(is_delivered=1)
 
-
-		
-		return orders
+		if not supply_store_user:
+			if not delivery_user:
+				qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(is_delivered=0)
+				if filter:
+					if filter=='pending':
+						qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id)
+					if filter=='transit':
+						qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(is_transit=1)
+					if filter=='delivered':
+						qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(is_delivered=1)
+		# from datetime import datetime, timedelta, time
+		# from django.utils.dateparse import parse_date
+		# import dateutil.parser
+		# if from_date:
+		# 	print(12)
+		# 	from_date = dateutil.parser.parse(from_date)
+		# 	qs = qs.filter(created_at__gte=from_date) #(created_at__range=[from_date, to_date])
+		# 	print(from_date)
+		# if to_date:
+		# 	print(21)
+		# 	print(to_date)
+		# 	to_date = dateutil.parser.parse(to_date)
+		# 	qs = qs.filter(created_at__lt=to_date)
+		print(qs.query)
+		return qs
 
 class OrderHistoryLists(ListAPIView):
 	from django.db.models import Q
@@ -288,6 +333,36 @@ class OrderHistoryLists(ListAPIView):
 					orders = orders.filter(fk_ordered_store=store).filter(Q(is_paid=True) | Q(is_delivered=True))
 		
 		return orders
+
+
+class StoreWiseOrderHistoryLists(ListAPIView):
+	from django.db.models import Q
+	# queryset = Order.objects.all()
+	serializer_class = StoreWiseOrderListSerializer
+
+	def get_queryset(self):
+		
+		store_user = Store.objects.filter(fk_user_id=self.request.user.id).first()
+	
+		if store_user is None:
+			# user_checkouts = UserCheckout.objects.filter(user_id=self.request.user.id).id
+			# print(user_checkouts.__dict__)
+			orders= StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(Q(is_paid=True) | Q(is_delivered=True))
+			
+			
+		else:
+			orders = StoreWiseOrder.objects.all()			
+			if settings.CAN_STORE_SEE_ALL_ORDERS==False:
+				user_id = self.request.user.id
+				store = Store.objects.filter(fk_user_id=user_id).first()
+				if store is None:
+					orders = []
+				else:
+					orders = orders.filter(fk_ordered_store=store).filter(Q(is_paid=True) | Q(is_delivered=True))
+		
+		return orders
+
+
 
 class CartOrderLists(ListAPIView):
 	def get(self, request):
@@ -515,7 +590,7 @@ def UserOrderDetailView(request, id):
 
 	# return HttpResponse('User Order Detail View')
 
-class UpdateOrderStatusApiView(CreateAPIView):
+class UpdateOrderStatusApiView(CreateAPIView): ## YO USE BHAKO CHAINA //STOREWISE ORDER HAINA
 	# permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 	queryset=Order.objects.all()
 	serializer_class = UpdateOrderStatusSerializer
@@ -525,19 +600,19 @@ class UpdateOrderStatusApiView(CreateAPIView):
 		pprint.pprint(request.POST)
 		order_id = request.POST.get('order_id')
 		status = request.POST.get('status')
-		print(status)
 		print(order_id)
 		order = Order.objects.filter(pk=order_id).first() 
 		if order:
-			if status == "paid":
-				order.is_paid = 1;
-			if status == "delivered":
-				order.is_delivered = 1;
+			# if status == "paid":
+			# 	order.is_paid = 1;
+			# if status == "delivered":
+			# 	order.is_delivered = 1;
+			order.status=0
 			order.save()
 
 			return Response({
 							'status': True,
-							'detail': 'Order is marked as '+status
+							'detail': 'Order is marked as Delivered'
 							})
 		else:
 			Response({"Fail": "Error updating order status"}, status.HTTP_400_BAD_REQUEST)
@@ -559,12 +634,21 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 			# for storewise_order in storewiseorder:
 			if status == "paid":
 				storewiseorder.is_paid = True;
+
+			if status == "transit":
+				storewiseorder.is_transit = True;
+
 			if status == "delivered":
 				storewiseorder.is_delivered = True;
+				is_depo=storewiseorder.fk_ordered_by_store_id is not None
+				if is_depo:
+					self.addProductinStore(storewiseorder) #DEPO LE COMPANY SANGA KINDA DEPO MA BADXA
+				else:
+					self.subProductinStore(storewiseorder) ###CUSTOMER LE DEPO SANGA KINDA KHERI GHATCHA
 			storewiseorder.save()
 
 		#if settings.IS_MULTI_VENDOR:
-			self.addProductinStore(storewiseorder)
+			
 
 			return Response({
 							'status': True,
@@ -596,6 +680,26 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 			buyer_variation.inventory += cartitem.quantity
 			buyer_variation.save()
 
+	def subProductinStore(self, storewiseorder):
+		cartitems = CartItem.objects.filter(fk_storewise_order_id=storewiseorder.id)
+		for cartitem in cartitems:
+			buyer_variation =  cartitem.item #Variation.objects.filter(product_id=buyer_product.id).first()
+			if buyer_variation.inventory is None:
+				buyer_variation.inventory=0
+			buyer_variation.inventory -= cartitem.quantity
+			buyer_variation.save()
+
+
+
+
+class myStoreName(APIView):
+	def get(self, request, *args, **kwargs):
+		print(request.user.id)
+		store_name=""
+		get_store_name = Store.objects.filter(fk_user_id=request.user.id).first()
+		if get_store_name:
+			store_name = get_store_name.title
+		return Response(store_name)
 
 
 				

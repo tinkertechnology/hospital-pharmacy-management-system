@@ -4,6 +4,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated
 
 from .models import MembershipType, UserMembership, UserMembershipAutoOrder
+from products.serializers import VariationSerializer
 # from carts.models import Cart #importing from other folders
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -55,3 +56,14 @@ class UserMembershipAutoOrderSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = UserMembershipAutoOrder
 		fields= '__all__'
+
+
+class UserMembershipUserAutoOrdersListSerializer(serializers.ModelSerializer):
+	fk_variation = VariationSerializer()
+	fk_usermembership = UserMembershipSerializer()
+	class Meta:
+		model = UserMembershipAutoOrder
+		fields= '__all__'
+
+
+
