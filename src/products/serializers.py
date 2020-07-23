@@ -46,6 +46,10 @@ class VariationSerializer(serializers.ModelSerializer):
 		# return ""
 		# print(self.price)	
 
+class ProductVariationListSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Variation
+		fields = '__all__'
 
 class ProductDetailUpdateSerializer(serializers.ModelSerializer):
 	variation_set = VariationSerializer(many=True, read_only=True)

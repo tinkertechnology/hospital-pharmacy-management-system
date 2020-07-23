@@ -18,6 +18,7 @@ from rest_framework.views import APIView
 
 
 from store import service as StoreService
+from rest_framework.generics import CreateAPIView, ListAPIView,ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
 
 # Create your views here.
 from .filters import ProductFilter
@@ -481,3 +482,7 @@ def product_detail_view_func(request, id):
 	}
 	return render(request, template, context)
 
+class ProductVariationRetrieveUpdateDestroyApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = Product
+    def get_queryset(self, *args, **kwargs):
+        return MembershipType.objects.all()
