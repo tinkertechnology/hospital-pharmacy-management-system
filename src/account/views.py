@@ -12,7 +12,7 @@ from django.http import HttpResponse
 from account.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
 from blog.models import BlogPost
 from django.contrib.auth.hashers import make_password
-from .models import Account, PhoneOTP
+from .models import Account, PhoneOTP, PasswordResetOTP
 from django.contrib.auth import get_user_model
 import uuid
 from django.shortcuts import get_object_or_404 
@@ -224,6 +224,7 @@ def send_otp(mobile):
 
 
 
+
 class ValidateOTP(APIView):
 	def post(self, request, *args, **kwargs):
 		mobile = request.data.get('mobile', False)
@@ -368,7 +369,7 @@ class ResetPasswordAPIView(APIView):
 
 
 class ChangePasswordAPIView(APIView):
-	permission_classes = [IsAuthenticated]
+	# permission_classes = [IsAuthenticated]
 	def post(self, request, *args, **kwargs):
 		user = request.user
 		user_db = User.objects.get(pk=user.id)
@@ -402,5 +403,133 @@ class ChangePasswordAPIView(APIView):
 			return Response({"Fail": "Please input desired password and try again"}, status.HTTP_400_BAD_REQUEST)
 
 
+class PasswordResetSendOTP(APIView):
+	def post(self, request, *args, **kwargs):
+		phone_number = request.data.get('mobile')
+		if phone_number:
+			mobile = str(phone_number)
+			print(len(mobile))
+			if len(mobile) != 10:
+				return Response({"Fail": "Phone number length must be 10 digit"}, status.HTTP_400_BAD_REQUEST)
+
+			user = Account.objects.filter(mobile__iexact=mobile)
+
+			if not user.exists():
+				# return Response({
+				# 	'status': False,
+				# 	'detail': 'number already exists'
+				# 	})
+				return Response({"Fail": "Number doesn't already Exists, please register"}, status.HTTP_400_BAD_REQUEST)
+			else:
+				key = send_otp(mobile)
+				if key:
+					old = PasswordResetOTP.objects.filter(mobile__iexact=mobile)
+					if old.exists():
+						old = old.first()
+						count = old.count
+						if count > 2:
+							return Response({"Fail": "OTP sent limit, Please contact support"},
+											status.HTTP_400_BAD_REQUEST)
+						old.count = count + 1
+						old.otp = key
+						old.save()
+						print('increaded count', count)
+					else:
+						PasswordResetOTP.objects.create(
+							mobile=mobile,
+							otp=key,
+						)
+					# r = requests.post(
+					# 	"http://api.sparrowsms.com/v2/sms/",
+					# 	data={'token': settings.SPARROW_SMS_TOKEN,
+					# 		  'from': settings.SMS_FROM,
+					# 		  'to': mobile,
+					# 		  'text': 'your mobile verification code is  ' + str(key)})
+					#
+					# status_code = r.status_code
+					# response = r.text
+					# response_json = r.json()
+					# print(status_code)
+					# print(response_json)
+					print(key)
+					# send_mail(
+					# 'Thank you for your registration',
+					# 'Your registered mobile nuymber is '+mobile+' .Use this OTP code for Verification. '+ str(key),
+					# settings.EMAIL_HOST_USER,
+					# ['sunilparajuli2002@gmail.com'],
+					# #['gehendras52@gmail.com'],
+					# fail_silently=False,
+					# )
+					return Response({
+						'status': True,
+						'detail': 'OTP sent to ' + mobile
+					})
+				else:
+					return Response({
+						'status': False,
+						'detail': 'error sending OTP'
+					})
+		else:
+			return Response({"Fail": "Please enter phone number to continue"}, status.HTTP_400_BAD_REQUEST)
 
 
+class ValidateResetPasswordOTP(APIView):
+	def post(self, request, *args, **kwargs):
+		mobile = request.data.get('mobile', False)
+		otp_sent = request.data.get('otp', False)
+		print(request.data)
+		if mobile and otp_sent:
+			old = PasswordResetOTP.objects.filter(mobile__iexact=mobile)
+			if old.exists():
+				print(1)
+				old = old.first()
+				otp = old.otp
+				if(str(otp_sent)==str(otp)):
+					old.validated = True
+					old.save()
+
+					return Response({
+						'status': True,
+						'detail': 'OTP matched, enter your new credentials'
+						})
+
+
+				else:
+					return Response({"Fail": "Incorrect OTP Code please try again"}, status.HTTP_400_BAD_REQUEST)
+			else:
+				return Response({"Fail": "First proceed with OTP verification"}, status.HTTP_400_BAD_REQUEST)
+
+
+		else:
+			return Response({"Fail": "Please enter both OTP code and mobile number"}, status.HTTP_400_BAD_REQUEST)
+
+
+class ChangePasswordAfterOtpAPIView(APIView):
+	# permission_classes = [IsAuthenticated]
+	def post(self, request, *args, **kwargs):
+		print(request.data)
+		mobile = request.data.get('mobile', False)
+		new_password = request.data.get('new_password', False)
+		confirm_new_password = request.data.get('confirm_new_password', False)
+		# verified = PasswordResetOTP.objects.filter(mobile=mobile)
+		# if verified.validated==True:
+		user = User.objects.get(mobile=mobile)
+		user_db = User.objects.get(pk=user.id)
+		print(user.mobile)
+		print(request.data)
+		if new_password and confirm_new_password:
+			if new_password != confirm_new_password:
+				return Response({"Fail": "The two password fields must match."}, status.HTTP_400_BAD_REQUEST)
+			print(user.mobile)
+			user_db.password = make_password(new_password)
+			user_db.save()
+			# user = serializer.save()
+			return Response({
+				'status': True,
+				'detail': 'Password has been changed !'
+			})
+
+		else:
+			return Response({"Fail": "Please input desired password and try again"}, status.HTTP_400_BAD_REQUEST)
+	# else:
+	# 	return Response({"Fail": "Your otp hasn't been verified yet, try again"}, status.HTTP_400_BAD_REQUEST)

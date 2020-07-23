@@ -38,7 +38,11 @@ from account.views import (
     ValidateOTP,
     RegisterAPI,
     ResetPasswordAPIView,
-    ChangePasswordAPIView
+    ChangePasswordAPIView,
+    PasswordResetSendOTP,
+    ValidateResetPasswordOTP,
+    ChangePasswordAfterOtpAPIView
+
 )
 
 
@@ -138,6 +142,9 @@ urlpatterns = [
     re_path(r'^api/validate_otp/', ValidateOTP.as_view(), name="validate_otp"),
     re_path(r'^api/register/', RegisterAPI.as_view(), name="register"),
     re_path(r'^api/reset_password/', ResetPasswordAPIView.as_view(), name="reset_password"),
+    re_path(r'^api/reset_password_otp/', PasswordResetSendOTP.as_view(), name="reset_password_otp"),
+    re_path(r'^api/validate_reset_password_otp/', ValidateResetPasswordOTP.as_view(), name="validate_reset_password_otp"),
+    re_path(r'^api/change_password_afterotp/', ChangePasswordAfterOtpAPIView.as_view(), name="change_password_afterotp"),
     re_path(r'^api/change_password/', ChangePasswordAPIView.as_view(), name="change_password"),
     re_path(r'^api/file_upload/$', ApiPostFile.as_view(), name='file_upload'),
 
