@@ -371,26 +371,32 @@ class ChangePasswordAPIView(APIView):
 	permission_classes = [IsAuthenticated]
 	def post(self, request, *args, **kwargs):
 		user = request.user
-		new_password = request.data.get('new_password', False)
-		# old_password = request.data.get('old_password', False)
+		user_db = User.objects.get(pk=user.id)
+		new_password = request.data.get('new_password')
+		old_password = request.data.get('old_password')
+		confirm_new_password = request.data.get('confirm_new_password')
 		print(user.mobile)
+		print(request.data)
+		if new_password and confirm_new_password:
+			if new_password!=confirm_new_password:
+				return Response({"Fail": "The two password fields must match."}, status.HTTP_400_BAD_REQUEST)
 
-		if new_password: #and old_password:
-			# print(old_password)
+		if new_password and old_password:
+			print(old_password)
 			# check_old_password = user.check_password(old_password)
-			# check_old_password = authenticate(mobile=str(user.mobile), password=str(old_password))
-			# print(check_old_password)
-			# if not check_old_password:
-			# 	return Response({"Fail": "Your previous password isn't matched, please try again"}, status.HTTP_400_BAD_REQUEST)
+			check_old_password = authenticate(mobile=str(user.mobile), password=str(old_password))
+			print(check_old_password)
+			if not check_old_password:
+				return Response({"Fail": "Your previous password doesn't match, please try again"}, status.HTTP_400_BAD_REQUEST)
 						
-				print(user.mobile)
-				user.password = make_password(new_password)
-				user.save()
-			# user = serializer.save()
-				return Response({
-					'status': True,
-					'detail': 'Password has been changed !' + new_password
-					})
+			print(user.mobile)
+			user_db.password = make_password(new_password)
+			user_db.save()
+		# user = serializer.save()
+			return Response({
+				'status': True,
+				'detail': 'Password has been changed !' + new_password
+				})
 			
 		else:
 			return Response({"Fail": "Please input desired password and try again"}, status.HTTP_400_BAD_REQUEST)
