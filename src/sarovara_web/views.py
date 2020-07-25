@@ -33,9 +33,13 @@ def contacts(request):
 	page_title = 'Contact Us'
 	return render(request, 'sarovara/contacts.html', {'title_content':page_title})
 
-def terms_of_use(request):
-	page_title = 'Terms of Use'
-	return render(request, 'sarovara/terms_of_use.html', {'title_content':page_title})
+def terms_and_condition(request):
+	page_title = 'Terms & Conditions'
+	return render(request, 'sarovara/terms-and-conditions.html', {'title_content':page_title})
+
+def privacy_policy(request):
+	page_title = 'Privacy Policy'
+	return render(request, 'sarovara/privacy-policy.html', {'title_content':page_title})
 
 def buy_drinking_water(request):
 	page_title = 'Buy Drinking Water'
