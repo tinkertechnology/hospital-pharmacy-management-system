@@ -49,6 +49,10 @@ class VariationSerializer(serializers.ModelSerializer):
 		# print(self.price)	
 
 
+
+
+
+
 class ProductDetailUpdateSerializer(serializers.ModelSerializer):
 	variation_set = VariationSerializer(many=True, read_only=True)
 	
@@ -424,4 +428,14 @@ class AllProductDetailSerializer(serializers.ModelSerializer):
 		if image_url is not None:
 			url=image_url.image.url
 		return url
+
+
+
+class ProductVariationSerializer(serializers.ModelSerializer):
+	# variation_set = VariationSerializer(many=True, read_only=True)
+	# image = serializers.SerializerMethodField()
+	product = ProductSerializer()
+	class Meta:
+		model = Variation
+		fields = '__all__'
 		#return obj.productimage_set.first().image.url	 

@@ -232,6 +232,10 @@ JWT_AUTH = {
 # SPARROW_SMS_TOKEN = 'dakZyk9lTu56uck0uTZx'
 # SMS_FROM = 'InfoSMS'
 
+SPARROW_SMS_TOKEN = '18E21OPSs9OPnt1Z9ABU' ##for_sarovara
+SMS_FROM = 'Demo'
+
+
 
 
 

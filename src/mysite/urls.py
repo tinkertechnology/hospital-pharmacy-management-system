@@ -38,7 +38,11 @@ from account.views import (
     ValidateOTP,
     RegisterAPI,
     ResetPasswordAPIView,
-    ChangePasswordAPIView
+    ChangePasswordAPIView,
+    PasswordResetSendOTP,
+    ValidateResetPasswordOTP,
+    ChangePasswordAfterOtpAPIView
+
 )
 
 
@@ -102,7 +106,8 @@ from products.views import (
         CommonProductListAPIView,
         AddProductAPIView,
         AllProductListAPIView,
-        AllProductRetrieveAPIView
+        AllProductRetrieveAPIView,
+        ProductVariationRetrieveAPIView
         
 
     )
@@ -131,12 +136,16 @@ from users.views import (
 #API Patterns
 urlpatterns = [
     url(r'^accounts/', include('rest_registration.api.urls')),
+    url('', include('reports.urls')),
 
     re_path(r'^api/$', APIHomeView.as_view(), name='home_api'),
     re_path(r'^api/validate_mobile/', ValidatePhoneSendOTP.as_view(), name="validate_mobile"),
     re_path(r'^api/validate_otp/', ValidateOTP.as_view(), name="validate_otp"),
     re_path(r'^api/register/', RegisterAPI.as_view(), name="register"),
     re_path(r'^api/reset_password/', ResetPasswordAPIView.as_view(), name="reset_password"),
+    re_path(r'^api/reset_password_otp/', PasswordResetSendOTP.as_view(), name="reset_password_otp"),
+    re_path(r'^api/validate_reset_password_otp/', ValidateResetPasswordOTP.as_view(), name="validate_reset_password_otp"),
+    re_path(r'^api/change_password_afterotp/', ChangePasswordAfterOtpAPIView.as_view(), name="change_password_afterotp"),
     re_path(r'^api/change_password/', ChangePasswordAPIView.as_view(), name="change_password"),
     re_path(r'^api/file_upload/$', ApiPostFile.as_view(), name='file_upload'),
 
@@ -182,6 +191,7 @@ urlpatterns = [
     
     re_path(r'^api/orders/(?P<pk>\d+)/$', OrderRetrieveAPIView.as_view(), name='order_detail_api'),
     re_path(r'^api/products/$', ProductListAPIView.as_view(), name='products_api'),
+    re_path(r'^api/ProductVariationRetrive/(?P<pk>\d+)/$', ProductVariationRetrieveAPIView.as_view(), name='ProductVariationRetriveApiView'),
     re_path(r'^api/all_products/$', AllProductListAPIView.as_view(), name='all_products_api'), ## for pharma
     
     
@@ -224,6 +234,8 @@ from slider.views import(
 urlpatterns += [
     re_path(r'^api/sliders/$', SliderListAPIView.as_view(), name='sliders_api'),
     ]
+
+#Report URLS
 
 
 # Membership api

@@ -144,7 +144,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 		return obj.id
 		
 	def get_item_title(self, obj):
-		return "%s %s" %(obj.item.product.title, obj.item.title)
+		return "%s (%s)" %(obj.item.title, obj.item.product.title)
 
 	def get_product(self, obj):
 		return obj.item.product.id
