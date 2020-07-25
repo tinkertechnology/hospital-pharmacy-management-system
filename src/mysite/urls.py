@@ -106,7 +106,8 @@ from products.views import (
         CommonProductListAPIView,
         AddProductAPIView,
         AllProductListAPIView,
-        AllProductRetrieveAPIView
+        AllProductRetrieveAPIView,
+        ProductVariationRetrieveAPIView
         
 
     )
@@ -190,6 +191,7 @@ urlpatterns = [
     
     re_path(r'^api/orders/(?P<pk>\d+)/$', OrderRetrieveAPIView.as_view(), name='order_detail_api'),
     re_path(r'^api/products/$', ProductListAPIView.as_view(), name='products_api'),
+    re_path(r'^api/ProductVariationRetrive/(?P<pk>\d+)/$', ProductVariationRetrieveAPIView.as_view(), name='ProductVariationRetriveApiView'),
     re_path(r'^api/all_products/$', AllProductListAPIView.as_view(), name='all_products_api'), ## for pharma
     
     

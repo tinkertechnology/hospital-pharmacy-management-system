@@ -444,8 +444,8 @@ class PasswordResetSendOTP(APIView):
 					# 	data={'token': settings.SPARROW_SMS_TOKEN,
 					# 		  'from': settings.SMS_FROM,
 					# 		  'to': mobile,
-					# 		  'text': 'your mobile verification code is  ' + str(key)})
-					#
+					# 		  'text': 'your password reset OTP code is  ' + str(key)})
+					
 					# status_code = r.status_code
 					# response = r.text
 					# response_json = r.json()
@@ -486,15 +486,16 @@ class ValidateResetPasswordOTP(APIView):
 				otp = old.otp
 				if(str(otp_sent)==str(otp)):
 					old.validated = True
+					old.otp = "999234234"
 					old.save()
-
 					return Response({
 						'status': True,
 						'detail': 'OTP matched, enter your new credentials'
 						})
 
-
 				else:
+					# otp.validated = False
+					# otp.save()
 					return Response({"Fail": "Incorrect OTP Code please try again"}, status.HTTP_400_BAD_REQUEST)
 			else:
 				return Response({"Fail": "First proceed with OTP verification"}, status.HTTP_400_BAD_REQUEST)

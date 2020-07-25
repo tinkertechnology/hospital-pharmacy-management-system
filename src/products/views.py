@@ -40,7 +40,8 @@ from .serializers import (
 		 WSCSerializer,
 		 CommonProductSerializer,
 		 AllProductSerializer,
-		 AllProductDetailSerializer
+		 AllProductDetailSerializer,
+		 ProductVariationSerializer
 		)
 
 from django.core.exceptions import ValidationError 
@@ -260,6 +261,13 @@ class AllProductListAPIView(generics.ListAPIView): ##for pharma
 class ProductRetrieveAPIView(generics.RetrieveAPIView):
 	queryset = Product.objects.all()
 	serializer_class = ProductDetailSerializer
+
+
+class ProductVariationRetrieveAPIView(generics.RetrieveAPIView):
+	queryset = Variation.objects.all()
+	serializer_class = ProductVariationSerializer
+
+
 
 class AllProductRetrieveAPIView(generics.RetrieveAPIView):
 	queryset = Product.objects.all()
