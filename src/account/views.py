@@ -6,13 +6,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from .serializer import CreateUserSerializer
+from .serializer import CreateUserSerializer, ProfileSerializer
 from django.http import HttpResponse
 
 from account.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
 from blog.models import BlogPost
 from django.contrib.auth.hashers import make_password
-from .models import Account, PhoneOTP, PasswordResetOTP
+from .models import Account, PhoneOTP, PasswordResetOTP, CustomerRegisterSurvey
 from django.contrib.auth import get_user_model
 import uuid
 from django.shortcuts import get_object_or_404 
@@ -179,18 +179,19 @@ class ValidatePhoneSendOTP(APIView):
 							mobile = mobile,
 							otp = key,
 							)
-					r = requests.post(
-					"http://api.sparrowsms.com/v2/sms/",
-					data={'token' : settings.SPARROW_SMS_TOKEN,
-					'from'  : settings.SMS_FROM,
-					'to'    : mobile,
-					'text'  : 'your mobile verification code is  ' + str(key)})
+					# r = requests.post(
+					# "http://api.sparrowsms.com/v2/sms/",
+					# data={'token' : settings.SPARROW_SMS_TOKEN,
+					# 'from'  : settings.SMS_FROM,
+					# 'to'    : mobile,
+					# 'text'  : 'your mobile verification code is  ' + str(key)})
 
-					status_code = r.status_code
-					response = r.text
-					response_json = r.json()
-					print(status_code)
-					print(response_json)
+					# status_code = r.status_code
+					# response = r.text
+					# response_json = r.json()
+					# print(status_code)
+					# print(response_json)
+					print(key)
 					# send_mail(
 					# 'Thank you for your registration',
 					# 'Your registered mobile nuymber is '+mobile+' .Use this OTP code for Verification. '+ str(key),
@@ -264,6 +265,11 @@ class RegisterAPI(APIView):
 		password = request.data.get('password', False)
 		email = request.data.get('email', False)
 		username = mobile
+		firstname = request.data.get('firstname')
+		lastname = request.data.get('lastname')
+		# if firstname and lastname:
+		# 	return Response({"Fail": "Please enter your firstname and lastname"}, status.HTTP_400_BAD_REQUEST)
+
 		if mobile and password:	
 			if len(mobile)!=10:
 				return Response({"Fail": "Please check your mobile number, it should be 10 digit"}, status.HTTP_400_BAD_REQUEST)
@@ -278,7 +284,9 @@ class RegisterAPI(APIView):
 						'mobile': mobile,
 						'password': password,
 						'email': email,
-						'username': mobile
+						'username': mobile,
+						'firstname': firstname,
+						'lastname':lastname
 
 					}
 					serializer = CreateUserSerializer(data = temp_data)
@@ -439,18 +447,18 @@ class PasswordResetSendOTP(APIView):
 							mobile=mobile,
 							otp=key,
 						)
-					# r = requests.post(
-					# 	"http://api.sparrowsms.com/v2/sms/",
-					# 	data={'token': settings.SPARROW_SMS_TOKEN,
-					# 		  'from': settings.SMS_FROM,
-					# 		  'to': mobile,
-					# 		  'text': 'your password reset OTP code is  ' + str(key)})
+					r = requests.post(
+						"http://api.sparrowsms.com/v2/sms/",
+						data={'token': settings.SPARROW_SMS_TOKEN,
+							  'from': settings.SMS_FROM,
+							  'to': mobile,
+							  'text': 'your password reset OTP code is  ' + str(key)})
 					
-					# status_code = r.status_code
-					# response = r.text
-					# response_json = r.json()
-					# print(status_code)
-					# print(response_json)
+					status_code = r.status_code
+					response = r.text
+					response_json = r.json()
+					print(status_code)
+					print(response_json)
 					print(key)
 					# send_mail(
 					# 'Thank you for your registration',
@@ -534,3 +542,38 @@ class ChangePasswordAfterOtpAPIView(APIView):
 			return Response({"Fail": "Please input desired password and try again"}, status.HTTP_400_BAD_REQUEST)
 	# else:
 	# 	return Response({"Fail": "Your otp hasn't been verified yet, try again"}, status.HTTP_400_BAD_REQUEST)
+from django.core.mail import send_mail
+
+class CustomerRegisterSurveyAPIView(APIView):
+	def post(self, request, *args, **kwargs):
+		print(request.data)
+		mobile = request.data.get('mobile', False)
+		name = request.data.get('name', False)
+		location = request.data.get('location', False)
+		email = request.data.get('email', False)
+		know_about_us = request.data.get('know_about_us', False)
+		other = request.data.get('other', False)
+		
+		survey_data = CustomerRegisterSurvey()
+		survey_data.mobile = mobile
+		survey_data.name = name
+		survey_data.location = location
+		survey_data.email = email
+		survey_data.know_about_us = know_about_us
+		survey_data.other = other
+		survey_data.save()
+
+		send_mail(
+		    'Survey Notification',
+		    'Name:'+ name + ' mobile:'+mobile + ' location: '+location 
+		    	+ 'i know sarovara by: '+know_about_us + ' other: '+other ,
+		    [email],
+		    [settings.EMAIL_HOST_USER],
+		    fail_silently=False,
+		)
+		return Response({
+			'status': True,
+			'detail': 'Thank you for your time'
+		})
+
+	
