@@ -20,7 +20,7 @@ from orders.models import *
 
 from datetime import datetime, timedelta, time
 from django.utils.dateparse import parse_date
-import dateutil.parser
+# import dateutil.parser
 from .serializers import ReportSerializer
 from django.db.models.functions import TruncDate
 from django.db.models import Sum, F
