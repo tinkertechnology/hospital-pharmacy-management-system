@@ -22,7 +22,6 @@ def CartItemCreateService(data):
 
 	active_cart_id = cart.id	
 	aitem = CartItem.objects.filter(item_id=item_id).filter(cart_id=cart.id).first()
-
 	
 	if aitem:		
 		if is_add_sub_qty:

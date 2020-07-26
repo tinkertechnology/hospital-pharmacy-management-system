@@ -113,6 +113,7 @@ class Order(models.Model):
 	updated_at = models.DateTimeField(blank=True, null=True)
 	order_latitude = models.CharField(max_length=200, null=True, blank=True)
 	order_longitude = models.CharField(max_length=200, null=True, blank=True)
+	is_auto_order = models.BooleanField(default=False)
 
 
 	def __str__(self):
@@ -170,7 +171,8 @@ class StoreWiseOrder(models.Model):
 	order_latitude = models.CharField(max_length=200, null=True, blank=True)
 	order_longitude = models.CharField(max_length=200, null=True, blank=True)
 	fk_route = models.ForeignKey(Route, related_name='fk_route_storewiseorder', on_delete=models.CASCADE, null=True, blank=True)
-
+	is_auto_order = models.BooleanField(default=False)
+	
 	class Meta:
 		ordering = ['-created_at']
 

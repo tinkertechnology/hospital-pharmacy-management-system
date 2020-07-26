@@ -143,6 +143,8 @@ class UserAddressSerializer(serializers.ModelSerializer):
 
 
 from . import service as OrderService
+
+# /api/api/create_order/ #CartOrderApiView(CreateAPIView):
 class CartOrderSerializer(serializers.ModelSerializer):
 	order_total = serializers.DecimalField(required=False, max_digits=50, decimal_places=2,)
 	class Meta:
