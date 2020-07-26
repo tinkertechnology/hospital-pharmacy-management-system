@@ -41,7 +41,8 @@ from account.views import (
     ChangePasswordAPIView,
     PasswordResetSendOTP,
     ValidateResetPasswordOTP,
-    ChangePasswordAfterOtpAPIView
+    ChangePasswordAfterOtpAPIView,
+    CustomerRegisterSurveyAPIView
 
 )
 
@@ -106,7 +107,8 @@ from products.views import (
         CommonProductListAPIView,
         AddProductAPIView,
         AllProductListAPIView,
-        AllProductRetrieveAPIView
+        AllProductRetrieveAPIView,
+        ProductVariationRetrieveAPIView
         
 
     )
@@ -147,6 +149,8 @@ urlpatterns = [
     re_path(r'^api/change_password_afterotp/', ChangePasswordAfterOtpAPIView.as_view(), name="change_password_afterotp"),
     re_path(r'^api/change_password/', ChangePasswordAPIView.as_view(), name="change_password"),
     re_path(r'^api/file_upload/$', ApiPostFile.as_view(), name='file_upload'),
+    re_path(r'^api/CustomerRegisterSurvey/$', CustomerRegisterSurveyAPIView.as_view(), name='CustomerRegisterSurvey'),
+    
 
     
     # re_path(r'^api/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
@@ -190,6 +194,7 @@ urlpatterns = [
     
     re_path(r'^api/orders/(?P<pk>\d+)/$', OrderRetrieveAPIView.as_view(), name='order_detail_api'),
     re_path(r'^api/products/$', ProductListAPIView.as_view(), name='products_api'),
+    re_path(r'^api/ProductVariationRetrive/(?P<pk>\d+)/$', ProductVariationRetrieveAPIView.as_view(), name='ProductVariationRetriveApiView'),
     re_path(r'^api/all_products/$', AllProductListAPIView.as_view(), name='all_products_api'), ## for pharma
     
     

@@ -8,9 +8,8 @@ User = get_user_model()
 class CreateUserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = User
-		fields = ('mobile', 'password', 'email', 'username')
+		fields = ('mobile', 'password', 'email', 'username', 'firstname','lastname')
 		extra_kwargs = {'password': {'write_only': True}, }
-
 
 
 	def create(self, validated_data):
@@ -47,6 +46,12 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
 		instance.save()
 		return instance
+
+class ProfileSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = User
+		fields = ['firstname','lastname']
+		
 			# password = serializers.CharField(write_only=True)
 
 			# def create(self, validated_data):
