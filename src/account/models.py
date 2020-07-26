@@ -81,7 +81,15 @@ class PhoneOTP(models.Model):
 
 
 
+class PasswordResetOTP(models.Model):
+	phone_regex = RegexValidator( regex =r'^\+?1?\d{9,14}$', message="phone number must be entered in the format: '+97799999'. Up to 15 digits allowed")
+	mobile = models.CharField(validators=[phone_regex], max_length=15, unique=True)
+	otp = models.CharField(max_length=9, blank=True, null=True)
+	count = models.IntegerField(default=0, help_text='No. of otp sent')
+	validated = models.BooleanField(default=False, help_text='if true, user validated otp in secount api')
 
+	def __str__(self):
+		return str(self.mobile) + 'is sent' +str(self.otp)
 
 
 
