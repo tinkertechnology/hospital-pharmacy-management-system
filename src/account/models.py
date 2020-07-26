@@ -40,6 +40,8 @@ class Account(AbstractBaseUser):
 	phone_regex = RegexValidator(regex=r'^\+?1?\d{9,14}$', message="Phone number must be entered in the format: '+977999999'. Up to 15 digits allowed.")
 	email 					= models.EmailField(verbose_name="email", max_length=60, unique=True)
 	username 				= models.CharField(max_length=30, unique=True)
+	firstname				= models.CharField(max_length=100)
+	lastname				= models.CharField(max_length=100)
 	date_joined				= models.DateTimeField(verbose_name='date joined', auto_now_add=True)
 	last_login				= models.DateTimeField(verbose_name='last login', auto_now=True)
 	is_admin				= models.BooleanField(default=False)
@@ -91,6 +93,14 @@ class PasswordResetOTP(models.Model):
 	def __str__(self):
 		return str(self.mobile) + 'is sent' +str(self.otp)
 
+class CustomerRegisterSurvey(models.Model):
+	mobile = models.CharField(max_length=100, blank=True, null=True)
+	name = models.CharField(max_length=100, blank=True, null=True)
+	location = models.CharField(max_length=100, blank=True, null=True)
+	email = models.CharField(max_length=100, blank=True, null=True)
+	know_about_us = models.CharField(max_length=100, blank=True, null=True)
+	other = models.CharField(max_length=100, blank=True, null=True)
+	date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
 
 
