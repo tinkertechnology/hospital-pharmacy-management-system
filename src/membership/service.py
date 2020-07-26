@@ -11,6 +11,7 @@ def StartUserMembershipAutoOrder():
 			'user_id': um_auto_order.fk_usermembership.fk_member_user_id,
 			'item_id': um_auto_order.fk_variation_id,
 			'quantity': um_auto_order.quantity,
+			'is_auto_order': True
 		}
 		print(data)
 		CartItemCreateService(data)
