@@ -561,7 +561,7 @@ class AddressSelectFormView(CartOrderMixin, FormView):
 		return "/checkout/"
 
 
-
+# /api/api/create_order/
 class CartOrderApiView(CreateAPIView):
 	# permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 	queryset=Order.objects.all()

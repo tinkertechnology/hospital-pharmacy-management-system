@@ -48,9 +48,11 @@ def SaveStoreWiseOrder(order, user_id):
 		store_wise.fk_ordered_store = store
 		store_wise.fk_ordered_by_store = ordered_by
 		store_wise.fk_payment_method = order.fk_payment_method
+		store_wise.is_auto_order = order.is_auto_order
 		store_wise.save()
 		variation.fk_storewise_order_id = store_wise.id
 		variation.save()
+
 	store_wise_orders = StoreWiseOrder.objects.filter(order_id=order.id) 
 	print('store-wise-order')
 	print(store_wise_orders)
@@ -73,21 +75,29 @@ def SaveStoreWiseOrder(order, user_id):
 
 
 		# print(variation.product)
-		
+
+# used from
+# /api/create_order/ #CartOrderApiView(CreateAPIView): #CartOrderSerializer(serializers.ModelSerializer):
+# 
 def CreateOrderFromCart(validated_data):
 	#pprint.pprint(self.context['request'].__dict__)
 	# pprint.pprint(validated_data)
 	##user =  self.context['request'].user ##
 	##print(user.id)##
 
+	is_auto_order = validated_data.get('is_auto_order', False); #auto order, by customer
 	user_id = validated_data.get('user_id')
 	user = User.objects.get(pk=user_id)
 	order_latitude = validated_data.get("order_latitude")
 	order_longitude = validated_data.get("order_longitude")
-	fk_ordered_store  = validated_data.get("fk_ordered_store")
-	fk_ordered_store_id = fk_ordered_store 
-	if not isinstance(fk_ordered_store, int):
-		fk_ordered_store_id = fk_ordered_store.id
+	
+	fk_ordered_store = None
+	if is_auto_order == False: # 
+		fk_ordered_store  = validated_data.get("fk_ordered_store")
+		fk_ordered_store_id = fk_ordered_store 
+		if not isinstance(fk_ordered_store, int):
+			fk_ordered_store_id = fk_ordered_store.id
+
 	fk_payment_method = validated_data.get("fk_payment_method")
 
 	fk_payment_method_id = fk_payment_method
@@ -95,7 +105,7 @@ def CreateOrderFromCart(validated_data):
 		fk_payment_method_id = fk_payment_method.id
 
 	# item_quantity = validated_data.pop('item_quantity')
-	cart = Cart.objects.filter(user_id=user_id).filter(active=1).first()
+	cart = Cart.objects.filter(user_id=user_id).filter(active=1).filter(is_auto_order=is_auto_order).first()
 
 	if cart is None:
 		raise serializers.ValidationError("This is not a valid cart, first make cart, /api/cart/ or add item to cart ")
@@ -126,8 +136,11 @@ def CreateOrderFromCart(validated_data):
 	order.fk_auth_user_id = user_id
 	order.order_latitude = order_latitude
 	order.order_longitude = order_longitude
-	order.fk_ordered_store_id = fk_ordered_store_id
+	if is_auto_order == False:
+		order.fk_ordered_store_id = fk_ordered_store_id #not required  #also, auto order wont supply ordered_store
+
 	order.fk_payment_method_id = fk_payment_method_id #eg: assign id directly
+	order.is_auto_order = is_auto_order
 	#order.fk_payment_method = validated_data.get("fk_payment_method") #eg: assign model obj
 
 	print(order.__dict__)
