@@ -12,7 +12,7 @@ from django.http import HttpResponse
 from account.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
 from blog.models import BlogPost
 from django.contrib.auth.hashers import make_password
-from .models import Account, PhoneOTP, PasswordResetOTP, CustomerRegisterSurvey
+from .models import Account, PhoneOTP, PasswordResetOTP, CustomerRegisterSurvey, CustomerDepotRequest
 from django.contrib.auth import get_user_model
 import uuid
 from django.shortcuts import get_object_or_404 
@@ -179,18 +179,18 @@ class ValidatePhoneSendOTP(APIView):
 							mobile = mobile,
 							otp = key,
 							)
-					# r = requests.post(
-					# "http://api.sparrowsms.com/v2/sms/",
-					# data={'token' : settings.SPARROW_SMS_TOKEN,
-					# 'from'  : settings.SMS_FROM,
-					# 'to'    : mobile,
-					# 'text'  : 'your mobile verification code is  ' + str(key)})
+					r = requests.post(
+					"http://api.sparrowsms.com/v2/sms/",
+					data={'token' : settings.SPARROW_SMS_TOKEN,
+					'from'  : settings.SMS_FROM,
+					'to'    : mobile,
+					'text'  : 'your mobile verification code is  ' + str(key)})
 
-					# status_code = r.status_code
-					# response = r.text
-					# response_json = r.json()
-					# print(status_code)
-					# print(response_json)
+					status_code = r.status_code
+					response = r.text
+					response_json = r.json()
+					print(status_code)
+					print(response_json)
 					print(key)
 					# send_mail(
 					# 'Thank you for your registration',
@@ -543,6 +543,8 @@ class ChangePasswordAfterOtpAPIView(APIView):
 	# else:
 	# 	return Response({"Fail": "Your otp hasn't been verified yet, try again"}, status.HTTP_400_BAD_REQUEST)
 from django.core.mail import send_mail
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 class CustomerRegisterSurveyAPIView(APIView):
 	def post(self, request, *args, **kwargs):
@@ -551,8 +553,29 @@ class CustomerRegisterSurveyAPIView(APIView):
 		name = request.data.get('name', False)
 		location = request.data.get('location', False)
 		email = request.data.get('email', False)
+		try:
+			validate_email(email.strip())
+		except:
+			return Response({"Fail": "Incorrect email format, please try again"}, status.HTTP_400_BAD_REQUEST)
+
+		# if not valid_email:
+		# 	return Response({"Fail": "Email format is incorrect, please input correct email address"}, status.HTTP_400_BAD_REQUEST)
 		know_about_us = request.data.get('know_about_us', False)
 		other = request.data.get('other', False)
+		if not mobile:
+			return Response({"Fail": "Mobile number required"}, status.HTTP_400_BAD_REQUEST)
+		if len(mobile)<10:
+			return Response({"Fail": "Mobile number must be 10 digits"}, status.HTTP_400_BAD_REQUEST)
+		if not name:
+			return Response({"Fail": "Full name is required"}, status.HTTP_400_BAD_REQUEST)
+		if not location:
+			return Response({"Fail": "Location is required"}, status.HTTP_400_BAD_REQUEST)
+		if not email:
+			return Response({"Fail": "Your email is required"}, status.HTTP_400_BAD_REQUEST)
+		if not know_about_us:
+			return Response({"Fail": "let us know how you know about us"}, status.HTTP_400_BAD_REQUEST)
+		if not other:
+			return Response({"Fail": "Message is required"}, status.HTTP_400_BAD_REQUEST)
 		
 		survey_data = CustomerRegisterSurvey()
 		survey_data.mobile = mobile
@@ -576,4 +599,42 @@ class CustomerRegisterSurveyAPIView(APIView):
 			'detail': 'Thank you for your time'
 		})
 
-	
+
+class CustomerMessageForDepotAPIView(APIView):
+	def post(self, request, *args, **kwargs):
+		print(request.data)
+		mobile = request.data.get('mobile', None)
+		name = request.data.get('name', None)
+		location = request.data.get('location', None)
+		message = request.data.get('message', None)
+
+		if not mobile:
+			return Response({"Fail": "Mobile number required"}, status.HTTP_400_BAD_REQUEST)
+		if len(mobile) < 10:
+			return Response({"Fail": "Mobile number must be 10 digits"}, status.HTTP_400_BAD_REQUEST)
+		if not name:
+			return Response({"Fail": "Full name is required"}, status.HTTP_400_BAD_REQUEST)
+		if not location:
+			return Response({"Fail": "Location is required"}, status.HTTP_400_BAD_REQUEST)
+		if not message:
+			return Response({"Fail": "Your Message is required"}, status.HTTP_400_BAD_REQUEST)
+
+		depot_request = CustomerDepotRequest()
+		depot_request.mobile = mobile
+		depot_request.name = name
+		depot_request.location = location
+		depot_request.message = message
+		depot_request.save()
+
+		send_mail(
+			'Request for depot',
+			'Name:' + name + ' mobile:' + mobile + ' location: ' + location
+			 + ' Message: ' + message,
+			[settings.EMAIL_HOST_USER],
+			[settings.EMAIL_HOST_USER],
+			fail_silently=False,
+		)
+		return Response({
+			'status': True,
+			'detail': 'Thank you for your time'
+		})
