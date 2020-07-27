@@ -2,6 +2,8 @@ from .models import UserMembershipAutoOrder
 from carts.service import CartItemCreateService
 from orders.service import CreateOrderFromCart
 
+from carts.models import Cart
+
 #todo: add auto_order_date in cart_item
 #so we wont order same item again today, even if this func is run twice
 def StartUserMembershipAutoOrder():
@@ -19,8 +21,10 @@ def StartUserMembershipAutoOrder():
 		CartItemCreateService(data)
 
 		#todo: add payment type in membership
+	auto_carts = Cart.objects.filter(active=1).filter(is_auto_order=True).all()
+	for cart in auto_carts:
 		order_data = {
-			'user_id': user_id,
+			'user_id': cart.user_id,
 			'order_latitude': 1,
 			'order_longitude': 1,
 			'is_auto_order': True,
