@@ -45,7 +45,7 @@ from .serializers import (
 		)
 
 from django.core.exceptions import ValidationError 
-
+from django.conf import setting
 
 
 # API CBVS
@@ -214,7 +214,7 @@ class ProductListAPIView(generics.ListAPIView):
 			# ulat=, ulng=, 
 			latitude=self.request.GET.get('latitude', None);
 			longitude=self.request.GET.get('longitude', None);
-			max_distance=None #setting. store max distance
+			max_distance=setting.CUSTOMER_STORE_MAX_DISTANCE_KM #2 #setting. store max distance
 
 			nearest_store = None
 			if(latitude and longitude ):
