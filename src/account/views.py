@@ -554,7 +554,7 @@ class CustomerRegisterSurveyAPIView(APIView):
 		location = request.data.get('location', False)
 		email = request.data.get('email', False)
 		try:
-			validate_email(email)
+			validate_email(email.strip())
 		except:
 			return Response({"Fail": "Incorrect email format, please try again"}, status.HTTP_400_BAD_REQUEST)
 
