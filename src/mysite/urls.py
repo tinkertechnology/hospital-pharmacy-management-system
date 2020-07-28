@@ -42,13 +42,10 @@ from account.views import (
     PasswordResetSendOTP,
     ValidateResetPasswordOTP,
     ChangePasswordAfterOtpAPIView,
-    CustomerRegisterSurveyAPIView
-
+    CustomerRegisterSurveyAPIView,
+    CustomerMessageForDepotAPIView,
+    CustomerMessageAPIView
 )
-
-
-
-
 
 from carts.views import (
         CartAPIView,
@@ -59,7 +56,7 @@ from carts.views import (
         CheckoutFinalView,
         ItemCountView, 
         AddToCartView,
-        RemoveCartItemFromCart
+        RemoveCartItemFromCart,
 
         )
 from orders.views import (
@@ -150,6 +147,8 @@ urlpatterns = [
     re_path(r'^api/change_password/', ChangePasswordAPIView.as_view(), name="change_password"),
     re_path(r'^api/file_upload/$', ApiPostFile.as_view(), name='file_upload'),
     re_path(r'^api/CustomerRegisterSurvey/$', CustomerRegisterSurveyAPIView.as_view(), name='CustomerRegisterSurvey'),
+    re_path(r'^api/CustomerMessageForDepot/$', CustomerMessageForDepotAPIView.as_view(), name='CustomerMessageForDepot'),
+    re_path(r'^api/CustomerMessage/$', CustomerMessageAPIView.as_view(), name='CustomerMessage'),
     
 
     

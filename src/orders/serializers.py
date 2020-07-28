@@ -143,6 +143,8 @@ class UserAddressSerializer(serializers.ModelSerializer):
 
 
 from . import service as OrderService
+
+# /api/api/create_order/ #CartOrderApiView(CreateAPIView):
 class CartOrderSerializer(serializers.ModelSerializer):
 	order_total = serializers.DecimalField(required=False, max_digits=50, decimal_places=2,)
 	class Meta:
@@ -241,7 +243,7 @@ class OrderListStoreSerializer(serializers.ModelSerializer):
 			title = obj.fk_payment_method.title		
 		return title
 
-
+from users.serializers import UserSerializer
 
 class StoreWiseOrderListSerializer(serializers.ModelSerializer):
 	# billing_address = serializers.SerializerMethodField()
@@ -251,6 +253,7 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
 	address = serializers.SerializerMethodField()
 	status = serializers.SerializerMethodField()
 	created_at = serializers.DateTimeField(read_only=True, format="%Y-%m-%d")
+	# fk_auth_user = UserSerializer()
 
 	class Meta:
 		model = StoreWiseOrder
@@ -309,10 +312,10 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
 	def get_customer_name(self, obj):
 
 		customer_name = ""
-		customer_name = User.objects.filter(pk=obj.fk_auth_user_id).first()
-		print(customer_name)
-		if customer_name:
-			return customer_name.username
+		customer = User.objects.filter(pk=obj.fk_auth_user_id).first()
+		print(customer.lastname)
+		if customer:
+			return str(customer.firstname + ' '+ customer.lastname + ' '+ customer.mobile)
 		return customer_name
 
 	def get_total_order_price(self, obj):

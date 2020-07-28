@@ -164,7 +164,7 @@ USE_TZ = True
 CAN_STORE_SEE_ALL_ORDERS = False
 
 IS_MULTI_VENDOR=True
-
+CUSTOMER_STORE_MAX_DISTANCE_KM=2
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATICFILES_DIRS = [

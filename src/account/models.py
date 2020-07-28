@@ -103,6 +103,17 @@ class CustomerRegisterSurvey(models.Model):
 	date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
 
+class CustomerDepotRequest(models.Model):
+	mobile = models.CharField(max_length=100, blank=True, null=True)
+	name = models.CharField(max_length=100, blank=True, null=True)
+	location = models.CharField(max_length=100, blank=True, null=True)
+	date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	message = models.CharField(max_length=500, blank=True, null=True)
 
+class CustomerMessage(models.Model):
+	message = models.CharField(max_length=500, blank=True, null=True)
+	date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
+	def __str__(self):
+		return str(self.message)
 
