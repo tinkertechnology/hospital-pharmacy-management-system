@@ -12,7 +12,7 @@ from django.http import HttpResponse
 from account.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
 from blog.models import BlogPost
 from django.contrib.auth.hashers import make_password
-from .models import Account, PhoneOTP, PasswordResetOTP, CustomerRegisterSurvey, CustomerDepotRequest
+from .models import Account, PhoneOTP, PasswordResetOTP, CustomerRegisterSurvey, CustomerDepotRequest, CustomerMessage
 from django.contrib.auth import get_user_model
 import uuid
 from django.shortcuts import get_object_or_404 
@@ -637,4 +637,29 @@ class CustomerMessageForDepotAPIView(APIView):
 		return Response({
 			'status': True,
 			'detail': 'Thank you for your time'
+		})
+
+
+
+class CustomerMessageAPIView(APIView):
+	def post(self, request, *args, **kwargs):
+		print(request.data)
+		message = request.data.get('message', None)
+		if not message:
+			return Response({"Fail": "Your Message is required"}, status.HTTP_400_BAD_REQUEST)
+
+		customer_message = CustomerMessage()
+		customer_message.message = message
+		customer_message.save()
+
+		send_mail(
+			'Customer Message',
+			  ' Message : ' + str(message),
+			settings.EMAIL_HOST_USER,
+			[settings.EMAIL_HOST_USER],
+			fail_silently=False,
+		)
+		return Response({
+			'status': True,
+			'detail': 'Thank you for your Message'
 		})

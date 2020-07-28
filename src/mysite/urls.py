@@ -43,7 +43,8 @@ from account.views import (
     ValidateResetPasswordOTP,
     ChangePasswordAfterOtpAPIView,
     CustomerRegisterSurveyAPIView,
-    CustomerMessageForDepotAPIView
+    CustomerMessageForDepotAPIView,
+    CustomerMessageAPIView
 )
 
 from carts.views import (
@@ -55,7 +56,7 @@ from carts.views import (
         CheckoutFinalView,
         ItemCountView, 
         AddToCartView,
-        RemoveCartItemFromCart
+        RemoveCartItemFromCart,
 
         )
 from orders.views import (
@@ -147,6 +148,7 @@ urlpatterns = [
     re_path(r'^api/file_upload/$', ApiPostFile.as_view(), name='file_upload'),
     re_path(r'^api/CustomerRegisterSurvey/$', CustomerRegisterSurveyAPIView.as_view(), name='CustomerRegisterSurvey'),
     re_path(r'^api/CustomerMessageForDepot/$', CustomerMessageForDepotAPIView.as_view(), name='CustomerMessageForDepot'),
+    re_path(r'^api/CustomerMessage/$', CustomerMessageAPIView.as_view(), name='CustomerMessage'),
     
 
     
