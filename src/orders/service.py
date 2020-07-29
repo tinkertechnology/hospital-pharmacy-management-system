@@ -14,6 +14,7 @@ import pprint
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from routes.models import get_nearest_route
+from decimal import Decimal
 User = get_user_model()
 
 
@@ -31,13 +32,23 @@ def SaveStoreWiseOrder(order, user_id):
 	for variation in cart_items:
 		print(variation)
 		store = variation.item.product.fk_store
-		order_id = order.order_id
+		pprint.pprint(['store=', store, 'variation==', variation.item])
+		order_id = order.id
+		
 		store_id = store.id
-		store_wise = StoreWiseOrder.objects.filter(order_id=order_id).filter(fk_ordered_store_id=store_id).first()
+		pprint.pprint(['order_id=', order_id, 'store_id==', store_id])
+		store_wise = StoreWiseOrder.objects.filter(order_id=order_id).filter(fk_ordered_store_id=store_id).all().first()
+
+		pprint.pprint(['storewise=', store_wise])
 		if store_wise is None:			
 			store_wise = StoreWiseOrder()
+			#store_wise.save() #StoreWiseOrder()
 		store_wise.order_id = order.id
+
 		store_wise.order_total = order.order_total
+		
+		# pprint.pprint(['tax-am', store_wise.order_total, store_wise.tax_amount,  Decimal(settings.TAX_PERCENT_DECIMAL), store_wise.grand_total_amount] )
+
 		store_wise.billing_address = order.billing_address
 		store_wise.shipping_address = order.shipping_address
 		store_wise.user_id = order.user_id
@@ -70,7 +81,8 @@ def SaveStoreWiseOrder(order, user_id):
 		print(store_wise_order.fk_route)
 		for cart_item in sw_cart_items:
 			store_wise_order.order_total+=cart_item.line_item_total
-
+		store_wise_order.tax_amount = Decimal(float(store_wise_order.order_total) * settings.TAX_PERCENT_DECIMAL) ##tax jodeko calculation
+		store_wise_order.grand_total_amount = store_wise_order.order_total + store_wise_order.tax_amount
 		store_wise_order.save()
 
 
@@ -90,19 +102,18 @@ def CreateOrderFromCart(validated_data):
 	user = User.objects.get(pk=user_id)
 	order_latitude = validated_data.get("order_latitude")
 	order_longitude = validated_data.get("order_longitude")
-	
-	fk_ordered_store = None
-	if is_auto_order == False: # 
-		fk_ordered_store  = validated_data.get("fk_ordered_store")
-		fk_ordered_store_id = fk_ordered_store 
-		if not isinstance(fk_ordered_store, int):
-			fk_ordered_store_id = fk_ordered_store.id
-
 	fk_payment_method = validated_data.get("fk_payment_method")
-
 	fk_payment_method_id = fk_payment_method
 	if not isinstance(fk_payment_method_id, int):
 		fk_payment_method_id = fk_payment_method.id
+	# fk_ordered_store = None
+	# if is_auto_order == False: # 
+	# 	fk_ordered_store  = validated_data.get("fk_ordered_store")
+	# 	fk_ordered_store_id = fk_ordered_store 
+	# 	if not isinstance(fk_ordered_store, int):
+	# 		fk_ordered_store_id = fk_ordered_store.id
+
+	
 
 	# item_quantity = validated_data.pop('item_quantity')
 	cart = Cart.objects.filter(user_id=user_id).filter(active=1).filter(is_auto_order=is_auto_order).first()
@@ -136,8 +147,8 @@ def CreateOrderFromCart(validated_data):
 	order.fk_auth_user_id = user_id
 	order.order_latitude = order_latitude
 	order.order_longitude = order_longitude
-	if is_auto_order == False:
-		order.fk_ordered_store_id = fk_ordered_store_id #not required  #also, auto order wont supply ordered_store
+	# if is_auto_order == False:
+	# 	order.fk_ordered_store_id = fk_ordered_store_id #not required  #also, auto order wont supply ordered_store
 
 	order.fk_payment_method_id = fk_payment_method_id #eg: assign id directly
 	order.is_auto_order = is_auto_order

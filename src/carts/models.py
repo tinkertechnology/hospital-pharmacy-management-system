@@ -47,7 +47,7 @@ def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
 			instance.ordered_price = price
 			line_item_total = Decimal(qty) * Decimal(price)
 			instance.line_item_total = line_item_total
-			instance.tax_amount = Decimal(float(line_item_total)*0.13)
+			instance.tax_amount = Decimal(float(line_item_total)*settings.TAX_PERCENT_DECIMAL)
 
 
 pre_save.connect(cart_item_pre_save_receiver, sender=CartItem)
@@ -102,9 +102,9 @@ def do_tax_and_total_receiver(sender, instance, *args, **kwargs):
 	tax_total = round(subtotal * Decimal(instance.tax_percentage), 2) #8.5%
 	print(instance.tax_percentage)
 	total = round(subtotal + Decimal(tax_total), 2)
-	instance.tax_total = "%.2f" %(tax_total)
+	instance.tax_total =  "%.2f" %(tax_total)
 	instance.total = "%.2f" %(total)
-	#instance.save()
+	# instance.save()
 
 
 

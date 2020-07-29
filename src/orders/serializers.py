@@ -162,57 +162,58 @@ class CartOrderSerializer(serializers.ModelSerializer):
 		order = OrderService.CreateOrderFromCart(validated_data)
 		return order
 
-	def saveStoreWiseOrder(self, order, user):
-		print('order::')
-		print(order)
-		cart = order.cart
-		cart_items = cart.items
-		cart_items = CartItem.objects.filter(cart_id=cart.id)
-		ordered_by = Store.objects.filter(fk_user_id=user.id).first()
-		#ordered_by_store = ordered_by.id
-		#print(ordered_by_store)
+	# # def saveStoreWiseOrder(self, order, user):
+	# # 	print('order::')
+	# # 	print(order)
+	# # 	cart = order.cart
+	# # 	cart_items = cart.items
+	# # 	cart_items = CartItem.objects.filter(cart_id=cart.id)
+	# # 	ordered_by = Store.objects.filter(fk_user_id=user.id).first()
+	# 	#ordered_by_store = ordered_by.id
+	# 	#print(ordered_by_store)
 
-		# print('asdasdasdasd')
-		for variation in cart_items:
-			print(variation)
-			store = variation.item.product.fk_store
-			order_id = order.order_id
-			store_id = store.id
-			store_wise = StoreWiseOrder.objects.filter(order_id=order_id).filter(fk_ordered_store_id=store_id).first()
-			if store_wise is None:			
-				store_wise = StoreWiseOrder()
-			store_wise.order_id = order.order_id
-			store_wise.order_total = order.order_total
-			store_wise.billing_address = order.billing_address
-			store_wise.shipping_address = order.shipping_address
-			store_wise.user_id = order.user_id
-			store_wise.cart_id = order.cart_id
-			store_wise.fk_auth_user_id = order.fk_auth_user_id
-			store_wise.order_latitude = order.order_latitude
-			store_wise.order_longitude = order.order_longitude
-			store_wise.fk_ordered_store = store
-			store_wise.fk_ordered_by_store = ordered_by
-			store_wise.fk_payment_method = order.fk_payment_method
-			store_wise.save()
-			variation.fk_storewise_order_id = store_wise.id
-			variation.save()
-		store_wise_orders = StoreWiseOrder.objects.filter(order_id=order_id) 
-		for store_wise_order in store_wise_orders:
-			sw_cart_items =  CartItem.objects.filter(fk_storewise_order_id=store_wise_order.id) #store_wise_order.fk_storewise_order_id
-			store_wise_order.order_total = 0
-			# is_depo = Store.objects.filter(fk_user_id=user.id).filter(fk_store_type_id=2).first()
-			# if not is_depo:
-			if store_wise_order.order_latitude and store_wise_order.order_longitude:
-				store_wise_order.fk_route = get_nearest_route(
-					store_wise_order.order_latitude,
-					store_wise_order.order_longitude,
-					store_wise_order.fk_ordered_store.id,
-					None
-				)
-			for cart_item in sw_cart_items:
-				store_wise_order.order_total+=cart_item.line_item_total
+	# 	# print('asdasdasdasd')
+	# 	for variation in cart_items:
+	# 		print(variation)
+	# 		store = variation.item.product.fk_store
+	# 		order_id = order.order_id
+	# 		store_id = store.id
+	# 		store_wise = StoreWiseOrder.objects.filter(order_id=order_id).filter(fk_ordered_store_id=store_id).first()
+	# 		pprint.pprint(['storewise=', store_wise])
+	# 		if store_wise is None:			
+	# 			store_wise = StoreWiseOrder()
+	# 		store_wise.order_id = order.order_id
+	# 		store_wise.order_total = order.order_total
+	# 		store_wise.billing_address = order.billing_address
+	# 		store_wise.shipping_address = order.shipping_address
+	# 		store_wise.user_id = order.user_id
+	# 		store_wise.cart_id = order.cart_id
+	# 		store_wise.fk_auth_user_id = order.fk_auth_user_id
+	# 		store_wise.order_latitude = order.order_latitude
+	# 		store_wise.order_longitude = order.order_longitude
+	# 		store_wise.fk_ordered_store = store
+	# 		store_wise.fk_ordered_by_store = ordered_by
+	# 		store_wise.fk_payment_method = order.fk_payment_method
+	# 		store_wise.save()
+	# 		variation.fk_storewise_order_id = store_wise.id
+	# 		variation.save()
+	# 	store_wise_orders = StoreWiseOrder.objects.filter(order_id=order_id) 
+	# 	for store_wise_order in store_wise_orders:
+	# 		sw_cart_items =  CartItem.objects.filter(fk_storewise_order_id=store_wise_order.id) #store_wise_order.fk_storewise_order_id
+	# 		store_wise_order.order_total = 0
+	# 		# is_depo = Store.objects.filter(fk_user_id=user.id).filter(fk_store_type_id=2).first()
+	# 		# if not is_depo:
+	# 		if store_wise_order.order_latitude and store_wise_order.order_longitude:
+	# 			store_wise_order.fk_route = get_nearest_route(
+	# 				store_wise_order.order_latitude,
+	# 				store_wise_order.order_longitude,
+	# 				store_wise_order.fk_ordered_store.id,
+	# 				None
+	# 			)
+	# 		for cart_item in sw_cart_items:
+	# 			store_wise_order.order_total+=cart_item.line_item_total
 
-			store_wise_order.save()
+	# 		store_wise_order.save()
 
 
 			# print(variation.product)

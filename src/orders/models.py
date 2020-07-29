@@ -101,6 +101,9 @@ class Order(models.Model):
 	shipping_address = models.ForeignKey(UserAddress, on_delete=models.CASCADE, related_name='shipping_address', blank=True, null=True)
 	shipping_total_price = models.DecimalField(max_digits=50, decimal_places=2, default=5.99)
 	order_total = models.DecimalField(max_digits=50, decimal_places=2, )
+	tax_amount = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
+	
+	grand_total_amount = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	order_id = models.CharField(max_length=20, null=True, blank=True)
 	fk_auth_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
 	is_delivered = models.BooleanField(default=False)
@@ -157,6 +160,8 @@ class StoreWiseOrder(models.Model):
 	cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
 	shipping_total_price = models.DecimalField(max_digits=50, decimal_places=2, default=5.99)
 	order_total = models.DecimalField(max_digits=50, decimal_places=2, )
+	tax_amount = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
+	grand_total_amount = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	order_id = models.CharField(max_length=20, null=True, blank=True)
 	fk_auth_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
 	is_delivered = models.BooleanField(default=False)
