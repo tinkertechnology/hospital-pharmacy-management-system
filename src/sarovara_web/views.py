@@ -12,13 +12,15 @@ from .forms import *
 
 def index(request):
 	page_title = 'Home'
-	return render(request, 'sarovara/index.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/index.html', {'title_content':page_title, 'lang':lang})
 	# return HttpResponse('index page')
 
 
 def we_sales(request):
 	page_title = 'We sales'
-	return render(request, 'sarovara/sales.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/sales.html', {'title_content':page_title, 'lang':lang})
 
 
 def our_depot(request):

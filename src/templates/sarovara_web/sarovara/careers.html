@@ -14,7 +14,7 @@
                 </div>
                 <ul class="breadcrumbs-custom-path">
                     <li><a href="{% url 'index' %}">Home</a></li>
-                    <li class="active">Careers</li>
+                    <li class="active">{% if lang %}रोजगारी {% else %} Careers {% endif %}</li>
                 </ul>
             </div>
         </div>
@@ -66,13 +66,13 @@
                         <div class="career-classic-divider" style="margin-top: 10px;"></div>
                         <ul class="career-classic-list">
                             <li>
-                                <span>Daily Morning BreakFast: Rs. 60</span>
+                                <span>Morning BreakFast: Rs. 60</span>
                             </li>
                             <li>
-                                <span>Daily Lunch: Rs. 180</span>
+                                <span>Afternoon Lunch: Rs. 180</span>
                             </li>
                             <li>
-                                <span>Daily Evening Breakfast: Rs.60</span>
+                                <span>Evening Supper: Rs.60</span>
                             </li>
                         </ul>
 

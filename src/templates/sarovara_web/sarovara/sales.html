@@ -15,7 +15,7 @@
                 </div>
                 <ul class="breadcrumbs-custom-path">
                     <li><a href="{% url 'index' %}">Home</a></li>
-                    <li class="active">We Sales</li>
+                    <li class="active">{% if lang %}हामी बेच्छौंं {% else %} We Sales {% endif %}</li>
                 </ul>
             </div>
         </div>
@@ -34,7 +34,7 @@
                             </a>
                         </div>
                         <div class="card-modern-body">
-                            <h4><a class="card-modern-title" href="{% url 'kuwa-drinking-water' %}">Kuwa</a></h4>
+                            <h4><a class="card-modern-title" href="{% url 'kuwa-drinking-water' %}"> {% if lang %}कुवा {% else %} Kuwa {% endif %} </a></h4>
                             <div class="card-modern-price"><span>Rs. 37</span></div>
                             <!-- <div class="card-modern-info">
                                 <span class="icon icon-sm mdi mdi-information-outline"></span>

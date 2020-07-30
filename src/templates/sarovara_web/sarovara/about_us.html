@@ -14,7 +14,9 @@
                 </div>
                 <ul class="breadcrumbs-custom-path">
                     <li><a href="{% url 'index' %}">Home</a></li>
-                    <li class="active">About Us</li>
+                    <li class="active">
+                        {% if lang %} हाम्रो बारेमा {% else %} About Us {% endif %}
+                    </li>
                 </ul>
             </div>
         </div>
@@ -66,7 +68,7 @@
                     </div>
                     <div class="timeline-classic-item-divider"></div>
                     <div class="timeline-classic-item-main">
-                        <p class="timeline-classic-item-title">Details Public</p>
+                        <p class="timeline-classic-item-title">Information Transparency</p>
                         <p class="thumbnail-classic-item-subtitle">We regularly publish information about drinking water quality and sanitation information of the companies that sell or want to sell drinking water through Sarovara.</p>
                     </div>
                 </div>
