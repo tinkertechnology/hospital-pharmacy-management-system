@@ -56,16 +56,24 @@
                                                 <a class="rd-nav-link" href="{% url 'index' %}">Home</a>
                                             </li> -->
                                             <li class="rd-nav-item {% if request.resolver_match.url_name == 'we-sales' %}active{% endif %}">
-                                                <a class="rd-nav-link" href="{% url 'we-sales' %}">We Sales</a>
+                                                <a class="rd-nav-link" href="{% url 'we-sales' %}?lang={{lang}}">
+                                                    {% if lang %}हामी बेच्छौं {% else %} We Sales {% endif %}
+                                                </a>
                                             </li>
                                             <li class="rd-nav-item {% if request.resolver_match.url_name == 'our-depot' %}active{% endif %}">
-                                                <a class="rd-nav-link" href="{% url 'our-depot' %}">Our Depot</a>
+                                                <a class="rd-nav-link" href="{% url 'our-depot' %}?lang={{lang}}">
+                                                    {% if lang %}हाम्रो डिपो {% else %} Our Depot {% endif %}
+                                                </a>
                                             </li>
                                             <li class="rd-nav-item {% if request.resolver_match.url_name == 'careers' %}active{% endif %}">
-                                                <a class="rd-nav-link" href="{% url 'careers' %}">Careers</a>
+                                                <a class="rd-nav-link" href="{% url 'careers' %}?lang={{lang}}">
+                                                    {% if lang %}रोजगारी {% else %} Careers {% endif %}
+                                                </a>
                                             </li>
                                             <li class="rd-nav-item {% if request.resolver_match.url_name == 'about-us' %}active{% endif %}">
-                                                <a class="rd-nav-link" href="{% url 'about-us' %}">About Us</a>
+                                                <a class="rd-nav-link" href="{% url 'about-us' %}?lang={{lang}}">
+                                                    {% if lang %}हाम्रो बारेमा {% else %} About Us {% endif %}
+                                                </a>
                                                 <ul class="rd-menu rd-navbar-dropdown">
                                                     <li class="rd-dropdown-item {% if request.resolver_match.url_name == 'about-us' %}active{% endif %}">
                                                         <a class="rd-dropdown-link" href="{% url 'contacts' %}">Contact Us</a>
@@ -75,6 +83,13 @@
                                             <!-- <li class="rd-nav-item"><a class="rd-nav-link" href="{% url 'contacts' %}">Contacts</a>
                                             </li> -->
                                         </ul>
+                                    </div>
+                                    <!-- Callback link-->
+                                    <div class="">
+                                        <select id="id_selectLang">
+                                            <option value="en">English</option>
+                                            <option value="np">Nepali</option>
+                                        </select>
                                     </div>
                                     <!-- Callback link-->
                                     <div class="rd-navbar-call">
@@ -144,7 +159,7 @@
                 <div class="container">
                     <div class="footer-standard-aside justify-content-center">
                         <!-- Rights-->
-                        <p class="rights" style="color: #fff;"><span>&copy;&nbsp;</span><span class="copyright-year"></span><span>&nbsp;</span><span>All Rights Reserved.</span><span>&nbsp;</span><br class="d-sm-none"/><a href="{% url 'terms-of-use' %}" style="color: #fff;">Terms of Use</a><span> and</span><span>&nbsp;</span><a href="{% url 'terms-of-use' %}" style="color: #fff;">Privacy Policy</a></p>
+                        <p class="rights" style="color: #fff;"><span>&copy;&nbsp;</span><span class="copyright-year"></span><span>&nbsp;</span><span>All Rights Reserved.</span><span>&nbsp;</span><br class="d-sm-none"/><a href="{% url 'terms-and-conditions' %}" style="color: #fff;">Terms and Conditions</a><span> and</span><span>&nbsp;</span><a href="{% url 'privacy-policy' %}" style="color: #fff;">Privacy Policy</a></p>
                     </div>
                 </div>
             </footer>
@@ -224,9 +239,11 @@
         <div class="snackbars" id="form-output-global"></div>
         
         <!-- Javascript-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="{% static 'assets/js/core.min.js' %}"></script>
         <script src="{% static 'assets/js/script.js' %}"></script>
         <script type="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/js/fontawesome.min.js"></script>
+
         <script type="text/javascript">
             $(window).on('load',function(){
                 $('#popupModal').modal('show');
@@ -235,6 +252,16 @@
                 setTimeout(function(){
                     $('#popupModal').modal('hide')
                 },3000);
+            });
+
+            $('#id_selectLang').on('change', function() {
+                // var url = "http://localhost:8000/we-sales";
+                // CURRENT URL
+                var url = $(location).attr('href');
+                var value = $(this).val();
+                // alert('?lang=' + value);
+                var lang = "";
+                window.location.href = '/?lang='+value;
             });
         </script>
     </body>

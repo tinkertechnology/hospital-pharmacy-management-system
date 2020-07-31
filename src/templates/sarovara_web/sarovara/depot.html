@@ -14,7 +14,9 @@
                 </div>
                 <ul class="breadcrumbs-custom-path">
                     <li><a href="{% url 'index' %}">Home</a></li>
-                    <li class="active">Our Depot</li>
+                    <li class="active">
+                        {% if lang %}हाम्रो डिपो {% else %} Our Depot {% endif %}
+                    </li>
                 </ul>
             </div>
         </div>

@@ -59,19 +59,22 @@ INSTALLED_APPS = [
     'membership',
     'store',
     'payment',
+
     'payment_esewa',
     'routes',
-    'sarovara_web',
+
+
     'prescription',
     'wsc',
+
     'crispy_forms',
     'slider',
-    'reports',
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
     # 'drfpasswordless',
     'rest_registration',
+    'sarovara_web'
 
 
  
@@ -177,11 +180,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')
 
 # EMAIL_HOST = 'smtp.mailtrap.io'
-# EMAIL_HOST_USER = 'f472a1b791bc03'
-# EMAIL_HOST_PASSWORD = 'efe5fe413946a6'
+# EMAIL_HOST_USER = 'a2b88d5a140f35'
+# EMAIL_HOST_PASSWORD = '1eaecb0140e538'
 # EMAIL_PORT = 2525
 # EMAIL_USE_TLS = True
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' 
+
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'xunilparajuli2002@gmail.com'
 EMAIL_HOST_PASSWORD = 'vnnuasmkmapqzvur'

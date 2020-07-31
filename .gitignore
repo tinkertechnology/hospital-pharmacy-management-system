@@ -47,6 +47,7 @@ parts/
 sdist/
 var/
 DOMS/settings.py
+mysite/settings.py
 *.egg-info/
 .installed.cfg
 *.egg
