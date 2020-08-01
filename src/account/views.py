@@ -574,8 +574,8 @@ class CustomerRegisterSurveyAPIView(APIView):
 			return Response({"Fail": "Your email is required"}, status.HTTP_400_BAD_REQUEST)
 		if not know_about_us:
 			return Response({"Fail": "let us know how you know about us"}, status.HTTP_400_BAD_REQUEST)
-		if not other:
-			return Response({"Fail": "Message is required"}, status.HTTP_400_BAD_REQUEST)
+		# if not other:
+		# 	return Response({"Fail": "Message is required"}, status.HTTP_400_BAD_REQUEST)
 		
 		survey_data = CustomerRegisterSurvey()
 		survey_data.mobile = mobile
@@ -583,13 +583,13 @@ class CustomerRegisterSurveyAPIView(APIView):
 		survey_data.location = location
 		survey_data.email = email
 		survey_data.know_about_us = know_about_us
-		survey_data.other = other
+		# survey_data.other = other
 		survey_data.save()
 
 		send_mail(
 		    'Survey Notification',
 		    'Name:'+ name + ' mobile:'+mobile + ' location: '+location 
-		    	+ 'i know sarovara by: '+know_about_us + ' other: '+other ,
+		    	+ 'i know sarovara by: '+know_about_us ,
 		    [email],
 		    [settings.EMAIL_HOST_USER],
 		    fail_silently=False,

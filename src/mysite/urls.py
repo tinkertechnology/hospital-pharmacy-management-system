@@ -391,6 +391,7 @@ urlpatterns += [
     path('user_order', UserOrderView, name='user_order'),
     path('user_order_detail/<int:id>/', UserOrderDetailView, name='user_order_detail'),
 ]
+ # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
