@@ -95,11 +95,11 @@ class PasswordResetOTP(models.Model):
 
 class CustomerRegisterSurvey(models.Model):
 	mobile = models.CharField(max_length=100, blank=True, null=True)
-	name = models.CharField(max_length=100, blank=True, null=True)
+	firstname = models.CharField(max_length=100, blank=True, null=True)
+	lastname = models.CharField(max_length=100, blank=True, null=True)
 	location = models.CharField(max_length=100, blank=True, null=True)
 	email = models.CharField(max_length=100, blank=True, null=True)
 	know_about_us = models.CharField(max_length=100, blank=True, null=True)
-	other = models.CharField(max_length=100, blank=True, null=True)
 	date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
 

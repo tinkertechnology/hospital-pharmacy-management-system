@@ -44,7 +44,8 @@ from account.views import (
     ChangePasswordAfterOtpAPIView,
     CustomerRegisterSurveyAPIView,
     CustomerMessageForDepotAPIView,
-    CustomerMessageAPIView
+    CustomerMessageAPIView,
+    SurveyRegisterAPIView
 )
 
 from carts.views import (
@@ -149,6 +150,7 @@ urlpatterns = [
     re_path(r'^api/CustomerRegisterSurvey/$', CustomerRegisterSurveyAPIView.as_view(), name='CustomerRegisterSurvey'),
     re_path(r'^api/CustomerMessageForDepot/$', CustomerMessageForDepotAPIView.as_view(), name='CustomerMessageForDepot'),
     re_path(r'^api/CustomerMessage/$', CustomerMessageAPIView.as_view(), name='CustomerMessage'),
+    re_path(r'^api/CustomerSurveryInfo/$', SurveyRegisterAPIView.as_view(), name="CustomerSurveryInfo"),
     
 
     
