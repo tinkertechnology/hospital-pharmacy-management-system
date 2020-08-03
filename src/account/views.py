@@ -406,7 +406,7 @@ class ChangePasswordAPIView(APIView):
 		# user = serializer.save()
 			return Response({
 				'status': True,
-				'detail': 'Password has been changed !' + new_password
+				'detail': 'Password has been changed !'
 				})
 			
 		else:
