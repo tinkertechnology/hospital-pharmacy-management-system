@@ -228,7 +228,7 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 		if cart_obj == None:
 
 			cart = Cart()
-			cart.tax_percentage = 0.13
+			cart.tax_percentage = settings.TAX_PERCENT_DECIMAL#0.13
 			if self.request.user.is_authenticated:
 				cart.user = self.request.user
 			cart.save()
