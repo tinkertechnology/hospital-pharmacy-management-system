@@ -44,7 +44,8 @@ from account.views import (
     ChangePasswordAfterOtpAPIView,
     CustomerRegisterSurveyAPIView,
     CustomerMessageForDepotAPIView,
-    CustomerMessageAPIView
+    CustomerMessageAPIView,
+    SurveyRegisterAPIView
 )
 
 from carts.views import (
@@ -149,6 +150,7 @@ urlpatterns = [
     re_path(r'^api/CustomerRegisterSurvey/$', CustomerRegisterSurveyAPIView.as_view(), name='CustomerRegisterSurvey'),
     re_path(r'^api/CustomerMessageForDepot/$', CustomerMessageForDepotAPIView.as_view(), name='CustomerMessageForDepot'),
     re_path(r'^api/CustomerMessage/$', CustomerMessageAPIView.as_view(), name='CustomerMessage'),
+    re_path(r'^api/CustomerSurveryInfo/$', SurveyRegisterAPIView.as_view(), name="CustomerSurveryInfo"),
     
 
     
@@ -391,6 +393,7 @@ urlpatterns += [
     path('user_order', UserOrderView, name='user_order'),
     path('user_order_detail/<int:id>/', UserOrderDetailView, name='user_order_detail'),
 ]
+ # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

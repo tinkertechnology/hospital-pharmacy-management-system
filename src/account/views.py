@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from .serializer import CreateUserSerializer, ProfileSerializer
+from .serializer import CreateUserSerializer, ProfileSerializer, SurveyRegisterSerializer
 from django.http import HttpResponse
 
 from account.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
@@ -19,6 +19,8 @@ from django.shortcuts import get_object_or_404
 import random
 import requests
 from django.core.mail import send_mail
+from rest_framework.generics import CreateAPIView, ListAPIView
+
 User = get_user_model()
 
 def registration_view(request):
@@ -404,7 +406,7 @@ class ChangePasswordAPIView(APIView):
 		# user = serializer.save()
 			return Response({
 				'status': True,
-				'detail': 'Password has been changed !' + new_password
+				'detail': 'Password has been changed !'
 				})
 			
 		else:
@@ -550,7 +552,8 @@ class CustomerRegisterSurveyAPIView(APIView):
 	def post(self, request, *args, **kwargs):
 		print(request.data)
 		mobile = request.data.get('mobile', False)
-		name = request.data.get('name', False)
+		firstname = request.data.get('firstname', False)
+		lastname = request.data.get('lastname', False)
 		location = request.data.get('location', False)
 		email = request.data.get('email', False)
 		try:
@@ -566,30 +569,31 @@ class CustomerRegisterSurveyAPIView(APIView):
 			return Response({"Fail": "Mobile number required"}, status.HTTP_400_BAD_REQUEST)
 		if len(mobile)<10:
 			return Response({"Fail": "Mobile number must be 10 digits"}, status.HTTP_400_BAD_REQUEST)
-		if not name:
-			return Response({"Fail": "Full name is required"}, status.HTTP_400_BAD_REQUEST)
+		if not firstname and not lastname:
+			return Response({"Fail": "Both firstname and lastname is required"}, status.HTTP_400_BAD_REQUEST)
 		if not location:
 			return Response({"Fail": "Location is required"}, status.HTTP_400_BAD_REQUEST)
 		if not email:
 			return Response({"Fail": "Your email is required"}, status.HTTP_400_BAD_REQUEST)
 		if not know_about_us:
 			return Response({"Fail": "let us know how you know about us"}, status.HTTP_400_BAD_REQUEST)
-		if not other:
-			return Response({"Fail": "Message is required"}, status.HTTP_400_BAD_REQUEST)
+		# if not other:
+		# 	return Response({"Fail": "Message is required"}, status.HTTP_400_BAD_REQUEST)
 		
 		survey_data = CustomerRegisterSurvey()
 		survey_data.mobile = mobile
-		survey_data.name = name
+		survey_data.firstname = firstname
+		survey_data.lastname = lastname
 		survey_data.location = location
 		survey_data.email = email
 		survey_data.know_about_us = know_about_us
-		survey_data.other = other
+		# survey_data.other = other
 		survey_data.save()
 
 		send_mail(
 		    'Survey Notification',
-		    'Name:'+ name + ' mobile:'+mobile + ' location: '+location 
-		    	+ 'i know sarovara by: '+know_about_us + ' other: '+other ,
+		    'Name:'+ firstname + ' ' + lastname  + ' mobile:'+mobile + ' location: '+location 
+		    	+ 'i know sarovara by: '+know_about_us ,
 		    [email],
 		    [settings.EMAIL_HOST_USER],
 		    fail_silently=False,
@@ -663,3 +667,24 @@ class CustomerMessageAPIView(APIView):
 			'status': True,
 			'detail': 'Thank you for your Message'
 		})
+
+class SurveyRegisterAPIView(ListAPIView):
+	serializer_class = SurveyRegisterSerializer
+	def get(self, request):
+		mobile = request.GET.get('mobile', '')
+
+		data = CustomerRegisterSurvey.objects.filter(mobile__iexact=mobile).first()
+		details = {}
+		if data:
+			details = {
+			
+			 "firstname": data.firstname, "lastname":data.lastname, "email": data.email
+			}
+		else:
+			return Response({"Fail": "not found"}, status.HTTP_400_BAD_REQUEST)
+
+		return Response(details) 
+
+
+
+

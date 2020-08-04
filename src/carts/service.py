@@ -1,4 +1,5 @@
 from .models import Cart, CartItem
+from django.conf import settings
 def CartItemCreateService(data):
 	is_auto_order = data.get('is_auto_order', False); #auto order, by customer
 	user_id = data.get('user_id')
@@ -16,7 +17,7 @@ def CartItemCreateService(data):
 		dict_cart = {}
 		cart = Cart.objects.create(user_id=user_id,  **dict_cart) 
 		cart.active = 1
-		cart.tax_percentage = 0.13
+		cart.tax_percentage = settings.TAX_PERCENT_DECIMAL#0.13
 		cart.is_auto_order = is_auto_order
 		cart.save()
 
