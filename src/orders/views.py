@@ -412,6 +412,13 @@ class StoreWiseCartOrderLists(ListAPIView):
 		cart_items = CartItem.objects.filter(fk_storewise_order_id=order_id)
 		# cart = Cart.objects.filter(id=cart_items)
 		orders_list = []
+		storewise_order = StoreWiseOrder.objects.filter(pk=order_id).first()
+		print('jpt')
+		print(storewise_order)
+		mobile=""
+		if storewise_order:
+			mobile = storewise_order.fk_auth_user.mobile
+
 		# total_item = {len(cart_items)}
 		items = CartItemSerializer(cart_items, many=True)
 		# print(items)
@@ -423,6 +430,7 @@ class StoreWiseCartOrderLists(ListAPIView):
 		"total": cart.total,
 		"subtotal": cart.subtotal,
 		"tax_total": cart.tax_total,
+		"mobile": mobile,
 		"count": cart_items.count(),
 		"items": items.data,
 		# "product_id": items.id,

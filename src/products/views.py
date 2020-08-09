@@ -213,6 +213,7 @@ class ProductListAPIView(generics.ListAPIView):
 		#http://localhost:8000/api/products/?latitude=1&longitude=1
 		if users_store is  None: #this user must be customer
 			# ulat=, ulng=, 
+			product_id = self.request.GET.get('product_id', None)
 			latitude=self.request.GET.get('latitude', None);
 			longitude=self.request.GET.get('longitude', None);
 			max_distance=settings.CUSTOMER_STORE_MAX_DISTANCE_KM #2 #setting. store max distance
@@ -224,7 +225,10 @@ class ProductListAPIView(generics.ListAPIView):
 
 			if nearest_store is not None:
 				print(nearest_store.__dict__)
-				queryset = Product.objects.filter(fk_store_id=nearest_store.id).all()
+				queryset = Product.objects.filter(fk_store_id=nearest_store.id) #.all()
+				if product_id:
+					queryset = queryset.filter(id=product_id)
+				queryset = queryset.all()
 				return queryset
 			else:
 				raise ValidationError(
