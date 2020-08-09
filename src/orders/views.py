@@ -6,13 +6,15 @@ from django.views.generic.edit import CreateView, FormView
 from django.views.generic.detail import DetailView
 from  django.views.generic.list import ListView
 # Create your views here.
-
+from datetime import datetime, timedelta, time
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.views import APIView
 from django.utils import timezone
+import pytz
 
 from carts.mixins import TokenMixin
 from rest_framework import permissions
@@ -291,7 +293,7 @@ class StoreWiseOrderLists(ListAPIView):
 						qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(is_transit=1)
 					if filter=='delivered':
 						qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(is_delivered=1)
-		# from datetime import datetime, timedelta, time
+
 		# from django.utils.dateparse import parse_date
 		# import dateutil.parser
 		# if from_date:
@@ -415,9 +417,12 @@ class StoreWiseCartOrderLists(ListAPIView):
 		storewise_order = StoreWiseOrder.objects.filter(pk=order_id).first()
 		print('jpt')
 		print(storewise_order)
+		remarks=""
 		mobile=""
 		if storewise_order:
 			mobile = storewise_order.fk_auth_user.mobile
+			remarks = storewise_order.remarks
+		
 
 		# total_item = {len(cart_items)}
 		items = CartItemSerializer(cart_items, many=True)
@@ -431,6 +436,7 @@ class StoreWiseCartOrderLists(ListAPIView):
 		"subtotal": cart.subtotal,
 		"tax_total": cart.tax_total,
 		"mobile": mobile,
+		"remarks": remarks,
 		"count": cart_items.count(),
 		"items": items.data,
 		# "product_id": items.id,
@@ -631,7 +637,7 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 	# permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 	queryset=Order.objects.all()
 	serializer_class = UpdateStoreWiseOrderStatusSerializer
-
+	permission_classes = [permissions.IsAuthenticated]
 	def post(self, request):
 		import pprint
 		pprint.pprint(request.POST)
@@ -701,6 +707,7 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 
 
 class myStoreName(APIView):
+	permission_classes = [permissions.IsAuthenticated]
 	def get(self, request, *args, **kwargs):
 		print(request.user.id)
 		store_name=""
@@ -711,8 +718,9 @@ class myStoreName(APIView):
 
 
 class AddNoteToOrderAPIView(APIView):
+	permission_classes = [permissions.IsAuthenticated]
 	def post(self,request, *args, **kwargs):
-		order_id = request.POST.get('order_id', None)
+		order_id = request.POST.get('order_id', False)
 		if not order_id:
 			return Response({"Fail": "We are unable to process your request"}, status.HTTP_400_BAD_REQUEST)
 		order_note = request.POST.get('order_note', "")
@@ -730,8 +738,10 @@ class AddNoteToOrderAPIView(APIView):
 			return Response({"Fail": "We are unable to process your request"}, status.HTTP_400_BAD_REQUEST)
 
 class CustomerCancelOrderAPIView(APIView):
+	permission_classes = [permissions.IsAuthenticated]
 	def post(self,request, *args, **kwargs):
-		order_id = request.POST.get('order_id', None)
+		order_id = request.data.get('order_id', None)
+		# print(order_id)
 		user = request.user.id
 		if not order_id:
 			return Response({"Fail": "We are unable to process your request"}, status.HTTP_400_BAD_REQUEST)
@@ -741,9 +751,10 @@ class CustomerCancelOrderAPIView(APIView):
 		if cancel_order.is_cancelled is True:
 			return Response({"Fail": "Your order has already been cancelled"}, status.HTTP_400_BAD_REQUEST)
 		else:
-			if self.getOrderedTime(cancel_order.created_at) is True:
+
+			if self.isOrderedTimeExpire(cancel_order.created_at):
 				cancel_order.is_cancelled = True
-				cancel_order.cancelled_at = datetime.now()
+				cancel_order.cancelled_at = datetime.now() 
 				cancel_order.save()
 				return Response({
 				'status': True,
@@ -753,11 +764,21 @@ class CustomerCancelOrderAPIView(APIView):
 			else:
 				return Response({"Fail": "You can't cancel your order after 15 mintutes"}, status.HTTP_400_BAD_REQUEST)
 
-	def getOrderedTime(order_created_at):
-		current_time  = timezone.now()
-		time_difference  = current_time - order_created_at
-		time_difference.total_seconds()
-		if time_difference <=900:
+	def isOrderedTimeExpire(self, order_created_at):
+		current_time  = timezone.now() + timedelta(hours=5, minutes=45)
+		print('ordered time')
+		print(order_created_at+timedelta(hours=5, minutes=45))
+		print("current time")
+		print(current_time)
+		time_difference  = current_time - (order_created_at+ timedelta(hours=5, minutes=45))
+		dt = time_difference.total_seconds()
+		# time = datetime.time(0, 15, 00, 000000).total_seconds()
+		# print(time)
+		# print(datetime.datetime(0, 15, 00, 000000).total_seconds())
+		# print(dt)
+		print('dt---')
+		print(dt)
+		if dt <= 900:
 			return True
 		return False
 
