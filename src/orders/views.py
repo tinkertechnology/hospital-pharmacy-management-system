@@ -12,7 +12,7 @@ from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from django.utils import timezone
 
 from carts.mixins import TokenMixin
 from rest_framework import permissions
@@ -708,6 +708,60 @@ class myStoreName(APIView):
 		if get_store_name:
 			store_name = get_store_name.title
 		return Response(store_name)
+
+
+class AddNoteToOrderAPIView(APIView):
+	def post(self,request, *args, **kwargs):
+		order_id = request.POST.get('order_id', None)
+		if not order_id:
+			return Response({"Fail": "We are unable to process your request"}, status.HTTP_400_BAD_REQUEST)
+		order_note = request.POST.get('order_note', "")
+
+		order = StoreWiseOrder.objects.filter(pk=order_id).first()
+		if order:
+			order.remarks = order_note
+			order.save()
+			return Response({
+			'status': True,
+			'detail': 'Note added'
+		})
+
+		else:
+			return Response({"Fail": "We are unable to process your request"}, status.HTTP_400_BAD_REQUEST)
+
+class CustomerCancelOrderAPIView(APIView):
+	def post(self,request, *args, **kwargs):
+		order_id = request.POST.get('order_id', None)
+		user = request.user.id
+		if not order_id:
+			return Response({"Fail": "We are unable to process your request"}, status.HTTP_400_BAD_REQUEST)
+		cancel_order = StoreWiseOrder.objects.filter(pk=order_id).first()
+		if not cancel_order:
+			return Response({"Fail": "We are unable to process your request"}, status.HTTP_400_BAD_REQUEST)
+		if cancel_order.is_cancelled is True:
+			return Response({"Fail": "Your order has already been cancelled"}, status.HTTP_400_BAD_REQUEST)
+		else:
+			if self.getOrderedTime(cancel_order.created_at) is True:
+				cancel_order.is_cancelled = True
+				cancel_order.cancelled_at = datetime.now()
+				cancel_order.save()
+				return Response({
+				'status': True,
+				'detail': 'Order Cancelled'
+			})
+
+			else:
+				return Response({"Fail": "You can't cancel your order after 15 mintutes"}, status.HTTP_400_BAD_REQUEST)
+
+	def getOrderedTime(order_created_at):
+		current_time  = timezone.now()
+		time_difference  = current_time - order_created_at
+		time_difference.total_seconds()
+		if time_difference <=900:
+			return True
+		return False
+
+
 
 
 				
