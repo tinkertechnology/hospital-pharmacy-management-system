@@ -182,7 +182,7 @@ class StoreWiseOrder(models.Model):
 	is_auto_order = models.BooleanField(default=False)
 	
 	class Meta:
-		ordering = ['-created_at']
+		ordering = ['-id']
 
 
 

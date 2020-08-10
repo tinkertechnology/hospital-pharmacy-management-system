@@ -267,6 +267,7 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
             "is_delivered",
             "is_paid",
             "is_transit",
+            "is_cancelled",
             "created_at",
             "updated_at",
             "order_latitude",
@@ -292,6 +293,8 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
 			status = "delivered"
 		elif obj.is_transit:
 			status = "transit"
+		elif obj.is_cancelled:
+			status = "cancelled"
 
 		return status
 
