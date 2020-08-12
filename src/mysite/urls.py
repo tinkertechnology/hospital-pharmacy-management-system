@@ -85,7 +85,9 @@ from orders.views import (
                     UpdateStoreWiseOrderStatusApiView,
 
                     StoreWiseOrderLists,
-                    myStoreName
+                    myStoreName,
+                    AddNoteToOrderAPIView,
+                    CustomerCancelOrderAPIView
                     )
 
 from products.views import (
@@ -172,6 +174,8 @@ urlpatterns = [
     re_path(r'^api/wscs/$', WSCListAPIView.as_view(), name='wscs_api'),
     re_path(r'^api/wscs/(?P<pk>\d+)/$', WSCRetrieveAPIView.as_view(), name='wscs_detail_api'),
     re_path(r'^api/orders/$', OrderListAPIView.as_view(), name='orders_api'),
+    re_path(r'^api/CustomerCancelOrder/$', CustomerCancelOrderAPIView.as_view(), name='orders_cancel_api'),
+    re_path(r'^api/AddNoteToOrder/$', AddNoteToOrderAPIView.as_view(), name='orders_notes_api'),        
 
 
     re_path(r'^api/store_orders/$', OrderLists.as_view(), name='orders_store'), ##for_customer

@@ -161,12 +161,14 @@ USE_L10N = True
 
 USE_TZ = True
 
+# TIME_ZONE = 'Asia/Kathmandu'
+
 CAN_STORE_SEE_ALL_ORDERS = False
 
 TAX_PERCENT_DECIMAL = 0.0
 
 IS_MULTI_VENDOR=True
-CUSTOMER_STORE_MAX_DISTANCE_KM=2
+CUSTOMER_STORE_MAX_DISTANCE_KM=2000
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATICFILES_DIRS = [

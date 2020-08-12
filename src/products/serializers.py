@@ -8,6 +8,12 @@ from store.models import Store
 from store.serializers import *
 
 
+
+class CommonProductSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = ProductCommon
+		fields = '__all__' 
+
 class ImageSerializer(serializers.ModelSerializer):
 	# discount = serializers.SerializerMethodField()
 	class Meta:
@@ -99,6 +105,7 @@ class ProductDetailUpdateSerializer(serializers.ModelSerializer):
 class ProductDetailSerializer(serializers.ModelSerializer):
 	variation_set = VariationSerializer(many=True, read_only=True)
 	image = serializers.SerializerMethodField()
+	fk_common_product = CommonProductSerializer()
 	class Meta:
 		model = Product
 		fields = [
@@ -108,6 +115,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 			"price",
 			"image",
 			"variation_set",
+			"fk_common_product"
 		]
 
 	def get_image(self, obj):
@@ -284,10 +292,7 @@ class WSCSerializer(serializers.ModelSerializer):
 
 		]
 
-class CommonProductSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = ProductCommon
-		fields = ['id','title'] 
+
 
 
 class CompanySerializer(serializers.ModelSerializer):

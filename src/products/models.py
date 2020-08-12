@@ -27,12 +27,19 @@ class ProductManager(models.Manager):
 		qs = (products_one | products_two).exclude(id=instance.id).distinct()
 		return qs
 
+def common_product_lab_report_upload_to(instance, filename):
+	title = instance.title
+	basename, file_extension = filename.split(".")
+	new_filename = "%s/%s.%s" %(instance.title,instance.id, file_extension)
+	return "lab_report_file/%s" %(new_filename)
 
 class ProductCommon(models.Model):
 	title = models.CharField(max_length=120, null=True, blank=True)
-
+	lab_report_file = models.FileField(upload_to=common_product_lab_report_upload_to, null=True, blank=True)
 	def __str__(self):
 		return self.title
+
+
 
 class Product(models.Model):
 	fk_common_product = models.ForeignKey(ProductCommon, on_delete=models.CASCADE, null=True, blank=True)
