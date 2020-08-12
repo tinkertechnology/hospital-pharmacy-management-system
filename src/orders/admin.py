@@ -5,6 +5,7 @@ from django.contrib import admin
 
 from .models import UserCheckout, UserAddress, Order, Quotation, StoreWiseOrder
 
+list_filter = (['fk_ordered_store'])
 
 admin.site.register(UserCheckout)
 
