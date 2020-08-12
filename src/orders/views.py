@@ -419,10 +419,13 @@ class StoreWiseCartOrderLists(ListAPIView):
 		print(storewise_order)
 		remarks=""
 		mobile=""
+		status = False
 		if storewise_order:
 			mobile = storewise_order.fk_auth_user.mobile
 			remarks = storewise_order.remarks
+			status = storewise_order.is_cancelled
 		
+
 
 		# total_item = {len(cart_items)}
 		items = CartItemSerializer(cart_items, many=True)
@@ -437,6 +440,7 @@ class StoreWiseCartOrderLists(ListAPIView):
 		"tax_total": cart.tax_total,
 		"mobile": mobile,
 		"remarks": remarks,
+		"cancel_status": status,
 		"count": cart_items.count(),
 		"items": items.data,
 		# "product_id": items.id,

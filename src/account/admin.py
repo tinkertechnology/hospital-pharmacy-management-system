@@ -6,7 +6,7 @@ from .models import PhoneOTP
 
 
 class AccountAdmin(UserAdmin):
-	list_display = ('mobile','username','date_joined', 'last_login', 'is_admin','is_staff')
+	list_display = ('mobile','username','date_joined', 'firstname', 'lastname', 'email', 'last_login', 'is_admin','is_staff')
 	search_fields = ('mobile','username',)
 	readonly_fields=('date_joined', 'last_login')
 
