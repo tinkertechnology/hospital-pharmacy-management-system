@@ -116,8 +116,8 @@ def CreateOrderFromCart(validated_data):
 
 	# todo: check for depo to company order
 	# client to depo order both should be preasent
-	if not (order_latitude and order_longitude):
-		raise serializers.ValidationError({"message": "No order_latitude and order_longitude" })
+	#if not (order_latitude and order_longitude):
+		#raise serializers.ValidationError({"message": "No order_latitude and order_longitude" })
 		#raise APIException({"message": "No order_latitude and order_longitude" }) # provide custom key, 500 error i.e. server error
 		#raise serializers.ValidationError("No lat and lng") # ok, returns json if called from api View ??? , 400 error i.e. client side 
 		#raise APIException("No order_latitude and order_longitude" ) # returns in detail key
