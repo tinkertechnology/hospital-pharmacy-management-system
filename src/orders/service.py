@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.exceptions import APIException
 
 from carts.mixins import TokenMixin
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -113,7 +114,13 @@ def CreateOrderFromCart(validated_data):
 	# 	if not isinstance(fk_ordered_store, int):
 	# 		fk_ordered_store_id = fk_ordered_store.id
 
-	
+	# todo: check for depo to company order
+	# client to depo order both should be preasent
+	#if not (order_latitude and order_longitude):
+		#raise serializers.ValidationError({"message": "No order_latitude and order_longitude" })
+		#raise APIException({"message": "No order_latitude and order_longitude" }) # provide custom key, 500 error i.e. server error
+		#raise serializers.ValidationError("No lat and lng") # ok, returns json if called from api View ??? , 400 error i.e. client side 
+		#raise APIException("No order_latitude and order_longitude" ) # returns in detail key
 
 	# item_quantity = validated_data.pop('item_quantity')
 	cart = Cart.objects.filter(user_id=user_id).filter(active=1).filter(is_auto_order=is_auto_order).first()
