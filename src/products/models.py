@@ -30,7 +30,7 @@ class ProductManager(models.Manager):
 def common_product_lab_report_upload_to(instance, filename):
 	title = instance.title
 	basename, file_extension = filename.split(".")
-	new_filename = "%s/%s.%s" %(instance.title,instance.id, file_extension)
+	new_filename = "%s/%s.%s.%s" %(instance.title,instance.id, instance.title, file_extension)
 	return "lab_report_file/%s" %(new_filename)
 
 class ProductCommon(models.Model):
