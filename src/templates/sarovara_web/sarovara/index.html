@@ -13,17 +13,17 @@
                         <div class="container">
                             <h1 class="wow-outer">
                                 <span class="wow" data-caption-animate="slideInDown">
-                                    <span class="big">{% if lang %} <span class="medium" style="font-size: 40px; font-family: Mukta-Light;">गुणस्तरिय</span> {% else %} Quality {% endif %}</span>
+                                    <span class="big">{% if lang %} <span class="medium">नियमित</span> {% else %} Regular {% endif %}</span>
                                 </span>
                             </h1>
                             <h2 class="wow-outer">
                                 <span class="wow" data-caption-animate="slideInDown">
-                                    <span class="compressed fown-weight-light">{% if lang %} <span style="font-family: Mukta-Bold">पिउने पानी</span> {% else %} Drinking Water {% endif %}</span>
+                                    <span class="compressed fown-weight-light">{% if lang %} <span style="font-family: Mukta-Bold">पानी गुणस्तरिय जाँच</span> {% else %} Water Quality Check {% endif %}</span>
                                 </span>
                             </h2>
                             <div class="swiper-caption-text-sm swiper-caption-wrap">
                                 <div class="swiper-caption-text-inner">
-                                    <p class="text-op-gentle wow" data-caption-animate="slideInLeft">We sell only the best quality drinking water based on our quality standard and bring it to your doorstep, whether it is your home or office.</p>
+                                    <p class="text-op-gentle wow" data-caption-animate="slideInLeft">{% if lang %} हामी केवल हाम्रो गुणस्तरको आधारमा उत्तम गुणस्तरको पिउने पानी बेच्छौं र तपाईंको ढोकामा ल्याउँदछ, चाहे यो तपाईंको घर वा कार्यालय हो। {% else %}We sell only the best quality drinking water based on our quality standard and bring it to your doorstep, whether it is your home or office.{% endif %}</p>
                                 </div>
                             </div>
                             <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow" href="{% url 'about-us' %}" data-caption-animate="slideInUp">Read more</a></div>
@@ -31,12 +31,12 @@
                     </div>
                 </div>
             </div>
-            <div class="swiper-slide" data-slide-bg="{% static 'assets/images/image-slider-2.jpg' %}">
+            <div class="swiper-slide" data-slide-bg="{% static 'assets/images/image-slider-3.jpg' %}">
                 <div class="slide-inner">
                     <div class="swiper-slide-caption">
                         <div class="container">
-                            <h1 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="big">Everyday</span></span></h1>
-                            <h2 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="compressed fown-weight-light">Water Quality Check</span></span></h2>
+                            <h1 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="big">Quality</span></span></h1>
+                            <h2 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="compressed fown-weight-light">Drinking Water</span></span></h2>
                             <div class="swiper-caption-text-sm swiper-caption-wrap">
                                 <div class="swiper-caption-text-inner">
                                     <p class="text-op-gentle wow" data-caption-animate="slideInLeft">We test drinking water quality everyday in our high-tech laboratory and we sell and distribute only from those companies that meet our quality standard.</p>
@@ -47,7 +47,7 @@
                     </div>
                 </div>
             </div>
-            <div class="swiper-slide" data-slide-bg="{% static 'assets/images/image-slider-3.jpg' %}">
+            <div class="swiper-slide" data-slide-bg="{% static 'assets/images/image-slider-2.jpg' %}">
                 <div class="slide-inner">
                     <div class="swiper-slide-caption">
                         <div class="container">
@@ -82,8 +82,16 @@
             <div class="row row-50 justify-content-center justify-content-xl-between flex-xl-row-reverse text-center text-xl-left">
                 <div class="col-lg-6 col-xl-5">
                     <div class="inset-right-3">
-                        <h3 class="wow-outer"><span class="wow slideInDown">Quality Drinking Water at a Reasonable Price</span></h3>
-                        <p class="text-op-amaranthine wow-outer"><span class="wow slideInDown" data-wow-delay=".05s">Our company works to test whether the drinking water processed and purified by various companies meet the Guidelines on Processed Drinking Water Production Standards 2017, to publish the test results to the public for information, to routinely inspect water processing and purifying facilities to check their sanitation level, to provide a platform to buy the drinking water--that meet our quality standard--through our mobile app and deliver the purchased drinking water to homes and offices of our customers. </span></p>
+                        <h3 class="wow-outer"><span class="wow slideInDown">{% if lang %} सुपथ मूल्यमा गुणस्तरिय शुद्ध पिउने पानी {% else %}Quality Drinking Water at a Reasonable Price {% endif %}</span></h3>
+                        
+                        {% if lang %}
+                        <p class="text-op-amaranthine wow-outer"><span class="wow slideInDown" data-wow-delay=".05s" style="font-family:mukta, sans-serif; font-size: 18px; ">
+                            बिभिन्न कम्पनीले प्रशोधन तथा शुद्धिकरण गरेको पानीको गुणस्तर प्रशोधित पिउने पानी उत्पादन मापदण्ड सम्बन्धी निर्देशिका, २०७४ बमोजिम भए नभएको दैनिक रुपमा जाँच गर्ने, जाँचको नतिजा उपभोक्ताको जानकारीको लागि सार्वजनिक गर्ने, पानी प्रशोधन तथा शुद्धिकरण गर्ने स्थलको सरसफाई के कस्तो छ भनि नियमित निरिक्षण गर्ने, र मापदण्ड बमोजिम रहेका पानीलाई मोबाईल एप्लिकेशनको माध्यमबाट खरिद गर्न मिल्ने व्यवस्था गरी  खरिद गरिएको पानीलाई उपभोक्ताको घर÷कार्यस्थलमा लगेर वितरण गर्ने कार्य यस कम्पनीले गर्दछ । <br>
+                            पानीको गुणस्तरमा प्रतिस्पर्धा गराउदैँ हाल कायम रहेको मुल्य भन्दा करिब २० प्रतिशत कम मुल्यमा यस कम्पनीले पानी घर÷कार्यस्थलमा लगेर बिक्रि बितरण गर्दै आईरहेको छ ।</span></p>
+                        {% else %}
+                        <p class="text-op-amaranthine wow-outer"><span class="wow slideInDown" data-wow-delay=".05s">
+                            Our company works to test whether the drinking water processed and purified by various companies meet the Guidelines on Processed Drinking Water Production Standards 2017, to publish the test results to the public for information, to routinely inspect water processing and purifying facilities to check their sanitation level, to provide a platform to buy the drinking water--that meet our quality standard--through our mobile app and deliver the purchased drinking water to homes and offices of our customers. 
+                        {% endif %}</span></p>
                         <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow slideInDown" data-wow-delay=".1s" href="{% url 'about-us' %}">Read more</a></div>
                     </div>
                 </div>
@@ -163,7 +171,7 @@
                     <div class="box-6">
                         <div class="wow-outer">
                             <div class="wow slideInUp">
-                                <h3 class="font-weight-semibold">Where are we located?</h3>
+                                <h3 class="font-weight-semibold">{% if lang %} हामी कहाँ छौं ? {% else %}Where are we located? {% endif %}</h3>
                             </div>
                         </div>
                         <div class="wow-outer offset-top-4">
@@ -294,7 +302,7 @@
                     <article class="box-creative wow slideInLeft" data-wow-delay=".2s">
                         <div class="box-creative-icon mdi mdi-login"></div>
                         <h4 class="box-creative-title"><a href="#">Friendly Login</a></h4>
-                        <p>Login to Sarovara app with your register account</p>
+                        <p>Login to Sarovara app with your registered account</p>
                     </article>
                 </div>
                 <div class="col-sm-6 col-lg-4 wow-outer">
