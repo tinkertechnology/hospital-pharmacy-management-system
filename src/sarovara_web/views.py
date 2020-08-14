@@ -18,9 +18,9 @@ def index(request):
 
 
 def we_sales(request):
-	page_title = 'We sales'
+	page_title = 'We sell'
 	lang = request.GET.get('lang')
-	return render(request, 'sarovara/sales.html', {'title_content':page_title, 'lang':lang})
+	return render(request, 'sarovara/sales.html', {'title_content':page_title})
 
 
 def our_depot(request):
