@@ -153,12 +153,20 @@ h1,
 	letter-spacing: 0;
 }
 
-h1 .big,
+h1 .big, 
 .heading-1 .big {
 	font-size: 1.76em;
 	text-transform: uppercase;
 	font-weight: 900;
 	line-height: 1;
+}
+
+h1 .medium, 
+.heading-1 .medium {
+	font-size: 1.26em;
+	font-weight: 900;
+	line-height: 1.5;
+	font-family: "mukta", "sans-serif";
 }
 
 @media (min-width: 576px) {
