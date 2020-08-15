@@ -10,7 +10,7 @@
             <div class="container breadcrumbs-custom-container">
                 <div class="breadcrumbs-custom-main">
                     <!-- <h6 class="breadcrumbs-custom-subtitle title-decorated">Pages</h6> -->
-                    <h1 class="breadcrumbs-custom-title">About Us</h1>
+                    <h1 class="breadcrumbs-custom-title">{% if lang %} हाम्रो बारेमा {% else %} About Us {% endif %}</h1>
                 </div>
                 <ul class="breadcrumbs-custom-path">
                     <li><a href="{% url 'index' %}">Home</a></li>
@@ -27,12 +27,12 @@
         <div class="container">
             <div class="row row-50 justify-content-center justify-content-lg-between">
                 <div class="col-md-10 col-lg-6 column-ethereal">
-                    <h3>Overview</h3>
-                    <h4 class="offset-top-3">Provide quality pure drinking water at affordable prices.</h4>
-                    <p style="text-align: justify;">The main objective of this company is to provide high quality drinking water at a reasonable price.</p>
-                    <p style="text-align: justify;">This company works to test whether the drinking water processed and purified by various companies meet the Guidelines on Processed Drinking Water Production Standards 2017, to publish the test results to the public for information, to routinely inspect water processing and purifying facilities to check their sanitation level, to provide a platform to buy the drinking water--that meet our quality standard--through our mobile app and deliver the purchased drinking water to homes and offices of our customers.</p>
-                    <p style="text-align: justify;">This company is providing drinking water at a 20% less than the market price and delivers it to the doorstep of customer’s homes and offices, setting competition for drinking water quality in the market.</p>
-                    <p style="text-align: justify;">For now this service is available within few places of Kathmandu valley but it hopes to extend it’s service area in near future.</p>
+                    <h3>{% if lang %} हाम्रो बारेमा {% else %} Overview {% endif %}</h3>
+                    <h4 class="offset-top-3">{% if lang %} सुपथ मूल्यमा गुणस्तरिय शुद्ध पिउने पानी {% else %} Provide quality pure drinking water at affordable prices. {% endif %}</h4>
+                    <p style="text-align: justify;">{% if lang %} सुपथ मूल्यमा गुणस्तरिय शुद्ध पिउने पानी उपलब्ध गराउने यस कम्पनीको उद्धेश्य रहेको छ । {% else %} The main objective of this company is to provide high quality drinking water at a reasonable price. {% endif %}</p>
+                    <p style="text-align: justify;">{% if lang %} बिभिन्न कम्पनीले प्रशोधन तथा शुद्धिकरण गरेको पानीको गुणस्तर प्रशोधित पिउने पानी उत्पादन मापदण्ड सम्बन्धी निर्देशिका, २०७४ बमोजिम भए नभएको दैनिक रुपमा जाँच गर्ने, जाँचको नतिजा उपभोक्ताको जानकारीको लागि सार्वजनिक गर्ने, पानी प्रशोधन तथा शुद्धिकरण गर्ने स्थलको सरसफाई के कस्तो छ भनि नियमित निरिक्षण गर्ने, र मापदण्ड बमोजिम रहेका पानीलाई मोबाईल एप्लिकेशनको माध्यमबाट खरिद गर्न मिल्ने व्यवस्था गरी खरिद गरिएको पानीलाई उपभोक्ताको घर÷कार्यस्थलमा लगेर वितरण गर्ने कार्य यस कम्पनीले गर्दछ । {% else %} This company works to test whether the drinking water processed and purified by various companies meet the Guidelines on Processed Drinking Water Production Standards 2017, to publish the test results to the public for information, to routinely inspect water processing and purifying facilities to check their sanitation level, to provide a platform to buy the drinking water--that meet our quality standard--through our mobile app and deliver the purchased drinking water to homes and offices of our customers. {% endif %}</p>
+                    <p style="text-align: justify;">{% if lang %} पानीको गुणस्तरमा प्रतिस्पर्धा गराउदैँ हाल कायम रहेको मुल्य भन्दा करिब २० प्रतिशत कम मुल्यमा यस कम्पनीले पानी घर÷कार्यस्थलमा लगेर बिक्रि बितरण गर्दै आईरहेको छ । {% else %} This company is providing drinking water at a 20% less than the market price and delivers it to the doorstep of customer’s homes and offices, setting competition for drinking water quality in the market. {% endif %}</p>
+                    <p style="text-align: justify;">{% if lang %} हाललाई यो सेवा काठमाण्डौँ उपत्यका भित्र केही स्थानहरुमा उपलब्ध छ र सेवालाई विस्तार गर्दै लैजाने कम्पनीको योजना रहेको छ ।  {% else %} For now this service is available within few places of Kathmandu valley but it hopes to extend it’s service area in near future. {% endif %}</p>
                     <!-- <div class="group group-middle"><a class="button button-primary button-winona" href="#our-history" data-waypoint-to="#our-history">View our History</a><a class="button button-primary-outline button-winona" href="careers.html">Join our Team</a></div> -->
                 </div>
                 <div class="col-md-10 col-lg-6 col-xl-5 align-self-end">
@@ -50,8 +50,8 @@
                     </div>
                     <div class="timeline-classic-item-divider"></div>
                     <div class="timeline-classic-item-main">
-                        <p class="timeline-classic-item-title">Regular Quality Check</p>
-                        <p class="thumbnail-classic-item-subtitle">We do quality check of drinking water processed and purified by the companies that sell or want to sell drinking water through sarovara.</p>
+                        <p class="timeline-classic-item-title">{% if lang %} दैनिक गुणस्तर जाँच {% else %} Regular Quality Check {% endif %}</p>
+                        <p class="thumbnail-classic-item-subtitle">{% if lang %} सरोवर मार्फत पानी विक्रि गरिरहेका तथा विक्रि गर्न इच्छुक कम्पनीले प्रशोधन तथा शुद्धिकरण गरेको पानीको गुणस्तर दैनिक रुपमा जाँच गर्दछौँ । {% else %} We do quality check of drinking water processed and purified by the companies that sell or want to sell drinking water through sarovara. {% endif %}</p>
                     </div>
                 </div>
                 <div class="timeline-classic-item">
@@ -59,8 +59,8 @@
                     </div>
                     <div class="timeline-classic-item-divider"></div>
                     <div class="timeline-classic-item-main">
-                        <p class="timeline-classic-item-title">Regular Inspection</p>
-                        <p class="thumbnail-classic-item-subtitle">We routinely inspect water processing and purifiying facilities of the companies that sell or want to sell drinking water through Sarovara.</p>
+                        <p class="timeline-classic-item-title">{% if lang %} नियमित निरिक्षण {% else %} Regular Inspection {% endif %}</p>
+                        <p class="thumbnail-classic-item-subtitle">{% if lang %} सरोवर मार्फत पानी विक्रि गरिरहेका तथा विक्रि गर्न इच्छुक कम्पनीको पानी प्रशोधन तथा शुद्धिकरण गर्ने स्थलको नियमित निरिक्षण गर्दछौँ । {% else %} We routinely inspect water processing and purifiying facilities of the companies that sell or want to sell drinking water through Sarovara. {% endif %}</p>
                     </div>
                 </div>
                 <div class="timeline-classic-item">
@@ -68,8 +68,8 @@
                     </div>
                     <div class="timeline-classic-item-divider"></div>
                     <div class="timeline-classic-item-main">
-                        <p class="timeline-classic-item-title">Information Transparency</p>
-                        <p class="thumbnail-classic-item-subtitle">We regularly publish information about drinking water quality and sanitation information of the companies that sell or want to sell drinking water through Sarovara.</p>
+                        <p class="timeline-classic-item-title">{% if lang %} विवरण सार्वजनिक {% else %} Information Transparency {% endif %}</p>
+                        <p class="thumbnail-classic-item-subtitle">{% if lang %} सरोवर मार्फत पानी विक्रि गरिरहेका तथा बिक्रि गर्न इच्छुक कम्पनीको पानीको गुणस्तर तथा सरसफाईको विवरण नियमित रुपमा सार्वजनिक गर्दछौँँ । {% else %} We regularly publish information about drinking water quality and sanitation information of the companies that sell or want to sell drinking water through Sarovara. {% endif %}</p>
                     </div>
                 </div>
                 <div class="timeline-classic-item">
@@ -77,8 +77,8 @@
                     </div>
                     <div class="timeline-classic-item-divider"></div>
                     <div class="timeline-classic-item-main">
-                        <p class="timeline-classic-item-title">Buy Water</p>
-                        <p class="thumbnail-classic-item-subtitle">We will only buy drinking water from the companies that comply with the Guidelines on Processed Drinking Water Production Standards 2017.</p>
+                        <p class="timeline-classic-item-title">{% if lang %} पानी खरिद {% else %} Buy Water {% endif %}</p>
+                        <p class="thumbnail-classic-item-subtitle">{% if lang %} प्रशोधित पिउने पानी उत्पादन मापदण्ड सम्बन्धी निर्देशिका, २०७४ मा भएको मापदण्ड÷ व्यवस्था बमोजिम रहेका कम्पनीको मात्र पानी खरिद गर्नेछौँ । {% else %} We will only buy drinking water from the companies that comply with the Guidelines on Processed Drinking Water Production Standards 2017. {% endif %}</p>
                     </div>
                 </div>
                 <div class="timeline-classic-item">
@@ -86,8 +86,8 @@
                     </div>
                     <div class="timeline-classic-item-divider"></div>
                     <div class="timeline-classic-item-main">
-                        <p class="timeline-classic-item-title">Sales Distribution</p>
-                        <p class="thumbnail-classic-item-subtitle">From our depots, we provide door-to-door delivery service of drinking water to our customers who purchase through our Sarovara app and other means.</p>
+                        <p class="timeline-classic-item-title">{% if lang %} बिक्रि वितरण {% else %} Sales Distribution {% endif %}</p>
+                        <p class="thumbnail-classic-item-subtitle">{% if lang %} सरोवर एप्स तथा अन्य माध्यमबाट ग्राहककले खरिद गरेको पानीलाई सरोवरको डिपोहरु मार्फत विक्रि गरि घरघरमै पुर्‍याउनेछौँ । {% else %} From our depots, we provide door-to-door delivery service of drinking water to our customers who purchase through our Sarovara app and other means. {% endif %}</p>
                     </div>
                 </div>
             </article>

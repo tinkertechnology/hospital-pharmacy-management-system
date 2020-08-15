@@ -20,20 +20,23 @@ def index(request):
 def we_sales(request):
 	page_title = 'We sell'
 	lang = request.GET.get('lang')
-	return render(request, 'sarovara/sales.html', {'title_content':page_title})
+	return render(request, 'sarovara/sales.html', {'title_content':page_title, 'lang':lang})
 
 
 def our_depot(request):
 	page_title = 'Our Depot'
-	return render(request, 'sarovara/depot.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/depot.html', {'title_content':page_title, 'lang':lang})
 
 def about_us(request):
 	page_title = 'About Us'
-	return render(request, 'sarovara/about_us.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/about_us.html', {'title_content':page_title, 'lang':lang})
 
 def contacts(request):
 	page_title = 'Contact Us'
-	return render(request, 'sarovara/contacts.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/contacts.html', {'title_content':page_title, 'lang':lang})
 
 def terms_and_condition(request):
 	page_title = 'Terms & Conditions'
@@ -65,7 +68,8 @@ def complaint(request):
 
 def careers(request):
 	page_title = 'Careers'
-	return render(request, 'sarovara/careers.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/careers.html', {'title_content':page_title, 'lang':lang})
 
 def vacancy_apply_now(request):
 	page_title = 'Apply Now'

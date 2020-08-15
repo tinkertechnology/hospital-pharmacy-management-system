@@ -18,7 +18,7 @@
                             </h1>
                             <h2 class="wow-outer">
                                 <span class="wow" data-caption-animate="slideInDown">
-                                    <span class="compressed fown-weight-light">{% if lang %} <span style="font-family: Mukta-Bold">पानी गुणस्तरिय जाँच</span> {% else %} Water Quality Check {% endif %}</span>
+                                    <span class="compressed fown-weight-light">{% if lang %} <span style="font-family: Mukta-Bold">पानीको गुणस्तर जाँच</span> {% else %} Water Quality Check {% endif %}</span>
                                 </span>
                             </h2>
                             <div class="swiper-caption-text-sm swiper-caption-wrap">
@@ -26,7 +26,7 @@
                                     <p class="text-op-gentle wow" data-caption-animate="slideInLeft">{% if lang %} हामी केवल हाम्रो गुणस्तरको आधारमा उत्तम गुणस्तरको पिउने पानी बेच्छौं र तपाईंको ढोकामा ल्याउँदछ, चाहे यो तपाईंको घर वा कार्यालय हो। {% else %}We sell only the best quality drinking water based on our quality standard and bring it to your doorstep, whether it is your home or office.{% endif %}</p>
                                 </div>
                             </div>
-                            <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow" href="{% url 'about-us' %}" data-caption-animate="slideInUp">Read more</a></div>
+                            <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow" href="{% url 'about-us' %}" data-caption-animate="slideInUp">{% if lang %} थप पढ्नुहोस् {% else %}Read more{% endif %}</a></div>
                         </div>
                     </div>
                 </div>
@@ -35,14 +35,14 @@
                 <div class="slide-inner">
                     <div class="swiper-slide-caption">
                         <div class="container">
-                            <h1 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="big">Quality</span></span></h1>
-                            <h2 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="compressed fown-weight-light">Drinking Water</span></span></h2>
+                            <h1 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="big">{% if lang %} <span class="medium">गुणस्तरिय</span> {% else %} Quality {% endif %}</span></span></h1>
+                            <h2 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="compressed fown-weight-light">{% if lang %} <span style="font-family: Mukta-Bold">पिउने पानी </span> {% else %} Drinking Water{% endif %}</span></span></h2>
                             <div class="swiper-caption-text-sm swiper-caption-wrap">
                                 <div class="swiper-caption-text-inner">
-                                    <p class="text-op-gentle wow" data-caption-animate="slideInLeft">We test drinking water quality everyday in our high-tech laboratory and we sell and distribute only from those companies that meet our quality standard.</p>
+                                    <p class="text-op-gentle wow" data-caption-animate="slideInLeft">{% if lang %} आफ्नै उच्चस्तरिय ल्याबमा पानीको गुणस्तर जाँच गर्दछौं र गुणस्तरिय पानी मात्र विक्रि वितरण गर्दछौँ । {% else %} We test drinking water quality everyday in our high-tech laboratory and we sell and distribute only from those companies that meet our quality standard.{% endif %}</p>
                                 </div>
                             </div>
-                            <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow" href="{% url 'about-us' %}" data-caption-animate="slideInUp">Read more</a></div>
+                            <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow" href="{% url 'about-us' %}" data-caption-animate="slideInUp">{% if lang %} थप पढ्नुहोस् {% else %} Read more{% endif %}</a></div>
                         </div>
                     </div>
                 </div>
@@ -51,14 +51,14 @@
                 <div class="slide-inner">
                     <div class="swiper-slide-caption">
                         <div class="container">
-                            <h1 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="big">Hygiene</span></span></h1>
-                            <h2 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="compressed fown-weight-light">Regular Inspection</span></span></h2>
+                            <h1 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="big">{% if lang %} <span class="medium">सरसफाई</span> {% else %} Hygiene{% endif %}</span></span></h1>
+                            <h2 class="wow-outer"><span class="wow" data-caption-animate="slideInDown"><span class="compressed fown-weight-light">{% if lang %} <span style="font-family: Mukta-Bold">नियमित परिक्षण </span>{% else %} Regular Inspection{% endif %}</span></span></h2>
                             <div class="swiper-caption-text-sm swiper-caption-wrap">
                                 <div class="swiper-caption-text-inner">
-                                    <p class="text-op-gentle wow" data-caption-animate="slideInLeft">We routinely inspect water processing and purifying facilities to check whether they are serious about their sanitation.</p>
+                                    <p class="text-op-gentle wow" data-caption-animate="slideInLeft">{% if lang %} पानी प्रशोधन तथा शुद्धिकरण गर्ने स्थलको सरसफाई के कस्तो छ भनि नियमित निरिक्षण गर्दछौँ ।{% else %} We routinely inspect water processing and purifying facilities to check whether they are serious about their sanitation. {% endif %}</p>
                                 </div>
                             </div>
-                            <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow" href="{% url 'about-us' %}" data-caption-animate="slideInUp">Read more</a></div>
+                            <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow" href="{% url 'about-us' %}" data-caption-animate="slideInUp">{% if lang %} थप पढ्नुहोस् {% else %} Read more{% endif %}</a></div>
                         </div>
                     </div>
                 </div>
@@ -87,12 +87,12 @@
                         {% if lang %}
                         <p class="text-op-amaranthine wow-outer"><span class="wow slideInDown" data-wow-delay=".05s" style="font-family:mukta, sans-serif; font-size: 18px; ">
                             बिभिन्न कम्पनीले प्रशोधन तथा शुद्धिकरण गरेको पानीको गुणस्तर प्रशोधित पिउने पानी उत्पादन मापदण्ड सम्बन्धी निर्देशिका, २०७४ बमोजिम भए नभएको दैनिक रुपमा जाँच गर्ने, जाँचको नतिजा उपभोक्ताको जानकारीको लागि सार्वजनिक गर्ने, पानी प्रशोधन तथा शुद्धिकरण गर्ने स्थलको सरसफाई के कस्तो छ भनि नियमित निरिक्षण गर्ने, र मापदण्ड बमोजिम रहेका पानीलाई मोबाईल एप्लिकेशनको माध्यमबाट खरिद गर्न मिल्ने व्यवस्था गरी  खरिद गरिएको पानीलाई उपभोक्ताको घर÷कार्यस्थलमा लगेर वितरण गर्ने कार्य यस कम्पनीले गर्दछ । <br>
-                            पानीको गुणस्तरमा प्रतिस्पर्धा गराउदैँ हाल कायम रहेको मुल्य भन्दा करिब २० प्रतिशत कम मुल्यमा यस कम्पनीले पानी घर÷कार्यस्थलमा लगेर बिक्रि बितरण गर्दै आईरहेको छ ।</span></p>
+                            </span></p>
                         {% else %}
                         <p class="text-op-amaranthine wow-outer"><span class="wow slideInDown" data-wow-delay=".05s">
                             Our company works to test whether the drinking water processed and purified by various companies meet the Guidelines on Processed Drinking Water Production Standards 2017, to publish the test results to the public for information, to routinely inspect water processing and purifying facilities to check their sanitation level, to provide a platform to buy the drinking water--that meet our quality standard--through our mobile app and deliver the purchased drinking water to homes and offices of our customers. 
                         {% endif %}</span></p>
-                        <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow slideInDown" data-wow-delay=".1s" href="{% url 'about-us' %}">Read more</a></div>
+                        <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow slideInDown" data-wow-delay=".1s" href="{% url 'about-us' %}">{% if lang %} थप पढ्नुहोस् {% else %} Read more{% endif %}</a></div>
                     </div>
                 </div>
                 <div class="col-lg-7"><img src="{% static 'assets/images/banner-bg-1.jpg' %}" alt="" width="711" height="429"/>
@@ -105,15 +105,15 @@
     <!-- What we do -->
     <section class="section section-lg bg-gray-100">
         <div class="container">
-            <h3 class="text-center">What we do?</h3>
+            <h3 class="text-center">{% if lang %} हामी के गर्छौं ? {% else %}What we do?{% endif %}</h3>
             <div class="row row-30">
                 <div class="col-sm-6 col-lg-4 wow-outer">
                     <!-- Box Minimal-->
                     <article class="box-minimal">
                         <div class="box-minimal-icon mdi mdi-checkbox-marked-circle wow fadeIn"></div>
                         <div class="box-minimal-main wow-outer">
-                            <h4 class="box-minimal-title wow slideInDown">Regular Quality Check</h4>
-                            <p class="wow fadeInUpSmall">We do quality check of drinking water processed and purified by the companies that sell or want to sell drinking water through sarovara.</p>
+                            <h4 class="box-minimal-title wow slideInDown">{% if lang %} दैनिक गुणस्तर जाँच {% else %}Regular Quality Check{% endif %}</h4>
+                            <p class="wow fadeInUpSmall"> {% if lang %} सरोवर मार्फत पानी विक्रि गरिरहेका तथा विक्रि गर्न इच्छुक कम्पनीले प्रशोधन तथा शुद्धिकरण गरेको पानीको गुणस्तर दैनिक रुपमा जाँच गर्दछौँ ।{% else %} We do quality check of drinking water processed and purified by the companies that sell or want to sell drinking water through sarovara. {% endif %}</p>
                         </div>
                     </article>
                 </div>
@@ -122,8 +122,8 @@
                     <article class="box-minimal">
                         <div class="box-minimal-icon mdi mdi-checkbox-multiple-marked wow fadeIn" data-wow-delay=".1s"></div>
                         <div class="box-minimal-main wow-outer">
-                            <h4 class="box-minimal-title wow slideInDown" data-wow-delay=".1s">Regular Inspection</h4>
-                            <p class="wow fadeInUpSmall" data-wow-delay=".1s">We routinely inspect water processing and purifying facilities of the companies that sell or want to sell drinking water through Sarovara.</p>
+                            <h4 class="box-minimal-title wow slideInDown" data-wow-delay=".1s">{% if lang %} नियमित निरिक्षण{% else %} Regular Inspection {% endif %}</h4>
+                            <p class="wow fadeInUpSmall" data-wow-delay=".1s">{% if lang %} सरोवर मार्फत पानी विक्रि गरिरहेका तथा विक्रि गर्न इच्छुक कम्पनीको पानी प्रशोधन तथा शुद्धिकरण गर्ने स्थलको नियमित निरिक्षण गर्दछौँ । {% else %} We routinely inspect water processing and purifying facilities of the companies that sell or want to sell drinking water through Sarovara. {% endif %}</p>
                         </div>
                     </article>
                 </div>
@@ -132,8 +132,8 @@
                     <article class="box-minimal">
                         <div class="box-minimal-icon mdi mdi-information wow fadeIn" data-wow-delay=".2s"></div>
                         <div class="box-minimal-main wow-outer">
-                            <h4 class="box-minimal-title wow slideInDown" data-wow-delay=".2s">Make Information Transparency</h4>
-                            <p class="wow fadeInUpSmall" data-wow-delay=".2s">We regularly publish information about drinking water quality and sanitation information of the companies that sell or want to sell drinking water through Sarovara.</p>
+                            <h4 class="box-minimal-title wow slideInDown" data-wow-delay=".2s">{% if lang %} विवरण सार्वजनिक {% else %} Make Information Transparency {% endif %}</h4>
+                            <p class="wow fadeInUpSmall" data-wow-delay=".2s">{% if lang %} सरोवर मार्फत पानी विक्रि गरिरहेका तथा विक्रि गर्न इच्छुक कम्पनीको पानीको गुणस्तर तथा सरसफाईको विवरण नियमित रुपमा सार्वजनिक गर्दछौँँ । {% else %} We regularly publish information about drinking water quality and sanitation information of the companies that sell or want to sell drinking water through Sarovara. {% endif %}</p>
                         </div>
                     </article>
                 </div>
@@ -144,8 +144,8 @@
                     <article class="box-minimal">
                         <div class="box-minimal-icon mdi mdi-water wow fadeIn"></div>
                         <div class="box-minimal-main wow-outer">
-                            <h4 class="box-minimal-title wow slideInDown">Buy Drinking Water</h4>
-                            <p class="wow fadeInUpSmall">We will only buy drinking water from the companies that comply with the Guidelines on Processed Drinking Water Production Standards 2017.</p>
+                            <h4 class="box-minimal-title wow slideInDown">{% if lang %} पानी खरिद {% else %} Buy Drinking Water {% endif %}</h4>
+                            <p class="wow fadeInUpSmall">{% if lang %} प्रशोधित पिउने पानी उत्पादन मापदण्ड सम्बन्धी निर्देशिका, २०७४ मा भएको मापदण्ड÷ व्यवस्था बमोजिम रहेका कम्पनीको मात्र पानी खरिद गर्नेछौँ । {% else %} We will only buy drinking water from the companies that comply with the Guidelines on Processed Drinking Water Production Standards 2017. {% endif %}</p>
                         </div>
                     </article>
                 </div>
@@ -154,8 +154,8 @@
                     <article class="box-minimal">
                         <div class="box-minimal-icon mdi mdi-sale wow fadeIn" data-wow-delay=".1s"></div>
                         <div class="box-minimal-main wow-outer">
-                            <h4 class="box-minimal-title wow slideInDown" data-wow-delay=".1s">Sales and Distributions</h4>
-                            <p class="wow fadeInUpSmall" data-wow-delay=".1s">From our depots, we provide door-to-door delivery service of drinking water to our customers who purchase through our Sarovara app and other means.</p>
+                            <h4 class="box-minimal-title wow slideInDown" data-wow-delay=".1s">{% if lang %} बिक्रि वितरण {% else %} Sales and Distributions {% endif %}</h4>
+                            <p class="wow fadeInUpSmall" data-wow-delay=".1s">{% if lang %} सरोवर एप्स तथा अन्य माध्यमबाट ग्राहककले खरिद गरेको पानीलाई सरोवरको डिपोहरु मार्फत विक्रि गरि घरघरमै पुर्‍याउनेछौँ । {% else %} From our depots, we provide door-to-door delivery service of drinking water to our customers who purchase through our Sarovara app and other means. {% endif %}</p>
                         </div>
                     </article>
                 </div>
@@ -171,13 +171,13 @@
                     <div class="box-6">
                         <div class="wow-outer">
                             <div class="wow slideInUp">
-                                <h3 class="font-weight-semibold">{% if lang %} हामी कहाँ छौं ? {% else %}Where are we located? {% endif %}</h3>
+                                <h3 class="font-weight-semibold">{% if lang %} हामी कहाँ कहाँ छौं ? {% else %} Where are we located? {% endif %}</h3>
                             </div>
                         </div>
                         <div class="wow-outer offset-top-4">
                             <div class="wow slideInDown">
-                                <p>Singamangal (Bhatkeko Pul), Old Baneshwor, Gaushala, Tilganga, Seto Pul, Raato Pul, Maitidevi, Gyaneshwor</p>
-                                <a class="button button-primary button-winona" href="{% url 'our-depot' %}">Our Depot</a>
+                                <p>{% if lang %} सिनामंगल (भत्केको पुल), पुरानो वानेश्वर, गौशाला, तिलगंगा, पुरानो वानेश्वर, सेतो पुल, रातो पुल, गौशाला, सेतोपुल, मैतिदेवी, ज्ञानेश्वर, रातो पुल  {% else %} Singamangal (Bhatkeko Pul), Old Baneshwor, Gaushala, Tilganga, Seto Pul, Raato Pul, Maitidevi, Gyaneshwor {% endif %}</p>
+                                <a class="button button-primary button-winona" href="{% url 'our-depot' %}"> {%if lang %} हाम्रो डिपो {% else %}Our Depot{% endif %}</a>
                             </div>
                         </div>
                     </div>
@@ -189,7 +189,7 @@
     <!-- We Sales -->
     <section class="section section-lg section-wave-offset">
         <div class="container">
-            <h3 class="text-center">We Sales</h3>
+            <h3 class="text-center">{% if lang %} हामी बेच्छौं {% else %} We Sell {% endif %}</h3>
             <div class="row row-30 row-md-50">
                 <div class="col-md-6">
                     <article class="card-modern wow fadeInUp" data-wow-delay=".05s">
@@ -199,8 +199,8 @@
                             </a>
                         </div>
                         <div class="card-modern-body">
-                            <h4><a class="card-modern-title" href="{% url 'kuwa-drinking-water' %}">Kuwa</a></h4>
-                            <div class="card-modern-price"><span>Rs. 37</span></div>
+                            <h4><a class="card-modern-title" href="{% url 'kuwa-drinking-water' %}">{% if lang %} कुवा {% else %} Kuwa {% endif %}</a></h4>
+                            <div class="card-modern-price"><span>{% if lang %} रू.३७ {% else %} Rs. 37 {% endif %}</span></div>
                             <!-- <div class="card-modern-info">
                                 <span class="icon icon-sm mdi mdi-information-outline"></span>
                                 <span class="card-modern-info-text">Fresh and Pure Drinking Water</span>
@@ -219,8 +219,8 @@
                             </a>
                         </div>
                         <div class="card-modern-body">
-                            <h4><a class="card-modern-title" href="{% url 'patanjali-dibyajal' %}">Patanjali Dibyajal</a></h4>
-                            <div class="card-modern-price"><span>Rs. 125</span></div>
+                            <h4><a class="card-modern-title" href="{% url 'patanjali-dibyajal' %}">{% if lang %} पतंजलि दिव्याजल {% else %} Patanjali Dibyajal {% endif %}</a></h4>
+                            <div class="card-modern-price"><span>{% if lang %} रू.१२५ {% else %} Rs.125 {% endif %}</span></div>
                             <!-- <div class="card-modern-info">
                                 <span class="icon icon-sm mdi mdi-information-outline"></span>
                                 <span class="card-modern-info-text">Purest and Safest</span>
@@ -239,8 +239,8 @@
                             </a>
                         </div>
                         <div class="card-modern-body">
-                            <h4><a class="card-modern-title" href="{% url 'kuwa-drinking-water' %}">Kuwa Plus</a></h4>
-                            <div class="card-modern-price"><span>Rs. 65</span></div>
+                            <h4><a class="card-modern-title" href="{% url 'kuwa-drinking-water' %}">{% if lang %} कुवा प्लस {% else %} Kuwa Plus {% endif %}</a></h4>
+                            <div class="card-modern-price"><span>{% if lang %} रू.६५ {% else %} Rs.65 {% endif %}</span></div>
                             <!-- <div class="card-modern-info"><span class="icon icon-sm mdi mdi-information-outline"></span><span class="card-modern-info-text">for daily use</span></div> -->
                             <div class="card-modern-text">
                                 <p>Kuwa Plus is one of the products of the Kuwa processed as per the Drinking Water Production Standards 2017. New Clean jar with additional plastic wrapping on jar and water label has been added on jar.</p>
@@ -256,8 +256,8 @@
                             </a>
                         </div>
                         <div class="card-modern-body">
-                            <h4><a class="card-modern-title" href="{% url 'karuwa-premium-drinking-water' %}">Karuwa</a></h4>
-                            <div class="card-modern-price"><span>Rs. 85</span></div>
+                            <h4><a class="card-modern-title" href="{% url 'karuwa-premium-drinking-water' %}">{% if lang %} करूवा  {% else %} Karuwa {% endif %}</a></h4>
+                            <div class="card-modern-price"><span>{% if lang %} रू.८५ {% else %} Rs.85 {% endif %}</span></div>
                            <!--  <div class="card-modern-info"><span class="icon icon-sm mdi mdi-information-outline"></span><span class="card-modern-info-text">Nepalese drinking water</span></div> -->
                             <div class="card-modern-text">
                                 <p>Karuwa is a Nepalese drinking water manufacturing company with a production plant located in Bhaisepati, Lalitpur, Nepal. We are Nepal's first brand to pass "Processed  Drinking Water Production Standard Regulation, 2074".</p>
@@ -268,7 +268,7 @@
             </div>
             <div class="row justify-content-center text-center row-offset-custom-1">
                 <div class="col-12">
-                    <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow slideInDown" data-wow-delay=".1s" href="{% url 'we-sales' %}">View more</a></div>
+                    <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow slideInDown" data-wow-delay=".1s" href="{% url 'we-sales' %}">{% if lang %} थप हेर्नुहोस् {% else %} Read more{% endif %}</a></div>
                 </div>
             </div>
         </div>
@@ -278,47 +278,47 @@
     <section class="section section-lg bg-gray-100 text-center">
         <div class="container">
             <div class="box-4">
-                <h3 class="wow-outer"><span class="wow slideInUp">How to Buy ?</span></h3>
+                <h3 class="wow-outer"><span class="wow slideInUp">{% if lang %} कसरी खरिद गर्ने ? {% else %} How to Buy ? {% endif %}</span></h3>
             </div>
             <div class="row row-30">
                 <div class="col-sm-6 col-lg-4 wow-outer">
                     <!-- Box Creative-->
                     <article class="box-creative wow slideInLeft">
                         <div class="box-creative-icon mdi mdi-cellphone-android"></div>
-                        <h4 class="box-creative-title"><a href="#">Through Application</a></h4>
-                        <p>Go to Google Playstore or Appstore and download Sarovara app</p>
+                        <h4 class="box-creative-title"><a href="#">{% if lang %} एप्लिकेशन मार्फत {% else %} Through Application {% endif %}</a></h4>
+                        <p>{% if lang %} प्लेस्टोर वा एपस्टोरमा गएर सरोवर एप्स डाउनलोड गर्नुहोस् {% else %} Go to Google Playstore or Appstore and download Sarovara app {% endif %}</p>
                     </article>
                 </div>
                 <div class="col-sm-6 col-lg-4 wow-outer">
                     <!-- Box Creative-->
                     <article class="box-creative wow slideInLeft" data-wow-delay=".1s">
                         <div class="box-creative-icon mdi mdi-account"></div>
-                        <h4 class="box-creative-title"><a href="#">Free Account</a></h4>
-                        <p>Open an account on Sarovara</p>
+                        <h4 class="box-creative-title"><a href="#">{% if lang %} नि: शुल्क खाता {% else %} Free Account {% endif %}</a></h4>
+                        <p>{% if lang %} सरोवर एप्समा नयाँ खाता खोल्नुहोस् {% else %} Open an account on Sarovara {% endif %}</p>
                     </article>
                 </div>
                 <div class="col-sm-6 col-lg-4 wow-outer">
                     <!-- Box Creative-->
                     <article class="box-creative wow slideInLeft" data-wow-delay=".2s">
                         <div class="box-creative-icon mdi mdi-login"></div>
-                        <h4 class="box-creative-title"><a href="#">Friendly Login</a></h4>
-                        <p>Login to Sarovara app with your registered account</p>
+                        <h4 class="box-creative-title"><a href="#">{% if lang %} मैत्री लग ईन {% else %} Friendly Login {% endif %}</a></h4>
+                        <p>{% if lang %} आफ्नो खाताबाट सरोवर एप्समा लग इन गर्नुहोस्  {% else %} Login to Sarovara app with your registered account {% endif %}</p>
                     </article>
                 </div>
                 <div class="col-sm-6 col-lg-4 wow-outer">
                     <!-- Box Creative-->
                     <article class="box-creative wow slideInLeft" data-wow-delay=".1s">
                         <div class="box-creative-icon mdi mdi-home"></div>
-                        <h4 class="box-creative-title"><a href="#">Choose Company</a></h4>
-                        <p> Choose a company by evaluating their drinking water quality and buy it</p>
+                        <h4 class="box-creative-title"><a href="#">{% if lang %} कम्पनी रोज्नुस {% else %} Choose Company {% endif %}</a></h4>
+                        <p> {% if lang %} पानीको गुणस्तर जाँच बुझ गरी कम्पनी रोजेर पानी खरिद गर्नुहोस्  {% else %} Choose a company by evaluating their drinking water quality and buy it {% endif %}</p>
                     </article>
                 </div>
                 <div class="col-sm-6 col-lg-4 wow-outer">
                     <!-- Box Creative-->
                     <article class="box-creative wow slideInLeft" data-wow-delay=".2s">
                         <div class="box-creative-icon mdi mdi-truck-delivery"></div>
-                        <h4 class="box-creative-title"><a href="#">Delivered</a></h4>
-                        <p> We immediately deliver the drinking water you purchase to your home or office</p>
+                        <h4 class="box-creative-title"><a href="#">{% if lang %} डेलिभरी {% else %} Delivered {% endif %}</a></h4>
+                        <p> {% if lang %} तपाईले खरिद गर्नु भएको पानी हामी तपाईको घर÷कार्यस्थलमै चाँडै ल्याउनेछौँ {% else %} We immediately deliver the drinking water you purchase to your home or office {% endif %}</p>
                     </article>
                 </div>
             </div>
@@ -328,15 +328,17 @@
     <!-- What we do -->
     <section class="section section-lg">
         <div class="container">
-            <h3 class="text-center">Contact Us for Quality Drinking Water</h3>
+            <h3 class="text-center">{% if lang %} गुणस्तरीय पिउने पानीको लागि हामीलाई सम्पर्क गर्नुहोस् {% else %} Contact Us for Quality Drinking Water {% endif %}</h3>
             <div class="row row-30">
                 <div class="col-sm-6 col-lg-4 wow-outer">
                     <!-- Box Minimal-->
                     <article class="box-minimal">
                         <div class="box-minimal-icon mdi mdi-water wow fadeIn"></div>
                         <div class="box-minimal-main wow-outer">
-                            <h5 class="box-minimal-title wow slideInDown">Buy Drinking Water</h5>
-                            <p>If you want to buy drinking water from Sarovara, <a href="{% url 'buy-drinking-water' %}" style="font-weight: bold;">Click Here</a></p>
+                            <h5 class="box-minimal-title wow slideInDown">{% if lang %} पिउने पानी किन्नुहोस् {% else %} Buy Drinking Water {% endif %}</h5>
+                            <p>{% if lang %} सरोवर मार्फत पानी खरिद गर्न, {% else %} If you want to buy drinking water from Sarovara,  {% endif %}  
+                                <a href="{% url 'buy-drinking-water' %}" style="font-weight: bold;">{% if lang %} यहाँ क्लिक गर्नुहोस् {% else %} Click Here {% endif %}</a>
+                            </p>
                         </div>
                     </article>
                 </div>
@@ -345,8 +347,10 @@
                     <article class="box-minimal">
                         <div class="box-minimal-icon mdi mdi-sale wow fadeIn" data-wow-delay=".1s"></div>
                         <div class="box-minimal-main wow-outer">
-                            <h5 class="box-minimal-title wow slideInDown">Sell Drinking Water</h5>
-                            <p> If you want to sell drinking water from Sarovara, <a href="{% url 'sell-drinking-water' %}" style="font-weight: bold;">Click Here</a></p>
+                            <h5 class="box-minimal-title wow slideInDown">{% if lang %} पिउने पानी बेच्नुहोस् {% else %} Sell Drinking Water {% endif %}</h5>
+                            <p> {% if lang %} सरोवर मार्फत पानी बिक्री गर्न, {% else %} If you want to sell drinking water from Sarovara, {% endif %} 
+                                <a href="{% url 'sell-drinking-water' %}" style="font-weight: bold;">{% if lang %} यहाँ क्लिक गर्नुहोस् {% else %} Click Here {% endif %}</a>
+                            </p>
                         </div>
                     </article>
                 </div>
@@ -355,8 +359,10 @@
                     <article class="box-minimal">
                         <div class="box-minimal-icon mdi mdi-home wow fadeIn" data-wow-delay=".2s"></div>
                         <div class="box-minimal-main wow-outer">
-                            <h5 class="box-minimal-title wow slideInDown">Open Depot</h5>
-                            <p>If you want to open a Sarovara depot, <a href="{% url 'open-depot' %}" style="font-weight: bold;">Click Here</a></p>
+                            <h5 class="box-minimal-title wow slideInDown">{% if lang %} डिपो खोल्नुहोस् {% else %} Open Depot {% endif %}</h5>
+                            <p>{% if lang %} सरोवर डिपो खोल्नका लागि, {% else %} If you want to open a Sarovara depot, {% endif %} 
+                                <a href="{% url 'open-depot' %}" style="font-weight: bold;">{% if lang %} यहाँ क्लिक गर्नुहोस् {% else %} Click Here {% endif %}</a>
+                            </p>
                         </div>
                     </article>
                 </div>
@@ -367,8 +373,10 @@
                     <article class="box-minimal">
                         <div class="box-minimal-icon wow fadeIn"><img src="{% static 'assets/images/feedback.png' %}" height="48px;" width="48px;"></div>
                         <div class="box-minimal-main wow-outer">
-                            <h5 class="box-minimal-title wow slideInDown">Feedback</h5>
-                            <p>If you want to provide suggestion or feedback, <a href="{% url 'feedback' %}" style="font-weight: bold;">Click Here</a></p>
+                            <h5 class="box-minimal-title wow slideInDown">{% if lang %} प्रतिक्रिया {% else %} Feedback {% endif %}</h5>
+                            <p>{% if lang %} सल्लाह, सुझाव दिन, {% else %} If you want to provide suggestion or feedback, {% endif %} 
+                                <a href="{% url 'feedback' %}" style="font-weight: bold;">{% if lang %} यहाँ क्लिक गर्नुहोस् {% else %} Click Here {% endif %}</a>
+                            </p>
                         </div>
                     </article>
                 </div>
@@ -377,8 +385,10 @@
                     <article class="box-minimal">
                         <div class="box-minimal-icon wow fadeIn" data-wow-delay=".1s"><img src="{% static 'assets/images/icon-complaint.png' %}"></div>
                         <div class="box-minimal-main wow-outer">
-                            <h5 class="box-minimal-title wow slideInDown">Complaint</h5>
-                            <p>If you want to file a complaint or grievance, <a href="{% url 'complaint' %}" style="font-weight: bold;">Click Here</a></p>
+                            <h5 class="box-minimal-title wow slideInDown">{% if lang %} गुनासो {% else %} Complaint {% endif %}</h5>
+                            <p>{% if lang %} गुनासो गर्न, {% else %} If you want to file a complaint or grievance, {% endif %} 
+                                <a href="{% url 'complaint' %}" style="font-weight: bold;">{% if lang %} यहाँ क्लिक गर्नुहोस् {% else %} Click Here {% endif %}</a>
+                            </p>
                         </div>
                     </article>
                 </div>
@@ -470,7 +480,7 @@
     <!-- Latest Blog Posts-->
     <section class="section section-lg bg-gray-100 section-wave-offset">
         <div class="container">
-            <h3 class="wow-outer text-center"><span class="wow slideInDown">About Sarovara</span></h3>
+            <h3 class="wow-outer text-center"><span class="wow slideInDown">{% if lang %} सरोवरको बारेमा {% else %}About Sarovara{% endif %}</span></h3>
             <div class="row row-50 justify-content-center justify-content-lg-start">
                 <div class="col-md-10 col-lg-7 wow-outer">
                     <!-- Post Block-->
@@ -498,7 +508,7 @@
                             <div class="post-light-main">
                                 <h4 class="post-light-title"><a href="single-blog-post.html">The Secrets of Modern  Spring Water</a></h4>
                                 <ul class="post-light-meta">
-                                    <li>by Theresa Barnes</li>
+                                    <li>by Sarovara</li>
                                     <li><a class="button-winona" href="#">News</a></li>
                                 </ul>
                             </div>
@@ -509,7 +519,7 @@
                             <div class="post-light-main">
                                 <h4 class="post-light-title"><a href="single-blog-post.html">Top 10 Facts About Our Bottled Water</a></h4>
                                 <ul class="post-light-meta">
-                                    <li>by Theresa Barnes</li>
+                                    <li>by Sarovara</li>
                                     <li><a class="button-winona" href="#">News</a></li>
                                 </ul>
                             </div>
@@ -520,7 +530,7 @@
                             <div class="post-light-main">
                                 <h4 class="post-light-title"><a href="single-blog-post.html">Spring Water vs. Sparkling     Water: What to Choose?</a></h4>
                                 <ul class="post-light-meta">
-                                    <li>by Theresa Barnes</li>
+                                    <li>by Sarovara</li>
                                     <li><a class="button-winona" href="#">News</a></li>
                                 </ul>
                             </div>
