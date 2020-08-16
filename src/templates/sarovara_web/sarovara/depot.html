@@ -10,12 +10,12 @@
             <div class="container breadcrumbs-custom-container">
                 <div class="breadcrumbs-custom-main">
                     <!-- <h6 class="breadcrumbs-custom-subtitle title-decorated">Pages</h6> -->
-                    <h1 class="breadcrumbs-custom-title">Our Depot</h1>
+                    <h1 class="breadcrumbs-custom-title">{% if lang %} हाम्रो डिपो {% else %} Our Depot {% endif %}</h1>
                 </div>
                 <ul class="breadcrumbs-custom-path">
                     <li><a href="{% url 'index' %}">Home</a></li>
                     <li class="active">
-                        {% if lang %}हाम्रो डिपो {% else %} Our Depot {% endif %}
+                        {% if lang %} हाम्रो डिपो {% else %} Our Depot {% endif %}
                     </li>
                 </ul>
             </div>
@@ -26,7 +26,7 @@
     <!-- 3 Column Layout-->
     <section class="section section-lg bg-gray-100 section-wave-offset">
         <div class="container">
-            <h5 class="text-center">Currently we are at below location. We will come near to your location soon.</h5>
+            <h5 class="text-center">{% if lang %} हाल हामी तलको स्थानमा छौं । हामी चाँडै तपाईंको स्थान नजिक आउनेछौं । {% else %}Currently we are at below location. We will come near to your location soon.{% endif %}</h5>
             <div class="row row-30">
                 <div class="col-sm-12 col-lg-12 wow-outer">
                     <article class="pricing-minimal wow slideInRight">
@@ -34,7 +34,7 @@
                        		<img class="timeline-classic-item-image" src="{% static 'assets/images/sinamangal-depot-location.jpg' %}" alt="" width="390" height="250"/>
                        	</a>
                         <div class="pricing-minimal-divider"></div>
-                        <h5>Sinamangal Depot</h5>
+                        <h5>{% if lang %} सिनामंगल डिपो {% else %}Sinamangal Depot{% endif %}</h5>
                         <!-- <a class="button button-primary button-winona" href="#">Order Now</a> -->
                     </article>
                 </div>
@@ -44,8 +44,8 @@
 
     <section class="section section-lg">
         <div class="container">
-            <h3 class="text-center">Call for Depot</h3>
-            <p>If you like to see our depot near to your location. Kindly contact us by submitting below form.  We will try to come near to your location as soon as possible.</p>
+            <h3 class="text-center">{% if lang %} डिपोको लागि सम्पर्क गर्नुहोस् {% else %}Call for Depot{% endif %}</h3>
+            <p>{% if lang %} यदि तपाईं आफ्नो स्थानको नजिक हाम्रो डिपो हेर्न चाहनुहुन्छ भने कृपया तलको फाराम बुझाई हामीलाई सम्पर्क गर्नुहोस् । हामी सकेसम्म चाँडो तपाइँको स्थान नजिक आउने कोशिस गर्नेछौं । {% else %}If you like to see our depot near to your location. Kindly contact us by submitting below form.  We will try to come near to your location as soon as possible.{% endif %}</p>
             <div class="row">
                 <div class="col-sm-12 col-lg-8">
                     <!-- RD Mailform-->
@@ -55,31 +55,31 @@
                         <div class="row" style="margin-top: 10px;">
                             <div class="col-md-12">
                                 <div class="form-wrap">
-                                    <label class="form-label-outside" for="contact-2-first-name">Full Name</label>
+                                    <label class="form-label-outside" for="contact-2-first-name">{% if lang %} तपाईको पूरा नाम {% else %}Full Name{% endif %}</label>
                                     <input class="form-input" id="id_full_name" type="text" name="full_name" data-constraints="@Required">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-wrap">
-                                    <label class="form-label-outside" for="contact-2-email">Email</label>
+                                    <label class="form-label-outside" for="contact-2-email">{% if lang %} ईमेल ठेगाना {% else %}Email{% endif %}</label>
                                     <input class="form-input" id="id_email" type="email" name="email" data-constraints="@Email @Required">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-wrap">
-                                    <label class="form-label-outside" for="contact-2-phone">Phone</label>
+                                    <label class="form-label-outside" for="contact-2-phone">{% if lang %} फोन नम्बर {% else %}Phone{% endif %}</label>
                                     <input class="form-input" id="id_phone" type="text" name="phone" data-constraints="@PhoneNumber @Required">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-wrap">
-                                    <label class="form-label-outside" for="contact-2-phone">Location</label>
+                                    <label class="form-label-outside" for="contact-2-phone">{% if lang %} ठेगाना {% else %}Location{% endif %}</label>
                                     <input class="form-input" id="id_location" type="text" name="location" data-constraints="@Required">
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-wrap">
-                                    <label class="form-label-outside" for="contact-2-message">Your Message</label>
+                                    <label class="form-label-outside" for="contact-2-message">{% if lang %} तपाईको सन्देश {% else %}Your Message{% endif %}</label>
                                     <textarea class="form-input" id="id_message" name="message" data-constraints="@Required"></textarea>
                                 </div>
                             </div>
@@ -89,7 +89,7 @@
                             <div class="recaptcha" id="captcha1" data-sitekey="6LfZlSETAAAAAC5VW4R4tQP8Am_to4bM3dddxkEt"></div>
                         </div> -->
                         <div class="group group-middle">
-                            <button class="button button-primary button-winona" type="submit">Send Message</button>
+                            <button class="button button-primary button-winona" type="submit">{% if lang %} सन्देश पठाउनुहोस् {% else %}Send Message{% endif %}</button>
                         </div>
                     </form>
                 </div>
@@ -106,15 +106,15 @@
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
                 </div>
                 <div class="modal-body">
-                	<h3>Sinamangal Depot</h3>
+                	<h3>{% if lang %} सिनामंगल डिपो {% else %}Sinamangal Depot{% endif %}</h3>
                 	<ul>
-                		<li>Tel No: +977-01-4422</li>
-                		<li>Depot Incharge: +977-01-4422</li>
+                		<li>{% if lang %} टेलिफोन नम्बरः +९७७-०१-४४४०-२२१ {% else %}Tel No: +977-01-4440-221{% endif %}</li>
+                		<li>{% if lang %} डिपो ईन्चार्जः +९७७-०१-४४४०- {% else %}Depot Incharge: +977-01-4440-{% endif %}</li>
                 	</ul>
-                    <h4>Delivery Boy</h4>
+                    <h4>{% if lang %} डेलिभरी केटा {% else %}Delivery Boy{% endif %}</h4>
                     <ul>
-                    	<li>Ram Bahadur Bomjan</li>
-                    	<li>Charles Sobaraj</li>
+                    	<li>{% if lang %}  {% else %} {% endif %}</li>
+                    	<li>{% if lang %}  {% else %} {% endif %}</li>
                     </ul>
                 </div>
             </div>

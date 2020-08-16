@@ -9,12 +9,12 @@
         <div class="breadcrumbs-custom-inner">
             <div class="container breadcrumbs-custom-container">
                 <div class="breadcrumbs-custom-main">
-                    <h6 class="breadcrumbs-custom-subtitle title-decorated">About Us</h6>
-                    <h1 class="breadcrumbs-custom-title">Contacts</h1>
+                    <h6 class="breadcrumbs-custom-subtitle title-decorated">{% if lang %} हाम्रो बारेमा {% else %} About Us {% endif %}</h6>
+                    <h1 class="breadcrumbs-custom-title">{% if lang %} सम्पर्क ठेगाना {% else %} Contacts {% endif %}</h1>
                 </div>
                 <ul class="breadcrumbs-custom-path">
                     <li><a href="{% url 'index' %}">Home</a></li>
-                    <li class="active">Contacts</li>
+                    <li class="active">{% if lang %} सम्पर्क ठेगाना {% else %} Contacts {% endif %}</li>
                 </ul>
             </div>
         </div>
@@ -28,7 +28,7 @@
                     <div class="layout-bordered-item-inner wow slideInUp">
                         <div class="icon icon-lg mdi mdi-phone text-primary"></div>
                         <ul class="list-0">
-                            <li><a class="link-default" href="tel:#">1-660-014-440-221</a></li>
+                            <li><a class="link-default" href="tel:#">{% if lang %} १-६६०-०१४-४४०-२२१ {% else %}1-660-014-440-221 {% endif %}</a></li>
                             <!-- <li><a class="link-default" href="tel:#">1-800-9876-098</a></li> -->
                         </ul>
                     </div>
@@ -42,7 +42,7 @@
                 <div class="layout-bordered-item wow-outer">
                     <div class="layout-bordered-item-inner wow slideInUp">
                         <div class="icon icon-lg mdi mdi-map-marker text-primary"></div>
-                        <a class="link-default" href="#">Hadigaun, Kathmandu, Nepal</a>
+                        <a class="link-default" href="#">{% if lang %} हाडीगाँउ, काठमाडौं, नेपाल {% else %}Hadigaun, Kathmandu, Nepal {% endif %}</a>
                     </div>
                 </div>
             </div>
@@ -56,47 +56,47 @@
                 <div class="row">
                     <div class="col-lg-9 cell-inner">
                         <div class="section-lg">
-                            <h3 class="wow-outer"><span class="wow slideInDown">Contact Us</span></h3>
+                            <h3 class="wow-outer"><span class="wow slideInDown">{% if lang %} सम्पर्क ठेगाना {% else %}Contact Us {% endif %}</span></h3>
                             <!-- RD Mailform-->
                             <form class="rd-form rd-mailform" data-form-output="form-output-global" data-form-type="contact" method="post" action="bat/rd-mailform.php">
                                 <div class="row row-10">
                                     <div class="col-md-6 wow-outer">
                                         <div class="form-wrap wow fadeSlideInUp">
-                                            <label class="form-label-outside" for="contact-first-name">First Name</label>
+                                            <label class="form-label-outside" for="contact-first-name">{% if lang %} पहिलो नाम {% else %} First Name {% endif %}</label>
                                             <input class="form-input" id="contact-first-name" type="text" name="name" data-constraints="@Required">
                                         </div>
                                     </div>
                                     <div class="col-md-6 wow-outer">
                                         <div class="form-wrap wow fadeSlideInUp">
-                                            <label class="form-label-outside" for="contact-last-name">Last Name</label>
+                                            <label class="form-label-outside" for="contact-last-name">{% if lang %} थर {% else %} Last Name {% endif %}</label>
                                             <input class="form-input" id="contact-last-name" type="text" name="name" data-constraints="@Required">
                                         </div>
                                     </div>
                                     <div class="col-md-6 wow-outer">
                                         <div class="form-wrap wow fadeSlideInUp">
-                                            <label class="form-label-outside" for="contact-email">E-mail</label>
+                                            <label class="form-label-outside" for="contact-email">{% if lang %} ईमेल ठेगाना {% else %} E-mail {% endif %}</label>
                                             <input class="form-input" id="contact-email" type="email" name="email" data-constraints="@Email @Required">
                                         </div>
                                     </div>
                                     <div class="col-md-6 wow-outer">
                                         <div class="form-wrap wow fadeSlideInUp">
-                                            <label class="form-label-outside" for="contact-phone">Phone</label>
+                                            <label class="form-label-outside" for="contact-phone">{% if lang %} फोन नम्बर {% else %} Phone {% endif %}</label>
                                             <input class="form-input" id="contact-phone" type="text" name="phone" data-constraints="@PhoneNumber">
                                         </div>
                                     </div>
                                     <div class="col-12 wow-outer">
                                         <div class="form-wrap wow fadeSlideInUp">
-                                            <label class="form-label-outside" for="contact-message">Your Message</label>
+                                            <label class="form-label-outside" for="contact-message">{% if lang %} तपाईको सन्देश {% else %} Your Message {% endif %} </label>
                                             <textarea class="form-input" id="contact-message" name="message" data-constraints="@Required"></textarea>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="group group-middle">
                                     <div class="wow-outer"> 
-                                        <button class="button button-primary button-winona wow slideInRight" type="submit">Send Message</button>
+                                        <button class="button button-primary button-winona wow slideInRight" type="submit">{% if lang %} सन्देश पठाउनुहोस् {% else %} Send Message {% endif %}</button>
                                     </div>
                                     <p>or use</p>
-                                    <div class="wow-outer"><a class="button button-primary-outline button-icon button-icon-left button-winona wow slideInLeft" href="#"><span class="icon text-primary mdi mdi-facebook-messenger"></span>Messenger</a></div>
+                                    <div class="wow-outer"><a class="button button-primary-outline button-icon button-icon-left button-winona wow slideInLeft" href="https://www.facebook.com/sarovaranp/"><span class="icon text-primary mdi mdi-facebook-messenger"></span>{% if lang %} मेसेन्जर {% else %} Messenger {% endif %}</a></div>
                                 </div>
                             </form>
                         </div>
