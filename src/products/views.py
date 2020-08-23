@@ -15,6 +15,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.response import Response
 from rest_framework.reverse import reverse as api_reverse
 from rest_framework.views import APIView
+from django.db.models import Q
 
 
 from store import service as StoreService
@@ -45,7 +46,8 @@ from .serializers import (
 		 ProductVariationSerializer
 		)
 
-from django.core.exceptions import ValidationError 
+from django.core.exceptions import ValidationError
+from rest_framework.exceptions import APIException 
 from django.conf import settings
 
 
@@ -222,20 +224,24 @@ class ProductListAPIView(generics.ListAPIView):
 			if(latitude and longitude ):
 				storeQs = StoreService.get_qs_store_locations_nearby_coords(latitude, longitude, max_distance, 2) #2: depo
 				nearest_store = storeQs.first()
-
+			queryset= Product.objects
 			if nearest_store is not None:
 				print(nearest_store.__dict__)
-				queryset = Product.objects.filter(fk_store_id=nearest_store.id) #.all()
-				if product_id:
-					queryset = queryset.filter(id=product_id)
-				queryset = queryset.all()
-				return queryset
+				queryset = queryset.filter(Q(fk_store_id=nearest_store.id) | Q(can_sell_everywhere=True)) #.all()
+			if product_id:
+				queryset = queryset.filter(id=product_id)
+			queryset = queryset.filter(can_sell_everywhere=True)
+			queryset = queryset.all()
+			return queryset
+			if True:
+				pass
 			else:
-				raise ValidationError(
-					"Products View require: latitude and longitude, within distance limit, for customer user, to find nearest store"
+				raise APIException({
+					"redirect_for_apple" : '1',
+					"message":"Products View require: latitude and longitude, within distance limit, for customer user, to find nearest store"
+				}
+
 				)
-
-
 		#
 		queryset = Product.objects.all()
 		return queryset
