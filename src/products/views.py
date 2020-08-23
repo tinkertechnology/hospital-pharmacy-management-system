@@ -228,9 +228,10 @@ class ProductListAPIView(generics.ListAPIView):
 			if nearest_store is not None:
 				print(nearest_store.__dict__)
 				queryset = queryset.filter(Q(fk_store_id=nearest_store.id) | Q(can_sell_everywhere=True)) #.all()
+			else:
+				queryset = queryset.filter(can_sell_everywhere=True)
 			if product_id:
 				queryset = queryset.filter(id=product_id)
-			queryset = queryset.filter(can_sell_everywhere=True)
 			queryset = queryset.all()
 			return queryset
 			if True:
