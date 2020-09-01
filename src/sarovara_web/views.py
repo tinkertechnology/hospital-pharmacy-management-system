@@ -48,23 +48,28 @@ def privacy_policy(request):
 
 def buy_drinking_water(request):
 	page_title = 'Buy Drinking Water'
-	return render(request, 'sarovara/buy-drinking-water.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/buy-drinking-water.html', {'title_content':page_title,'lang':lang})
 
 def sell_drinking_water(request):
 	page_title = 'Sell Drinking Water'
-	return render(request, 'sarovara/sell-drinking-water.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/sell-drinking-water.html', {'title_content':page_title,'lang':lang})
 
 def open_depot(request):
 	page_title = 'Open Depot'
-	return render(request, 'sarovara/open-depot.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/open-depot.html', {'title_content':page_title, 'lang': lang})
 
 def feedback(request):
 	page_title = 'Provide Feedback'
-	return render(request, 'sarovara/feedback.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/feedback.html', {'title_content':page_title, 'lang':lang})
 
 def complaint(request):
 	page_title = 'Complaint or Grievance'
-	return render(request, 'sarovara/complaint.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/complaint.html', {'title_content':page_title, 'lang':lang})
 
 def careers(request):
 	page_title = 'Careers'
@@ -91,7 +96,7 @@ def handler404(request, exception):
     # return HttpResponse('404 Page Error')
     return render(request, 'sarovara/404.html')
 
-def buy_drinking_water(request):
+def buy_drinking_water_form(request):
 	if request.method == 'GET':
 		form = BuyDrinkingWaterForm()
 		# print (form)

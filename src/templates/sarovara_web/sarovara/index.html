@@ -26,7 +26,9 @@
                                     <p class="text-op-gentle wow" data-caption-animate="slideInLeft">{% if lang %} हामी केवल हाम्रो गुणस्तरको आधारमा उत्तम गुणस्तरको पिउने पानी बेच्छौं र तपाईंको ढोकामा ल्याउँदछ, चाहे यो तपाईंको घर वा कार्यालय हो। {% else %}We sell only the best quality drinking water based on our quality standard and bring it to your doorstep, whether it is your home or office.{% endif %}</p>
                                 </div>
                             </div>
-                            <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow" href="{% url 'about-us' %}" data-caption-animate="slideInUp">{% if lang %} थप पढ्नुहोस् {% else %}Read more{% endif %}</a></div>
+                            <div class="wow-outer button-outer">
+                                <a class="button button-lg button-primary button-winona wow" href="{% url 'about-us' %}?lang={{lang}}" data-caption-animate="slideInUp">{% if lang %} थप पढ्नुहोस् {% else %}Read more{% endif %}</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -42,7 +44,7 @@
                                     <p class="text-op-gentle wow" data-caption-animate="slideInLeft">{% if lang %} आफ्नै उच्चस्तरिय ल्याबमा पानीको गुणस्तर जाँच गर्दछौं र गुणस्तरिय पानी मात्र विक्रि वितरण गर्दछौँ । {% else %} We test drinking water quality everyday in our high-tech laboratory and we sell and distribute only from those companies that meet our quality standard.{% endif %}</p>
                                 </div>
                             </div>
-                            <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow" href="{% url 'about-us' %}" data-caption-animate="slideInUp">{% if lang %} थप पढ्नुहोस् {% else %} Read more{% endif %}</a></div>
+                            <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow" href="{% url 'about-us' %}?lang={{lang}}" data-caption-animate="slideInUp">{% if lang %} थप पढ्नुहोस् {% else %} Read more{% endif %}</a></div>
                         </div>
                     </div>
                 </div>
@@ -58,7 +60,7 @@
                                     <p class="text-op-gentle wow" data-caption-animate="slideInLeft">{% if lang %} पानी प्रशोधन तथा शुद्धिकरण गर्ने स्थलको सरसफाई के कस्तो छ भनि नियमित निरिक्षण गर्दछौँ ।{% else %} We routinely inspect water processing and purifying facilities to check whether they are serious about their sanitation. {% endif %}</p>
                                 </div>
                             </div>
-                            <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow" href="{% url 'about-us' %}" data-caption-animate="slideInUp">{% if lang %} थप पढ्नुहोस् {% else %} Read more{% endif %}</a></div>
+                            <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow" href="{% url 'about-us' %}?lang={{lang}}" data-caption-animate="slideInUp">{% if lang %} थप पढ्नुहोस् {% else %} Read more{% endif %}</a></div>
                         </div>
                     </div>
                 </div>
@@ -92,7 +94,7 @@
                         <p class="text-op-amaranthine wow-outer"><span class="wow slideInDown" data-wow-delay=".05s">
                             Our company works to test whether the drinking water processed and purified by various companies meet the Guidelines on Processed Drinking Water Production Standards 2017, to publish the test results to the public for information, to routinely inspect water processing and purifying facilities to check their sanitation level, to provide a platform to buy the drinking water--that meet our quality standard--through our mobile app and deliver the purchased drinking water to homes and offices of our customers. 
                         {% endif %}</span></p>
-                        <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow slideInDown" data-wow-delay=".1s" href="{% url 'about-us' %}">{% if lang %} थप पढ्नुहोस् {% else %} Read more{% endif %}</a></div>
+                        <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow slideInDown" data-wow-delay=".1s" href="{% url 'about-us' %}?lang={{lang}}">{% if lang %} थप पढ्नुहोस् {% else %} Read more{% endif %}</a></div>
                     </div>
                 </div>
                 <div class="col-lg-7"><img src="{% static 'assets/images/banner-bg-1.jpg' %}" alt="" width="711" height="429"/>
@@ -177,7 +179,7 @@
                         <div class="wow-outer offset-top-4">
                             <div class="wow slideInDown">
                                 <p>{% if lang %} सिनामंगल (भत्केको पुल), पुरानो वानेश्वर, गौशाला, तिलगंगा, पुरानो वानेश्वर, सेतो पुल, रातो पुल, गौशाला, सेतोपुल, मैतिदेवी, ज्ञानेश्वर, रातो पुल  {% else %} Singamangal (Bhatkeko Pul), Old Baneshwor, Gaushala, Tilganga, Seto Pul, Raato Pul, Maitidevi, Gyaneshwor {% endif %}</p>
-                                <a class="button button-primary button-winona" href="{% url 'our-depot' %}"> {%if lang %} हाम्रो डिपो {% else %}Our Depot{% endif %}</a>
+                                <a class="button button-primary button-winona" href="{% url 'our-depot' %}?lang={{lang}}"> {%if lang %} हाम्रो डिपो {% else %}Our Depot{% endif %}</a>
                             </div>
                         </div>
                     </div>
@@ -194,19 +196,19 @@
                 <div class="col-md-6">
                     <article class="card-modern wow fadeInUp" data-wow-delay=".05s">
                         <div class="card-modern-left">
-                            <a href="{% url 'kuwa-drinking-water' %}">
+                            <a href="{% url 'kuwa-drinking-water' %}?lang={{lang}}">
                                 <img src="{% static 'assets/images/kuwa-water.png' %}" alt="" width="138" height="197"/>
                             </a>
                         </div>
                         <div class="card-modern-body">
-                            <h4><a class="card-modern-title" href="{% url 'kuwa-drinking-water' %}">{% if lang %} कुवा {% else %} Kuwa {% endif %}</a></h4>
+                            <h4><a class="card-modern-title" href="{% url 'kuwa-drinking-water' %}?lang={{lang}}">{% if lang %} कुवा {% else %} Kuwa {% endif %}</a></h4>
                             <div class="card-modern-price"><span>{% if lang %} रू.३७ {% else %} Rs. 37 {% endif %}</span></div>
                             <!-- <div class="card-modern-info">
                                 <span class="icon icon-sm mdi mdi-information-outline"></span>
                                 <span class="card-modern-info-text">Fresh and Pure Drinking Water</span>
                             </div> -->
                             <div class="card-modern-text">
-                                <p>Kuwa is a finest water source of Nepal. It is a fresh and pure drinking water having perfect level of Minerals needs for Our Body. Kuwa is the original source of Drinking Water for you.</p>
+                                <p>{% if lang %} कुवा नेपालको उत्कृष्ट पानी स्रोत हो । हाम्रो शरीरका लागि चाहिने शतप्रतिशत खनिज पदार्थ (Minerals) हरूको मिश्रण रहेको कुवा स्वच्छ र शुद्ध पिउने पानी हो । कुवा तपाईं/हाम्रो लागि पिउने पानीको मूल स्रोत हो । {% else %} Kuwa is a finest water source of Nepal. It is a fresh and pure drinking water having perfect level of Minerals needs for Our Body. Kuwa is the original source of Drinking Water for you. {% endif %}</p>
                             </div>
                         </div>
                     </article>
@@ -214,19 +216,19 @@
                 <div class="col-md-6">
                     <article class="card-modern wow fadeInUp second" data-wow-delay=".05s">
                         <div class="card-modern-left">
-                            <a href="{% url 'patanjali-dibyajal' %}">
+                            <a href="{% url 'patanjali-dibyajal' %}?lang={{lang}}">
                                 <img src="{% static 'assets/images/divyajal-water.png' %}" alt="" width="138" height="197"/>
                             </a>
                         </div>
                         <div class="card-modern-body">
-                            <h4><a class="card-modern-title" href="{% url 'patanjali-dibyajal' %}">{% if lang %} पतंजलि दिव्याजल {% else %} Patanjali Dibyajal {% endif %}</a></h4>
+                            <h4><a class="card-modern-title" href="{% url 'patanjali-dibyajal' %}?lang={{lang}}">{% if lang %} पतंजलि दिव्याजल {% else %} Patanjali Dibyajal {% endif %}</a></h4>
                             <div class="card-modern-price"><span>{% if lang %} रू.१२५ {% else %} Rs.125 {% endif %}</span></div>
                             <!-- <div class="card-modern-info">
                                 <span class="icon icon-sm mdi mdi-information-outline"></span>
                                 <span class="card-modern-info-text">Purest and Safest</span>
                             </div> -->
                             <div class="card-modern-text">
-                                <p>Patanjali is a world wide legendary brand. Purest and Safest Processed Drinking water available in 250ml, 500ml, 1ltr., 20ltr.</p>
+                                <p>{% if lang %} पतंजलि एक विश्वव्यापी पौराणिक ब्रान्ड हो । शुद्ध र सफा प्रशोधन गरिएको पिउने पानी २५० मिलि, ५०० मिलि, १ लिटर, २० लिटरमा उपलब्ध छ । {% else %} Patanjali is a world wide legendary brand. Purest and Safest Processed Drinking water available in 250ml, 500ml, 1ltr., 20ltr. {% endif %}</p>
                             </div>
                         </div>
                     </article>
@@ -234,16 +236,16 @@
                 <div class="col-md-6">
                     <article class="card-modern wow fadeInUp third" data-wow-delay=".05s">
                         <div class="card-modern-left">
-                            <a href="{% url 'kuwa-drinking-water' %}">
+                            <a href="{% url 'kuwa-drinking-water' %}?lang={{lang}}">
                                 <img src="{% static 'assets/images/kuwa-plus-water.png' %}" alt="" width="138" height="197"/>
                             </a>
                         </div>
                         <div class="card-modern-body">
-                            <h4><a class="card-modern-title" href="{% url 'kuwa-drinking-water' %}">{% if lang %} कुवा प्लस {% else %} Kuwa Plus {% endif %}</a></h4>
+                            <h4><a class="card-modern-title" href="{% url 'kuwa-drinking-water' %}?lang={{lang}}">{% if lang %} कुवा प्लस {% else %} Kuwa Plus {% endif %}</a></h4>
                             <div class="card-modern-price"><span>{% if lang %} रू.६५ {% else %} Rs.65 {% endif %}</span></div>
                             <!-- <div class="card-modern-info"><span class="icon icon-sm mdi mdi-information-outline"></span><span class="card-modern-info-text">for daily use</span></div> -->
                             <div class="card-modern-text">
-                                <p>Kuwa Plus is one of the products of the Kuwa processed as per the Drinking Water Production Standards 2017. New Clean jar with additional plastic wrapping on jar and water label has been added on jar.</p>
+                                <p>{% if lang %} खानेपानी उत्पादन मापदण्ड २०१७ अनुसार प्रशोधन गरिएको कुवा प्लस कुवाको एक उत्पादन हो । नयाँ जार, स्वच्छ पानी र पानीको लेबल सहित उत्पादन गरिएको कुवा प्लसको जारलाई सधैं स्वच्छ राख्न थप र्‍यापिङ गरिएको छ । {% else %} Kuwa Plus is one of the products of the Kuwa processed as per the Drinking Water Production Standards 2017. New Clean jar with additional plastic wrapping on jar and water label has been added on jar. {% endif %}</p>
                             </div>
                         </div>
                     </article>
@@ -251,16 +253,16 @@
                 <div class="col-md-6">
                     <article class="card-modern wow fadeInUp fourth" data-wow-delay=".05s">
                         <div class="card-modern-left">
-                            <a href="{% url 'karuwa-premium-drinking-water' %}">
+                            <a href="{% url 'karuwa-premium-drinking-water' %}?lang={{lang}}">
                                 <img src="{% static 'assets/images/karuwa-water.png' %}" alt="" width="138" height="197"/>
                             </a>
                         </div>
                         <div class="card-modern-body">
-                            <h4><a class="card-modern-title" href="{% url 'karuwa-premium-drinking-water' %}">{% if lang %} करूवा  {% else %} Karuwa {% endif %}</a></h4>
+                            <h4><a class="card-modern-title" href="{% url 'karuwa-premium-drinking-water' %}?lang={{lang}}">{% if lang %} करूवा  {% else %} Karuwa {% endif %}</a></h4>
                             <div class="card-modern-price"><span>{% if lang %} रू.८५ {% else %} Rs.85 {% endif %}</span></div>
                            <!--  <div class="card-modern-info"><span class="icon icon-sm mdi mdi-information-outline"></span><span class="card-modern-info-text">Nepalese drinking water</span></div> -->
                             <div class="card-modern-text">
-                                <p>Karuwa is a Nepalese drinking water manufacturing company with a production plant located in Bhaisepati, Lalitpur, Nepal. We are Nepal's first brand to pass "Processed  Drinking Water Production Standard Regulation, 2074".</p>
+                                <p>{% if lang %} करुवा एक नेपाली पिउने पानी उत्पादन कम्पनी हो जसको उत्पादन प्लान्ट भैंसीपाटी, ललितपुरमा अव्स्थित छ । खानेपानी उत्पादन मापदण्ड २०१७ अनुसार मापदण्ड पूरा गरेको करूवा नेपालको  पहिलो ब्रान्ड हो । {% else %} Karuwa is a Nepalese drinking water manufacturing company with a production plant located in Bhaisepati, Lalitpur, Nepal. We are Nepal's first brand to pass "Processed  Drinking Water Production Standard Regulation, 2074". {% endif %}</p>
                             </div>
                         </div>
                     </article>
@@ -268,7 +270,7 @@
             </div>
             <div class="row justify-content-center text-center row-offset-custom-1">
                 <div class="col-12">
-                    <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow slideInDown" data-wow-delay=".1s" href="{% url 'we-sales' %}">{% if lang %} थप हेर्नुहोस् {% else %} Read more{% endif %}</a></div>
+                    <div class="wow-outer button-outer"><a class="button button-lg button-primary button-winona wow slideInDown" data-wow-delay=".1s" href="{% url 'we-sales' %}?lang={{lang}}">{% if lang %} थप हेर्नुहोस् {% else %} Read more{% endif %}</a></div>
                 </div>
             </div>
         </div>
@@ -337,7 +339,7 @@
                         <div class="box-minimal-main wow-outer">
                             <h5 class="box-minimal-title wow slideInDown">{% if lang %} पिउने पानी किन्नुहोस् {% else %} Buy Drinking Water {% endif %}</h5>
                             <p>{% if lang %} सरोवर मार्फत पानी खरिद गर्न, {% else %} If you want to buy drinking water from Sarovara,  {% endif %}  
-                                <a href="{% url 'buy-drinking-water' %}" style="font-weight: bold;">{% if lang %} यहाँ क्लिक गर्नुहोस् {% else %} Click Here {% endif %}</a>
+                                <a href="{% url 'buy-drinking-water' %}?lang={{lang}}" style="font-weight: bold;">{% if lang %} यहाँ क्लिक गर्नुहोस् {% else %} Click Here {% endif %}</a>
                             </p>
                         </div>
                     </article>
@@ -349,7 +351,7 @@
                         <div class="box-minimal-main wow-outer">
                             <h5 class="box-minimal-title wow slideInDown">{% if lang %} पिउने पानी बेच्नुहोस् {% else %} Sell Drinking Water {% endif %}</h5>
                             <p> {% if lang %} सरोवर मार्फत पानी बिक्री गर्न, {% else %} If you want to sell drinking water from Sarovara, {% endif %} 
-                                <a href="{% url 'sell-drinking-water' %}" style="font-weight: bold;">{% if lang %} यहाँ क्लिक गर्नुहोस् {% else %} Click Here {% endif %}</a>
+                                <a href="{% url 'sell-drinking-water' %}?lang={{lang}}" style="font-weight: bold;">{% if lang %} यहाँ क्लिक गर्नुहोस् {% else %} Click Here {% endif %}</a>
                             </p>
                         </div>
                     </article>
@@ -361,7 +363,7 @@
                         <div class="box-minimal-main wow-outer">
                             <h5 class="box-minimal-title wow slideInDown">{% if lang %} डिपो खोल्नुहोस् {% else %} Open Depot {% endif %}</h5>
                             <p>{% if lang %} सरोवर डिपो खोल्नका लागि, {% else %} If you want to open a Sarovara depot, {% endif %} 
-                                <a href="{% url 'open-depot' %}" style="font-weight: bold;">{% if lang %} यहाँ क्लिक गर्नुहोस् {% else %} Click Here {% endif %}</a>
+                                <a href="{% url 'open-depot' %}?lang={{lang}}" style="font-weight: bold;">{% if lang %} यहाँ क्लिक गर्नुहोस् {% else %} Click Here {% endif %}</a>
                             </p>
                         </div>
                     </article>
@@ -375,7 +377,7 @@
                         <div class="box-minimal-main wow-outer">
                             <h5 class="box-minimal-title wow slideInDown">{% if lang %} प्रतिक्रिया {% else %} Feedback {% endif %}</h5>
                             <p>{% if lang %} सल्लाह, सुझाव दिन, {% else %} If you want to provide suggestion or feedback, {% endif %} 
-                                <a href="{% url 'feedback' %}" style="font-weight: bold;">{% if lang %} यहाँ क्लिक गर्नुहोस् {% else %} Click Here {% endif %}</a>
+                                <a href="{% url 'feedback' %}?lang={{lang}}" style="font-weight: bold;">{% if lang %} यहाँ क्लिक गर्नुहोस् {% else %} Click Here {% endif %}</a>
                             </p>
                         </div>
                     </article>
@@ -387,7 +389,7 @@
                         <div class="box-minimal-main wow-outer">
                             <h5 class="box-minimal-title wow slideInDown">{% if lang %} गुनासो {% else %} Complaint {% endif %}</h5>
                             <p>{% if lang %} गुनासो गर्न, {% else %} If you want to file a complaint or grievance, {% endif %} 
-                                <a href="{% url 'complaint' %}" style="font-weight: bold;">{% if lang %} यहाँ क्लिक गर्नुहोस् {% else %} Click Here {% endif %}</a>
+                                <a href="{% url 'complaint' %}?lang={{lang}}" style="font-weight: bold;">{% if lang %} यहाँ क्लिक गर्नुहोस् {% else %} Click Here {% endif %}</a>
                             </p>
                         </div>
                     </article>

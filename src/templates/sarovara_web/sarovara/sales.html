@@ -29,19 +29,19 @@
                 <div class="col-md-6">
                     <article class="card-modern wow fadeInUp" data-wow-delay=".05s">
                         <div class="card-modern-left">
-                            <a href="{% url 'kuwa-drinking-water' %}">
+                            <a href="{% url 'kuwa-drinking-water' %}?lang={{lang}}">
                                 <img src="{% static 'assets/images/kuwa-water.png' %}" alt="" width="138" height="197"/>
                             </a>
                         </div>
                         <div class="card-modern-body">
-                            <h4><a class="card-modern-title" href="{% url 'kuwa-drinking-water' %}"> {% if lang %} कुवा {% else %} Kuwa {% endif %} </a></h4>
+                            <h4><a class="card-modern-title" href="{% url 'kuwa-drinking-water' %}?lang={{lang}}"> {% if lang %} कुवा {% else %} Kuwa {% endif %} </a></h4>
                             <div class="card-modern-price"><span>{% if lang %} रू.३७ {% else %} Rs. 37 {% endif %}</span></div>
                             <!-- <div class="card-modern-info">
                                 <span class="icon icon-sm mdi mdi-information-outline"></span>
                                 <span class="card-modern-info-text">Fresh and Pure Drinking Water</span>
                             </div> -->
                             <div class="card-modern-text">
-                                <p>Kuwa is a finest water source of Nepal. It is a fresh and pure drinking water having perfect level of Minerals needs for Our Body. Kuwa is the original source of Drinking Water for you.</p>
+                                 <p>{% if lang %} कुवा नेपालको उत्कृष्ट पानी स्रोत हो । हाम्रो शरीरका लागि चाहिने शतप्रतिशत खनिज पदार्थ (Minerals) हरूको मिश्रण रहेको कुवा स्वच्छ र शुद्ध पिउने पानी हो । कुवा तपाईं/हाम्रो लागि पिउने पानीको मूल स्रोत हो । {% else %} Kuwa is a finest water source of Nepal. It is a fresh and pure drinking water having perfect level of Minerals needs for Our Body. Kuwa is the original source of Drinking Water for you. {% endif %}</p>
                             </div>
                         </div>
                     </article>
@@ -49,19 +49,19 @@
                 <div class="col-md-6">
                     <article class="card-modern wow fadeInUp second" data-wow-delay=".05s">
                         <div class="card-modern-left">
-                            <a href="{% url 'patanjali-dibyajal' %}">
+                            <a href="{% url 'patanjali-dibyajal' %}?lang={{lang}}">
                                 <img src="{% static 'assets/images/divyajal-water.png' %}" alt="" width="138" height="197"/>
                             </a>
                         </div>
                         <div class="card-modern-body">
-                            <h4><a class="card-modern-title" href="{% url 'patanjali-dibyajal' %}"> {% if lang %} पंतजलि दिव्यजल {% else %} Patanjali Dibyajal {% endif %} </a></h4>
+                            <h4><a class="card-modern-title" href="{% url 'patanjali-dibyajal' %}?lang={{lang}}"> {% if lang %} पंतजलि दिव्यजल {% else %} Patanjali Dibyajal {% endif %} </a></h4>
                             <div class="card-modern-price"><span>{% if lang %} रू.१२५ {% else %} Rs. 125 {% endif %}</span></div>
                             <!-- <div class="card-modern-info">
                                 <span class="icon icon-sm mdi mdi-information-outline"></span>
                                 <span class="card-modern-info-text">Purest and Safest</span>
                             </div> -->
                             <div class="card-modern-text">
-                                <p>Patanjali is a world wide legendary brand. Purest and Safest Processed Drinking water available in 250ml, 500ml, 1ltr., 20ltr.</p>
+                                <p>{% if lang %} पतंजलि एक विश्वव्यापी पौराणिक ब्रान्ड हो । शुद्ध र सफा प्रशोधन गरिएको पिउने पानी २५० मिलि, ५०० मिलि, १ लिटर, २० लिटरमा उपलब्ध छ । {% else %} Patanjali is a world wide legendary brand. Purest and Safest Processed Drinking water available in 250ml, 500ml, 1ltr., 20ltr. {% endif %}</p>
                             </div>
                         </div>
                     </article>
@@ -69,16 +69,16 @@
                 <div class="col-md-6">
                     <article class="card-modern wow fadeInUp third" data-wow-delay=".05s">
                         <div class="card-modern-left">
-                            <a href="{% url 'kuwa-drinking-water' %}">
+                            <a href="{% url 'kuwa-drinking-water' %}?lang={{lang}}">
                                 <img src="{% static 'assets/images/kuwa-plus-water.png' %}" alt="" width="138" height="197"/>
                             </a>
                         </div>
                         <div class="card-modern-body">
-                            <h4><a class="card-modern-title" href="{% url 'kuwa-drinking-water' %}">{% if lang %} कुवा प्लस {% else %} Kuwa Plus {% endif %} </a></h4>
+                            <h4><a class="card-modern-title" href="{% url 'kuwa-drinking-water' %}?lang={{lang}}">{% if lang %} कुवा प्लस {% else %} Kuwa Plus {% endif %} </a></h4>
                             <div class="card-modern-price"><span>{% if lang %} रू.६५ {% else %} Rs. 65 {% endif %}</span></div>
                             <!-- <div class="card-modern-info"><span class="icon icon-sm mdi mdi-information-outline"></span><span class="card-modern-info-text">for daily use</span></div> -->
                             <div class="card-modern-text">
-                                <p>Kuwa Plus is one of the products of the Kuwa processed as per the Drinking Water Production Standards 2017. New Clean jar with additional plastic wrapping on jar and water label has been added on jar.</p>
+                                <p>{% if lang %} खानेपानी उत्पादन मापदण्ड २०१७ अनुसार प्रशोधन गरिएको कुवा प्लस कुवाको एक उत्पादन हो । नयाँ जार, स्वच्छ पानी र पानीको लेबल सहित उत्पादन गरिएको कुवा प्लसको जारलाई सधैं स्वच्छ राख्न थप र्‍यापिङ गरिएको छ । {% else %} Kuwa Plus is one of the products of the Kuwa processed as per the Drinking Water Production Standards 2017. New Clean jar with additional plastic wrapping on jar and water label has been added on jar. {% endif %}</p>
                             </div>
                         </div>
                     </article>
@@ -86,16 +86,16 @@
                 <div class="col-md-6">
                     <article class="card-modern wow fadeInUp fourth" data-wow-delay=".05s">
                         <div class="card-modern-left">
-                            <a href="{% url 'karuwa-premium-drinking-water' %}">
+                            <a href="{% url 'karuwa-premium-drinking-water' %}?lang={{lang}}">
                                 <img src="{% static 'assets/images/karuwa-water.png' %}" alt="" width="138" height="197"/>
                             </a>
                         </div>
                         <div class="card-modern-body">
-                            <h4><a class="card-modern-title" href="{% url 'karuwa-premium-drinking-water' %}">{% if lang %} करूवा {% else %} Karuwa {% endif %} </a></h4>
+                            <h4><a class="card-modern-title" href="{% url 'karuwa-premium-drinking-water' %}?lang={{lang}}">{% if lang %} करूवा {% else %} Karuwa {% endif %} </a></h4>
                             <div class="card-modern-price"><span>{% if lang %} रू.८५ {% else %} Rs. 85 {% endif %}</span></div>
                            <!--  <div class="card-modern-info"><span class="icon icon-sm mdi mdi-information-outline"></span><span class="card-modern-info-text">Nepalese drinking water</span></div> -->
                             <div class="card-modern-text">
-                                <p>Karuwa is a Nepalese drinking water manufacturing company with a production plant located in Bhaisepati, Lalitpur, Nepal. We are Nepal's first brand to pass "Processed  Drinking Water Production Standard Regulation, 2074".</p>
+                                <p>{% if lang %} करुवा एक नेपाली पिउने पानी उत्पादन कम्पनी हो जसको उत्पादन प्लान्ट भैंसीपाटी, ललितपुरमा अव्स्थित छ । खानेपानी उत्पादन मापदण्ड २०१७ अनुसार मापदण्ड पूरा गरेको करूवा नेपालको  पहिलो ब्रान्ड हो । {% else %} Karuwa is a Nepalese drinking water manufacturing company with a production plant located in Bhaisepati, Lalitpur, Nepal. We are Nepal's first brand to pass "Processed  Drinking Water Production Standard Regulation, 2074". {% endif %}</p>
                             </div>
                         </div>
                     </article>

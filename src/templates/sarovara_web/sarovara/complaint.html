@@ -10,11 +10,11 @@
             <div class="container breadcrumbs-custom-container">
                 <div class="breadcrumbs-custom-main">
                     <h6 class="breadcrumbs-custom-subtitle title-decorated">What We Offer</h6>
-                    <h1 class="breadcrumbs-custom-title">File a Complaint</h1>
+                    <h1 class="breadcrumbs-custom-title">{% if lang %} गुनासो गर्नुहोस् {% else %} File a Complaint {% endif %}</h1>
                 </div>
                 <ul class="breadcrumbs-custom-path">
                     <li><a href="{% url 'index' %}">Home</a></li>
-                    <li class="active">Complaint</li>
+                    <li class="active">{% if lang %} गुनासो गर्नुहोस् {% else %} Complaint {% endif %}</li>
                 </ul>
             </div>
         </div>
@@ -27,9 +27,9 @@
                 <div class="col-sm-12 col-md-12 col-xl-12">
                     <!-- Terms list -->
                     <dl class="list-terms">
-                        <dt>We are extremely sorry for any inconveniences for the problems you faced. We will immediately address your complaint.</dt>
+                        <dt>{% if lang %} सरोवरको सेवाका सम्बन्धमा गुनासो गर्नु पर्ने अवस्था सृजना भएकोमा माफी चाहन्छौँ । तपाईको गुनासो लाई शिघ्र सम्बोधन गर्नेछौँ । {% else %} We are extremely sorry for any inconveniences for the problems you faced. We will immediately address your complaint. {% endif %}</dt>
                                                 
-                        <p style="margin-top: 20px;">To file a complaint or grievance, Please. <a href="#" data-toggle="modal" data-target="#request-for-complaint" style="font-weight: bold;">Click Here</a>.</p>
+                        <p style="margin-top: 20px;">{% if lang %} कृपया गुनासो गर्न {% else %} To file a complaint or grievance, Please.{% endif %} <a href="#" data-toggle="modal" data-target="#request-for-complaint" style="font-weight: bold;">{% if lang %} यहाँ किल्क गर्नुहोस् {% else %} Click Here {% endif %}</a>.</p>
                     </dl>  
                 </div>
             </div>
@@ -40,7 +40,7 @@
         <div class="modal-dialog modal-dialog-custom" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>Request for Complaint</h3>
+                    <h3>{% if lang %} गुनासो गर्नुहोस् {% else %} Request for Complaint {% endif %}</h3>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
                 </div>
                 <div class="modal-body">
@@ -51,35 +51,34 @@
 						<div class="row" style="margin-top: 10px;">
 							<div class="col-md-12">
 								<div class="form-wrap">
-									<label class="form-label-outside" for="contact-2-first-name">Full Name</label>
+									<label class="form-label-outside" for="contact-2-first-name">{% if lang %} पूरा नाम {% else %} Full Name {% endif %}</label>
 									<input class="form-input" id="id_full_name" type="text" name="full_name" data-constraints="@Required">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-wrap">
-									<label class="form-label-outside" for="contact-2-email">Email</label>
+									<label class="form-label-outside" for="contact-2-email">{% if lang %} ईमेल {% else %} Email {% endif %}</label>
 									<input class="form-input" id="id_email" type="email" name="email" data-constraints="@Email @Required">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-wrap">
-									<label class="form-label-outside" for="contact-2-phone">Phone</label>
+									<label class="form-label-outside" for="contact-2-phone">{% if lang %} सम्पर्क नम्बर {% else %} Phone {% endif %}</label>
 									<input class="form-input" id="id_phone" type="text" name="phone" data-constraints="@PhoneNumber @Required">
 								</div>
 							</div>
 							<div class="col-md-12">
 								<div class="form-wrap">
-									<label class="form-label-outside" for="contact-2-first-name">Select Location</label>
+									<label class="form-label-outside" for="contact-2-first-name">{% if lang %} स्थान छान्नुहोस् {% else %} Select Location {% endif %}</label>
 									<select class="form-control" id="id_select_location" name="select_location" data-constraints="@Required">
-										<option>Select Location</option>
-										<option value="Singamangal">Sinamangal</option>
-										<option value="Gaushala">Gaushala</option>
+										<option>{% if lang %} छनौट छान्नुहोस् {% else %} Select Location {% endif %}</option>
+										<option value="Singamangal">{% if lang %} सिनामंगल {% else %} Sinamangal {% endif %}</option>
 									</select>
 								</div>
 							</div>
 							<div class="col-12">
 								<div class="form-wrap">
-									<label class="form-label-outside" for="contact-2-message">Your Message</label>
+									<label class="form-label-outside" for="contact-2-message">{% if lang %} तपाईको सन्देश {% else %} Your Message {% endif %}</label>
 									<textarea class="form-input" id="id_message" name="message" data-constraints="@Required"></textarea>
 								</div>
 							</div>
@@ -89,7 +88,7 @@
 							<div class="recaptcha" id="captcha1" data-sitekey="6LfZlSETAAAAAC5VW4R4tQP8Am_to4bM3dddxkEt"></div>
 						</div> -->
 						<div class="group group-middle">
-							<button class="button button-primary button-winona" type="submit">Send Message</button>
+							<button class="button button-primary button-winona" type="submit">{% if lang %} सन्देश पठाउनुहोस् {% else %} Send Message {% endif %}</button>
 						</div>
 					</form>
                 </div>
