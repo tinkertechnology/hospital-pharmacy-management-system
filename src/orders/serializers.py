@@ -24,7 +24,7 @@ User = get_user_model()
 # mark order done
 
 class QuotationSerializer(serializers.ModelSerializer):
-	authentication_classes = [SessionAuthentication, BasicAuthentication]
+	# authentication_classes = [, BasicAuthentication]
 	permission_classes = [IsAuthenticated]
 	class Meta:
 		model = Quotation
