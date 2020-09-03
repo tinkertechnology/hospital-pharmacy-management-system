@@ -267,21 +267,25 @@ class StoreWiseOrderLists(ListAPIView):
 			print(1) #.filter(is_delivered=0)
 			if filter:
 				if filter=='pending':
-					qs = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id).filter(is_delivered=0, is_transit=0)
+					qs = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id).filter(is_delivered=0, is_transit=0, is_cancelled=0)
 				if filter=='transit':
 					qs = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id).filter(is_transit=1)
 				if filter=='delivered':
 					qs = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id).filter(is_delivered=1)
+				if filter=='cancelled':
+					qs = qs = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id).filter(is_cancelled=1)
 		
 		if delivery_user is not None:
 			qs = StoreWiseOrder.objects.filter(fk_route_id=delivery_user.fk_route_id).filter(is_delivered=0)
 			if filter:
 				if filter=='pending':
-					qs = StoreWiseOrder.objects.filter(fk_route_id=delivery_user.fk_route_id).filter(is_delivered=0, is_transit=0)
+					qs = StoreWiseOrder.objects.filter(fk_route_id=delivery_user.fk_route_id).filter(is_delivered=0, is_transit=0, is_cancelled=0)
 				if filter=='transit':
 					qs = StoreWiseOrder.objects.filter(fk_route_id=delivery_user.fk_route_id).filter(is_transit=1)
 				if filter=='delivered':
 					qs = StoreWiseOrder.objects.filter(fk_route_id=delivery_user.fk_route_id).filter(is_delivered=1)
+				if filter=='cancelled':
+					qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(is_cancelled=1)
 
 		if not supply_store_user:
 			if not delivery_user:
@@ -293,6 +297,9 @@ class StoreWiseOrderLists(ListAPIView):
 						qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(is_transit=1)
 					if filter=='delivered':
 						qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(is_delivered=1)
+					if filter=='cancelled':
+						qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(is_cancelled=1)
+
 
 		# from django.utils.dateparse import parse_date
 		# import dateutil.parser
