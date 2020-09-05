@@ -253,7 +253,7 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
 	customer_name = serializers.SerializerMethodField()
 	address = serializers.SerializerMethodField()
 	status = serializers.SerializerMethodField()
-	created_at = serializers.DateTimeField(read_only=True, format="%Y-%m-%d")
+	created_at = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %I:%M %p")
 	# fk_auth_user = UserSerializer()
 
 	class Meta:

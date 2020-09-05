@@ -415,6 +415,7 @@ class CartOrderLists(ListAPIView):
 
 ##Storewise_CART_ORDER_LIST 
 class StoreWiseCartOrderLists(ListAPIView):
+	permission_classes = [permissions.IsAuthenticated]
 	def get(self, request):
 
 		order_id = request.GET.get('order_id', False) #fk_storewise_order_id passed here
