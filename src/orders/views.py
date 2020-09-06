@@ -664,6 +664,9 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 			if status == "transit":
 				storewiseorder.is_transit = True;
 
+			if status == "cancel":
+				storewiseorder.is_cancelled = True;
+				
 			if status == "delivered":
 				storewiseorder.is_delivered = True;
 				is_depo=storewiseorder.fk_ordered_by_store_id is not None

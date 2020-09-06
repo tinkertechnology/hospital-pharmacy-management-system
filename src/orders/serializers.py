@@ -5,7 +5,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated
 
 from .models import UserAddress, Order, Quotation, UserCheckout, StoreWiseOrder
-
+from datetime import timedelta
 from products.models import Product, ProductImage
 from carts.models import Cart, CartItem
 from store.models import Store
@@ -253,7 +253,8 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
 	customer_name = serializers.SerializerMethodField()
 	address = serializers.SerializerMethodField()
 	status = serializers.SerializerMethodField()
-	created_at = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %I:%M %p")
+	created_at = serializers.SerializerMethodField()
+	#ordered_time = serializers.SerializerMethodField()
 	# fk_auth_user = UserSerializer()
 
 	class Meta:
@@ -269,6 +270,7 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
             "is_transit",
             "is_cancelled",
             "created_at",
+           # "ordered_time",
             "updated_at",
             "order_latitude",
             "order_longitude",
@@ -286,6 +288,15 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
             
 
 		]
+	def get_created_at(self, obj):
+		print(obj.created_at)
+		order_time = ((obj.created_at + timedelta(hours=5, minutes=45))).strftime("%Y-%m-%d, %I:%M %p")
+		return order_time
+	
+	# def get_ordered_time(self, obj):
+	# 	print(obj.created_at)
+	# 	order_time = ((obj.created_at + timedelta(hours=5, minutes=45))).strftime("%Y-%m-%d, %I:%M %p")
+	# 	return order_time
 
 	def get_status(self, obj):
 		status = "pending"
