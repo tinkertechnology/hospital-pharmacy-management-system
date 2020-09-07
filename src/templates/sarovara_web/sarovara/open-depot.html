@@ -11,11 +11,11 @@
             <div class="container breadcrumbs-custom-container">
                 <div class="breadcrumbs-custom-main">
                     <h6 class="breadcrumbs-custom-subtitle title-decorated">What We Offer</h6>
-                    <h1 class="breadcrumbs-custom-title">Open Depot</h1>
+                    <h1 class="breadcrumbs-custom-title">{% if lang == 'np' %}डिपो खोल्नुहोस् {% else %}Open Depot{% endif %}</h1>
                 </div>
                 <ul class="breadcrumbs-custom-path">
                     <li><a href="{% url 'index' %}">Home</a></li>
-                    <li class="active">Open Depot</li>
+                    <li class="active">{% if lang == 'np' %}डिपो खोल्नुहोस् {% else %}Open Depot{% endif %}</li>
                 </ul>
             </div>
         </div>
@@ -28,75 +28,75 @@
                 <div class="col-sm-12 col-md-12 col-xl-12">
                     <!-- Terms list -->
                     <dl class="list-terms">
-                        <dt>Thank you for your interest in opening a Sarovara depot. From this page you will receive the following information.</dt>
+                        <dt>{% if lang == 'np' %} सरोवरको डिपो खोल्नका लागि इच्छा व्यक्त गर्नु भएकोमा धन्यवाद । यस पेज मार्फत तपाईले निम्न लिखित जानकारी पाउनु हुनेछ । {% else %}Thank you for your interest in opening a Sarovara depot. From this page you will receive the following information.{% endif %}</dt>
                         <ul>
                         	<!-- Terms and Conditions -->
                         	<li>
                         		<div class="row" style="margin-top: 10px;">
                         			<div class="col-md-1" style="max-width: 0.83%">
-                        				<h5>1. </h5>
+                        				<h5>{% if lang == 'np' %} १. {% else %}1. {% endif %}</h5>
                         			</div>
                         			<div class="col-md-11">
-                        				<h5>What are the terms and conditions to open a Sarovara depot ?</h5>
+                        				<h5>{% if lang == 'np' %} सरोवरको डिपो खोल्नका लागि आवश्यक शर्तहरु के के छन् ?{% else %}What are the terms and conditions to open a Sarovara depot ?{% endif %}</h5>
                         				<ul>
-                        					<dd>You will have to meet the following conditions to open a depot.</dd>
+                        					<dd>{% if lang == 'np' %} निम्न लिखित शर्तहरुको अधिनमा रही डिपो खोल्नु पर्नेछ । {% else %}You will have to meet the following conditions to open a depot.{% endif %}</dd>
                         					<li>
                         						<div class="row">
                         							<div class="col-md-1" style="max-width: 0.83%">
-                        								a) 
+                        								{% if lang == 'np' %} क) {% else %}a) {% endif %}
                         							</div>
                         							<div class="col-md-11">
-                        								You are allowed only to sell drinking water that is processed, produced and purified according to standard provided by the Guidelines on Processed Drinking Water Production Standards 2017.
+                        								{% if lang == 'np' %}प्रशोधित पिउने पानी उत्पादन मापदण्ड सम्बन्धी निर्देशिका, २०७४ मा भएको मापदण्ड/व्यवस्था बमोजिम प्रशोधन, उत्पादन तथा शुद्धिकरण गरिएको पानी मात्र बिक्रि वितरण गर्नु पर्नेछ । {% else %}You are allowed only to sell drinking water that is processed, produced and purified according to standard provided by the Guidelines on Processed Drinking Water Production Standards 2017.{% endif %}
                         							</div>
                         						</div>
                         					</li>
                         					<li>
                         						<div class="row">
                         							<div class="col-md-1" style="max-width: 0.83%">
-                        								b) 
+                        								{% if lang == 'np' %} ख) {% else %}b) {% endif %}
                         							</div>
                         							<div class="col-md-11">
-                        								You are allowed only to sell drinking water from the companies that allow Sarovara to inspect their water producing and purifying facilities. 
+                        								{% if lang == 'np' %} पानी प्रशोधन, उत्पादन तथा शुद्धिकरण गर्ने स्थलको निरिक्षण गर्न सरोवरलाई अनुमति दिने कम्पनीको पानी मात्र विक्रि वितरण गर्नु पर्नेछ । {% else %}You are allowed only to sell drinking water from the companies that allow Sarovara to inspect their water producing and purifying facilities.{% endif %} 
                         							</div>
                         						</div>
                         					</li>
                         					<li>
                         						<div class="row">
                         							<div class="col-md-1" style="max-width: 0.83%">
-                        								c) 
+                        								{% if lang == 'np' %} ग) {% else %}c){% endif %} 
                         							</div>
                         							<div class="col-md-11">
-                        								You are not allowed to sell at a higher price than what Sarovara has predetermined but you are allowed to sell at a lower price
+                        								{% if lang == 'np' %} सरोवरले तोकेको मूल्य भन्दा बढी मूल्यमा पानीको बिक्रि गर्न पाइने छैन तर सरोवरले तोकेको मूल्य भन्दा कम मूल्यमा विक्रि गर्न भने पाइने छ । {% else %}You are not allowed to sell at a higher price than what Sarovara has predetermined but you are allowed to sell at a lower price{% endif %}
                         							</div>
                         						</div>
                         					</li>
                         					<li>
                         						<div class="row">
                         							<div class="col-md-1" style="max-width: 0.83%">
-                        								d) 
+                        								{% if lang == 'np' %} घ) {% else %}d) {% endif %}
                         							</div>
                         							<div class="col-md-11">
-                        								In regular basis, you are required to bring water sample of drinking water that you are selling or want to sell from Sarovara depot to Sarovara for a regular test
+                        								{% if lang == 'np' %} डिपो बाट विक्रि गरिने/गर्न लागिएको पानीको गुणस्तर जाँच गर्न पानीलाई नियमित रुपमा सरोवरको ल्याबमा ल्याउनु पर्नेछ । {% else %}In regular basis, you are required to bring water sample of drinking water that you are selling or want to sell from Sarovara depot to Sarovara for a regular test{% endif %}
                         							</div>
                         						</div>
                         					</li>
                         					<li>
                         						<div class="row">
                         							<div class="col-md-1" style="max-width: 0.83%">
-                        								e) 
+                        								{% if lang == 'np' %} ङ) {% else %}e) {% endif %}
                         							</div>
                         							<div class="col-md-11">
-                        								You must address any advice, suggestion or complaint from customers immediately. 
+                        								{% if lang == 'np' %} ग्राहकको सल्लाह, सुझाब ग्रहण तथा गुनासोको तत्काल सम्बोधन गर्नुपर्नेछ ।{% else %}You must address any advice, suggestion or complaint from customers immediately. {% endif %}
                         							</div>
                         						</div>
                         					</li>
                         					<li>
                         						<div class="row">
                         							<div class="col-md-1" style="max-width: 0.83%">
-                        								f) 
+                        								{% if lang == 'np' %}च) {% else %}f) {% endif %} 
                         							</div>
                         							<div class="col-md-11">
-                        								You must comply with any rules and regulations aimed to improve customer service and company’s growth
+                        								{% if lang == 'np' %} ग्राहक सेवा तथा कम्पनीको गुणस्तर अभिबृद्धि गर्नका सरोवरले ल्याएको/ल्याइने नीति लाई स्विकार गर्नु पर्नेछ ।{% else %}You must comply with any rules and regulations aimed to improve customer service and company’s growth{% endif %}
                         							</div>
                         						</div>
                         					</li>
@@ -109,89 +109,90 @@
                         	<li>
                         		<div class="row" style="margin-top: 10px;">
                         			<div class="col-md-1" style="max-width: 0.83%">
-                        				<h5>2. </h5>
+                        				<h5>{% if lang == 'np' %} २. {% else %}2. {% endif %}</h5>
                         			</div>
                         			<div class="col-md-11">
-                        				<h5> What are the services you will receive from Sarovara after you open a depot ?</h5>
+                        				<h5> {% if lang == 'np' %} तपाईले खोल्नु भएको डिपोलाई सरोवरले निम्न लिखित सेवा उपलब्ध गराउँदछ ?  {% else %}What are the services you will receive from Sarovara after you open a depot ?{% endif %}</h5>
                         				<ul>
-                        					<dd>Sarovara will provide the following services for the depot you open.</dd>
+                        					<dd>{% if lang == 'np' %} सरोवरले निम्न लिखित सेवाहरू डिपो खोलेपछि उपलब्ध गराउँदछ । {% else %}Sarovara will provide the following services for the depot you open.{% endif %}</dd>
                         					<li>
                         						<div class="row">
                         							<div class="col-md-1" style="max-width: 0.83%">
-                        								a) 
+                        								{% if lang == 'np' %} क) {% else %}a){% endif %}
                         							</div>
                         							<div class="col-md-11">
-                        								The amount of drinking water your depot needs from various companies will be delivered to your depot.
+                        								{% if lang == 'np' %} डिपोलाई आवश्यक पर्ने विभिन्न कम्पनीका पानी डिपोमै उपलब्ध गराउदछ ।{% else %}The amount of drinking water your depot needs from various companies will be delivered to your depot.{% endif %}
                         							</div>
                         						</div>
                         					</li>
                         					<li>
                         						<div class="row">
                         							<div class="col-md-1" style="max-width: 0.83%">
-                        								b) 
+                        								{% if lang == 'np' %} ख) {% else %}b){% endif %} 
                         							</div>
                         							<div class="col-md-11">
-                        								We will test the drinking water your depot sells for free. 
+                        								{% if lang == 'np' %} डिपोले विक्रि गर्ने पानीको निशुल्क जाँच गर्दछ ।{% else %}We will test the drinking water your depot sells for free.{% endif %} 
                         							</div>
                         						</div>
                         					</li>
                         					<li>
                         						<div class="row">
                         							<div class="col-md-1" style="max-width: 0.83%">
-                        								c) 
+                        								{% if lang == 'np' %} ग) {% else %}c){% endif %} 
                         							</div>
                         							<div class="col-md-11">
-                        								We will promote and advertise your depot.
+                        								{% if lang == 'np' %} डिपोको प्रचार–प्रसार तथा विज्ञापन गर्दछ । {% else %}We will promote and advertise your depot.{% endif %}
                         							</div>
                         						</div>
                         					</li>
                         					<li>
                         						<div class="row">
                         							<div class="col-md-1" style="max-width: 0.83%">
-                        								d) 
+                        								{% if lang == 'np' %} घ) {% else %}d){% endif %} 
                         							</div>
                         							<div class="col-md-11">
-                        								We will provide features your depot needs in our Sarovara app.
+                                                        {% if lang == 'np' %} सरोवर एप्समा डिपोलाई आवश्यक पर्ने फिचर उपलब्ध गराउदछ । {% else %}
+                        								We will provide features your depot needs in our Sarovara app.{% endif %}
                         							</div>
                         						</div>
                         					</li>
                         					<li>
                         						<div class="row">
                         							<div class="col-md-1" style="max-width: 0.83%">
-                        								e) 
+                        								{% if lang == 'np' %} ङ) {% else %}e){% endif %}
                         							</div>
                         							<div class="col-md-11">
-                        								In Sarovara app, we will provide a platform to sell drinking water to your customer. 
+                        								{% if lang == 'np' %} सरोवर एप्स मार्फत ग्राहकलाई पानी विक्रि गर्न मिल्ने व्यवस्था गर्दछ । {% else %}In Sarovara app, we will provide a platform to sell drinking water to your customer. {% endif %}
                         							</div>
                         						</div>
                         					</li>
                         					<li>
                         						<div class="row">
                         							<div class="col-md-1" style="max-width: 0.83%">
-                        								f) 
+                        								{% if lang == 'np' %} च) {% else %}f){% endif %} 
                         							</div>
                         							<div class="col-md-11">
-                        								We will provide a service that allows customer to pay via Sarovara itself.
+                        								{% if lang == 'np' %} सरोवर एप्स बाटै ग्राहकले पैसा भुक्तानी गर्न मिल्ने व्यवस्था गर्दछ । {% else %}We will provide a service that allows customer to pay via Sarovara itself.{% endif %}
                         							</div>
                         						</div>
                         					</li>
                         					<li>
                         						<div class="row">
                         							<div class="col-md-1" style="max-width: 0.83%">
-                        								g) 
+                        								{% if lang == 'np' %} छ) {% else %}g){% endif %} 
                         							</div>
                         							<div class="col-md-11">
-                        								We will add additional feature according to depot’s demand. 
+                        								{% if lang == 'np' %} सरोवर एप्स बाटै ग्राहकले पैसा भुक्तानी गर्न मिल्ने व्यवस्था गर्दछ । {% else %}We will add additional feature according to depot’s demand.{% endif %} 
                         							</div>
                         						</div>
                         					</li>
                         					<li>
                         						<div class="row">
                         							<div class="col-md-1" style="max-width: 0.83%">
-                        								h) 
+                        								{% if lang == 'np' %} ज) {% else %}h){% endif %} 
                         							</div>
                         							<div class="col-md-11">
-                        								Depots that sell at a lower price than Sarovara has determined will receive a discount that is proportionate to service charge.
+                        								{% if lang == 'np' %} डिपोको माग अनुशार सरोवर एप्समा फिचर थप गर्दछ,  ज) सरोवरले तोकेको मूल्य भन्दा कम मूल्यमा पानी बिक्रि गर्ने डिपोलाई सरोवरले डिपोलाई लिने शेवा शुल्कमा मूल्यको अनुपातमा छुट दिइनेछ । {% else %}Depots that sell at a lower price than Sarovara has determined will receive a discount that is proportionate to service charge.{% endif %}
                         							</div>
                         						</div>
                         					</li>
@@ -205,39 +206,39 @@
                         	<li>
                         		<div class="row" style="margin-top: 10px;">
                         			<div class="col-md-1" style="max-width: 0.83%">
-                        				<h5>3. </h5>
+                        				<h5>{% if lang == 'np' %} ३. {% else %}3.{% endif %} </h5>
                         			</div>
                         			<div class="col-md-11">
-                        				<h5>What is the service fee of Sarovara ?</h5>
+                        				<h5>{% if lang == 'np' %} सरोवरको शेवा शुल्क कति छ ? {% else %}What is the service fee of Sarovara ?{% endif %}</h5>
                         				<ul>
                         					<!-- <dd>You will have to meet the following conditions to open a depot.</dd> -->
                         					<li>
                         						<div class="row">
                         							<div class="col-md-1" style="max-width: 0.83%">
-                        								a) 
+                        								{% if lang == 'np' %} क) {% else %}a) {% endif %}
                         							</div>
                         							<div class="col-md-11">
-                        								If depot sells 250 or less water jars a day, the monthly charge would Rs.5000.
+                        								{% if lang == 'np' %} प्रत्येक दिन डिपोबाट २५० वा सो भन्दा कम जार विक्रि भए सम्म मासिक रु. ५००० । {% else %} If depot sells 250 or less water jars a day, the monthly charge would Rs.5000.{% endif %}
                         							</div>
                         						</div>
                         					</li>
                         					<li>
                         						<div class="row">
                         							<div class="col-md-1" style="max-width: 0.83%">
-                        								b) 
+                        								{% if lang == 'np' %} ख) {% else %}b) {% endif %}
                         							</div>
                         							<div class="col-md-11">
-                        								If a depot sells more than 251 or less than 500 jars a day, the charge would be Rs.1 per jar. 
+                        								{% if lang == 'np' %} प्रत्येक दिन डिपोबाट ५०० वा सो भन्दा कम वा २५१ वा सो भन्दा माथि जार विक्रि भएमा प्रत्येक जारको रु. १ । {% else %}If a depot sells more than 251 or less than 500 jars a day, the charge would be Rs.1 per jar.{% endif %} 
                         							</div>
                         						</div>
                         					</li>
                         					<li>
                         						<div class="row">
                         							<div class="col-md-1" style="max-width: 0.83%">
-                        								c) 
+                        								{% if lang == 'np' %} ग) {% else %} c) {% endif %} 
                         							</div>
                         							<div class="col-md-11">
-                        								If a depot sells more than 501 jars a day, the charge would be Rs.2 per jar.
+                        								{% if lang == 'np' %} प्रत्येक दिन डिपोबाट ५०१ वा सो भन्दा माथि जार विक्रि भएमा प्रत्येक जारको रु. २ । {% else %}If a depot sells more than 501 jars a day, the charge would be Rs.2 per jar.{% endif %}
                         							</div>
                         						</div>
                         					</li>
@@ -249,7 +250,7 @@
                         
                         <!-- <dd style="margin-top: 20px;">My company agrees with the mentioned terms and conditions.</dd> -->
 
-                        <p style="margin-top: 20px;">If you are interested in opening a depot in Sarovara, Please fill up the form. <a href="#" data-toggle="modal" data-target="#request-for-depot" style="font-weight: bold;">Click Here</a>.</p>
+                        <p style="margin-top: 20px;">{% if lang == 'np' %} डिपो खोल्न इच्छुक हुनुहुन्छ भने {% else %} If you are interested in opening a depot in Sarovara, Please fill up the form. {% endif %}<a href="#" data-toggle="modal" data-target="#request-for-depot" style="font-weight: bold;">{% if lang == 'np' %} यहाँ किल्क गर्नुहोस् । {% else %}Click Here{% endif %}</a>.</p>
                     </dl>  
                 </div>
             </div>
@@ -260,11 +261,11 @@
         <div class="modal-dialog modal-dialog-custom" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>Request for Depot</h3>
+                    <h3>{% if lang == 'np' %} डिपो खोल्नुहोस् {% else %}Request for Depot {% endif %}</h3>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
                 </div>
                 <div class="modal-body">
-                    <p>Please kindly fill up the form below.</p>
+                    <p>{% if lang == 'np' %} कृपया तलको विवरण भर्नुहोस् । {% else %}Please kindly fill up the form below. {% endif %}</p>
                     <!-- RD Mailform-->
                     <form class="open-depot-form" data-form-output="form-output-global" data-form-type="contact" method="POST" 
                     action="{% url 'request-open-depot' %}">
@@ -272,31 +273,31 @@
 						<div class="row" style="margin-top: 10px;">
 							<div class="col-md-12">
 								<div class="form-wrap">
-									<label class="form-label-outside" for="contact-2-first-name">Full Name</label>
+									<label class="form-label-outside" for="contact-2-first-name">{% if lang == 'np' %} पूरा नाम {% else %}Full Name {% endif %}</label>
 									<input class="form-input" id="id_full_name" type="text" name="full_name" data-constraints="@Required">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-wrap">
-									<label class="form-label-outside" for="contact-2-email">Email</label>
+									<label class="form-label-outside" for="contact-2-email">{% if lang == 'np' %} ईमेल {% else %}Email {% endif %}</label>
 									<input class="form-input" id="id_email" type="email" name="email" data-constraints="@Email @Required">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-wrap">
-									<label class="form-label-outside" for="contact-2-phone">Phone</label>
+									<label class="form-label-outside" for="contact-2-phone">{% if lang == 'np' %} सम्पर्क नम्बर {% else %}Phone {% endif %}</label>
 									<input class="form-input" id="id_phone" type="text" name="phone" data-constraints="@PhoneNumber @Required">
 								</div>
 							</div>
 							<div class="col-md-12">
 								<div class="form-wrap">
-									<label class="form-label-outside" for="contact-2-phone">Location</label>
+									<label class="form-label-outside" for="contact-2-phone">{% if lang == 'np' %} ठेगाना {% else %}Location {% endif %}</label>
 									<input class="form-input" id="id_location" type="text" name="location" data-constraints="@Required">
 								</div>
 							</div>
 							<div class="col-12">
 								<div class="form-wrap">
-									<label class="form-label-outside" for="contact-2-message">Your Message</label>
+									<label class="form-label-outside" for="contact-2-message">{% if lang == 'np' %} तपाईको सन्देश {% else %}Your Message {% endif %}</label>
 									<textarea class="form-input" id="id_message" name="message" data-constraints="@Required"></textarea>
 								</div>
 							</div>
@@ -306,7 +307,7 @@
 							<div class="recaptcha" id="captcha1" data-sitekey="6LfZlSETAAAAAC5VW4R4tQP8Am_to4bM3dddxkEt"></div>
 						</div> -->
 						<div class="group group-middle">
-							<button class="button button-primary button-winona" type="submit">Send Message</button>
+							<button class="button button-primary button-winona" type="submit">{% if lang == 'np' %} सन्देश पठाउनुहोस् {% else %}Send Message {% endif %}</button>
 						</div>
 					</form>
                 </div>

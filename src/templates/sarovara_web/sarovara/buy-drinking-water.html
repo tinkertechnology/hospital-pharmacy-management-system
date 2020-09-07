@@ -11,11 +11,11 @@
             <div class="container breadcrumbs-custom-container">
                 <div class="breadcrumbs-custom-main">
                     <h6 class="breadcrumbs-custom-subtitle title-decorated">What We Offer</h6>
-                    <h1 class="breadcrumbs-custom-title">Buy Drinking Water</h1>
+                    <h1 class="breadcrumbs-custom-title">{% if lang == 'np' %} पानी खरिद गर्नुहोस् {% else %} Buy Drinking Water {% endif %}</h1>
                 </div>
                 <ul class="breadcrumbs-custom-path">
                     <li><a href="{% url 'index' %}">Home</a></li>
-                    <li class="active">Buy Drinking Water</li>
+                    <li class="active">{% if lang == 'np' %} पानी खरिद गर्नुहोस् {% else %}Buy Drinking Water{% endif %}</li>
                 </ul>
             </div>
         </div>
@@ -28,9 +28,9 @@
                 <div class="col-xl-12">
                     <!-- Terms list -->
                     <dl class="list-terms">
-                        <dt>Thank you for your interest in buying drinking water through Sarovara, water that is processed and purified by various companies.</dt>
-                        <dd>12.5% discount is available for annual advance payment or 10% discount for monthly advance payment.</dd>
-                        <dd style="margin-top: 20px;">To become a monthly or an annually customer, fill up the form below.</dd>
+                        <dt>{% if lang == 'np' %} विभिन्न कम्पनीले प्रशोधन तथा शुद्धिकरण गरेको पानीको गुणस्तर बुझि सरोवर एप्स मार्फत पानी खरिद गर्न इच्छा ब्यक्त गर्नु भएकोमा धन्यवाद । {% else %}Thank you for your interest in buying drinking water through Sarovara, water that is processed and purified by various companies.{% endif %}</dt>
+                        <dd>{% if lang == 'np' %} पानी खरिदमा वार्षिक अग्रिम भुक्तानीमा १२.५ प्रतिशत तथा मासिक अग्रिम भुक्तानीमा १० प्रतिशत छुटको व्यवस्था गरिएको छ । {% else %}12.5% discount is available for annual advance payment or 10% discount for monthly advance payment.{% endif %}</dd>
+                        <dd style="margin-top: 20px;">{% if lang == 'np' %} मासिक वा वार्षिक ग्राहक बन्नको लागि तलको विवरण भर्नुहोस् ।{% else %}To become a monthly or an annually customer, fill up the form below.{% endif %}</dd>
                     </dl>  
                 </div>
             </div>
@@ -44,62 +44,61 @@
 						<div class="row">
 							<div class="col-md-12">
 								<div class="form-wrap">
-									<label class="form-label-outside" for="contact-2-first-name">Location that you want to buy drinking water from</label>
+									<label class="form-label-outside" for="contact-2-first-name">{% if lang == 'np' %} पानी खरिद गर्न लागिएको स्थल {% else %}Location that you want to buy drinking water from{% endif %}</label>
 									<select class="form-control" id="id_select_location" name="select_location">
-										<option>Select Location</option>
-										<option value="Singamangal">Sinamangal</option>
-										<option value="Gaushala">Gaushala</option>
+										<option>{% if lang == 'np' %} स्थान छान्नुहोस्{% else %}Select Location{% endif %}</option>
+										<option value="Singamangal">{% if lang == 'np' %} सिनामंगल {% else %}Sinamangal{% endif %}</option>
 									</select>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-wrap">
-									<label class="form-label-outside" for="contact-2-first-name">Full Name</label>
+									<label class="form-label-outside" for="contact-2-first-name">{% if lang == 'np' %} पूरा नाम {% else %}Full Name{% endif %}</label>
 									<input class="form-input" id="id_full_name" type="text" name="full_name" data-constraints="@Required">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-wrap">
-									<label class="form-label-outside" for="contact-2-email">E-mail</label>
+									<label class="form-label-outside" for="contact-2-email">{% if lang == 'np' %} ईमेल ठेगाना {% else %}E-mail{% endif %}</label>
 									<input class="form-input" id="id_email" type="email" name="email" data-constraints="@Email @Required">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-wrap">
-									<label class="form-label-outside" for="contact-2-phone">Phone</label>
+									<label class="form-label-outside" for="contact-2-phone">{% if lang == 'np' %} सम्पर्क नम्बर {% else %}Phone{% endif %}</label>
 									<input class="form-input" id="id_phone" type="text" name="phone" data-constraints="@PhoneNumber">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-wrap">
-									<label class="form-label-outside" for="contact-2-nearest-depot">Select Nearest Depot</label>
+									<label class="form-label-outside" for="contact-2-nearest-depot">{% if lang == 'np' %} नजिकको डिपो {% else %}Select Nearest Depot{% endif %}</label>
 									<select class="form-control" id="id_select_depot" name="select_depot">
-										<option>Select Depot</option>
-										<option>Sinamangal Depot</option>
+										<option>{% if lang == 'np' %} डिपो छान्नुहोस् {% else %}Select Depot{% endif %}</option>
+										<option>{% if lang == 'np' %} सिनामंगल डिपो {% else %}Sinamangal Depot{% endif %}</option>
 									</select>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-wrap">
-									<label class="form-label-outside" for="contact-2-nearest-depot">Select Water Brand</label>
+									<label class="form-label-outside" for="contact-2-nearest-depot">{% if lang == 'np' %} खरिद गर्न चाहनु भएको पानी {% else %}Select Water Brand{% endif %}</label>
 									<select class="form-control" id="id_select_brand" name="select_brand">
-										<option>Select Brand</option>
-										<option>Karuwa</option>
-										<option>Kuwa</option>
-										<option>Kuwa Plus</option>
-										<option>Patanjali Divya Jal</option>
+										<option>{% if lang == 'np' %} पानी छान्नुहोस् {% else %}Select Brand{% endif %}</option>
+										<option>{% if lang == 'np' %} करूवा {% else %}Karuwa{% endif %}</option>
+										<option>{% if lang == 'np' %} कुवा {% else %}Kuwa{% endif %}</option>
+										<option>{% if lang == 'np' %} कुवा प्लस {% else %}Kuwa Plus{% endif %}</option>
+										<option>{% if lang == 'np' %} पतंजलि दिव्याजल {% else %}Patanjali Divya Jal{% endif %}</option>
 									</select>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-wrap">
-									<label class="form-label-outside" for="contact-2-nearest-depot">Select Purchase Type</label>
+									<label class="form-label-outside" for="contact-2-nearest-depot">{% if lang == 'np' %} खरिदको प्रकार {% else %}Select Purchase Type{% endif %}</label>
 									<select class="form-control" id="id_select_purchase_type" name="select_purchase_type">
-										<option>Select Purchase Type</option>
-										<option>Monthly</option>
-										<option>Quarterly</option>
-										<option>Semi-Annually</option>
-										<option>Annually</option>
+										<option>{% if lang == 'np' %} खरिदको प्रकार छान्नुहोस् {% else %}Select Purchase Type{% endif %}</option>
+										<option>{% if lang == 'np' %} मासिक {% else %}Monthly{% endif %}</option>
+										<option>{% if lang == 'np' %} त्रैमासिक {% else %}Quarterly{% endif %}</option>
+										<option>{% if lang == 'np' %} अर्ध वार्षिक{% else %}Semi-Annually{% endif %}</option>
+										<option>{% if lang == 'np' %} वार्षिक {% else %}Annually{% endif %}</option>
 									</select>
 								</div>
 							</div>
@@ -115,7 +114,7 @@
 							<div class="recaptcha" id="captcha1" data-sitekey="6LfZlSETAAAAAC5VW4R4tQP8Am_to4bM3dddxkEt"></div>
 						</div> -->
 						<div class="group group-middle">
-							<button class="button button-primary button-winona" type="submit">Send Message</button>
+							<button class="button button-primary button-winona" type="submit">{% if lang == 'np' %} सन्देश पठाउनुहोस् {% else %}Send Message{% endif %}</button>
 						</div>
 					</form>
 

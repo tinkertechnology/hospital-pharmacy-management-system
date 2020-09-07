@@ -20,20 +20,23 @@ def index(request):
 def we_sales(request):
 	page_title = 'We sell'
 	lang = request.GET.get('lang')
-	return render(request, 'sarovara/sales.html', {'title_content':page_title})
+	return render(request, 'sarovara/sales.html', {'title_content':page_title, 'lang':lang})
 
 
 def our_depot(request):
 	page_title = 'Our Depot'
-	return render(request, 'sarovara/depot.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/depot.html', {'title_content':page_title, 'lang':lang})
 
 def about_us(request):
 	page_title = 'About Us'
-	return render(request, 'sarovara/about_us.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/about_us.html', {'title_content':page_title, 'lang':lang})
 
 def contacts(request):
 	page_title = 'Contact Us'
-	return render(request, 'sarovara/contacts.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/contacts.html', {'title_content':page_title, 'lang':lang})
 
 def terms_and_condition(request):
 	page_title = 'Terms & Conditions'
@@ -45,27 +48,33 @@ def privacy_policy(request):
 
 def buy_drinking_water(request):
 	page_title = 'Buy Drinking Water'
-	return render(request, 'sarovara/buy-drinking-water.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/buy-drinking-water.html', {'title_content':page_title,'lang':lang})
 
 def sell_drinking_water(request):
 	page_title = 'Sell Drinking Water'
-	return render(request, 'sarovara/sell-drinking-water.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/sell-drinking-water.html', {'title_content':page_title,'lang':lang})
 
 def open_depot(request):
 	page_title = 'Open Depot'
-	return render(request, 'sarovara/open-depot.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/open-depot.html', {'title_content':page_title, 'lang': lang})
 
 def feedback(request):
 	page_title = 'Provide Feedback'
-	return render(request, 'sarovara/feedback.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/feedback.html', {'title_content':page_title, 'lang':lang})
 
 def complaint(request):
 	page_title = 'Complaint or Grievance'
-	return render(request, 'sarovara/complaint.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/complaint.html', {'title_content':page_title, 'lang':lang})
 
 def careers(request):
 	page_title = 'Careers'
-	return render(request, 'sarovara/careers.html', {'title_content':page_title})
+	lang = request.GET.get('lang')
+	return render(request, 'sarovara/careers.html', {'title_content':page_title, 'lang':lang})
 
 def vacancy_apply_now(request):
 	page_title = 'Apply Now'
@@ -87,7 +96,7 @@ def handler404(request, exception):
     # return HttpResponse('404 Page Error')
     return render(request, 'sarovara/404.html')
 
-def buy_drinking_water(request):
+def buy_drinking_water_form(request):
 	if request.method == 'GET':
 		form = BuyDrinkingWaterForm()
 		# print (form)

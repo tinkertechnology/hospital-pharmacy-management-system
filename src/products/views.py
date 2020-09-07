@@ -15,8 +15,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.response import Response
 from rest_framework.reverse import reverse as api_reverse
 from rest_framework.views import APIView
-
-
+from django.db.models import Q
 from store import service as StoreService
 from rest_framework.generics import CreateAPIView, ListAPIView,ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
 
@@ -45,68 +44,69 @@ from .serializers import (
 		 ProductVariationSerializer
 		)
 
-from django.core.exceptions import ValidationError 
+from django.core.exceptions import ValidationError
+from rest_framework.exceptions import APIException 
 from django.conf import settings
 
 
 # API CBVS
 
 
-class APIHomeView(APIView):
-	# authentication_classes = [SessionAuthentication]
-	# permission_classes = [IsAuthenticated]
-	def get(self, request, format=None):
-		data = {
-			"auth": {
-				"login_url":  api_reverse("auth_login_api", request=request),
-				"refresh_url":  api_reverse("refresh_token_api", request=request), 
-				"user_checkout":  api_reverse("user_checkout_api", request=request), 
-			},
-			"address": {
-				"url": api_reverse("user_address_list_api", request=request),
-				"create":   api_reverse("user_address_create_api", request=request),
-			},
-			"checkout": {
-				"cart": api_reverse("cart_api", request=request),
-				"checkout": api_reverse("checkout_api", request=request),
-				"finalize": api_reverse("checkout_finalize_api", request=request),
-			},
-			"products": {
-				"count": Product.objects.all().count(),
-				"url": api_reverse("products_api", request=request)
-			},
-			"categories": {
-				"count": Category.objects.all().count(),
-				"url": api_reverse("categories_api", request=request)
-			},
-			"orders": {
-				"url": api_reverse("orders_api", request=request),
-			},
-			"inquiry": {
-				"url": api_reverse("inquiry_api", request=request),
-			},
-			"create_cart": {
-				"url": api_reverse("create_cart_api", request=request),
-			},
+# class APIHomeView(APIView):
+# 	# authentication_classes = [SessionAuthentication]
+# 	permission_classes = [IsAuthenticated]
+# 	def get(self, request, format=None):
+# 		data = {
+# 			"auth": {
+# 				"login_url":  api_reverse("auth_login_api", request=request),
+# 				"refresh_url":  api_reverse("refresh_token_api", request=request), 
+# 				"user_checkout":  api_reverse("user_checkout_api", request=request), 
+# 			},
+# 			"address": {
+# 				"url": api_reverse("user_address_list_api", request=request),
+# 				"create":   api_reverse("user_address_create_api", request=request),
+# 			},
+# 			"checkout": {
+# 				"cart": api_reverse("cart_api", request=request),
+# 				"checkout": api_reverse("checkout_api", request=request),
+# 				"finalize": api_reverse("checkout_finalize_api", request=request),
+# 			},
+# 			"products": {
+# 				"count": Product.objects.all().count(),
+# 				"url": api_reverse("products_api", request=request)
+# 			},
+# 			"categories": {
+# 				"count": Category.objects.all().count(),
+# 				"url": api_reverse("categories_api", request=request)
+# 			},
+# 			"orders": {
+# 				"url": api_reverse("orders_api", request=request),
+# 			},
+# 			"inquiry": {
+# 				"url": api_reverse("inquiry_api", request=request),
+# 			},
+# 			"create_cart": {
+# 				"url": api_reverse("create_cart_api", request=request),
+# 			},
 
-			"add_order": {
-				"url": api_reverse("create_order_api", request=request),
-			},
+# 			"add_order": {
+# 				"url": api_reverse("create_order_api", request=request),
+# 			},
 
-			"featured_products": {
-				"url": api_reverse("product_featured_api", request=request),
-			},
+# 			"featured_products": {
+# 				"url": api_reverse("product_featured_api", request=request),
+# 			},
 
 
-			"lists_apis": {
-				"generic_names": api_reverse("generic_name_list_api", request=request),
-				"brand_names": api_reverse("brands_list_api", request=request),
-				"company_names": api_reverse("company_list_api", request=request),
-				"product_units": api_reverse("product_unit_list_api", request=request),
-			}
+# 			"lists_apis": {
+# 				"generic_names": api_reverse("generic_name_list_api", request=request),
+# 				"brand_names": api_reverse("brands_list_api", request=request),
+# 				"company_names": api_reverse("company_list_api", request=request),
+# 				"product_units": api_reverse("product_unit_list_api", request=request),
+# 			}
 
-		}
-		return Response(data)
+# 		}
+# 		return Response(data)
 
 class CommonProductListAPIView(generics.ListAPIView):
 	queryset = ProductCommon.objects.all()
@@ -222,20 +222,25 @@ class ProductListAPIView(generics.ListAPIView):
 			if(latitude and longitude ):
 				storeQs = StoreService.get_qs_store_locations_nearby_coords(latitude, longitude, max_distance, 2) #2: depo
 				nearest_store = storeQs.first()
-
+			queryset= Product.objects
 			if nearest_store is not None:
 				print(nearest_store.__dict__)
-				queryset = Product.objects.filter(fk_store_id=nearest_store.id) #.all()
-				if product_id:
-					queryset = queryset.filter(id=product_id)
-				queryset = queryset.all()
-				return queryset
+				queryset = queryset.filter(Q(fk_store_id=nearest_store.id) | Q(can_sell_everywhere=True)) #.all()
 			else:
-				raise ValidationError(
-					"Products View require: latitude and longitude, within distance limit, for customer user, to find nearest store"
+				queryset = queryset.filter(can_sell_everywhere=True)
+			if product_id:
+				queryset = queryset.filter(id=product_id)
+			queryset = queryset.all()
+			return queryset
+			if True:
+				pass
+			else:
+				raise APIException({
+					"redirect_for_apple" : '1',
+					"message":"Products View require: latitude and longitude, within distance limit, for customer user, to find nearest store"
+				}
+
 				)
-
-
 		#
 		queryset = Product.objects.all()
 		return queryset

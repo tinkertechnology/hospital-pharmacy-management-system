@@ -4,6 +4,9 @@
         <title>Sarovara</title>
         <meta name="format-detection" content="telephone=no">
         <meta name="viewport" content="width=device-width height=device-height initial-scale=1.0 maximum-scale=1.0 user-scalable=0">
+          <meta name="description" content="High Quality drinking Water in Nepal.">
+          <meta name="keywords" content="drinking water, order, high quality drinking water, nepal, delivery, water jar">
+          <meta name="tinker technology nepal pvt. ltd." content="sarovara">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta charset="utf-8">
         {% load static %}
@@ -57,26 +60,28 @@
                                             </li> -->
                                             <li class="rd-nav-item {% if request.resolver_match.url_name == 'we-sales' %}active{% endif %}">
                                                 <a class="rd-nav-link" href="{% url 'we-sales' %}?lang={{lang}}">
-                                                    {% if lang %}हामी बेच्छौं {% else %} We Sell {% endif %}
+                                                    {% if lang == 'np' %}हामी बेच्छौं {% else %} We Sell {% endif %}
                                                 </a>
                                             </li>
                                             <li class="rd-nav-item {% if request.resolver_match.url_name == 'our-depot' %}active{% endif %}">
                                                 <a class="rd-nav-link" href="{% url 'our-depot' %}?lang={{lang}}">
-                                                    {% if lang %}हाम्रो डिपो {% else %} Our Depot {% endif %}
+                                                    {% if lang == 'np' %}हाम्रो डिपो {% else %} Our Depot {% endif %}
                                                 </a>
                                             </li>
                                             <li class="rd-nav-item {% if request.resolver_match.url_name == 'careers' %}active{% endif %}">
                                                 <a class="rd-nav-link" href="{% url 'careers' %}?lang={{lang}}">
-                                                    {% if lang %}रोजगारी {% else %} Careers {% endif %}
+                                                    {% if lang == 'np' %}रोजगारी {% else %} Careers {% endif %}
                                                 </a>
                                             </li>
                                             <li class="rd-nav-item {% if request.resolver_match.url_name == 'about-us' %}active{% endif %}">
                                                 <a class="rd-nav-link" href="{% url 'about-us' %}?lang={{lang}}">
-                                                    {% if lang %}हाम्रो बारेमा {% else %} About Us {% endif %}
+                                                    {% if lang == 'np' %}हाम्रो बारेमा {% else %} About Us {% endif %}
                                                 </a>
                                                 <ul class="rd-menu rd-navbar-dropdown">
                                                     <li class="rd-dropdown-item {% if request.resolver_match.url_name == 'about-us' %}active{% endif %}">
-                                                        <a class="rd-dropdown-link" href="{% url 'contacts' %}">Contact Us</a>
+                                                        <a class="rd-dropdown-link" href="{% url 'contacts' %}?lang={{lang}}">
+                                                            {% if lang == 'np' %} सम्पर्क ठेगाना {% else %} Contact Us {% endif %}
+                                                        </a>
                                                     </li>
                                                 </ul>
                                             </li>
@@ -87,6 +92,7 @@
                                     <!-- Callback link-->
                                     <div class="">
                                         <select id="id_selectLang">
+                                            <option value="">Language/भाषा</option>
                                             <option value="en">English</option>
                                             <option value="np">Nepali</option>
                                         </select>
@@ -122,9 +128,9 @@
                                 <div class="inset-right-1">
                                     <!-- <h4>About Us</h4>
                                     <p>Sarovara is one of water providers in the Nepal. We provide high quality drinking water at a reasonable price and delivers it to the doorstep of customer’s homes and offices, setting competition for drinking water quality in the market !</p> -->
-                                    <h4>Available On</h4>
+                                    <h4>{% if lang == 'np' %} उपलब्ध {% else %}Available On{% endif %}</h4>
                                     <div class="form-inline">
-                                       <a href="#"> <img src="{% static 'assets/images/app-store.png' %}" class="img-responsive" style="max-width: 90%; margin-right: 15px;"></a>
+                                       <a href="https://apps.apple.com/us/app/sarovara/id1527923496"> <img src="{% static 'assets/images/app-store.png' %}" class="img-responsive" style="max-width: 90%; margin-right: 15px;"></a>
 
                                         <a href="https://play.google.com/store/apps/details?id=np.com.tinker.sarovara"><img src="{% static 'assets/images/google-playstore.png' %}" class="img-responsive" style="max-width: 100%;"> </a>
                                     </div>
@@ -132,17 +138,19 @@
                             </div>
                             <div class="col-sm-6 col-md-5 col-lg-4">
                                 <div class="box-1">
-                                    <h4>Contact Information</h4>
+                                    <h4>{% if lang == 'np' %} सम्पर्क ठेगाना {% else %} Contact Information {% endif %}</h4>
                                     <ul class="list-sm list-footer">
-                                        <li class="object-inline"><span class="icon icon-sm mdi mdi-map-marker text-gray-700"></span><a class="contact-link-default" href="#">Hadigaun  <br> Kathmandu, Nepal</a></li>
-                                        <li class="object-inline"><span class="icon icon-sm mdi mdi-phone text-gray-700"></span><a class="contact-link-default" href="tel:#">1-660-014-440-221</a></li>
+                                        <li class="object-inline"><span class="icon icon-sm mdi mdi-map-marker text-gray-700"></span><a class="contact-link-default" href="#">{% if lang == 'np' %}हाडीगाँउ  <br> काठमाडौं, नेपाल {% else %}Hadigaun  <br> Kathmandu, Nepal{% endif %}</a></li>
+                                        <li class="object-inline"><span class="icon icon-sm mdi mdi-phone text-gray-700"></span><a class="contact-link-default" href="tel:#">{% if lang == 'np' %} १-६६०-०१४-४४०-२२१ {% else %} 1-660-014-440-221 {% endif %}</a></li>
                                         <li class="object-inline"><span class="icon icon-sm mdi mdi-email text-gray-700"></span><a class="contact-link-default" href="mailto:#">info@sarovara.com.np</a></li>
                                     </ul>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-7 col-lg-4">
-                                <h4>Newsletter</h4>
-                                <p style="color: #fff;">Sign up for our newsletter and be the first to know about latest news, special offers, events, and discounts.</p>
+                                <h4>{% if lang == 'np' %} न्यूजलेटर {% else %} Newsletter {% endif %}</h4>
+                                <p style="color: #fff;">
+                                    {% if lang == 'np' %} हाम्रो न्यूजलेटरको लागि साइन अप गर्नुहोस् र नयाँ समाचारहरू, विशेष प्रस्तावहरू, घटनाहरू, र छुटहरूको बारेमा जान्न पहिलो हुनुहोस् । {% else %} Sign up for our newsletter and be the first to know about latest news, special offers, events, and discounts. {% endif %}
+                                </p>
                                 <!-- RD Mailform-->
                                 <form class="rd-form rd-mailform form-inline" data-form-output="form-output-global" data-form-type="subscribe" method="post" action="bat/rd-mailform.php">
                                     <div class="form-wrap">

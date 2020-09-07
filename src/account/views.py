@@ -275,14 +275,7 @@ class RegisterAPI(APIView):
 		if mobile and password:	
 			if len(mobile)!=10:
 				return Response({"Fail": "Please check your mobile number, it should be 10 digit"}, status.HTTP_400_BAD_REQUEST)
-
-			old = PhoneOTP.objects.filter(mobile__iexact=mobile)
-			if old.exists():
-				old = old.first()
-				validated = old.validated
-
-				if validated:
-					temp_data = {
+			temp_data = {
 						'mobile': mobile,
 						'password': password,
 						'email': email,
@@ -291,15 +284,24 @@ class RegisterAPI(APIView):
 						'lastname':lastname
 
 					}
-					serializer = CreateUserSerializer(data = temp_data)
-					serializer.is_valid(raise_exception = True)
-					user = serializer.save()
-					old.delete()
+			serializer = CreateUserSerializer(data = temp_data)
+			serializer.is_valid(raise_exception = True)
+			user = serializer.save()
+			# old.delete()
 
-					return Response({
-						'status': True,
-						'detail': 'Account Created'
-						})
+			return Response({
+				'status': True,
+				'detail': 'Account Created'
+				})
+
+			old = PhoneOTP.objects.filter(mobile__iexact=mobile)
+			if old.exists():
+				old = old.first()
+				validated = old.validated
+
+				if validated:
+					pass
+					
 
 				else:
 					return Response({"Fail": "OTP havent verified first , first validate otp"}, status.HTTP_400_BAD_REQUEST)
@@ -673,7 +675,7 @@ class SurveyRegisterAPIView(ListAPIView):
 	def get(self, request):
 		mobile = request.GET.get('mobile', '')
 
-		data = CustomerRegisterSurvey.objects.filter(mobile__iexact=mobile).first()
+		data = CustomerRegisterSurvey.objects.filter(mobile__iexact=mobile).last()
 		details = {}
 		if data:
 			details = {

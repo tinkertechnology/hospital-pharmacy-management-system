@@ -28,7 +28,7 @@ urlpatterns = [
     path('patanjali-dibyajal', views.patanjali_dibyajal, name='patanjali-dibyajal'),
 
     # path('success', views.success, name='success'),
-    path('buy-drinking-water', views.buy_drinking_water, name='buy-drinking-water'),
+    path('buy-drinking-water-form', views.buy_drinking_water_form, name='buy-drinking-water-form'),
     path('request-open-depot', views.request_open_depot, name='request-open-depot'),
     path('request-feedback', views.request_feedback, name='request-feedback'),
     path('request-complaint', views.request_complaint, name='request-complaint'),

@@ -14,7 +14,7 @@
                 </div>
                 <ul class="breadcrumbs-custom-path">
                     <li><a href="{% url 'index' %}">Home</a></li>
-                    <li class="active">{% if lang %}रोजगारी {% else %} Careers {% endif %}</li>
+                    <li class="active">{% if lang == 'np' %}रोजगारी {% else %} Careers {% endif %}</li>
                 </ul>
             </div>
         </div>
@@ -25,9 +25,9 @@
         <div class="container">
             <div class="row row-50 justify-content-center justify-content-lg-between flex-lg-row-reverse">
                 <div class="col-md-10 col-lg-6 col-xl-5">
-                    <h3>Working at Sarovara</h3>
-                    <p style="text-align: justify;">Sarovara is emerging company with more than 20 employees. Our aim is to provide high quality drinking water at a reasonable price. We encourage those people to work with us, who understand the values of Teamwork, Discipline, Quality, Respect for the Individual, Personal Accountability, Customer Driven.</p>
-                    <p style="text-align: justify;">Sarovara offers team members a competitive benefits package to address a wide range of personal and family needs. Sarovara benefits include Competitive Salary, Festival Bonus, Company Bonus, Education Fees, Health Insurance.</p>
+                    <h3>{% if lang == 'np' %} सरोवरमा काम गर्नु {% else %} Working at Sarovara {% endif %}</h3>
+                    <p style="text-align: justify;">{% if lang == 'np' %} सरोवर २० भन्दा बढी कर्मचारीको साथ उदयमान कम्पनी हो । हाम्रो उद्देश्य भनेको उचित मूल्यमा उच्च गुणस्तरीय पिउने पानी प्रदान गर्नु हो । हामी ती व्यक्तिहरूलाई हामीसँग काम गर्न प्रोत्साहित गर्दछौं, जसले टीम वर्क, अनुशासन, गुणस्तर, व्यक्तिगत, व्यक्तिगत उत्तरदायित्व, ग्राहकको सम्मानलाई बुझ्दछन् । {% else %}Sarovara is emerging company with more than 20 employees. Our aim is to provide high quality drinking water at a reasonable price. We encourage those people to work with us, who understand the values of Teamwork, Discipline, Quality, Respect for the Individual, Personal Accountability, Customer Driven.{% endif %}</p>
+                    <p style="text-align: justify;">{% if lang == 'np' %} सरोवरले टोलीका सदस्यहरूलाई व्यक्तिगत र पारिवारिक आवश्यकताहरूको विस्तृत दायराको लागि प्रतिस्पर्धात्मक लाभ प्याकेज प्रदान गर्दछ । सरोवरका सेवासुविधाहरूमा प्रतिस्पर्धी तलब, चाडपर्व बोनस, कम्पनी बोनस, शिक्षा शुल्क, स्वास्थ्य बीमा समावेश छ । {% else %}Sarovara offers team members a competitive benefits package to address a wide range of personal and family needs. Sarovara benefits include Competitive Salary, Festival Bonus, Company Bonus, Education Fees, Health Insurance.{% endif %}</p>
                 </div>
                 <div class="col-md-10 col-lg-6 col-xl-6">
                     <img class="img-responsive" src="{% static 'assets/images/details-public.jpg' %}" alt="" width="570" height="368"/>

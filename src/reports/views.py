@@ -8,7 +8,8 @@ from django.views.generic.edit import CreateView, FormView
 from django.views.generic.detail import DetailView
 from  django.views.generic.list import ListView
 # Create your views here.
-
+# from rest_framework import serializers
+from django.core import serializers
 # from rest_framework.authentication import SessionAuthentication
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.permissions import AllowAny
@@ -26,6 +27,8 @@ from django.db.models.functions import TruncDate
 from django.db.models import Sum, F
 from django.db.models.expressions import RawSQL
 from rest_framework.response import Response
+import json
+import datetime
 
 # Create your views here.
 
@@ -49,5 +52,139 @@ class DailySalesApiView(ListAPIView):
 		print(qs.query)
 
 		return qs
-		# 	qs = qs.filter(created_at__gte=from_date)
+	# 	qs = qs.filter(created_at__gte=from_date)
+
+from django.db import connection, transaction
+# class UserCountProductWiseReport(ListAPIView):
+# 	def get_context_data(self, **kwargs):
+# 		cursor = connection.cursor()
+# 		cursor.execute("""with accountVariationQuantity as (
+# select 
+# account_account.id as account_id, products_variation.id as variation_id, sum(quantity) as product_quantity
+# from orders_storewiseorder 
+# left join account_account on orders_storewiseorder.fk_auth_user_id = account_account.id 
+# left join carts_cart on  orders_storewiseorder.cart_id = carts_cart.id
+# left join carts_cartitem on carts_cartitem.cart_id = carts_cart.id
+# left JOIN products_variation on products_variation.id = carts_cartitem.item_id
+# left join products_product on products_variation.product_id = products_product.id
+# left join orders_usercheckout on orders_usercheckout.user_id = account_account.id
+# left join orders_useraddress on orders_useraddress.user_id = orders_usercheckout.user_id
+# group by account_account.id, products_variation.id
+# )
+# select firstname, lastname, mobile, products_product.title, products_variation.title, avq.product_quantity
+# from accountVariationQuantity avq
+# inner join account_account on avq.account_id = account_account.id
+# inner join products_variation on avq.variation_id = products_variation.id
+# left join products_product on products_variation.product_id = products_product.id
+# order by avq.product_quantity DESC
+# ;""");
+# 		row = cursor.fetchall()
+# 		print(row)
+# 		data = {
+# 		'count': len(row),
+# 		'data': row
+# 		}
+# 		context['results'] = data
+# 		return context
+
+
+# def duplicatephoneno(request):
+#     payload = json.loads(request.body.decode('utf-8'))
+#     print(payload)
+
+#     if payload:
+#         startdate=payload['from']
+#         enddate=payload['to']
+#         with connection.cursor() as cursor:
+
+#             queries="SELECT * FROM `allergy` WHERE `allergy`.`patient_n_key` IN (SELECT `patient_masters`.`patient_n_key` FROM `patient_masters` WHERE `patient_masters`.`created_on`between %s AND %s)"
+#             data_tuple=(startdate,enddate)
+#             cursor.execute(queries,data_tuple)
+#             connection.commit()
+#             row = cursor.fetchall()
+#             patientuser=serializers.serialize('json', row)
+#             return HttpResponse(patientuser, content_type='application/json;charset=utf8')
+
+
+
+def myconverter(o):
+    if isinstance(o, datetime.datetime):
+        return o.__str__()
+
+def dictfetchall(cursor):
+	"Return all rows from a cursor as a dict"
+	columns = [col[0] for col in cursor.description]
+	return [
+	dict(zip(columns, row))
+	for row in cursor.fetchall()
+	]
+
+def GetJsonFromQueryData(query):
+	cursor = connection.cursor()
+	cursor.execute(query);
+	# connection.commit()
+
+	data = json.dumps(dictfetchall(cursor), default=myconverter)
+	return data
+	# patientuser=serializers.serialize('json', row)
+	# return HttpResponse(data, content_type='application/json;charset=utf8')
+
+def UserCountProductWiseReport(self):
+	cursor = connection.cursor()
+	cursor.execute("""with accountVariationQuantity as (
+		select 
+		account_account.id as account_id, products_variation.id as variation_id, sum(quantity) as product_quantity
+		from orders_storewiseorder 
+		left join account_account on orders_storewiseorder.fk_auth_user_id = account_account.id 
+		left join carts_cart on  orders_storewiseorder.cart_id = carts_cart.id
+		left join carts_cartitem on carts_cartitem.cart_id = carts_cart.id
+		left JOIN products_variation on products_variation.id = carts_cartitem.item_id
+		left join products_product on products_variation.product_id = products_product.id
+		left join orders_usercheckout on orders_usercheckout.user_id = account_account.id
+		left join orders_useraddress on orders_useraddress.user_id = orders_usercheckout.user_id
+		group by account_account.id, products_variation.id
+		)
+		select firstname, lastname, mobile, products_product.title, products_variation.title, avq.product_quantity
+		from accountVariationQuantity avq
+		inner join account_account on avq.account_id = account_account.id
+		inner join products_variation on avq.variation_id = products_variation.id
+		left join products_product on products_variation.product_id = products_product.id
+		order by avq.product_quantity DESC
+		;""");
+	# connection.commit()
+
+	data = json.dumps(dictfetchall(cursor))
+	# patientuser=serializers.serialize('json', row)
+	return HttpResponse(data, content_type='application/json;charset=utf8')
+
+
+def UserWithoutPurchaseReport(self):
+	query = """ select 
+		firstname, lastname, mobile
+		from orders_storewiseorder 
+		right join account_account on orders_storewiseorder.fk_auth_user_id = account_account.id 
+		where orders_storewiseorder.id is null;
+		"""
+
+	data = GetJsonFromQueryData(query)
+	return HttpResponse(data, content_type='application/json;charset=utf8')
+
+
+def UserOrderDetailReport(self):
+	query = """ select 
+firstname, lastname,mobile, state,city, street, products_product.title,products_variation.title,quantity,
+created_at, order_latitude, order_longitude
+from orders_storewiseorder 
+left join account_account on orders_storewiseorder.fk_auth_user_id = account_account.id 
+left join carts_cart on  orders_storewiseorder.cart_id = carts_cart.id
+left join carts_cartitem on carts_cartitem.cart_id = carts_cart.id
+left JOIN products_variation on products_variation.id = carts_cartitem.item_id
+left join products_product on products_variation.product_id = products_product.id
+left join orders_usercheckout on orders_usercheckout.user_id = account_account.id
+left join orders_useraddress on orders_useraddress.user_id = orders_usercheckout.user_id
+;"""
+
+	data = GetJsonFromQueryData(query)
+	return HttpResponse(data, content_type='application/json;charset=utf8')
+
 

@@ -57,7 +57,11 @@ class Product(models.Model):
 	fk_wsc = models.ForeignKey(WaterSupplyCompany, on_delete=models.CASCADE, blank=True, null=True)
 	fk_store = models.ForeignKey(Store, on_delete=models.CASCADE, blank=True, null=True)
 	is_featured = models.BooleanField(default = False, blank=True)
+	#Store najik navayeni saman jata pani availalbe huncha, 
+	#latitude ,longitude depo ko check nagareko
+	can_sell_everywhere = models.BooleanField(default=False, blank=True) 
 	default = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='default_category', null=True, blank=True)
+
 
 	objects = ProductManager()
 
