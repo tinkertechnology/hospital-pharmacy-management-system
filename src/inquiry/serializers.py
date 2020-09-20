@@ -21,7 +21,8 @@ class InquirySerializer(serializers.ModelSerializer):
 
 	def create(self,validated_data):
 		inquery = Message()
-		#receiver_user_id = self.context['request'].POST.get("receiver")
+		# receiver_user_id = self.context['request'].POST.get("receiver")
+		# receiver = User.objects.get(pk=receiver_user_id)
 		#receiver_user = User.objects.get(pk=self.context['request'].GET.get("receiver"))
 
 		datas = {
@@ -33,6 +34,35 @@ class InquirySerializer(serializers.ModelSerializer):
 		messages= Message.objects.create(**datas)
 
 		return messages
+
+# class InquirySerializer(serializers.ModelSerializer):
+# 	# image_url = serializers.SerializerMethodField('get_image_url')
+# 	# user = serializers.SerializerMethodField('_user')
+
+# 	class Meta:
+# 		model = Message
+# 		fields = '__all__'
+
+
+# 	def create(self,validated_data):
+# 		inquery = Message()
+# 		#receiver_user_id = self.context['request'].POST.get("receiver")
+# 		#receiver_user = User.objects.get(pk=self.context['request'].GET.get("receiver"))
+# 		order = StoreWiseOrder.objects.get(pk=self.context['request'].GET.get("order_id"))
+# 		message = self.context['request'].GET.get("message")
+# 		if order:
+# 			receiver = order.fk_auth_user_id
+
+# 			datas = {
+# 				"sender": self.context['request'].user,
+# 				"receiver" : receiver,
+# 				"message" : validated_data['message']
+# 			}
+
+# 			messages= Message.objects.create(**datas)
+
+# 			return messages
+
 
 
 # Message Serializer

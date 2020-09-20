@@ -651,15 +651,20 @@ class CustomerMessageAPIView(APIView):
 	def post(self, request, *args, **kwargs):
 		print(request.data)
 		message = request.data.get('message', None)
+		phone = request.data.get('phone', None)
 		if not message:
 			return Response({"Fail": "Your Message is required"}, status.HTTP_400_BAD_REQUEST)
+		if not phone:
+			return Response({"Fail": "Your Phone number is required"}, status.HTTP_400_BAD_REQUEST)
 
 		customer_message = CustomerMessage()
 		customer_message.message = message
 		customer_message.save()
 
 		send_mail(
+
 			'Customer Message',
+			' Phone : ' + str(phone)+ ' '+
 			  ' Message : ' + str(message),
 			settings.EMAIL_HOST_USER,
 			[settings.EMAIL_HOST_USER],

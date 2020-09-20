@@ -189,7 +189,7 @@ class ProductListAPIView(generics.ListAPIView):
 			storeUser = StoreUser.objects.filter(fk_user_id=self.request.user.id).first()
 			if(storeUser is not None):
 				users_store = storeUser.fk_store
-
+		print(users_store)
 		if users_store is not None:
 			print(1)
 			if self.request.GET.get('view_my_products', None):
@@ -217,15 +217,26 @@ class ProductListAPIView(generics.ListAPIView):
 			latitude=self.request.GET.get('latitude', None);
 			longitude=self.request.GET.get('longitude', None);
 			max_distance=settings.CUSTOMER_STORE_MAX_DISTANCE_KM #2 #setting. store max distance
+			distance = None #
 
 			nearest_store = None
 			if(latitude and longitude ):
-				storeQs = StoreService.get_qs_store_locations_nearby_coords(latitude, longitude, max_distance, 2) #2: depo
+				storeQs = StoreService.get_qs_store_locations_nearby_coords(latitude, longitude, distance, 2) #2: depo
 				nearest_store = storeQs.first()
-			queryset= Product.objects
-			if nearest_store is not None:
+				print('nearest-store')
 				print(nearest_store.__dict__)
-				queryset = queryset.filter(Q(fk_store_id=nearest_store.id) | Q(can_sell_everywhere=True)) #.all()
+			queryset= Product.objects
+
+			if nearest_store is not None:
+				d = nearest_store.distance
+				if d <= max_distance:
+					queryset = queryset.filter(Q(fk_store_id=nearest_store.id)) #.all()
+				else:
+					queryset = queryset.filter(fk_store_id=nearest_store.id).filter(can_sell_everywhere=True)
+				# cs = Product.objects.filter(can_sell_everywhere=True)
+				# queryset = queryset.filter(fk_store_id=nearest_store.id)
+				# print(nearest_store.__dict__)
+				#queryset = queryset.filter(Q(fk_store_id=nearest_store.id) | Q(can_sell_everywhere=True)) #.all()
 			else:
 				queryset = queryset.filter(can_sell_everywhere=True)
 			if product_id:
