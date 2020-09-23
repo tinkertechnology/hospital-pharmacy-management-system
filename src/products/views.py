@@ -213,7 +213,9 @@ class ProductListAPIView(generics.ListAPIView):
 		#http://localhost:8000/api/products/?latitude=1&longitude=1
 		if users_store is  None: #this user must be customer
 			# ulat=, ulng=, 
-			product_id = self.request.GET.get('product_id', None)
+			product_id = self.request.GET.get('product_id', None) ##
+			common_product_id = self.request.GET.get('common_product_id', None)
+
 			latitude=self.request.GET.get('latitude', None);
 			longitude=self.request.GET.get('longitude', None);
 			max_distance=settings.CUSTOMER_STORE_MAX_DISTANCE_KM #2 #setting. store max distance
@@ -226,11 +228,22 @@ class ProductListAPIView(generics.ListAPIView):
 				print('nearest-store')
 				print(nearest_store.__dict__)
 			queryset= Product.objects
+			
+			if common_product_id:
+
+				queryset = queryset.filter(fk_common_product_id=common_product_id)
+				#product_id = Product.objects.filter(fk_common_product_id=common_product_id).filter(fk_store=nearest_store).first().id
+				#print(['product_id:', product_id])
 
 			if nearest_store is not None:
 				d = nearest_store.distance
+
 				if d <= max_distance:
 					queryset = queryset.filter(Q(fk_store_id=nearest_store.id)) #.all()
+					# if product_id:
+					# 	queryset = queryset.filter(Q(fk_store_id=nearest_store.id) | Q(can_sell_everywhere=True)) #.all()
+					# else:
+					# 	queryset = queryset.filter(Q(fk_store_id=nearest_store.id)) #.all()
 				else:
 					queryset = queryset.filter(fk_store_id=nearest_store.id).filter(can_sell_everywhere=True)
 				# cs = Product.objects.filter(can_sell_everywhere=True)
@@ -241,6 +254,7 @@ class ProductListAPIView(generics.ListAPIView):
 				queryset = queryset.filter(can_sell_everywhere=True)
 			if product_id:
 				queryset = queryset.filter(id=product_id)
+			print(queryset.query)
 			queryset = queryset.all()
 			return queryset
 			if True:
@@ -298,19 +312,17 @@ class AllProductRetrieveAPIView(generics.RetrieveAPIView):
 class ProductFeaturedListAPIView(generics.ListAPIView):
 	#permission_classes = [IsAuthenticated]
 	# try:
-	queryset = Product.objects.all()
+	queryset = ProductCommon.objects.all()
 	# except Product.DoesNotExist:
 	# 	get_queryset = None
-
-	
 	serializer_class = ProductFeaturedSerializer
-	filter_backends = [
-					filters.SearchFilter, 
-					filters.OrderingFilter, 
-					#filters.DjangoFilterBackend
-					]
-	search_fields = ["title", "show_price"]
-	ordering_fields  = ["title", "id"]
+	# filter_backends = [
+	# 				filters.SearchFilter, 
+	# 				filters.OrderingFilter, 
+	# 				#filters.DjangoFilterBackend
+	# 				]
+	# search_fields = ["title", "show_price"]
+	# ordering_fields  = ["title", "id"]
 	# filter_class = ProductFilter
 	#pagination_class = ProductPagination
 
