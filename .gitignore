@@ -7,7 +7,7 @@
 
 # Icon must end with two \r
 Icon
-
+/src/.vs
 
 # Thumbnails
 ._*
@@ -79,7 +79,7 @@ docs/_build/
 
 # PyBuilder
 target/
-
+src/frontend/node_modules
 
 ### Django ###
 *.log

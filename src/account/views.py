@@ -688,5 +688,16 @@ class SurveyRegisterAPIView(ListAPIView):
 		return Response(details) 
 
 
+class CheckTokenAPIView(APIView):
+	#authentication_classes = [SessionAuthentication]
+	permission_classes = [IsAuthenticated]
+	def get(self, request, format=None):
+		data = {
+			"success": True,
+
+			# "product_id": items.id,
+		}
+		# print(cart.items)
+		return Response(data)
 
 

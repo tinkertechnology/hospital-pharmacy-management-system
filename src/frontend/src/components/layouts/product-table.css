@@ -1,0 +1,18 @@
+.order-table {
+  min-width: 100px;
+  overflow-x: scroll;
+}
+.product-table {
+  min-width: 100px;
+  overflow-x: scroll;
+}
+
+.invoice-table {
+  min-width: 100px;
+  overflow-x: scroll;
+}
+
+.sales-table {
+  min-width: 100px;
+  overflow-x: scroll;
+}

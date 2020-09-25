@@ -1,0 +1,13 @@
+.user-menu {
+  float: right !important;
+  padding: 10px;
+}
+.user-menu-items {
+  min-width: 200px;
+  border-radius: 10px;
+  background-color: burlywood;
+}
+.user-name {
+  color: brown;
+  margin: 0 auto;
+}

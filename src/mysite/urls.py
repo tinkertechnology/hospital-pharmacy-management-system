@@ -45,7 +45,8 @@ from account.views import (
     CustomerRegisterSurveyAPIView,
     CustomerMessageForDepotAPIView,
     CustomerMessageAPIView,
-    SurveyRegisterAPIView
+    SurveyRegisterAPIView,
+    CheckTokenAPIView
 )
 
 from carts.views import (
@@ -136,9 +137,11 @@ from users.views import (
 
 #API Patterns
 urlpatterns = [
+    url(r'^api/CheckTokenAPIView/',CheckTokenAPIView.as_view(), name="CheckTokenAPIView"),
+    url(r'^auth/', include('frontend.urls')),
     url(r'^accounts/', include('rest_registration.api.urls')),
     url(r'^reports/', include('reports.urls')),
-
+    
     # re_path(r'^api/$', APIHomeView.as_view(), name='home_api'),
     re_path(r'^api/validate_mobile/', ValidatePhoneSendOTP.as_view(), name="validate_mobile"),
     re_path(r'^api/validate_otp/', ValidateOTP.as_view(), name="validate_otp"),
