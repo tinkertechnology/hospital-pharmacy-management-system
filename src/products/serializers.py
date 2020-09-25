@@ -213,27 +213,26 @@ class ProductFilterSerializer(serializers.ModelSerializer):
 
 
 class ProductFeaturedSerializer(serializers.ModelSerializer):
-	url = serializers.HyperlinkedIdentityField(view_name='products_detail_api')
-	variation_set = VariationSerializer(many=True)
+	# url = serializers.HyperlinkedIdentityField(view_name='products_detail_api')
+	# variation_set = VariationSerializer(many=True)
 	image = serializers.SerializerMethodField()
+	# title = serializers.SerializerMethodField()
 	class Meta:
-		model = Product
-		fields = [
-			"url",
-			"id",
-			"title",
-			"image",
-			"variation_set",
-		]
+		model = ProductCommon
+		fields = '__all__'
 
 	
 	def get_image(self, obj):
 		try:
-			return obj.productimage_set.first().image.url
+			product = Product.objects.filter(fk_common_product_id=obj.id).first()
+			return product.productimage_set.first().image.url
 		except:
 			return None
 
-
+	def get_title(self, obj):
+		title = obj.title
+		store = obj.fk_store.title
+		return title+store
 class SubCategorySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Category

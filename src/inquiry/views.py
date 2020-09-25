@@ -41,7 +41,11 @@ class view_messages(ListAPIView):
 	def get_queryset(self, *args, **kwargs):
 		user =  self.request.user
 		receiver = self.request.GET.get("receiver")
+		print(receiver)
 		m = Message.objects.filter(sender_id=user, receiver_id=receiver) | Message.objects.filter(sender_id=receiver, receiver_id=user)
+		print(m.query)
 		return m 
+
+
 
 

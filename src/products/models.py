@@ -69,7 +69,14 @@ class Product(models.Model):
 		ordering = ["-title"]
 
 	def __str__(self): #def __str__(self):
-		return self.title 
+		# return 'jpt'
+		store = self.fk_store
+		print(store)
+		# print(self)
+		if store:
+			return self.title +'. '+store.title
+		return self.title
+
 
 	def get_absolute_url(self):
 		return reverse("product_detail", kwargs={"pk": self.pk})

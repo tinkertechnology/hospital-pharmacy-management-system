@@ -17,7 +17,7 @@ class VariationInline(admin.TabularInline):
 
 
 class ProductAdmin(admin.ModelAdmin):
-	list_display = ['title', 'price']
+	# list_display = ['title', 'price']
 	inlines = [
 		ProductImageInline,
 		VariationInline,
