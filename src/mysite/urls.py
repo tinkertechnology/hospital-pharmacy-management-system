@@ -46,7 +46,8 @@ from account.views import (
     CustomerMessageForDepotAPIView,
     CustomerMessageAPIView,
     SurveyRegisterAPIView,
-    CheckTokenAPIView
+    CheckTokenAPIView,
+    SendMessageToMobileAPIView # FOR SENDING SMS
 )
 
 from carts.views import (
@@ -141,7 +142,7 @@ urlpatterns = [
     url(r'^auth/', include('frontend.urls')),
     url(r'^accounts/', include('rest_registration.api.urls')),
     url(r'^reports/', include('reports.urls')),
-    
+    re_path(r'^api/send_sms_api/', SendMessageToMobileAPIView.as_view(), name="send_sms"),
     # re_path(r'^api/$', APIHomeView.as_view(), name='home_api'),
     re_path(r'^api/validate_mobile/', ValidatePhoneSendOTP.as_view(), name="validate_mobile"),
     re_path(r'^api/validate_otp/', ValidateOTP.as_view(), name="validate_otp"),

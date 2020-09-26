@@ -44,3 +44,7 @@ export const CREATE_SALE = "CREATE_SALE";
 export const GET_REPORTS = "GET_REPORTS";
 
 export const GET_getUserOrderDetailData = "GET_getUserOrderDetailData";
+
+//Types for sms
+
+export const SEND_SMS = "SEND_SMS";

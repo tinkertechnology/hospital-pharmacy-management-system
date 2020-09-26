@@ -10,6 +10,7 @@ import orders from "./orders.js";
 import invoices from "./invoices.js";
 import sales from "./sales.js";
 import UserOrderDetailReportReducer from "./UserOrderDetailReportReducer";
+import SendSmsReducer from "./SendSmsReducer";
 
 export default combineReducers({
   items,
@@ -21,5 +22,6 @@ export default combineReducers({
   orders,
   invoices,
   sales,
-  UserOrderDetailReportReducer
+  UserOrderDetailReportReducer,
+  SendSmsReducer
 });

@@ -33,6 +33,7 @@ import CreateSale from "./inventory/CreateSale";
 import Reports from "./inventory/Reports";
 import ReportList from "./inventory/ReportList";
 import UserOrderDetailReportContainerParentGui from "./inventory/UserOrderDetailReportContainerParentGui";
+import SMSContainerParentGui from "./inventory/SMSContainerParentGui";
 
 
 // Alert Options
@@ -82,6 +83,13 @@ export class App extends Component {
                   path="/UserOrderDetailReportContainerParentGui/"
                   component={UserOrderDetailReportContainerParentGui}
                 />
+
+                <PrivateRoute
+                  exact
+                  path="/SMSContainerParentGui/"
+                  component={SMSContainerParentGui}
+                />
+
                 <PrivateRoute exact path="/invoices/" component={Invoice} />
                 <PrivateRoute
                   state={this.state}

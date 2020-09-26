@@ -114,6 +114,12 @@ export class SideNav extends Component {
             </Menu.Item>
            
           </SubMenu>
+          <Menu.Item key="14">
+            <Link to="/SMSContainerParentGui">
+              <Icon type="pie-chart" />
+              <span>SEND SMS</span>
+            </Link>
+          </Menu.Item>
         </Menu>
       </Sider>
     );

@@ -705,4 +705,31 @@ class CheckTokenAPIView(APIView):
 		# print(cart.items)
 		return Response(data)
 
+from .sms_service import send_sms_to_phone
+
+class SendMessageToMobileAPIView(APIView):
+	def post(self, request, *args, **kwargs):
+		mobile = request.data.get('mobile')
+		message = request.data.get('message')
+		r = requests.post(
+        "http://api.sparrowsms.com/v2/sms/",
+        data={'token' : settings.SPARROW_SMS_TOKEN,
+        'from'  : settings.SMS_FROM,
+        'to'    : mobile,
+        'text'  : message })
+
+		status_code = r.status_code
+		response = r.text
+		response_json = r.json()
+		print(status_code)
+		print(response_json)
+		print(mobile)
+		print(message)
+		if status_code==200:
+			return Response({
+				'status': True,
+				'detail': 'SMS sent to' + mobile
+			})
+	
+		return Response({"Fail": "SMS was not sent"}, status.HTTP_400_BAD_REQUEST)
 
