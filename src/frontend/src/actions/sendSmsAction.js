@@ -1,21 +1,20 @@
-import axios from "axios";
+import axios from 'axios';
 
-import { SEND_SMS } from "./types";
-import { createMessage, returnErrors } from "./messages";
-import { tokenConfig } from "./auth";
+import { SEND_SMS } from './types';
+import { createMessage, returnErrors } from './messages';
+import { tokenConfig } from './auth';
 
-
-export const sendSms = sms => (dispatch, getState) => {
+export const sendSms = (sms) => (dispatch, getState) => {
   axios
-    .post(`api/send_sms_api/`, product, tokenConfig(getState))
-    .then(res => {
-      dispatch(createMessage({ sendSms: "SMS SENT" }));
+    .post(`/api/send_sms_api/`, sms, tokenConfig(getState))
+    .then((res) => {
+      dispatch(createMessage({ sendSms: 'SMS SENT' }));
       dispatch({
         type: SEND_SMS,
-        payload: res.data
+        payload: res.data,
       });
     })
-    .catch(err =>
+    .catch((err) =>
       dispatch(returnErrors(err.response.data, err.response.status))
     );
 };
