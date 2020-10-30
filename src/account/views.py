@@ -733,3 +733,16 @@ class SendMessageToMobileAPIView(APIView):
 	
 		return Response({"Fail": "SMS was not sent"}, status.HTTP_400_BAD_REQUEST)
 
+
+class SaveUpdateFirebaseToken(APIView):
+	def post(self, request, *args, **kwargs):
+		firebase_token = request.data.get('firebase_token')
+		user = User.objects.filter(pk=request.user.id).first()
+		user.firebase_token = firebase_token
+		user.save()
+		return Response({
+				'status': True,
+				'detail': 'updated firebasetoken'
+			})
+
+

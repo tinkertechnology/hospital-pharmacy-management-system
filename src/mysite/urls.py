@@ -47,7 +47,9 @@ from account.views import (
     CustomerMessageAPIView,
     SurveyRegisterAPIView,
     CheckTokenAPIView,
-    SendMessageToMobileAPIView # FOR SENDING SMS
+    SendMessageToMobileAPIView, # FOR SENDING SMS
+    SaveUpdateFirebaseToken     #update,save firebasetoken for sending message to user fcm
+
 )
 
 from carts.views import (
@@ -157,6 +159,8 @@ urlpatterns = [
     re_path(r'^api/CustomerMessageForDepot/$', CustomerMessageForDepotAPIView.as_view(), name='CustomerMessageForDepot'),
     re_path(r'^api/CustomerMessage/$', CustomerMessageAPIView.as_view(), name='CustomerMessage'),
     re_path(r'^api/CustomerSurveryInfo/$', SurveyRegisterAPIView.as_view(), name="CustomerSurveryInfo"),
+    re_path(r'^api/SaveUpdateFirebaseToken/$', SaveUpdateFirebaseToken.as_view(), name="SaveUpdateFirebaseToken"),
+    
     
 
     

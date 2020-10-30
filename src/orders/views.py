@@ -645,6 +645,7 @@ class UpdateOrderStatusApiView(CreateAPIView): ## YO USE BHAKO CHAINA //STOREWIS
 
 
 
+from .fcm_service import send_fcm_token_for_device 
 class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 	# permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 	queryset=Order.objects.all()
@@ -656,6 +657,8 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 		storewiseorder_id = request.POST.get('order_id') ### id of StoreWiseOrder model's.
 		status = request.POST.get('status')
 		storewiseorder = StoreWiseOrder.objects.filter(pk=storewiseorder_id).first()
+		user = User.objects.filter(pk=storewiseorder.fk_auth_user_id).first() #for user
+		print(user)
 		if storewiseorder:
 			# for storewise_order in storewiseorder:
 			if status == "paid":
@@ -675,9 +678,12 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 				else:
 					self.subProductinStore(storewiseorder) ###CUSTOMER LE DEPO SANGA KINDA KHERI GHATCHA
 			storewiseorder.save()
+			send_fcm_token_for_device(settings.FCM_SERVER_KEY, user.firebase_token, storewiseorder.order_id, status)
 
-		#if settings.IS_MULTI_VENDOR:
-			
+			 # serverToken = settings.FCM_SERVER_KEY #server key here
+  #deviceToken = user.firebase_token #'device token here'
+
+		#if settings.IS_MULTI_VENDOR:			
 
 			return Response({
 							'status': True,

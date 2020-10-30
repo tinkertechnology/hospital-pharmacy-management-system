@@ -49,6 +49,7 @@ class Account(AbstractBaseUser):
 	is_staff				= models.BooleanField(default=False)
 	is_superuser			= models.BooleanField(default=False)
 	mobile 					= models.CharField(validators=[phone_regex],max_length=15, unique=True)
+	firebase_token          = models.CharField(max_length=500, null=True, blank=True)
 
 
 	USERNAME_FIELD = 'mobile'
