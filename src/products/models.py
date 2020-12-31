@@ -7,6 +7,7 @@ from django.utils.text import slugify
 from wsc.models import WaterSupplyCompany
 from store.models import Store
 
+from django.conf import settings
 # Create your models here.
 
 class ProductQuerySet(models.query.QuerySet):
@@ -126,7 +127,11 @@ class Variation(models.Model):
 	def get_title(self):
 		return "%s - %s" %(self.product.title, self.title)
 
-
+class UserVariationQuantityHistory(models.Model):
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+	variation = models.ForeignKey(Variation, on_delete=models.CASCADE)
+	num_taken = models.FloatField(default=0)
+	num_returned = models.FloatField(default=0)
 
 def product_post_saved_receiver(sender, instance, created, *args, **kwargs):
 	product = instance
