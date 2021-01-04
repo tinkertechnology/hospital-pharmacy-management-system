@@ -20,6 +20,7 @@ class CartItem(models.Model):
 	fk_storewise_order = models.ForeignKey("orders.StoreWiseOrder", on_delete=models.CASCADE, blank=True, null=True) 
 	item = models.ForeignKey(Variation, on_delete=models.CASCADE)
 	quantity = models.PositiveIntegerField(default=1)
+
 	tax_amount = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	line_item_total = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
 	orginal_price = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)

@@ -407,6 +407,10 @@ urlpatterns += [
 ]
  # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+
+from app_settings import urls as app_settings_urls
+urlpatterns += app_settings_urls.urlpatterns
+
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

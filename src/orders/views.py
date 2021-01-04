@@ -677,6 +677,22 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 					self.addProductinStore(storewiseorder) #DEPO LE COMPANY SANGA KINDA DEPO MA BADXA
 				else:
 					self.subProductinStore(storewiseorder) ###CUSTOMER LE DEPO SANGA KINDA KHERI GHATCHA
+
+				# maybe save flag to retn jar in storewise order (single row)
+
+				# import uservariation history
+				#
+				# forloop get variation, qty of each items in storewise_orders
+				# 	var_history = new/edit existing history for user, variation
+				# 	var_history.firta_garne_qty += qty
+				# 	var_history.variation = varition
+				# 	
+				# 	Variation: jar firta yes/no bhanne flag, 140ko ma firta qty add huncha arko ma hunna
+				 	
+				# # Firta garne form/api
+				#  phone no customer:
+				#  variation: 
+				#  qty_returned: 
 			storewiseorder.save()
 			send_fcm_token_for_device(settings.FCM_SERVER_KEY, user.firebase_token, storewiseorder.order_id, status)
 

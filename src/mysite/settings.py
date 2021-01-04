@@ -75,7 +75,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     # 'drfpasswordless',
     'rest_registration',
-    'sarovara_web'
+    'sarovara_web',
+    'app_settings'
 
 
  
