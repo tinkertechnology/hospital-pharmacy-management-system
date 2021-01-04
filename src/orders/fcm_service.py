@@ -13,7 +13,7 @@ def send_fcm_token_for_device(serverToken, deviceToken, order_id, status):
                             'body': 'Thank you for your purchase'
                             },
           'to':
-              deviceToken,
+              '/topics/all', ##for all /topics/all , for individual deviceToken is passed
           'priority': 'high',
         #   'data': dataPayLoad,
         }
