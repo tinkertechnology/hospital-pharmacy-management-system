@@ -30,3 +30,11 @@ class StoreUser(models.Model):
 
     def __str__(self):
         return str(self.fk_route.title + ' mobile : ' +self.fk_user.mobile)
+
+class StoreAccount(models.Model):
+    fk_store = models.ForeignKey(Store, null=True, blank=True, on_delete=models.CASCADE)
+    fk_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="credit_users", on_delete=models.CASCADE, blank=True)
+    credit = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
+    
+    def __str__(self):
+        return str(self.fk_user.mobile + ' credit: ' +str(self.credit))

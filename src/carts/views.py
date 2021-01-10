@@ -12,7 +12,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic.base import View
 from django.views.generic.detail import SingleObjectMixin, DetailView
 from django.views.generic.edit import FormMixin
-
 from rest_framework import filters
 from rest_framework import generics
 from rest_framework import status
@@ -24,19 +23,17 @@ from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, DestroyAPIView
 # from rest_framework.permissions import AllowAny
 from rest_framework import permissions
-
-
 from orders.forms import GuestCheckoutForm
 from orders.mixins import CartOrderMixin
 from orders.models import UserCheckout, Order, UserAddress
 from orders.serializers import OrderSerializer, FinalizedOrderSerializer
-from products.models import Variation
-
-
+from products.models import Variation, UserVariationQuantityHistory
 from .mixins import TokenMixin, CartUpdateAPIMixin, CartTokenMixin
 from .models import Cart, CartItem
 from .serializers import CartItemSerializer, CheckoutSerializer, AddToCartSerializer, CartItemModelSerializer, RemoveCartItemFromCartSerializer
-
+from products.serializers import UserVariationQuantityHistorySerializer
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 # 
 # abc123
@@ -263,52 +260,52 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 		return Response(data)
 
 
-class PastCartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
-	# authentication_classes = [SessionAuthentication]
-	# permission_classes = [IsAuthenticated]
-	token_param = "token"
-	cart = None
-	def get_cart(self):
-		# data, cart_obj, response_status = self.get_cart_from_token()
-		# if cart_obj == None or not cart_obj.active:
+# class PastCartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
+# 	# authentication_classes = [SessionAuthentication]
+# 	# permission_classes = [IsAuthenticated]
+# 	token_param = "token"
+# 	cart = None
+# 	def get_cart(self):
+# 		# data, cart_obj, response_status = self.get_cart_from_token()
+# 		# if cart_obj == None or not cart_obj.active:
 
-		print(cart_obj)
-		if cart_obj == None:
+# 		print(cart_obj)
+# 		if cart_obj == None:
 
-			cart = Cart()
-			cart.tax_percentage = settings.TAX_PERCENT_DECIMAL #0.13
-			if self.request.user.is_authenticated:
-				cart.user = self.request.user
-			cart.save()
-			data = {
-				"cart_id": str(cart.id)
-			}
-			self.create_token(data)
-			cart_obj = cart
+# 			cart = Cart()
+# 			cart.tax_percentage = settings.TAX_PERCENT_DECIMAL #0.13
+# 			if self.request.user.is_authenticated:
+# 				cart.user = self.request.user
+# 			cart.save()
+# 			data = {
+# 				"cart_id": str(cart.id)
+# 			}
+# 			self.create_token(data)
+# 			cart_obj = cart
 
-		return cart_obj
+# 		return cart_obj
 
 
-	def get(self, request, format=None):
-		cart = self.get_cart()
-		self.cart = cart
-		self.update_cart()
-		#token = self.create_token(cart.id)
-		items = CartItemSerializer(cart.cartitem_set.all(), many=True)
-		print(items)
-		print(cart.items.all())
-		data = {
-			"token": self.token,
-			"cart" : cart.id,
-			"total": cart.total,
-			"subtotal": cart.subtotal,
-			"tax_total": cart.tax_total,
-			"count": cart.items.count(),
-			"items": items.data,
-			# "product_id": items.id,
-		}
-		# print(cart.items)
-		return Response(data)
+# 	def get(self, request, format=None):
+# 		cart = self.get_cart()
+# 		self.cart = cart
+# 		self.update_cart()
+# 		#token = self.create_token(cart.id)
+# 		items = CartItemSerializer(cart.cartitem_set.all(), many=True)
+# 		print(items)
+# 		print(cart.items.all())
+# 		data = {
+# 			"token": self.token,
+# 			"cart" : cart.id,
+# 			"total": cart.total,
+# 			"subtotal": cart.subtotal,
+# 			"tax_total": cart.tax_total,
+# 			"count": cart.items.count(),
+# 			"items": items.data,
+# 			# "product_id": items.id,
+# 		}
+# 		# print(cart.items)
+# 		return Response(data)
 
 
 if settings.DEBUG:
@@ -317,6 +314,140 @@ if settings.DEBUG:
       public_key=settings.BRAINTREE_PUBLIC,
       private_key=settings.BRAINTREE_PRIVATE)
 
+
+# from .models import UserMembershipAutoOrder
+from carts.service import CartItemCreateService
+from orders.service import CreateOrderFromCart, VariationHistoryCountService
+
+from carts.models import Cart
+
+
+
+class AddToCartForCustomUserAPIView(APIView):
+	serializer_class = CartItemSerializer
+	def post(self, request, *args, **kwargs):
+		print(request.data)
+		item_id = request.data.get('item_id')
+		phone = request.data.get('phone')
+		user = User.objects.filter(mobile__iexact=phone).first()
+		if not user:
+			return Response({"Fail": phone+ " is not registered, please register"}, status.HTTP_400_BAD_REQUEST)
+		quantity = int(request.data.get('quantity'))
+		cash = request.data.get('cash', 0) #debit ho
+		ordered_price = request.data.get('ordered_price')
+		# user_id = user.id
+		credit = request.data.get('credit')
+		debit=cash
+		# user_id = um_auto_order.fk_usermembership.fk_member_user_id
+		data = {
+			'user_id': user.id,
+			'item_id': item_id,
+			'quantity': quantity,
+			'ordered_price': ordered_price,
+			'is_auto_order': True,
+			'credit': credit,
+			'debit': debit
+		}
+		print(data)
+		CartItemCreateService(data)
+		auto_carts = Cart.objects.filter(active=1).filter(is_auto_order=True).filter(user=user).all()
+		# import pprint
+		# pprint.pprint(auto_carts)
+		for cart in auto_carts:
+			order_data = {
+			'user_id': user.id,
+			'order_latitude': 1,
+			'order_longitude': 1,
+			'is_auto_order': True,
+			'fk_payment_method': 1
+			}
+			print( order_data )
+			CreateOrderFromCart( order_data )
+			VariationHistoryCountService(cart.id)
+			pass
+		return Response(status=200)
+		# cart = Cart.objects.filter(user_id=user_id).filter(active=1).first()
+		# if not cart: 
+		# 	cart = Cart()
+		# 	cart.user_id = user_id
+		# 	cart.save()
+		# 	# print(cart)
+		# cartitem = CartItem()
+		# cartitem.item_id = item_id
+		# cartitem.quantity = quantity
+		# cartitem.ordered_price = cash
+		# cartitem.cart = cart
+		# cartitem.save()
+		# serializer = CartItemModelSerializer(cartitem)
+		# return Response(serializer.data)
+
+
+
+class ReturnToStoreForCustomUserAPIView(APIView):
+	# serializer_class = CartItemSerializer
+	def post(self, request, *args, **kwargs):
+		print(request.data)
+		item_id = request.data.get('item_id')
+		phone = request.data.get('phone')
+		user = User.objects.filter(mobile__iexact=phone).first()
+		if not user:
+			return Response({"Fail": phone+ " is not registered, please register"}, status.HTTP_400_BAD_REQUEST)
+		quantity = int(request.data.get('quantity'))
+		# cash = request.data.get('cash', 0) #debit ho
+		# ordered_price = request.data.get('ordered_price')
+		# user_id = user.id
+		# credit = request.data.get('credit')
+		# debit=cash
+		# user_id = um_auto_order.fk_usermembership.fk_member_user_id
+		data = {
+			'user_id': user.id,
+			'item_id': item_id,
+			'quantity': quantity #this is returned quantity of the user
+			# 'ordered_price': ordered_price,
+			# 'is_auto_order': True,
+			# 'credit': credit,
+			# 'debit': debit
+		}
+		print(data)
+		query = UserVariationQuantityHistory.objects.filter(user_id=user.id).filter(variation_id=item_id)
+		
+		qs = query.first()
+		if qs:
+			if qs.num_delta==0:
+				data = {}
+				seriailzer = UserVariationQuantityHistorySerializer(qs, read_only=True)
+				message = {'Fail': 'There is no pending Jars in this Account'}
+				data = {
+					"error" : message,
+					"items": seriailzer.data
+				}
+				return Response(data, status=400) 
+			qs.num_delta = qs.num_delta-quantity
+			qs.save()
+			seriailzer = UserVariationQuantityHistorySerializer(qs, read_only=True)
+			return Response(seriailzer.data)
+		else:
+			return Response({'Fail': 'The Jar seems to be different than delivered'}, status=400) 
+		
+		
+
+		# CartItemCreateService(data)
+		# auto_carts = Cart.objects.filter(active=1).filter(is_auto_order=True).filter(user=user).all()
+		# # import pprint
+		# # pprint.pprint(auto_carts)
+		# for cart in auto_carts:
+		# 	order_data = {
+		# 	'user_id': user.id,
+		# 	'order_latitude': 1,
+		# 	'order_longitude': 1,
+		# 	'is_auto_order': True,
+		# 	'fk_payment_method': 1
+		# 	}
+		# 	print( order_data )
+		# 	CreateOrderFromCart( order_data )
+		# 	VariationHistoryCountService(cart.id)
+		# 	pass
+		return Response(status=200)
 
 
 

@@ -72,8 +72,13 @@ class Cart(models.Model):
 	tax_percentage  = models.DecimalField(max_digits=10, decimal_places=5, default=0.085)
 	tax_total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
+	#user ko cart active 1uta matrai huncha db ma...
+	#create_order garepachi 0 set huncha... yo bhaneko user ko cart chaina 
+	#1 bhayo bhane usko cart ma aru item ne add huncha. 
 	active = models.BooleanField(default=True)
 	is_auto_order = models.BooleanField(default=False)
+	credit = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
+	debit = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
 	# fk_status
 
 	# discounts

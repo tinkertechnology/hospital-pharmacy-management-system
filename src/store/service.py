@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .serializers import StoreSerializer
-from .models import Store
+from .models import Store, StoreAccount
 
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.generics import CreateAPIView, ListAPIView,ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
@@ -12,6 +12,28 @@ from rest_framework.views import APIView
 from django.db import models
 from django.db.models.expressions import RawSQL
 from django.db.models.functions import Greatest
+from decimal import Decimal
+def UserAccountStoreWiseSaveService(data):
+	fk_user_id = data.get('fk_user_id')
+	fk_store_id = data.get('fk_store_id')
+	credit = data.get('credit', 0.0)
+	print('00000')
+	print(credit)
+	cart_query = StoreAccount.objects.filter(fk_user_id=fk_user_id).filter(fk_store_id=fk_store_id)
+	cart = cart_query.first()
+
+	if cart == None:
+		dict_cart = {}
+		cart = StoreAccount.objects.create(fk_user_id=fk_user_id, **dict_cart)
+		# cart.fk_user_id = fk_user_id
+		cart.fk_store_id = fk_store_id
+		cart.credit=0
+	cart.credit += Decimal(credit)
+	if cart.credit < 0: #dherai +cash ayo bhane - ma credit nabasos
+ 		cart.credit = 0
+	cart.save()
+	return cart
+    
 
 def get_qs_store_locations_nearby_coords(latitude, longitude, max_distance=None,fk_store_type_id=None):
     """

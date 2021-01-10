@@ -83,3 +83,19 @@ class ProfileSerializer(serializers.ModelSerializer):
 			# user.set_password(validated_data['password'])
 			# user.save()
 			# return user
+from store.models import StoreAccount
+from products.serializers import UserVariationQuantityHistorySerializer
+from products.models import UserVariationQuantityHistory
+class UserSerializer(serializers.ModelSerializer):
+	credit = serializers.SerializerMethodField()
+	jardetails = serializers.SerializerMethodField()
+	class Meta:
+		model = User
+		fields = ('firstname', 'lastname', 'nick_name', 'credit', 'jardetails')
+
+	def get_credit(self, obj):
+		user = StoreAccount.objects.filter(fk_user=obj).first()
+		return user.credit
+	def get_jardetails(self, obj):
+		jardetails = UserVariationQuantityHistorySerializer(UserVariationQuantityHistory.objects.filter(user=obj), many=True)
+		return jardetails.data

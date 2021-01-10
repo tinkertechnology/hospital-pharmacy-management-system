@@ -746,3 +746,64 @@ class SaveUpdateFirebaseToken(APIView):
 			})
 
 
+from products.models import UserVariationQuantityHistory
+from products.serializers import UserVariationQuantityHistorySerializer
+class GetUserJarAndCreditAPIView(APIView):
+	serializer_class = UserVariationQuantityHistorySerializer
+	def post(self, request, *args, **kwargs):
+		phone = request.data.get('phone')
+		print(phone)
+		if phone:
+			user = Account.objects.filter(mobile__iexact=phone).first()
+			if not user:
+				return Response({"Fail": phone+ " is not registered, please register"}, status.HTTP_400_BAD_REQUEST)
+			data = dict()
+			jars = UserVariationQuantityHistorySerializer(UserVariationQuantityHistory.objects.filter(user=user), many=True)
+			if not user.nick_name:
+				user.nick_name=""
+			data = {
+				'name':user.firstname + ' '+user.lastname +' ('+ user.nick_name +' )',
+				'nick_name' : user.nick_name,
+				'jars': jars.data,
+			}
+			return Response(data)
+		else:
+			return Response({"Fail":"Enter Phone number "}, status.HTTP_400_BAD_REQUEST)
+from store.models import StoreAccount, StoreUser
+from .serializer import UserSerializer
+from django.http import Http404
+class GetUserCreditAndJarByStorewise(APIView):
+	def get_current_store(self):
+		print('jpt')
+		store_id_auth_user = StoreUser.objects.filter(fk_user=self.request.user).first().fk_store
+		# print(store_id_auth_user)
+		credit_users_lists = StoreAccount.objects.filter(fk_store=store_id_auth_user)
+		# print(credit_users_lists.__dict__)
+		users_id=[]
+		data = {'users': [],'credit':[], 'detail':[]}
+		for user_id in credit_users_lists:
+			# print(user_id.__dict__)
+			users_id.append(user_id.fk_user_id)
+			# data['users'].append(user_id.fk_user_id)
+			# # data['credit'].append(user_id.credit)
+			# abc=UserSerializer(User.objects.filter(pk=user_id.fk_user_id).first())
+			# data['users':user_id.fk_user_id]['credit': user_id.credit] =[]
+			# data.append(abc.data)
+			
+		# print(users_id)
+
+		users_serializer = UserSerializer(User.objects.filter(pk__in=users_id), many=True)
+		# data['detail'].append(users_serializer.data)
+		response_data = {
+			# 'data': data
+			'count': len(users_id),
+			'users': users_serializer.data
+		}
+		return Response(response_data)
+		
+	def get(self, request):
+		return self.get_current_store()
+
+
+
+

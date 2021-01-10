@@ -98,6 +98,7 @@ class Variation(models.Model):
 	sale_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
 	active = models.BooleanField(default=True)
 	inventory = models.IntegerField(null=True, blank=True) #refer none == unlimited amount
+	is_refill = models.BooleanField(default=False)
 
 	def __str__(self):
 		return self.title
@@ -128,10 +129,11 @@ class Variation(models.Model):
 		return "%s - %s" %(self.product.title, self.title)
 
 class UserVariationQuantityHistory(models.Model):
-	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="jar_users", on_delete=models.CASCADE, null=True, blank=True)
 	variation = models.ForeignKey(Variation, on_delete=models.CASCADE)
 	num_taken = models.FloatField(default=0)
 	num_returned = models.FloatField(default=0)
+	num_delta = models.FloatField(default=0)
 
 def product_post_saved_receiver(sender, instance, created, *args, **kwargs):
 	product = instance

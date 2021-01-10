@@ -108,6 +108,22 @@ from django.conf import settings
 # 		}
 # 		return Response(data)
 
+
+class StoreWiseProductListAPIView(generics.ListAPIView):
+	queryset = Product.objects.all()
+	serializer_class = ProductSerializer
+	class Meta:
+		model = Product
+	
+	def get_queryset(self):
+		try:
+			store_id_auth_user = StoreUser.objects.get(fk_user=self.request.user).fk_store
+		except StoreUser.DoesNotExist:
+			raise Http404
+		products = Product.objects.filter(fk_store=store_id_auth_user)
+		return products
+
+
 class CommonProductListAPIView(generics.ListAPIView):
 	queryset = ProductCommon.objects.all()
 	serializer_class = ProductUnitSerializer

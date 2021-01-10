@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.conf import settings
 
-from .models import Category, Product, Variation, ProductFeatured, Company, GenericName, Brand, ProductUnit, ProductImage, ProductCommon
+from .models import Category, Product, Variation, ProductFeatured, Company, GenericName, Brand, ProductUnit, ProductImage, ProductCommon, UserVariationQuantityHistory
 
 from wsc.models import WaterSupplyCompany
 from store.models import Store
@@ -20,7 +20,10 @@ class ImageSerializer(serializers.ModelSerializer):
 		model = ProductImage
 		fields = '__all__'
 
-
+class UserVariationQuantityHistorySerializer(serializers.ModelSerializer):
+	class Meta:
+		model = UserVariationQuantityHistory
+		fields = '__all__'
 
 
 class VariationSerializer(serializers.ModelSerializer):
@@ -53,6 +56,13 @@ class VariationSerializer(serializers.ModelSerializer):
 		# 	return self.price
 		# return ""
 		# print(self.price)	
+
+class UserVariationQuantityHistorySerializer(serializers.ModelSerializer):
+	variation = VariationSerializer()
+	class Meta:
+		model = UserVariationQuantityHistory
+		fields = '__all__'
+
 
 class ProductVariationListSerializer(serializers.ModelSerializer):
 	class Meta:

@@ -152,6 +152,10 @@ class StoreDeliverUserList(ListAPIView):
         # }
         # return Response(data)
 
+def get_current_store(self):
+    print('jpt')
+    store_id_auth_user = StoreUser.objects.filter(fk_user=self.request.user).first().fk_store
+    return store_id_auth_user
 
 
 

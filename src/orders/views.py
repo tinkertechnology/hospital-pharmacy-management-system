@@ -29,7 +29,7 @@ import requests
 from carts.models import Cart, CartItem
 from store.models import Store, StoreUser
 from orders.models import StoreWiseOrder
-from products.models import Product, Variation
+from products.models import Product, Variation, UserVariationQuantityHistory
 from django.conf import settings
 from django.db.models import Q
 User = get_user_model()
@@ -78,7 +78,7 @@ class OrderRetrieveAPIView(RetrieveAPIView):
 
 class OrderListAPIView(ListAPIView):
 	authentication_classes = [SessionAuthentication]
-	permission_classes = [IsOwnerAndAuth]
+	# permission_classes = [IsOwnerAndAuth]
 	model = Order
 	queryset = Order.objects.all()
 	serializer_class = OrderDetailSerializer
@@ -644,7 +644,6 @@ class UpdateOrderStatusApiView(CreateAPIView): ## YO USE BHAKO CHAINA //STOREWIS
 			Response({"Fail": "Error updating order status"}, status.HTTP_400_BAD_REQUEST)
 
 
-
 from .fcm_service import send_fcm_token_for_device 
 class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 	# permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -653,9 +652,13 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 	permission_classes = [permissions.IsAuthenticated]
 	def post(self, request):
 		import pprint
+		# print('jpt')
+		print(request.POST.get('order_id'))
 		pprint.pprint(request.POST)
-		storewiseorder_id = request.POST.get('order_id') ### id of StoreWiseOrder model's.
+		storewiseorder_id = request.data.get('order_id') ### id of StoreWiseOrder model's.
+		print(storewiseorder_id)
 		status = request.POST.get('status')
+		# status = request.POST.get('returned')
 		storewiseorder = StoreWiseOrder.objects.filter(pk=storewiseorder_id).first()
 		user = User.objects.filter(pk=storewiseorder.fk_auth_user_id).first() #for user
 		print(user)
@@ -678,22 +681,9 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 				else:
 					self.subProductinStore(storewiseorder) ###CUSTOMER LE DEPO SANGA KINDA KHERI GHATCHA
 
-				# maybe save flag to retn jar in storewise order (single row)
-
-				# import uservariation history
-				#
-				# forloop get variation, qty of each items in storewise_orders
-				# 	var_history = new/edit existing history for user, variation
-				# 	var_history.firta_garne_qty += qty
-				# 	var_history.variation = varition
-				# 	
-				# 	Variation: jar firta yes/no bhanne flag, 140ko ma firta qty add huncha arko ma hunna
-				 	
-				# # Firta garne form/api
-				#  phone no customer:
-				#  variation: 
-				#  qty_returned: 
+				#VariationHistoryCountService paxi garne bhaye
 			storewiseorder.save()
+			print(status)
 			send_fcm_token_for_device(settings.FCM_SERVER_KEY, user.firebase_token, storewiseorder.order_id, status)
 
 			 # serverToken = settings.FCM_SERVER_KEY #server key here

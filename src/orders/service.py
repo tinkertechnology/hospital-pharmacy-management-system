@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import UserAddress, Order, Quotation, UserCheckout, StoreWiseOrder
 
-from products.models import Product, ProductImage
+from products.models import Product, ProductImage, UserVariationQuantityHistory
 from carts.models import Cart, CartItem
 from store.models import Store
 from store.serializers import StoreWiseOrderSerializer, StoreSerializer
@@ -18,6 +18,38 @@ from routes.models import get_nearest_route
 from decimal import Decimal
 User = get_user_model()
 
+
+def VariationHistoryCountService(cart_id):
+	storewiseorder = StoreWiseOrder.objects.filter(cart_id=cart_id).first()
+	ordered_by_user = storewiseorder.fk_auth_user
+	ordered_items = storewiseorder.cart.cartitem_set.all()
+	for item in ordered_items:
+		var_history = UserVariationQuantityHistory.objects.filter(variation=item.item).filter(user=ordered_by_user).first() #item is cartitem instance and .item is variation instance
+		if not var_history:
+			var_history = UserVariationQuantityHistory()
+		if item.item.is_refill:
+			var_history.num_taken +=item.quantity 
+			var_history.num_delta +=item.quantity  #var_history.num_taken - var_history.num_returned
+			var_history.variation = item.item
+			var_history.user = ordered_by_user
+			var_history.save()
+		
+
+# maybe save flag to retn jar in storewise order (single row)
+
+# import uservariation history
+#
+# forloop get variation, qty of each items in storewise_orders
+# 	var_history = new/edit existing history for user, variation
+# 	var_history.firta_garne_qty += qty
+# 	var_history.variation = varition
+# 	
+# 	Variation: jar firta yes/no bhanne flag, 140ko ma firta qty add huncha arko ma hunna
+	
+# # Firta garne form/api
+#  phone no customer:
+#  variation: 
+#  qty_returned: 
 
 def SaveStoreWiseOrder(order, user_id):
 	print('order::')

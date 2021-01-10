@@ -48,8 +48,9 @@ from account.views import (
     SurveyRegisterAPIView,
     CheckTokenAPIView,
     SendMessageToMobileAPIView, # FOR SENDING SMS
-    SaveUpdateFirebaseToken     #update,save firebasetoken for sending message to user fcm
-
+    SaveUpdateFirebaseToken,     #update,save firebasetoken for sending message to user fcm
+    GetUserJarAndCreditAPIView,
+    GetUserCreditAndJarByStorewise
 )
 
 from carts.views import (
@@ -62,6 +63,8 @@ from carts.views import (
         ItemCountView, 
         AddToCartView,
         RemoveCartItemFromCart,
+        AddToCartForCustomUserAPIView,
+        ReturnToStoreForCustomUserAPIView,
 
         )
 from orders.views import (
@@ -87,7 +90,6 @@ from orders.views import (
                     UpdateOrderStatusApiView,
                     StoreWiseOrderHistoryLists,
                     UpdateStoreWiseOrderStatusApiView,
-
                     StoreWiseOrderLists,
                     myStoreName,
                     AddNoteToOrderAPIView,
@@ -112,7 +114,8 @@ from products.views import (
         AddProductAPIView,
         AllProductListAPIView,
         AllProductRetrieveAPIView,
-        ProductVariationRetrieveAPIView
+        ProductVariationRetrieveAPIView,
+        StoreWiseProductListAPIView
         
 
     )
@@ -160,8 +163,11 @@ urlpatterns = [
     re_path(r'^api/CustomerMessage/$', CustomerMessageAPIView.as_view(), name='CustomerMessage'),
     re_path(r'^api/CustomerSurveryInfo/$', SurveyRegisterAPIView.as_view(), name="CustomerSurveryInfo"),
     re_path(r'^api/SaveUpdateFirebaseToken/$', SaveUpdateFirebaseToken.as_view(), name="SaveUpdateFirebaseToken"),
-    
-    
+    re_path(r'^api/GetUserJarAndCreditAPIView/$', GetUserJarAndCreditAPIView.as_view(), name="GetUserJarAndCreditAPIView"),
+    re_path(r'^api/StoreWiseProductListAPIView/$', StoreWiseProductListAPIView.as_view(), name="StoreWiseProductListAPIView"),
+    re_path(r'^api/AddToCartForCustomUserAPIView/$', AddToCartForCustomUserAPIView.as_view(), name="AddToCartForCustomUserAPIView"),
+    re_path(r'^api/ReturnToStoreForCustomUserAPIView/$', ReturnToStoreForCustomUserAPIView.as_view(), name="ReturnToStoreForCustomUserAPIView"),
+    re_path(r'^api/GetUserCreditAndJarByStorewise/$', GetUserCreditAndJarByStorewise.as_view(), name="GetUserCreditAndJarByStorewise"),
 
     
     # re_path(r'^api/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
