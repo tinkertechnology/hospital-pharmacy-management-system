@@ -20,6 +20,9 @@ import random
 import requests
 from django.core.mail import send_mail
 from rest_framework.generics import CreateAPIView, ListAPIView
+from store.models import StoreAccount, StoreUser
+from .serializer import UserSerializer
+from django.http import Http404
 
 User = get_user_model()
 
@@ -759,19 +762,19 @@ class GetUserJarAndCreditAPIView(APIView):
 				return Response({"Fail": phone+ " is not registered, please register"}, status.HTTP_400_BAD_REQUEST)
 			data = dict()
 			jars = UserVariationQuantityHistorySerializer(UserVariationQuantityHistory.objects.filter(user=user), many=True)
+			users = UserSerializer(user)
 			if not user.nick_name:
 				user.nick_name=""
 			data = {
-				'name':user.firstname + ' '+user.lastname +' ('+ user.nick_name +' )',
-				'nick_name' : user.nick_name,
-				'jars': jars.data,
+				# 'name':user.firstname + ' '+user.lastname +' ('+ user.nick_name +' )',
+				# 'nick_name' : user.nick_name,
+				# 'jars': jars.data,
+				'users': users.data
 			}
 			return Response(data)
 		else:
 			return Response({"Fail":"Enter Phone number "}, status.HTTP_400_BAD_REQUEST)
-from store.models import StoreAccount, StoreUser
-from .serializer import UserSerializer
-from django.http import Http404
+
 class GetUserCreditAndJarByStorewise(APIView):
 	def get_current_store(self):
 		print('jpt')

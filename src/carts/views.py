@@ -322,16 +322,40 @@ from orders.service import CreateOrderFromCart, VariationHistoryCountService
 from carts.models import Cart
 
 
-
+from account.serializer import CreateUserSerializer
+import random, string
+def randomword(length):
+	letters = string.ascii_lowercase
+	return ''.join(random.choice(letters) for i in range(length))
 class AddToCartForCustomUserAPIView(APIView):
 	serializer_class = CartItemSerializer
+
+
 	def post(self, request, *args, **kwargs):
 		print(request.data)
 		item_id = request.data.get('item_id')
 		phone = request.data.get('phone')
+		firstname = request.data.get('firstname', ' ')
+		lastname = request.data.get('lastname', ' ')
+		nickname = request.data.get('firstname', ' ')
 		user = User.objects.filter(mobile__iexact=phone).first()
 		if not user:
-			return Response({"Fail": phone+ " is not registered, please register"}, status.HTTP_400_BAD_REQUEST)
+			# return Response({"Fail": phone+ " is not registered, please register"}, status.HTTP_400_BAD_REQUEST)
+			temp_data = {
+						'mobile': phone,
+						'password': randomword(8),
+						'email': randomword(8)+'@gmail.com',
+						'nick_name': nickname,
+						'username': phone,
+						'firstname': firstname,
+						'lastname':lastname
+
+					}
+			serializer = CreateUserSerializer(data = temp_data)
+			serializer.is_valid(raise_exception = True)
+			user = serializer.save()
+			# old.delete()
+			print('new user section')
 		quantity = int(request.data.get('quantity'))
 		cash = request.data.get('cash', 0) #debit ho
 		ordered_price = request.data.get('ordered_price')
@@ -365,7 +389,7 @@ class AddToCartForCustomUserAPIView(APIView):
 			CreateOrderFromCart( order_data )
 			VariationHistoryCountService(cart.id)
 			pass
-		return Response(status=200)
+		return Response({'Success': 'Saved sucessfully'}, status=200)
 		# cart = Cart.objects.filter(user_id=user_id).filter(active=1).first()
 		# if not cart: 
 		# 	cart = Cart()

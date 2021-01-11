@@ -67,7 +67,7 @@ def CartItemCreateService(data):
 	user_account_data = {
 			'fk_user_id': user_id,
 			'fk_store_id': Variation.objects.get(pk=item_id).product.fk_store.id,
-			'credit': (Decimal(cart.total)-debit)
+			'credit': (Decimal(cart.total)-Decimal(debit))
 		}
 	print("user_acc_data",user_account_data)
 	UserAccountStoreWiseSaveService(user_account_data)
