@@ -29,8 +29,8 @@ def UserAccountStoreWiseSaveService(data):
 		cart.fk_store_id = fk_store_id
 		cart.credit=0
 	cart.credit += Decimal(credit)
-	if cart.credit < 0: #dherai +cash ayo bhane - ma credit nabasos
- 		cart.credit = 0
+	# if cart.credit < 0: #dherai +cash ayo bhane - ma credit nabasos
+ 		# cart.credit = 0
 	cart.save()
 	return cart
     
