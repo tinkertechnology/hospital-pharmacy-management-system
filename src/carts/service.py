@@ -3,6 +3,8 @@ from django.conf import settings
 from products.models import Variation
 from store.service import UserAccountStoreWiseSaveService
 from decimal import Decimal
+from orders.service import  VariationHistoryCountService
+
 def CartItemCreateService(data):
 	is_auto_order = data.get('is_auto_order', False); #auto order, by customer
 	user_id = data.get('user_id')
@@ -73,3 +75,24 @@ def CartItemCreateService(data):
 	UserAccountStoreWiseSaveService(user_account_data)
 	print(user_account_data)
 	return cartItem
+
+
+
+#mistakely ordered in cart
+# staff will delete that cart and reorder new cart
+def CartItemSoftDelete(data):
+	cart_id = data.get('cart_id')
+	cart = Cart.objects.filter(pk=cart_id).first()
+	cart.isDeleted = true;
+
+	# decrease credit from deleted cart
+	user_account_data = {
+			'fk_user_id': user_id,
+			'fk_store_id': Variation.objects.get(pk=item_id).product.fk_store.id,
+			'credit': (Decimal(cart.total)-Decimal(debit))
+		}
+	print("user_acc_data",user_account_data)
+	UserAccountStoreWiseSaveService(user_account_data)
+
+	# decrease jar from deleted cart
+	VariationHistoryCountService(cart_id, -1)

@@ -19,7 +19,8 @@ from decimal import Decimal
 User = get_user_model()
 
 
-def VariationHistoryCountService(cart_id):
+# sign: default 1, pass -1 to decreament ordered_items (if cart is deleted)
+def VariationHistoryCountService(cart_id, sign=1):
 	storewiseorder = StoreWiseOrder.objects.filter(cart_id=cart_id).first()
 	ordered_by_user = storewiseorder.fk_auth_user
 	ordered_items = storewiseorder.cart.cartitem_set.all()
