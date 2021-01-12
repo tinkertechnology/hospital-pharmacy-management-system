@@ -12,6 +12,7 @@ def CartItemCreateService(data):
 	quantity = data.get('quantity')
 	debit = data.get('debit', 0)
 	credit = data.get('credit', 0)
+	ordered_price = data.get('ordered_price', 0)
 	is_add_sub_qty = data.get('is_add_sub_qty')
 	print('----')
 	print(credit)
@@ -51,6 +52,7 @@ def CartItemCreateService(data):
 		#"item" : data.get('item'], 
 		"item_id" : item_id, 
 		"cart_id" : cart.id,
+		"ordered_price" : ordered_price
 		# "credit" : credit
 	}
 	
@@ -66,10 +68,13 @@ def CartItemCreateService(data):
 	# if self.request.user.is_authenticated:
 	# 	cart.user = self.request.user
 	# 	cart.save()
+	cart_saved = Cart.objects.filter(pk=cart.id).first() #Signal le garda hamle jadu gareko
+	#cart instance chai signal le db ma save garyo ... tara mathi instance ma aaudaina..
+	#  tei bhayera db ko new instance taneko..jasma signal le save gareko total ne aauxa
 	user_account_data = {
 			'fk_user_id': user_id,
 			'fk_store_id': Variation.objects.get(pk=item_id).product.fk_store.id,
-			'credit': (Decimal(cart.total)-Decimal(debit))
+			'credit': (Decimal(cart_saved.total)-Decimal(debit))
 		}
 	print("user_acc_data",user_account_data)
 	UserAccountStoreWiseSaveService(user_account_data)

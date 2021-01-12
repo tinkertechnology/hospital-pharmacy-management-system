@@ -40,6 +40,8 @@ def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
 		if instance.fk_storewise_order is not None:	
 			pass	# price = instance.ordered_price
 		else:
+			if instance.ordered_price!=0:
+				price = instance.ordered_price
 			instance.orginal_price = price
 			# if qty>=3:
 			# 	price = price-Decimal(float(price)*(3/10))
