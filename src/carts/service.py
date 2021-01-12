@@ -71,6 +71,7 @@ def CartItemCreateService(data):
 	cart_saved = Cart.objects.filter(pk=cart.id).first() #Signal le garda hamle jadu gareko
 	#cart instance chai signal le db ma save garyo ... tara mathi instance ma aaudaina..
 	#  tei bhayera db ko new instance taneko..jasma signal le save gareko total ne aauxa
+	print(cart_saved.__dict__)
 	user_account_data = {
 			'fk_user_id': user_id,
 			'fk_store_id': Variation.objects.get(pk=item_id).product.fk_store.id,

@@ -20,7 +20,10 @@ User = get_user_model()
 
 
 # sign: default 1, pass -1 to decreament ordered_items (if cart is deleted)
-def VariationHistoryCountService(cart_id, sign=1):
+def VariationHistoryCountService(data):
+	cart_id = data.get('cart_id')
+	sign = data.get('sign', 1)
+	comment = data.get('comment')
 	storewiseorder = StoreWiseOrder.objects.filter(cart_id=cart_id).first()
 	ordered_by_user = storewiseorder.fk_auth_user
 	ordered_items = storewiseorder.cart.cartitem_set.all()
@@ -28,11 +31,12 @@ def VariationHistoryCountService(cart_id, sign=1):
 		var_history = UserVariationQuantityHistory.objects.filter(variation=item.item).filter(user=ordered_by_user).first() #item is cartitem instance and .item is variation instance
 		if not var_history:
 			var_history = UserVariationQuantityHistory()
-		if item.item.is_refill:
-			var_history.num_taken +=item.quantity 
-			var_history.num_delta +=item.quantity  #var_history.num_taken - var_history.num_returned
+		if item.item.is_refill: #refill true ho bhane + jodixa
+			var_history.num_taken +=float(item.quantity)
+			var_history.num_delta +=float(item.quantity)  #var_history.num_taken - var_history.num_returned
 			var_history.variation = item.item
 			var_history.user = ordered_by_user
+			var_history.comment = comment
 			var_history.save()
 		
 
@@ -94,6 +98,8 @@ def SaveStoreWiseOrder(order, user_id):
 		store_wise.fk_ordered_by_store = ordered_by
 		store_wise.fk_payment_method = order.fk_payment_method
 		store_wise.is_auto_order = order.is_auto_order
+		if order.is_delivered:
+			store_wise.is_delivered = order.is_delivered
 		store_wise.save()
 		variation.fk_storewise_order_id = store_wise.id
 		variation.save()
@@ -138,6 +144,7 @@ def CreateOrderFromCart(validated_data):
 	order_longitude = validated_data.get("order_longitude")
 	fk_payment_method = validated_data.get("fk_payment_method")
 	fk_payment_method_id = fk_payment_method
+	is_delivered = validated_data.get("is_delivered", False)
 	if not isinstance(fk_payment_method_id, int):
 		fk_payment_method_id = fk_payment_method.id
 	# fk_ordered_store = None
@@ -187,6 +194,8 @@ def CreateOrderFromCart(validated_data):
 	order.fk_auth_user_id = user_id
 	order.order_latitude = order_latitude
 	order.order_longitude = order_longitude
+	if is_delivered:
+		order.is_delivered = is_delivered
 	# if is_auto_order == False:
 	# 	order.fk_ordered_store_id = fk_ordered_store_id #not required  #also, auto order wont supply ordered_store
 

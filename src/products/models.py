@@ -130,13 +130,15 @@ class Variation(models.Model):
 
 	def get_title(self):
 		return "%s - %s" %(self.product.title, self.title)
-
+from datetime import date
 class UserVariationQuantityHistory(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="jar_users", on_delete=models.CASCADE, null=True, blank=True)
 	variation = models.ForeignKey(Variation, on_delete=models.CASCADE)
 	num_taken = models.FloatField(default=0)
 	num_returned = models.FloatField(default=0)
 	num_delta = models.FloatField(default=0)
+	comment = models.CharField(max_length=500, null=True, blank=True)
+	timestamp = models.DateField(default=date.today)
 
 def product_post_saved_receiver(sender, instance, created, *args, **kwargs):
 	product = instance

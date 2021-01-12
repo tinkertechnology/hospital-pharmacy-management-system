@@ -19,8 +19,8 @@ class CartItem(models.Model):
 	# after this cart item is added to storewiseorder table
 	fk_storewise_order = models.ForeignKey("orders.StoreWiseOrder", on_delete=models.CASCADE, blank=True, null=True) 
 	item = models.ForeignKey(Variation, on_delete=models.CASCADE)
-	quantity = models.PositiveIntegerField(default=1)
-
+	# quantity = models.PositiveIntegerField(default=1)
+	quantity = models.DecimalField(max_digits=25, decimal_places=2, default=1.00)	
 	tax_amount = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	line_item_total = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
 	orginal_price = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
@@ -35,7 +35,7 @@ class CartItem(models.Model):
 
 def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
 	qty = instance.quantity
-	if Decimal(qty) >= 1:
+	if Decimal(qty) >= 0:
 		price = instance.item.get_price()
 		if instance.fk_storewise_order is not None:	
 			pass	# price = instance.ordered_price

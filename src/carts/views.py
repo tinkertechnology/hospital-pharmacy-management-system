@@ -33,6 +33,7 @@ from .models import Cart, CartItem
 from .serializers import CartItemSerializer, CheckoutSerializer, AddToCartSerializer, CartItemModelSerializer, RemoveCartItemFromCartSerializer
 from products.serializers import UserVariationQuantityHistorySerializer
 from django.contrib.auth import get_user_model
+from decimal import Decimal
 User = get_user_model()
 
 # 
@@ -329,8 +330,6 @@ def randomword(length):
 	return ''.join(random.choice(letters) for i in range(length))
 class AddToCartForCustomUserAPIView(APIView):
 	serializer_class = CartItemSerializer
-
-
 	def post(self, request, *args, **kwargs):
 		print(request.data)
 		item_id = request.data.get('item_id')
@@ -356,9 +355,9 @@ class AddToCartForCustomUserAPIView(APIView):
 			user = serializer.save()
 			# old.delete()
 			print('new user section')
-		quantity = int(request.data.get('quantity'))
+		quantity = Decimal(request.data.get('quantity',0))
 		cash = request.data.get('cash', 0) #debit ho
-		ordered_price = request.data.get('ordered_price')
+		ordered_price = request.data.get('ordered_price', 0)
 		# user_id = user.id
 		credit = request.data.get('credit')
 		debit=cash
@@ -383,11 +382,17 @@ class AddToCartForCustomUserAPIView(APIView):
 			'order_latitude': 1,
 			'order_longitude': 1,
 			'is_auto_order': True,
-			'fk_payment_method': 1
+			'fk_payment_method': 1,
+			'is_delivered': 1
 			}
 			print( order_data )
-			CreateOrderFromCart( order_data )
-			VariationHistoryCountService(cart.id)
+			CreateOrderFromCart( order_data ) #
+			vh_data = {
+				"cart_id":cart.id,
+				"comment": '',
+				"sign" : 1
+			}
+			VariationHistoryCountService(vh_data)
 			pass
 		return Response({'Success': 'Saved sucessfully'}, status=200)
 		# cart = Cart.objects.filter(user_id=user_id).filter(active=1).first()
@@ -471,7 +476,7 @@ class ReturnToStoreForCustomUserAPIView(APIView):
 		# 	CreateOrderFromCart( order_data )
 		# 	VariationHistoryCountService(cart.id)
 		# 	pass
-		return Response(status=200)
+		return Response({'Success': 'Updated Sucessfully'},status=200)
 
 
 
