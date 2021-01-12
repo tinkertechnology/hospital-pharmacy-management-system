@@ -63,6 +63,9 @@ class Product(models.Model):
 	can_sell_everywhere = models.BooleanField(default=False, blank=True) 
 	default = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='default_category', null=True, blank=True)
 
+	# can only ordered  by internal staff
+	# not visible by app
+	is_internal = models.BooleanField(default=False) 
 
 	objects = ProductManager()
 
@@ -88,9 +91,6 @@ class Product(models.Model):
 			return img.image.url
 		return img #None
 
-
-
-
 class Variation(models.Model):
 	product = models.ForeignKey(Product, on_delete=models.CASCADE,)
 	title = models.CharField(max_length=120)
@@ -99,6 +99,9 @@ class Variation(models.Model):
 	active = models.BooleanField(default=True)
 	inventory = models.IntegerField(null=True, blank=True) #refer none == unlimited amount
 	is_refill = models.BooleanField(default=False)
+	# can only ordered  by internal staff
+	# not visible by app
+	is_internal = models.BooleanField(default=False) 
 
 	def __str__(self):
 		return self.title

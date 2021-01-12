@@ -1,3 +1,4 @@
+from . import settings_conf
 # Project specific configuration
 #IS_MULTI_VENDOR = True
 
@@ -34,7 +35,62 @@ if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # During development only
 
 
+#debug print usage:
+#from django.conf import settings
+#settings.DPRINT()
+#settings.DLFPRINT() # add at begin of func
 
+# debug print
+# for 
+def DPRINT(arg, ForcePrint=0):
+    if(DEBUG):
+        #print(arg)
+        pass
+    if(ForcePrint != 0):
+        print(arg)
+    return
+
+# call at begin of function
+# To know which function is being called
+# debug line and file print
+# can pass func name in msg
+
+
+def DLFPRINT(msg="",ForcePrint=0):
+    disable_this=0 # set to 1 to disable dprint, unless forceprint is passed
+    if(DEBUG):
+        import inspect
+        cf = inspect.currentframe()
+        prevframe=inspect.currentframe().f_back
+        prev_frame_info = inspect.getframeinfo(prevframe)
+
+        #Traceback(filename='E:\\src\\products\\views.py', lineno=196,
+        # function='get_queryset', code_context=['\t\tsettings.DLFPRINT()\n'], index=0)
+        #print(inspect.getframeinfo(prevframe) )
+        #
+        #str(cf.f_back.f_lineno)
+        
+        msg = (
+            prev_frame_info.function + ' ' + 
+            'ln:' + str(prev_frame_info.lineno) + '| ' +
+            prev_frame_info.filename + ' '
+        )
+
+        is_print = 0
+        if(disable_this==0):
+            is_print=1
+
+        if(ForcePrint==1):
+            is_print=1
+
+        if is_print==1:
+            print(msg) #comment to debug
+        
+        #print(arg, line, file)
+        pass
+    #if(ForcePrint != 0):
+    #    print(arg, line, file)
+    return
 
 # Application definition
 
@@ -120,12 +176,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 SHIPPING_PRICE = 0
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+DATABASES = settings_conf.GetDatabases()
 
 BRAINTREE_PUBLIC = "qn3p5n7njksw47r3"
 BRAINTREE_PRIVATE = "d14ac944794c0df1c81991ecf49221ff"
@@ -198,7 +249,7 @@ EMAIL_USE_TLS = True
 
 
 
-SERVER_HOST = 'http://localhost:8000'
+SERVER_HOST = settings_conf.GetServerHost()
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (

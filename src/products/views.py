@@ -193,6 +193,7 @@ class ProductListAPIView(generics.ListAPIView):
 	filter_class = ProductFilter
 
 	def get_queryset(self):
+		settings.DLFPRINT()
 		# queryset = Product.objects.all() ##debug if not working location
 		# return queryset
 		users_store = None #user ko store (instance of Store)
@@ -205,9 +206,9 @@ class ProductListAPIView(generics.ListAPIView):
 			storeUser = StoreUser.objects.filter(fk_user_id=self.request.user.id).first()
 			if(storeUser is not None):
 				users_store = storeUser.fk_store
-		print(users_store)
+		settings.DPRINT(users_store)
 		if users_store is not None:
-			print(1)
+			settings.DPRINT(1)
 			if self.request.GET.get('view_my_products', None):
 				queryset = Product.objects.filter(fk_store_id=users_store.id)
 				return queryset
@@ -216,8 +217,8 @@ class ProductListAPIView(generics.ListAPIView):
 			# water supply company ko matrai product dekhnu paryo
 			queryset = Product.objects.exclude(fk_store_id=None) \
 				.exclude(fk_store__fk_store_type_id=None) \
-				.exclude(fk_store__fk_store_type_id=2) #exclude products from depo
-			print(queryset.query)
+				.exclude(fk_store__fk_store_type_id=2) #exclude products from depo, #todo define constant for 2
+			settings.DPRINT(queryset.query)
 			return queryset
 		
 		if self.request.query_params.get('id'):
@@ -241,15 +242,14 @@ class ProductListAPIView(generics.ListAPIView):
 			if(latitude and longitude ):
 				storeQs = StoreService.get_qs_store_locations_nearby_coords(latitude, longitude, distance, 2) #2: depo
 				nearest_store = storeQs.first()
-				print('nearest-store')
-				print(nearest_store.__dict__)
+				settings.DPRINT('nearest-store')
+				settings.DPRINT(nearest_store.__dict__)
 			queryset= Product.objects
 			
 			if common_product_id:
-
 				queryset = queryset.filter(fk_common_product_id=common_product_id)
 				#product_id = Product.objects.filter(fk_common_product_id=common_product_id).filter(fk_store=nearest_store).first().id
-				#print(['product_id:', product_id])
+				#settings.DPRINT(['product_id:', product_id])
 
 			if nearest_store is not None:
 				d = nearest_store.distance
@@ -264,13 +264,18 @@ class ProductListAPIView(generics.ListAPIView):
 					queryset = queryset.filter(fk_store_id=nearest_store.id).filter(can_sell_everywhere=True)
 				# cs = Product.objects.filter(can_sell_everywhere=True)
 				# queryset = queryset.filter(fk_store_id=nearest_store.id)
-				# print(nearest_store.__dict__)
+				# settings.DPRINT(nearest_store.__dict__)
 				#queryset = queryset.filter(Q(fk_store_id=nearest_store.id) | Q(can_sell_everywhere=True)) #.all()
 			else:
 				queryset = queryset.filter(can_sell_everywhere=True)
+			
+			# mobile app user (customer), see non internal products only
+			queryset = queryset.filter(is_internal=False)
+
 			if product_id:
 				queryset = queryset.filter(id=product_id)
-			print(queryset.query)
+			
+			settings.DPRINT(queryset.query)
 			queryset = queryset.all()
 			return queryset
 			if True:
@@ -351,14 +356,14 @@ class CreateProductAPIView(APIView):
 	# authentication_classes = [SessionAuthentication]
 	permission_classes = [IsAuthenticated]
 	def post(self, request, *args, **kwargs):
-		print(request.POST)
+		settings.DPRINT(request.POST)
 		product_title = request.data.get('title', False)
 		description = request.data.get('description', False)
 		price = request.data.get('price', False)
 		categories = request.data.get('categories', False)
 		product_id = request.data.get('product_id', None)
 		image  = request.FILES.get('file', None)
-		print(image)
+		settings.DPRINT(image)
 		if product_id:
 			pass
 		else:
@@ -380,20 +385,20 @@ class CreateProductAPIView(APIView):
 			# common = ProductCommon.objects.filter(pk=common_product).first()
 	
 		if product_id:
-			print(product_id)
+			settings.DPRINT(product_id)
 			product = Product.objects.filter(pk=product_id).first()
 
 			variation = Variation.objects.filter(product_id=product_id).first()
 			common_product = ProductCommon.objects.filter(pk=product.fk_common_product_id).first()
-			print(price)
+			settings.DPRINT(price)
 			product_image = ProductImage.objects.filter(product_id=product.id).first()
-			print(product_image)
+			settings.DPRINT(product_image)
 			if product_image is None:
 				product_image = ProductImage()
 			variation.price = price
 			variation.save()
 		else:
-			print(3)
+			settings.DPRINT(3)
 			product = Product()
 			common_product = ProductCommon()
 			product_image = ProductImage()
@@ -431,7 +436,7 @@ class AddProductAPIView(APIView):
 	# authentication_classes = [SessionAuthentication]
 	permission_classes = [IsAuthenticated]
 	def post(self, request, *args, **kwargs):
-		print(request.POST)
+		settings.DPRINT(request.POST)
 		product_title = request.data.get('title', '')
 		description = request.data.get('description', '')
 		price = request.data.get('price', '')
@@ -446,10 +451,10 @@ class AddProductAPIView(APIView):
 		sale_price = request.data.get('sale_price', None)
 		image  = request.FILES.get('file', None)
 		
-		print(image)
+		settings.DPRINT(image)
 		if product_id:
-			print('yes product')
-			print(product_id);
+			settings.DPRINT('yes product')
+			settings.DPRINT(product_id);
 			pass
 		else:
 			if image is None:
@@ -477,7 +482,7 @@ class AddProductAPIView(APIView):
 
 			# common = ProductCommon.objects.filter(pk=common_product).first()
 		if product_id:
-			print(product_id)
+			settings.DPRINT(product_id)
 			product = Product.objects.filter(pk=product_id).first()
 			# product.brand_id = brand_id
 			# product.company_id = company_id
@@ -485,15 +490,15 @@ class AddProductAPIView(APIView):
 			# product.
 			variation = Variation.objects.filter(product_id=product_id).first()
 			common_product = ProductCommon.objects.filter(pk=product.fk_common_product_id).first()
-			print(price)
+			settings.DPRINT(price)
 			product_image = ProductImage.objects.filter(product_id=product.id).first()
-			print(product_image)
+			settings.DPRINT(product_image)
 			if product_image is None:
 				product_image = ProductImage()
 			variation.price = price
 			variation.save()
 		else:
-			print(3)
+			settings.DPRINT(3)
 			product = Product()
 			common_product = ProductCommon()
 			product_image = ProductImage()
