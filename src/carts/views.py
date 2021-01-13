@@ -424,6 +424,7 @@ class ReturnToStoreForCustomUserAPIView(APIView):
 		print(request.data)
 		item_id = request.data.get('item_id')
 		phone = request.data.get('phone')
+		comment = request.data.get('comment')
 		user = User.objects.filter(mobile__iexact=phone).first()
 		if not user:
 			return Response({"Fail": phone+ " is not registered, please register"}, status.HTTP_400_BAD_REQUEST)
@@ -437,7 +438,8 @@ class ReturnToStoreForCustomUserAPIView(APIView):
 		data = {
 			'user_id': user.id,
 			'item_id': item_id,
-			'quantity': quantity #this is returned quantity of the user
+			'quantity': quantity, #this is returned quantity of the user
+			'comment' : comment
 			# 'ordered_price': ordered_price,
 			# 'is_auto_order': True,
 			# 'credit': credit,
@@ -458,6 +460,10 @@ class ReturnToStoreForCustomUserAPIView(APIView):
 				}
 				return Response(data, status=400) 
 			qs.num_delta = qs.num_delta-quantity
+			if comment:
+				qs.comment = comment
+			if qs.num_delta < 1.0 :
+				qs.comment = ''
 			qs.save()
 			seriailzer = UserVariationQuantityHistorySerializer(qs, read_only=True)
 			return Response(seriailzer.data)

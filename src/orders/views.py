@@ -741,6 +741,11 @@ class myStoreName(APIView):
 		get_store_name = Store.objects.filter(fk_user_id=request.user.id).first()
 		if get_store_name:
 			store_name = get_store_name.title
+		# if not get_store_name:
+		# 	store_user = StoreUser.objects.filter(fk_user_id=request.user.id).first()
+		# 	store_id = get_store_name.fk_store_id
+		# 	get_store_name = Store.objects.filter(fk_user_id=request.user.id).first()	
+		# 	get_store_name = get_store_name.title
 		return Response(store_name)
 
 

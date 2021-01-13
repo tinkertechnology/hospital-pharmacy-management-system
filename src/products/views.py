@@ -108,21 +108,39 @@ from django.conf import settings
 # 		}
 # 		return Response(data)
 
-
+from products.serializers import VariationSerializer
 class StoreWiseProductListAPIView(generics.ListAPIView):
-	queryset = Product.objects.all()
-	serializer_class = ProductSerializer
+	queryset = Variation.objects.all()
+	serializer_class = VariationSerializer
 	class Meta:
 		model = Product
 	
 	def get_queryset(self):
 		try:
 			store_id_auth_user = Store.objects.get(fk_user=self.request.user) #StoreUser.objects.get(fk_user=self.request.user).fk_store
-		except StoreUser.DoesNotExist:
-			raise Http404
-		products = Product.objects.filter(fk_store=store_id_auth_user.id) #.filter(is_internal=True)
+		except Store.DoesNotExist:
+			raise Http500
 		
-		return products
+		# products = Product.objects.filter(fk_store=store_id_auth_user.id)
+		# for product in products:
+		# return VariationSerializer(product.variation_set.all().filter(is_internal=True), many=True)
+		exclued_list = []
+		variation = Variation.objects.filter(is_internal=True).filter(product__fk_store__id=store_id_auth_user.id)
+		return variation
+
+		# for item in variation:
+		# 	if item.product.fk_store.id!=store_id_auth_user.id:
+		# 		exclued_list.append(item.id)
+		# variations = Variation.objects.exclude(id__in=exclued_list)
+		# # print(variations)
+		# # serializer = VariationSerializer(variations,many=True)
+		# # return serializer.data
+		# return variations
+
+		# for item in variation:
+		# 	if item.product.fk_store.id == StoreUser.objects.
+		# series = Product.objects.filter(id=series_id).prefetch_related('section_set', 'section_set__episode_set').get()
+		# return products
 
 
 class CommonProductListAPIView(generics.ListAPIView):
