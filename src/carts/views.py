@@ -338,6 +338,7 @@ class AddToCartForCustomUserAPIView(APIView):
 		lastname = request.data.get('lastname', ' ')
 		nickname = request.data.get('firstname', ' ')
 		user = User.objects.filter(mobile__iexact=phone).first()
+		print('user', user)
 		if not user:
 			# return Response({"Fail": phone+ " is not registered, please register"}, status.HTTP_400_BAD_REQUEST)
 			temp_data = {
