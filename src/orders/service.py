@@ -23,7 +23,7 @@ User = get_user_model()
 def VariationHistoryCountService(data):
 	cart_id = data.get('cart_id')
 	sign = data.get('sign', 1)
-	comment = data.get('comment')
+	# comment = data.get('comment')
 	storewiseorder = StoreWiseOrder.objects.filter(cart_id=cart_id).first()
 	ordered_by_user = storewiseorder.fk_auth_user
 	ordered_items = storewiseorder.cart.cartitem_set.all()
@@ -36,7 +36,8 @@ def VariationHistoryCountService(data):
 			var_history.num_delta +=float(item.quantity)  #var_history.num_taken - var_history.num_returned
 			var_history.variation = item.item
 			var_history.user = ordered_by_user
-			var_history.comment = comment
+			# if comment:
+			# 	var_history.comment += comment
 			var_history.save()
 		
 

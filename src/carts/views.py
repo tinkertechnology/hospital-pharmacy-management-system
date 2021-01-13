@@ -336,7 +336,7 @@ class AddToCartForCustomUserAPIView(APIView):
 		phone = request.data.get('phone')
 		firstname = request.data.get('firstname', ' ')
 		lastname = request.data.get('lastname', ' ')
-		nickname = request.data.get('firstname', ' ')
+		nickname = request.data.get('nick_name', ' ')
 		user = User.objects.filter(mobile__iexact=phone).first()
 		if not phone:
 			return Response('Phone number is required.', status=400)
@@ -461,9 +461,11 @@ class ReturnToStoreForCustomUserAPIView(APIView):
 				return Response(data, status=400) 
 			qs.num_delta = qs.num_delta-quantity
 			if comment:
-				qs.comment = comment
-			if qs.num_delta < 1.0 :
-				qs.comment = ''
+				if qs.comment is None:
+					qs.comment = ''
+				qs.comment += ', '+comment
+			# if qs.num_delta < 1.0 :
+			# 	qs.comment = ''
 			qs.save()
 			seriailzer = UserVariationQuantityHistorySerializer(qs, read_only=True)
 			return Response(seriailzer.data)
