@@ -12,6 +12,7 @@ def CartItemCreateService(data):
 	quantity = data.get('quantity')
 	debit = data.get('debit', 0)
 	credit = data.get('credit', 0)
+	fk_delivery_user_id = data.get('fk_delivery_user_id', None)
 	ordered_price = data.get('ordered_price', 0)
 	is_add_sub_qty = data.get('is_add_sub_qty')
 	print('----')
@@ -28,6 +29,7 @@ def CartItemCreateService(data):
 		cart.active = 1
 		cart.credit = credit
 		cart.debit = debit
+		cart.fk_delivery_user_id_id = fk_delivery_user_id
 		cart.tax_percentage = settings.TAX_PERCENT_DECIMAL#0.13
 		cart.is_auto_order = is_auto_order
 		cart.save()

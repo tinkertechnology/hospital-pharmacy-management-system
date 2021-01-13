@@ -81,6 +81,7 @@ class Cart(models.Model):
 	is_auto_order = models.BooleanField(default=False)
 	credit = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
 	debit = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
+	fk_delivery_user_id = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="delivery_user", on_delete=models.CASCADE, null=True, blank=True, default=None) 
 	# fk_status
 
 	# discounts

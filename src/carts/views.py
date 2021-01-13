@@ -338,6 +338,8 @@ class AddToCartForCustomUserAPIView(APIView):
 		lastname = request.data.get('lastname', ' ')
 		nickname = request.data.get('firstname', ' ')
 		user = User.objects.filter(mobile__iexact=phone).first()
+		if not phone:
+			return Response('Phone number is required.', status=400)
 		print('user', user)
 		if not user:
 			# return Response({"Fail": phone+ " is not registered, please register"}, status.HTTP_400_BAD_REQUEST)
@@ -361,6 +363,7 @@ class AddToCartForCustomUserAPIView(APIView):
 		ordered_price = request.data.get('ordered_price', 0)
 		# user_id = user.id
 		credit = request.data.get('credit')
+		comment = request.data.get('comment')
 		debit=cash
 		# user_id = um_auto_order.fk_usermembership.fk_member_user_id
 		data = {
@@ -370,7 +373,8 @@ class AddToCartForCustomUserAPIView(APIView):
 			'ordered_price': ordered_price,
 			'is_auto_order': True,
 			'credit': credit,
-			'debit': debit
+			'debit': debit,
+			'fk_delivery_user_id' : request.user.id
 		}
 		print(data)
 		CartItemCreateService(data)
@@ -384,13 +388,14 @@ class AddToCartForCustomUserAPIView(APIView):
 			'order_longitude': 1,
 			'is_auto_order': True,
 			'fk_payment_method': 1,
-			'is_delivered': 1
+			'is_delivered': 1,
+			'fk_delivery_user_id' : request.user.id
 			}
 			print( order_data )
 			CreateOrderFromCart( order_data ) #
 			vh_data = {
 				"cart_id":cart.id,
-				"comment": '',
+				"comment": comment,
 				"sign" : 1
 			}
 			VariationHistoryCountService(vh_data)

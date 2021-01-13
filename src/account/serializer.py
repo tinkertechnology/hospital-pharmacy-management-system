@@ -99,5 +99,5 @@ class UserSerializer(serializers.ModelSerializer):
 			return user.credit
 		return ''
 	def get_jardetails(self, obj):
-		jardetails = UserVariationQuantityHistorySerializer(UserVariationQuantityHistory.objects.filter(user=obj), many=True)
+		jardetails = UserVariationQuantityHistorySerializer(UserVariationQuantityHistory.objects.filter(user=obj).filter(num_delta__gt=0.0), many=True)
 		return jardetails.data

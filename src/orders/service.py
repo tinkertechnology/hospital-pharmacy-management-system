@@ -95,6 +95,7 @@ def SaveStoreWiseOrder(order, user_id):
 		store_wise.order_latitude = order.order_latitude
 		store_wise.order_longitude = order.order_longitude
 		store_wise.fk_ordered_store = store
+		store_wise.fk_delivery_user_id = order.fk_delivery_user_id
 		store_wise.fk_ordered_by_store = ordered_by
 		store_wise.fk_payment_method = order.fk_payment_method
 		store_wise.is_auto_order = order.is_auto_order
@@ -145,6 +146,7 @@ def CreateOrderFromCart(validated_data):
 	fk_payment_method = validated_data.get("fk_payment_method")
 	fk_payment_method_id = fk_payment_method
 	is_delivered = validated_data.get("is_delivered", False)
+	fk_delivery_user_id = validated_data.get('fk_delivery_user_id', None)
 	if not isinstance(fk_payment_method_id, int):
 		fk_payment_method_id = fk_payment_method.id
 	# fk_ordered_store = None
@@ -192,6 +194,7 @@ def CreateOrderFromCart(validated_data):
 	order.user_id = usercheckout_user.id
 	order.cart_id = cart.id
 	order.fk_auth_user_id = user_id
+	order.fk_delivery_user_id = fk_delivery_user_id
 	order.order_latitude = order_latitude
 	order.order_longitude = order_longitude
 	if is_delivered:
