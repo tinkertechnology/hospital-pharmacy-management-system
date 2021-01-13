@@ -352,7 +352,8 @@ class AllProductRetrieveAPIView(generics.RetrieveAPIView):
 class ProductFeaturedListAPIView(generics.ListAPIView):
 	#permission_classes = [IsAuthenticated]
 	# try:
-	queryset = ProductCommon.objects.all()
+	excluded_list = Product.objects.filter(is_internal=True).values_list('pk', flat=True)
+	queryset = ProductCommon.objects.exclude(id__in=excluded_list) #all()
 	# except Product.DoesNotExist:
 	# 	get_queryset = None
 	serializer_class = ProductFeaturedSerializer
