@@ -187,4 +187,15 @@ left join orders_useraddress on orders_useraddress.user_id = orders_usercheckout
 	data = GetJsonFromQueryData(query)
 	return HttpResponse(data, content_type='application/json;charset=utf8')
 
+from datetime import datetime
+class SalesAndCreditReportByDeliveryBoy(APIView):
+	def post(self, request, *args, **kwargs):
+		date = request.data.get('date', datetime.now())
+		delivery_boy_id = request.data.get('delivery_boy_id')
+		store_id = 1
+		qs = StoreWiseOrder.objects.filter(created_at__contains=datetime.date(date))
+		if delivery_boy_id:
+			pass
+
+
 

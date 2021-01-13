@@ -117,10 +117,10 @@ class StoreWiseProductListAPIView(generics.ListAPIView):
 	
 	def get_queryset(self):
 		try:
-			store_id_auth_user = StoreUser.objects.get(fk_user=self.request.user).fk_store
+			store_id_auth_user = Store.objects.get(fk_user=self.request.user) #StoreUser.objects.get(fk_user=self.request.user).fk_store
 		except StoreUser.DoesNotExist:
 			raise Http404
-		products = Product.objects.filter(fk_store=store_id_auth_user) #.filter(is_internal=True)
+		products = Product.objects.filter(fk_store=store_id_auth_user.id) #.filter(is_internal=True)
 		
 		return products
 
