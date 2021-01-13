@@ -38,6 +38,10 @@ class VariationSerializer(serializers.ModelSerializer):
 			'discount',
 			'inventory'
 		]
+	def get_queryset(self, obj):
+		return obj.filter(is_internal=False)
+
+
 
 	def get_discount(self, obj):
 		if obj.sale_price is None:
@@ -113,7 +117,8 @@ class ProductDetailUpdateSerializer(serializers.ModelSerializer):
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
-	variation_set = VariationSerializer(many=True, read_only=True)
+	# variation_set =  #VariationSerializer(many=True, read_only=True)
+	variation_set = serializers.SerializerMethodField(source='get_variation_set', read_only=True)
 	image = serializers.SerializerMethodField()
 	fk_common_product = CommonProductSerializer()
 	class Meta:
@@ -125,8 +130,18 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 			"price",
 			"image",
 			"variation_set",
+			# "variation_set1",
 			"fk_common_product"
 		]
+		
+	def get_variation_set(self, obj):
+		return VariationSerializer(obj.variation_set.filter(is_internal=False), many=True).data
+
+		# variation_set1 = serializers.SerializerMethodField('_get_children')
+		# def _get_children(self, obj):
+		# 	serializer = VariationSerializer(Variation.objects.filter(is_internal=False).filter(product=obj), many=True, read_only=True)
+		# 	print(serializer)
+		# 	return serializer.data
 
 	def get_image(self, obj):
 		image_url = obj.productimage_set.first()
