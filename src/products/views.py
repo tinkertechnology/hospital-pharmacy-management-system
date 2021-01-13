@@ -119,7 +119,7 @@ class StoreWiseProductListAPIView(generics.ListAPIView):
 		try:
 			store_id_auth_user = Store.objects.get(fk_user=self.request.user) #StoreUser.objects.get(fk_user=self.request.user).fk_store
 		except Store.DoesNotExist:
-			raise Http500
+			raise Http404
 		
 		# products = Product.objects.filter(fk_store=store_id_auth_user.id)
 		# for product in products:
