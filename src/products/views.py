@@ -109,6 +109,7 @@ from django.conf import settings
 # 		return Response(data)
 
 from products.serializers import VariationSerializer
+from .service import getUserStoreService
 class StoreWiseProductListAPIView(generics.ListAPIView):
 	queryset = Variation.objects.all()
 	serializer_class = VariationSerializer
@@ -116,16 +117,16 @@ class StoreWiseProductListAPIView(generics.ListAPIView):
 		model = Product
 	
 	def get_queryset(self):
-		try:
-			store_id_auth_user = Store.objects.get(fk_user=self.request.user) #StoreUser.objects.get(fk_user=self.request.user).fk_store
-		except Store.DoesNotExist:
+		store = getUserStoreService(self.request.user.id)
+			# store_id_auth_user = Store.objects.get(fk_user=self.request.user) #StoreUser.objects.get(fk_user=self.request.user).fk_store
+		if store is None:
 			raise Http404
 		
 		# products = Product.objects.filter(fk_store=store_id_auth_user.id)
 		# for product in products:
 		# return VariationSerializer(product.variation_set.all().filter(is_internal=True), many=True)
 		exclued_list = []
-		variation = Variation.objects.filter(is_internal=True).filter(product__fk_store__id=store_id_auth_user.id)
+		variation = Variation.objects.filter(is_internal=True).filter(product__fk_store__id=store.id)
 		return variation
 
 		# for item in variation:
