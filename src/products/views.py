@@ -15,7 +15,6 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.response import Response
 from rest_framework.reverse import reverse as api_reverse
 from rest_framework.views import APIView
-from django.db.models import Q
 from store import service as StoreService
 from rest_framework.generics import CreateAPIView, ListAPIView,ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
 from products.serializers import VariationSerializer
@@ -355,7 +354,7 @@ class AllProductRetrieveAPIView(generics.RetrieveAPIView):
 class ProductFeaturedListAPIView(generics.ListAPIView):
 	#permission_classes = [IsAuthenticated]
 	# try:
-	excluded_list = Product.objects.filter(is_internal=True, active=False).values_list('fk_common_product_id', flat=True)
+	excluded_list = Product.objects.filter(Q(is_internal=True) | Q(active=False)).values_list('fk_common_product_id', flat=True)
 	queryset = ProductCommon.objects.exclude(id__in=excluded_list) #all()
 	# except Product.DoesNotExist:
 	# 	get_queryset = None
