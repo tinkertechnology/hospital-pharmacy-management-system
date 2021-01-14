@@ -18,7 +18,8 @@ from rest_framework.views import APIView
 from django.db.models import Q
 from store import service as StoreService
 from rest_framework.generics import CreateAPIView, ListAPIView,ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
-
+from products.serializers import VariationSerializer
+from store.service import getUserStoreService
 # Create your views here.
 from .filters import ProductFilter
 from .forms import VariationInventoryFormSet, ProductFilterForm
@@ -108,8 +109,7 @@ from django.conf import settings
 # 		}
 # 		return Response(data)
 
-from products.serializers import VariationSerializer
-from .service import getUserStoreService
+
 class StoreWiseProductListAPIView(generics.ListAPIView):
 	queryset = Variation.objects.all()
 	serializer_class = VariationSerializer
@@ -291,6 +291,8 @@ class ProductListAPIView(generics.ListAPIView):
 			
 			# mobile app user (customer), see non internal products only
 			queryset = queryset.filter(is_internal=False)
+			#active nabhako nadekhaune..
+			queryset = queryset.filter(active=True)
 
 			if product_id:
 				queryset = queryset.filter(id=product_id)
@@ -353,7 +355,7 @@ class AllProductRetrieveAPIView(generics.RetrieveAPIView):
 class ProductFeaturedListAPIView(generics.ListAPIView):
 	#permission_classes = [IsAuthenticated]
 	# try:
-	excluded_list = Product.objects.filter(is_internal=True).values_list('fk_common_product_id', flat=True)
+	excluded_list = Product.objects.filter(is_internal=True).filter(active=False).values_list('fk_common_product_id', flat=True)
 	queryset = ProductCommon.objects.exclude(id__in=excluded_list) #all()
 	# except Product.DoesNotExist:
 	# 	get_queryset = None

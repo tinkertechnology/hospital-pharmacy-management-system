@@ -289,7 +289,6 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
 
 		]
 	def get_created_at(self, obj):
-		print(obj.created_at)
 		order_time = ((obj.created_at + timedelta(hours=5, minutes=45))).strftime("%Y-%m-%d, %I:%M %p")
 		return order_time
 	
@@ -325,10 +324,8 @@ class StoreWiseOrderListSerializer(serializers.ModelSerializer):
 		return cutomer_address
 
 	def get_customer_name(self, obj):
-
 		customer_name = ""
 		customer = User.objects.filter(pk=obj.fk_auth_user_id).first()
-		print(customer.lastname)
 		if customer:
 			return str(customer.firstname + ' '+ customer.lastname + ' '+ customer.mobile)
 		return customer_name

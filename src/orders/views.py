@@ -223,12 +223,12 @@ class OrderLists(ListAPIView):
 		if super_user:
 			orders = orders = Order.objects.filter(status=1)
 			if filter_query=="pending":
-				print(1)
+				settings.DPRINT(1)
 				orders = Order.objects.filter(status=1)
 			if filter_query=="delivered":
-				print(2)
+				settings.DPRINT(2)
 				orders = Order.objects.filter(status=0)	
-				print(orders.count())
+				settings.DPRINT(orders.count())
 
 
 		else:
@@ -242,79 +242,61 @@ class OrderLists(ListAPIView):
 		return orders
 
 
-
+from store.service import getUserStoreService
 class StoreWiseOrderLists(ListAPIView):
 	# queryset = Order.objects.all()
+	
 	permission_classes = [permissions.IsAuthenticated]
 	serializer_class = StoreWiseOrderListSerializer
 
 	def get_queryset(self):
+		settings.DLFPRINT()
 		filter = self.request.GET.get('filter')
 		# from_date = self.request.GET.get('from_date')
 		# to_date = self.request.GET.get('to_date')
 		# from_date = '2020-07-18 00:00:00';
 		# to_date = '2020-07-19 00:00:00';
-
-
 		user=self.request.user
 		# orders= Order.objects.filter(fk_auth_user_id=self.request.user.id)
 		supply_store_user = Store.objects.filter(fk_user_id=self.request.user.id).first()
 		delivery_user = StoreUser.objects.filter(fk_user_id=user.id).filter(fk_store_usertypes_id=2).first()
-		
-		if supply_store_user is not  None:
-			print(supply_store_user.id)
-			qs = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id).filter(is_delivered=0)
-			print(1) #.filter(is_delivered=0)
-			if filter:
-				if filter=='pending':
-					qs = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id).filter(is_delivered=0, is_transit=0, is_cancelled=0)
-				if filter=='transit':
-					qs = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id).filter(is_transit=1)
-				if filter=='delivered':
-					qs = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id).filter(is_delivered=1)
-				if filter=='cancelled':
-					qs = qs = StoreWiseOrder.objects.filter(fk_ordered_store_id=supply_store_user.id).filter(is_cancelled=1)
-		
-		if delivery_user is not None:
-			qs = StoreWiseOrder.objects.filter(fk_route_id=delivery_user.fk_route_id).filter(is_delivered=0)
-			if filter:
-				if filter=='pending':
-					qs = StoreWiseOrder.objects.filter(fk_route_id=delivery_user.fk_route_id).filter(is_delivered=0, is_transit=0, is_cancelled=0)
-				if filter=='transit':
-					qs = StoreWiseOrder.objects.filter(fk_route_id=delivery_user.fk_route_id).filter(is_transit=1)
-				if filter=='delivered':
-					qs = StoreWiseOrder.objects.filter(fk_route_id=delivery_user.fk_route_id).filter(is_delivered=1)
-				if filter=='cancelled':
-					qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(is_cancelled=1)
+		store = getUserStoreService(self.request.user.id)
 
-		if not supply_store_user:
+		orderq =StoreWiseOrder.objects 
+		if store is not  None: #depotmanager ko lagi
+			# qs = StoreWiseOrder.objects.filter(fk_ordered_store_id=store.id).filter(is_delivered=0)
+			settings.DPRINT(1) #.filter(is_delivered=0)
+			orderq = orderq.filter(fk_ordered_store_id=store.id) #.filter(is_delivered=0)
+		if filter:
+			if filter=='pending':
+				orderq = orderq.filter(is_delivered=0, is_transit=0, is_cancelled=0)
+			elif filter=='transit':
+				orderq = orderq.filter(is_transit=1)
+			elif filter=='delivered':
+				orderq = orderq.filter(is_delivered=1)
+			elif filter=='cancelled':
+				orderq = orderq.filter(is_cancelled=1)
+		else:
+			orderq = orderq.filter(is_delivered=0)
+		if delivery_user is not None and False: #delivery-boy lai route anusar gareko
+			orderq = orderq.filter(fk_route_id=delivery_user.fk_route_id).filter(is_delivered=0)
+		if not supply_store_user: ##Yo normal-user-lai
 			if not delivery_user:
-				qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(is_delivered=0)
-				if filter:
-					if filter=='pending':
-						qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id)
-					if filter=='transit':
-						qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(is_transit=1)
-					if filter=='delivered':
-						qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(is_delivered=1)
-					if filter=='cancelled':
-						qs = StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(is_cancelled=1)
-
-
+				orderq = orderq.filter(fk_auth_user_id=self.request.user.id)		
 		# from django.utils.dateparse import parse_date
 		# import dateutil.parser
 		# if from_date:
-		# 	print(12)
+		# 	settings.DPRINT(12)
 		# 	from_date = dateutil.parser.parse(from_date)
 		# 	qs = qs.filter(created_at__gte=from_date) #(created_at__range=[from_date, to_date])
-		# 	print(from_date)
+		# 	settings.DPRINT(from_date)
 		# if to_date:
-		# 	print(21)
-		# 	print(to_date)
+		# 	settings.DPRINT(21)
+		# 	settings.DPRINT(to_date)
 		# 	to_date = dateutil.parser.parse(to_date)
 		# 	qs = qs.filter(created_at__lt=to_date)
-		print(qs.query)
-		return qs
+		settings.DPRINT(orderq.query)
+		return orderq#qs
 
 class OrderHistoryLists(ListAPIView):
 	from django.db.models import Q
@@ -324,10 +306,10 @@ class OrderHistoryLists(ListAPIView):
 	def get_queryset(self):
 		
 		non_store_user = Store.objects.filter(fk_user_id=self.request.user.id).first()
-		print(non_store_user)
+		settings.DPRINT(non_store_user)
 		if non_store_user is None:
 			# user_checkouts = UserCheckout.objects.filter(user_id=self.request.user.id).id
-			# print(user_checkouts.__dict__)
+			# settings.DPRINT(user_checkouts.__dict__)
 			orders= Order.objects.filter(fk_auth_user_id=self.request.user.id).filter(Q(is_paid=True) | Q(is_delivered=True))
 			
 			
@@ -355,7 +337,7 @@ class StoreWiseOrderHistoryLists(ListAPIView):
 	
 		if store_user is None:
 			# user_checkouts = UserCheckout.objects.filter(user_id=self.request.user.id).id
-			# print(user_checkouts.__dict__)
+			# settings.DPRINT(user_checkouts.__dict__)
 			orders= StoreWiseOrder.objects.filter(fk_auth_user_id=self.request.user.id).filter(Q(is_paid=True) | Q(is_delivered=True))
 			
 			
@@ -385,8 +367,8 @@ class CartOrderLists(ListAPIView):
 		#token = self.create_token(cart.id)
 		# items = CartItemSerializer(cart.cartitem_set.all(), many=True)
 		items = CartItemSerializer(cart.cartitem_set.all(), many=True)
-		print(items)
-		print(cart.items.all())
+		settings.DPRINT(items)
+		settings.DPRINT(cart.items.all())
 		data = {
 		# "token": self.token,
 		"cart" : cart.id,
@@ -398,7 +380,7 @@ class CartOrderLists(ListAPIView):
 		# "product_id": items.id,
 		}
 		return Response(data)
-		# print(cart.items)
+		# settings.DPRINT(cart.items)
 		# return Response(len(data))
 
 	# queryset = Order.objects.all()
@@ -407,7 +389,7 @@ class CartOrderLists(ListAPIView):
 		# cart_id = 22
 		# cart_items = CartItem.objects.all()
 		# orders = Order.objects.filter(status=1, fk_ordered_store=1)
-		# print(orders.__dict__)
+		# settings.DPRINT(orders.__dict__)
 		# return orders
 
 
@@ -423,8 +405,8 @@ class StoreWiseCartOrderLists(ListAPIView):
 		# cart = Cart.objects.filter(id=cart_items)
 		orders_list = []
 		storewise_order = StoreWiseOrder.objects.filter(pk=order_id).first()
-		print('jpt')
-		print(storewise_order)
+		settings.DPRINT('jpt')
+		settings.DPRINT(storewise_order)
 		remarks=""
 		mobile=""
 		status = False
@@ -437,9 +419,9 @@ class StoreWiseCartOrderLists(ListAPIView):
 
 		# total_item = {len(cart_items)}
 		items = CartItemSerializer(cart_items, many=True)
-		# print(items)
+		# settings.DPRINT(items)
 		cart = Cart()
-		# print(cart.items.all())
+		# settings.DPRINT(cart.items.all())
 		data = {
 		# "token": self.token,
 		"cart" : cart.id,
@@ -455,7 +437,7 @@ class StoreWiseCartOrderLists(ListAPIView):
 		}
 		return Response(data)
 
-		# # print(total_item)
+		# # settings.DPRINT(total_item)
 		# for item in cart_items:
 
 		# 	data = {
@@ -467,13 +449,13 @@ class StoreWiseCartOrderLists(ListAPIView):
 		# 	"fk_storewise_order_id": item.fk_storewise_order_id
 
 		# 	}
-		# # 	print(a)
+		# # 	settings.DPRINT(a)
 		# # 	b = a.update(a)
-		# # 	print(b)
+		# # 	settings.DPRINT(b)
 
 		# # return Response(b)
 		# 	orders_list.append(data)
-		# 	print(orders_list)
+		# 	settings.DPRINT(orders_list)
 
 		# return Response(orders_list)
 
@@ -483,8 +465,8 @@ class StoreWiseCartOrderLists(ListAPIView):
 # for x in range(100):
 #     adict = {1:x}
 #     alist.append(adict)
-# print(alist)
-		# print(cart)
+# settings.DPRINT(alist)
+		# settings.DPRINT(cart)
 
 		# self.cart = cart
 		# self.update_cart()
@@ -507,7 +489,7 @@ class StoreWiseCartOrderLists(ListAPIView):
 		# return Response(a)
 
 
-		# print(cart.items)
+		# settings.DPRINT(cart.items)
 		# return Response(len(data))
 
 	# queryset = Order.objects.all()
@@ -516,7 +498,7 @@ class StoreWiseCartOrderLists(ListAPIView):
 		# cart_id = 22
 		# cart_items = CartItem.objects.all()
 		# orders = Order.objects.filter(status=1, fk_ordered_store=1)
-		# print(orders.__dict__)
+		# settings.DPRINT(orders.__dict__)
 		# return orders
 
 class UserAddressCreateView(CreateView):
@@ -598,7 +580,7 @@ def UserOrderView(request):
 	user_order_form = UserOrderForm()
 	order_list = Order.objects.filter(status=1)
 	# cart_items = Cart.cartitem_set.all()
-	# print(cart_items)
+	# settings.DPRINT(cart_items)
 
 	return render(request, 'orders/user_order.html', {'user_order':user_order_form, 'order_list':order_list})
 
@@ -610,8 +592,8 @@ def UserOrderDetailView(request, id):
 
 	total_price = order.shipping_total_price + cart.total
 	# cart_item_list = cart_items.item
-	# print(cart_items.item)
-	print(cart_items.__dict__)
+	# settings.DPRINT(cart_items.item)
+	settings.DPRINT(cart_items.__dict__)
 	return render(request, 'orders/order_detail.html', {'cart_items':cart_items, 'order':order, 'cart':cart, 'total_price':total_price})
 
 	# return HttpResponse('User Order Detail View')
@@ -622,11 +604,11 @@ class UpdateOrderStatusApiView(CreateAPIView): ## YO USE BHAKO CHAINA //STOREWIS
 	serializer_class = UpdateOrderStatusSerializer
 
 	def post(self, request):
-		import pprint
-		pprint.pprint(request.POST)
+		import psettings.DPRINT
+		psettings.DPRINT.psettings.DPRINT(request.POST)
 		order_id = request.POST.get('order_id')
 		status = request.POST.get('status')
-		print(order_id)
+		settings.DPRINT(order_id)
 		order = Order.objects.filter(pk=order_id).first() 
 		if order:
 			# if status == "paid":
@@ -651,17 +633,17 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 	serializer_class = UpdateStoreWiseOrderStatusSerializer
 	permission_classes = [permissions.IsAuthenticated]
 	def post(self, request):
-		import pprint
-		# print('jpt')
-		print(request.POST.get('order_id'))
-		pprint.pprint(request.POST)
+		import psettings.DPRINT
+		# settings.DPRINT('jpt')
+		settings.DPRINT(request.POST.get('order_id'))
+		psettings.DPRINT.psettings.DPRINT(request.POST)
 		storewiseorder_id = request.data.get('order_id') ### id of StoreWiseOrder model's.
-		print(storewiseorder_id)
+		settings.DPRINT(storewiseorder_id)
 		status = request.POST.get('status')
 		# status = request.POST.get('returned')
 		storewiseorder = StoreWiseOrder.objects.filter(pk=storewiseorder_id).first()
 		user = User.objects.filter(pk=storewiseorder.fk_auth_user_id).first() #for user
-		print(user)
+		settings.DPRINT(user)
 		if storewiseorder:
 			# for storewise_order in storewiseorder:
 			if status == "paid":
@@ -683,7 +665,7 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 
 				#VariationHistoryCountService paxi garne bhaye
 			storewiseorder.save()
-			print(status)
+			settings.DPRINT(status)
 			send_fcm_token_for_device(settings.FCM_SERVER_KEY, user.firebase_token, storewiseorder.order_id, status)
 
 			 # serverToken = settings.FCM_SERVER_KEY #server key here
@@ -709,8 +691,8 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 
 			if buyer_product is None:
 				dict_buyer_product = seller_product.__dict__
-				import pprint
-				pprint.pprint(dict_buyer_product)
+				import psettings.DPRINT
+				psettings.DPRINT.psettings.DPRINT(dict_buyer_product)
 				dict_buyer_product.pop('id')
 				dict_buyer_product.pop('_state')
 				dict_buyer_product['fk_store_id'] = buyer_store_id
@@ -732,15 +714,16 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 
 
 
-
+from store.service import getUserStoreService
 class myStoreName(APIView):
 	permission_classes = [permissions.IsAuthenticated]
 	def get(self, request, *args, **kwargs):
-		print(request.user.id)
+		settings.DLFPRINT()
+		settings.DPRINT(request.user.id)
+		store = getUserStoreService(request.user.id)
 		store_name=""
-		get_store_name = Store.objects.filter(fk_user_id=request.user.id).first()
-		if get_store_name:
-			store_name = get_store_name.title
+		if store:
+			store_name = store.title
 		# if not get_store_name:
 		# 	store_user = StoreUser.objects.filter(fk_user_id=request.user.id).first()
 		# 	store_id = get_store_name.fk_store_id
@@ -773,7 +756,7 @@ class CustomerCancelOrderAPIView(APIView):
 	permission_classes = [permissions.IsAuthenticated]
 	def post(self,request, *args, **kwargs):
 		order_id = request.data.get('order_id', None)
-		# print(order_id)
+		# settings.DPRINT(order_id)
 		user = request.user.id
 		if not order_id:
 			return Response({"Fail": "We are unable to process your request"}, status.HTTP_400_BAD_REQUEST)
@@ -798,18 +781,18 @@ class CustomerCancelOrderAPIView(APIView):
 
 	def isOrderedTimeExpire(self, order_created_at):
 		current_time  = timezone.now() + timedelta(hours=5, minutes=45)
-		print('ordered time')
-		print(order_created_at+timedelta(hours=5, minutes=45))
-		print("current time")
-		print(current_time)
+		settings.DPRINT('ordered time')
+		settings.DPRINT(order_created_at+timedelta(hours=5, minutes=45))
+		settings.DPRINT("current time")
+		settings.DPRINT(current_time)
 		time_difference  = current_time - (order_created_at+ timedelta(hours=5, minutes=45))
 		dt = time_difference.total_seconds()
 		# time = datetime.time(0, 15, 00, 000000).total_seconds()
-		# print(time)
-		# print(datetime.datetime(0, 15, 00, 000000).total_seconds())
-		# print(dt)
-		print('dt---')
-		print(dt)
+		# settings.DPRINT(time)
+		# settings.DPRINT(datetime.datetime(0, 15, 00, 000000).total_seconds())
+		# settings.DPRINT(dt)
+		settings.DPRINT('dt---')
+		settings.DPRINT(dt)
 		if dt <= 900:
 			return True
 		return False
