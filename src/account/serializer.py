@@ -86,12 +86,15 @@ class ProfileSerializer(serializers.ModelSerializer):
 from store.models import StoreAccount
 from products.serializers import UserVariationQuantityHistorySerializer
 from products.models import UserVariationQuantityHistory
+from carts.models import Comment
+from carts.serializers import CommentSerializer
 class UserSerializer(serializers.ModelSerializer):
 	credit = serializers.SerializerMethodField()
 	jardetails = serializers.SerializerMethodField()
+	comments = serializers.SerializerMethodField()
 	class Meta:
 		model = User
-		fields = ('firstname', 'lastname', 'nick_name', 'credit', 'jardetails')
+		fields = ('firstname', 'lastname', 'nick_name', 'credit', 'jardetails',"comments")
 
 	def get_credit(self, obj):
 		user = StoreAccount.objects.filter(fk_user=obj).first()
@@ -101,3 +104,8 @@ class UserSerializer(serializers.ModelSerializer):
 	def get_jardetails(self, obj):
 		jardetails = UserVariationQuantityHistorySerializer(UserVariationQuantityHistory.objects.filter(user=obj), many=True)
 		return jardetails.data
+	
+	def get_comments(self, obj):
+		comments = CommentSerializer(Comment.objects.filter(user=obj), many=True)
+		return comments.data
+	

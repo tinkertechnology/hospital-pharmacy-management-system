@@ -5,7 +5,7 @@ from orders.models import UserAddress, UserCheckout
 from products.models import Variation
 from store.serializers import StoreSerializer
 
-from .models import CartItem, Cart
+from .models import CartItem, Cart, Comment
 from products.models import Product,ProductImage
 from .mixins import TokenMixin
 
@@ -84,6 +84,10 @@ class CheckoutSerializer(TokenMixin, serializers.Serializer):
 	# 	raise serializers.ValidationError("This is not a valid token.")
 
 
+class CommentSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Comment
+		fields = ['comment', 'created_at', 'updated_at']
 
 class CartVariationSerializer(serializers.ModelSerializer):
 	product = serializers.SerializerMethodField()
@@ -187,6 +191,10 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 		return imageUrl
 
+class CartSeriailzer(serializers.ModelSerializer):
+	class Meta:
+		model = Cart
+		fields = '__all__'
 
 class AddToCartSerializer(serializers.ModelSerializer):
 	created_by = serializers.CurrentUserDefault()

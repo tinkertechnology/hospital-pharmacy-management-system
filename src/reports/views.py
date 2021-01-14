@@ -187,15 +187,48 @@ left join orders_useraddress on orders_useraddress.user_id = orders_usercheckout
 	data = GetJsonFromQueryData(query)
 	return HttpResponse(data, content_type='application/json;charset=utf8')
 
-from datetime import datetime
+from carts.models import *
+from orders.serializers import StoreWiseOrderSerializer
+from carts.serializers import CartSeriailzer
+from datetime import datetime as dt
+from products.models import UserVariationQuantityHistory
+# import datetime
 class SalesAndCreditReportByDeliveryBoy(APIView):
-	def post(self, request, *args, **kwargs):
-		date = request.data.get('date', datetime.now())
-		delivery_boy_id = request.data.get('delivery_boy_id')
-		store_id = 1
-		qs = StoreWiseOrder.objects.filter(created_at__contains=datetime.date(date))
+	def get(self, request, *args, **kwargs):
+		date = request.GET.get('date')
+		datetime_object = dt.now() #dt.strptime(date, '%Y-%m-%d')
+		if date:
+			datetime_object = dt.strptime(date, '%Y-%m-%d')
+		print(datetime_object)
+		print(dt.now())
+		delivery_boy_id = request.GET.get('delivery_boy_id')
+		print(delivery_boy_id)
+		store_id = request.GET.get('store_id')
+		#qs = StoreWiseOrder.objects.filter(created_at__contains=dt.date(date))
+		qs = Cart.objects.filter(timestamp__contains=dt.date(datetime_object)) #dt.date(date))
 		if delivery_boy_id:
-			pass
+			qs = qs.filter(fk_delivery_user_id=delivery_boy_id)
+		total_sales = qs.aggregate(total_price=Sum('total')) 
+		credit = qs.aggregate(total_credit=Sum('credit')) 
+		debit = qs.aggregate(total_debit=Sum('debit')) 
+		qs_jar = UserVariationQuantityHistory.objects.filter(timestamp__contains=dt.date(datetime_object))
+		total_jars_hold = qs_jar.aggregate(total_jars_hold=Sum('num_delta'))
+		# if store_id:
+		# 	order_id = StoreWiseOrder.objects.filter()
+		# 	qs = qs.filter()
+		data = dict()
+		serializers = CartSeriailzer(qs, many=True)
+		data = {
+			'total_sales':total_sales,
+			'credit' : credit,
+			'debit' : debit,
+			'jars_hold' : total_jars_hold,
+			"count": qs.count(),
+			'data': serializers.data
+		}
+		return Response(data)
+		# if delivery_boy_id:
+			# pass
 
 
 
