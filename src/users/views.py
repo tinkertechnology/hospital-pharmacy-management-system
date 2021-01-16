@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, DestroyAPIView
 from django.contrib.auth.models import User
-from .serializers import InqueryUserSerializer, InquiryUsersListForPharmacistSerializer
+from .serializers import InqueryUserSerializer, InquiryUsersListForPharmacistSerializer, DeliveryUserSerializer
 from rest_framework import generics
 from .models import UserType
 from inquiry.models import Message
 # from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
+from store.service import getUserStoreService
+from store.models import Store, StoreUser
 User = get_user_model()
 
 
@@ -61,3 +63,12 @@ class UserInquiryForPharmacist(generics.ListAPIView):
 		user =  self.request.user
 		users = User.objects.raw('select DISTINCT sender_id as id FROM inquiry_message WHERE receiver_id=%s', [user.id])
 		return list(users)
+
+class DeliveryUsersByStore(generics.ListAPIView):
+	serializer_class = DeliveryUserSerializer
+	def get_queryset(self):
+		store  = getUserStoreService(self.request.user.id)
+		if store:
+			store_users = StoreUser.objects.filter(fk_store_id=store.id).filter(fk_store_usertypes_id=2).values('fk_user_id')
+			delivery_boys = User.objects.filter(pk__in=store_users)
+			return delivery_boys

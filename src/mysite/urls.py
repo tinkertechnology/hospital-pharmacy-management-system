@@ -135,7 +135,8 @@ from inquiry.views import (
 
 from users.views import (
     UserInquiryList,
-    UserInquiryForPharmacist
+    UserInquiryForPharmacist,
+    DeliveryUsersByStore
     
     )
 
@@ -239,6 +240,7 @@ urlpatterns = [
     re_path(r'^api/send_inquiry/$', InquiryApiView.as_view(), name="inquiry_api"),
     re_path(r'^api/inquiry_users_list/$', UserInquiryList.as_view(), name="inquiry_user"),
     re_path(r'^api/inquiry_users_pharmacist_list/$', UserInquiryForPharmacist.as_view(), name="inquiry_user_pharmacist"),
+    re_path(r'^api/DeliveryUsersByStore/$', DeliveryUsersByStore.as_view(), name="DeliveryUsersByStore"),
     
     re_path(r'^api/messages/(?P<sender>\w+)/(?P<receiver>\w+)/$', message_list, name='message-detail'),
     re_path(r'^api/view_messages/$', view_messages.as_view(), name='view-messages'),

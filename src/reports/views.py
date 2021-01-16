@@ -29,6 +29,7 @@ from django.db.models.expressions import RawSQL
 from rest_framework.response import Response
 import json
 import datetime
+from django.conf import settings
 
 # Create your views here.
 
@@ -195,18 +196,23 @@ from products.models import UserVariationQuantityHistory
 # import datetime
 class SalesAndCreditReportByDeliveryBoy(APIView):
 	def get(self, request, *args, **kwargs):
-		date = request.GET.get('date')
-		datetime_object = dt.now() #dt.strptime(date, '%Y-%m-%d')
-		if date:
+		settings.DLFPRINT()
+		settings.DPRINT(request.GET.__dict__)
+		date = request.GET.get('date', None)
+		datetime_object = None #dt.strptime(date, '%Y-%m-%d')
+		try:
+			# date or date=='null':
 			datetime_object = dt.strptime(date, '%Y-%m-%d')
-		print(datetime_object)
-		print(dt.now())
-		delivery_boy_id = request.GET.get('delivery_boy_id')
+		except:
+			datetime_object = dt.now()
+		# print(datetime_object)
+		# print(dt.now())
+		delivery_boy_id = request.GET.get('delivery_boy_id','')
 		print(delivery_boy_id)
 		store_id = request.GET.get('store_id')
 		#qs = StoreWiseOrder.objects.filter(created_at__contains=dt.date(date))
 		qs = Cart.objects.filter(timestamp__contains=dt.date(datetime_object)) #dt.date(date))
-		if delivery_boy_id:
+		if delivery_boy_id!='':
 			qs = qs.filter(fk_delivery_user_id=delivery_boy_id)
 		total_sales = qs.aggregate(total_price=Sum('total')) 
 		credit = qs.aggregate(total_credit=Sum('credit')) 

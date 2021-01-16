@@ -89,7 +89,17 @@ class InquiryUsersListForPharmacistSerializer(serializers.ModelSerializer):
 
 		]
 
-
+class DeliveryUserSerializer(serializers.ModelSerializer):
+	#user = serializers.SerializerMethodField()
+	class Meta:
+		model = User
+		fields = [
+		
+		"id",
+		"mobile",
+		"firstname",
+		"lastname"
+		]
 	
 
 

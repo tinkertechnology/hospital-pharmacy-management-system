@@ -11,7 +11,6 @@ urlpatterns = [
     re_path('UserWithoutPurchaseReport/$', UserWithoutPurchaseReport, name='UserWithoutPurchaseReport'),
     re_path('UserOrderDetailReport/$', UserOrderDetailReport, name='UserOrderDetailReport'),
     re_path('api/SalesAndCreditReportByDeliveryBoy/$', SalesAndCreditReportByDeliveryBoy.as_view(), name='SalesAndCreditReportByDeliveryBoy'),
-    
     ]
 
 

@@ -1,5 +1,6 @@
 from rest_framework import serializers
-
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 from orders.models import UserAddress, UserCheckout
 from products.models import Variation
@@ -190,11 +191,9 @@ class CartItemSerializer(serializers.ModelSerializer):
 		# return image_url.image
 
 		return imageUrl
+# from account.serializer import UserSerializer
 
-class CartSeriailzer(serializers.ModelSerializer):
-	class Meta:
-		model = Cart
-		fields = '__all__'
+
 
 class AddToCartSerializer(serializers.ModelSerializer):
 	created_by = serializers.CurrentUserDefault()
@@ -235,6 +234,22 @@ class CartItemModelSerializer(serializers.ModelSerializer):
 		return cartItem
 
 
+class CartSeriailzer(serializers.ModelSerializer):
+	# user = UserSerializer()
+	cart_item = serializers.SerializerMethodField()
+	user = serializers.SerializerMethodField()
+	class Meta:
+		model = Cart
+		fields = '__all__'
+	
+	def get_cart_item(self, obj):
+		cart_item = obj.cartitem_set.all()
+		ct = CartItemModelSerializer(cart_item, many=True)
+		return ct.data
+	def get_user(self, obj):
+		from account.serializer import UserSerializer
+		user = UserSerializer(User.objects.filter(pk=obj.user.id).first())
+		return user.data
 
 class RemoveCartItemFromCartSerializer(serializers.ModelSerializer):
 	class Meta:
