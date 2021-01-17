@@ -193,17 +193,31 @@ from orders.serializers import StoreWiseOrderSerializer
 from carts.serializers import CartSeriailzer
 from datetime import datetime as dt
 from products.models import UserVariationQuantityHistory
+from django.utils import timezone
 # import datetime
 class SalesAndCreditReportByDeliveryBoy(APIView):
 	def get(self, request, *args, **kwargs):
 		settings.DLFPRINT()
 		settings.DPRINT(request.GET.__dict__)
-		date = request.GET.get('date', None)
+		# date = request.GET.get('date', None)
+		date = request.GET.get('date')
+		print('date print',date)
+		current_time  = timezone.now() + timedelta(hours=5, minutes=45)
+		# settings.DPRINT('ordered time')
+		settings.DPRINT(timedelta(hours=5, minutes=45))
+		settings.DPRINT("current time")
+		settings.DPRINT(current_time)
+		time_difference  = current_time - (timedelta(hours=5, minutes=45))
 		datetime_object = None #dt.strptime(date, '%Y-%m-%d')
 		try:
+			date_part = date[0:10]
 			# date or date=='null':
-			datetime_object = dt.strptime(date, '%Y-%m-%d')
-		except:
+			datetime_object = dt.strptime(date_part, '%Y-%m-%d')
+			# datetime_object = datetime_object - time_difference
+			print('datetime-obj',datetime_object)
+		except Exception as e:
+			print(e)
+			print('none', datetime_object)
 			datetime_object = dt.now()
 		# print(datetime_object)
 		# print(dt.now())
