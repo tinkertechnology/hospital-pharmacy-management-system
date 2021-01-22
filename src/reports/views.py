@@ -207,7 +207,6 @@ class SalesAndCreditReportByDeliveryBoy(APIView):
 		settings.DPRINT(timedelta(hours=5, minutes=45))
 		settings.DPRINT("current time")
 		settings.DPRINT(current_time)
-		time_difference  = current_time - (timedelta(hours=5, minutes=45))
 		datetime_object = None #dt.strptime(date, '%Y-%m-%d')
 		try:
 			date_part = date[0:10]
@@ -219,6 +218,8 @@ class SalesAndCreditReportByDeliveryBoy(APIView):
 			print(e)
 			print('none', datetime_object)
 			datetime_object = dt.now()
+		datetime_object = datetime_object - (timedelta(hours=5, minutes=45))
+		print('sdsd', datetime_object)
 		# print(datetime_object)
 		# print(dt.now())
 		delivery_boy_id = request.GET.get('delivery_boy_id','')

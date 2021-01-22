@@ -417,7 +417,7 @@ class AddToCartForCustomUserAPIView(APIView):
 		# return Response(serializer.data)
 
 
-
+from carts.models import Comment
 class ReturnToStoreForCustomUserAPIView(APIView):
 	# serializer_class = CartItemSerializer
 	def post(self, request, *args, **kwargs):
@@ -460,13 +460,19 @@ class ReturnToStoreForCustomUserAPIView(APIView):
 				}
 				return Response(data, status=400) 
 			qs.num_delta = qs.num_delta-quantity
-			if comment:
-				if qs.comment is None:
-					qs.comment = ''
-				qs.comment += ', '+comment
+			qs.save()
+			# if comment:
+			# 	if qs.comment is None:
+			# 		qs.comment = ''
+			# 	qs.comment += ', '+comment
 			# if qs.num_delta < 1.0 :
 			# 	qs.comment = ''
-			qs.save()
+			if comment:
+				cmnt = Comment()
+				cmnt.comment = comment
+				cmnt.user = user
+				cmnt.save()
+			
 			seriailzer = UserVariationQuantityHistorySerializer(qs, read_only=True)
 			return Response(seriailzer.data)
 		else:
