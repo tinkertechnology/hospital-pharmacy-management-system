@@ -86,6 +86,7 @@ class CheckoutSerializer(TokenMixin, serializers.Serializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+	created_at = serializers.DateTimeField(read_only=True, format="%Y-%m-%d")
 	class Meta:
 		model = Comment
 		fields = ['comment', 'created_at', 'updated_at']
