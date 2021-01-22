@@ -604,8 +604,8 @@ class UpdateOrderStatusApiView(CreateAPIView): ## YO USE BHAKO CHAINA //STOREWIS
 	serializer_class = UpdateOrderStatusSerializer
 
 	def post(self, request):
-		import psettings.DPRINT
-		psettings.DPRINT.psettings.DPRINT(request.POST)
+		#import #psettings.DPRINT
+		#psettings.DPRINT.#psettings.DPRINT(request.POST)
 		order_id = request.POST.get('order_id')
 		status = request.POST.get('status')
 		settings.DPRINT(order_id)
@@ -633,10 +633,10 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 	serializer_class = UpdateStoreWiseOrderStatusSerializer
 	permission_classes = [permissions.IsAuthenticated]
 	def post(self, request):
-		import psettings.DPRINT
+
 		# settings.DPRINT('jpt')
 		settings.DPRINT(request.POST.get('order_id'))
-		psettings.DPRINT.psettings.DPRINT(request.POST)
+		#psettings.DPRINT.#psettings.DPRINT(request.POST)
 		storewiseorder_id = request.data.get('order_id') ### id of StoreWiseOrder model's.
 		settings.DPRINT(storewiseorder_id)
 		status = request.POST.get('status')
@@ -691,8 +691,8 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 
 			if buyer_product is None:
 				dict_buyer_product = seller_product.__dict__
-				import psettings.DPRINT
-				psettings.DPRINT.psettings.DPRINT(dict_buyer_product)
+				#import #psettings.DPRINT
+				#psettings.DPRINT.#psettings.DPRINT(dict_buyer_product)
 				dict_buyer_product.pop('id')
 				dict_buyer_product.pop('_state')
 				dict_buyer_product['fk_store_id'] = buyer_store_id

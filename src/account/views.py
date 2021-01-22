@@ -27,6 +27,7 @@ from django.http import Http404
 User = get_user_model()
 
 def registration_view(request):
+	settings.DLFPRINT()
 	context = {}
 	if request.POST:
 		form = RegistrationForm(request.POST)
@@ -47,14 +48,17 @@ def registration_view(request):
 
 
 def logout_view(request):
+	settings.DLFPRINT()
 	logout(request)
 	return redirect('/')
 
 def privacy_policy(request):
+	settings.DLFPRINT()
 	return render(request, 'account/privacy.html')
 
 
 def login_view(request):
+	settings.DLFPRINT()
 	print('login')
 	# if request.method == 'POST':
 	# 	mobile = request.POST.get('mobile')
@@ -109,10 +113,11 @@ def login_view(request):
 
 
 def account_jpt(view):
+	settings.DLFPRINT()
 	return render(request, "jpt.html")
 
 def account_view(request):
-
+	settings.DLFPRINT()
 	if not request.user.is_authenticated:
 			return redirect("login")
 
@@ -144,12 +149,14 @@ def account_view(request):
 
 
 def must_authenticate_view(request):
+	settings.DLFPRINT()
 	return render(request, 'account/must_authenticate.html', {})
 
 
 class ValidatePhoneSendOTP(APIView):
 
 	def post(self, request, *args, **kwargs):
+		settings.DLFPRINT()
 		phone_number = request.data.get('mobile')
 		if phone_number:
 			mobile = str(phone_number)
@@ -220,6 +227,7 @@ class ValidatePhoneSendOTP(APIView):
 
 
 def send_otp(mobile):
+	settings.DLFPRINT()
 	if mobile:
 		key = random.randint(111111, 999999)
 		print(key)
@@ -233,6 +241,7 @@ def send_otp(mobile):
 
 class ValidateOTP(APIView):
 	def post(self, request, *args, **kwargs):
+		settings.DLFPRINT()
 		mobile = request.data.get('mobile', False)
 		otp_sent = request.data.get('otp', False)
 
@@ -265,6 +274,7 @@ class RegisterAPI(APIView):
 
 	@csrf_exempt
 	def post(self, request, *args, **kwargs):
+		settings.DLFPRINT()
 		print('first')
 		mobile = request.data.get('mobile', False)
 		password = request.data.get('password', False)
@@ -324,6 +334,7 @@ class RegisterAPI(APIView):
 
 class ResetPasswordAPIView(APIView):
 	def post(self, request, *args, **kwargs):
+		settings.DLFPRINT()
 		mobile = request.data.get('mobile', False)
 		print(1)
 		if mobile:
@@ -386,6 +397,7 @@ class ResetPasswordAPIView(APIView):
 class ChangePasswordAPIView(APIView):
 	# permission_classes = [IsAuthenticated]
 	def post(self, request, *args, **kwargs):
+		settings.DLFPRINT()
 		user = request.user
 		user_db = User.objects.get(pk=user.id)
 		new_password = request.data.get('new_password')
@@ -420,6 +432,7 @@ class ChangePasswordAPIView(APIView):
 
 class PasswordResetSendOTP(APIView):
 	def post(self, request, *args, **kwargs):
+		settings.DLFPRINT()
 		phone_number = request.data.get('mobile')
 		if phone_number:
 			mobile = str(phone_number)
@@ -490,6 +503,7 @@ class PasswordResetSendOTP(APIView):
 
 class ValidateResetPasswordOTP(APIView):
 	def post(self, request, *args, **kwargs):
+		settings.DLFPRINT()
 		mobile = request.data.get('mobile', False)
 		otp_sent = request.data.get('otp', False)
 		print(request.data)
@@ -523,6 +537,7 @@ class ValidateResetPasswordOTP(APIView):
 class ChangePasswordAfterOtpAPIView(APIView):
 	# permission_classes = [IsAuthenticated]
 	def post(self, request, *args, **kwargs):
+		settings.DLFPRINT()
 		print(request.data)
 		mobile = request.data.get('mobile', False)
 		new_password = request.data.get('new_password', False)
@@ -555,6 +570,7 @@ from django.core.exceptions import ValidationError
 
 class CustomerRegisterSurveyAPIView(APIView):
 	def post(self, request, *args, **kwargs):
+		settings.DLFPRINT()
 		print(request.data)
 		mobile = request.data.get('mobile', False)
 		firstname = request.data.get('firstname', False)
@@ -611,6 +627,7 @@ class CustomerRegisterSurveyAPIView(APIView):
 
 class CustomerMessageForDepotAPIView(APIView):
 	def post(self, request, *args, **kwargs):
+		settings.DLFPRINT()
 		print(request.data)
 		mobile = request.data.get('mobile', None)
 		name = request.data.get('name', None)
@@ -652,6 +669,7 @@ class CustomerMessageForDepotAPIView(APIView):
 
 class CustomerMessageAPIView(APIView):
 	def post(self, request, *args, **kwargs):
+		settings.DLFPRINT()
 		print(request.data)
 		message = request.data.get('message', None)
 		phone = request.data.get('phone', None)
@@ -681,6 +699,7 @@ class CustomerMessageAPIView(APIView):
 class SurveyRegisterAPIView(ListAPIView):
 	serializer_class = SurveyRegisterSerializer
 	def get(self, request):
+		settings.DLFPRINT()
 		mobile = request.GET.get('mobile', '')
 
 		data = CustomerRegisterSurvey.objects.filter(mobile__iexact=mobile).last()
@@ -712,6 +731,7 @@ from .sms_service import send_sms_to_phone
 
 class SendMessageToMobileAPIView(APIView):
 	def post(self, request, *args, **kwargs):
+		settings.DLFPRINT()
 		mobile = request.data.get('mobile')
 		message = request.data.get('message')
 		r = requests.post(
@@ -739,6 +759,7 @@ class SendMessageToMobileAPIView(APIView):
 
 class SaveUpdateFirebaseToken(APIView):
 	def post(self, request, *args, **kwargs):
+		settings.DLFPRINT()
 		firebase_token = request.data.get('firebase_token')
 		user = User.objects.filter(pk=request.user.id).first()
 		user.firebase_token = firebase_token
@@ -754,6 +775,7 @@ from products.serializers import UserVariationQuantityHistorySerializer
 class GetUserJarAndCreditAPIView(APIView):
 	serializer_class = UserVariationQuantityHistorySerializer
 	def post(self, request, *args, **kwargs):
+		settings.DLFPRINT()
 		phone = request.data.get('phone')
 		print(phone)
 		if phone:
@@ -771,12 +793,16 @@ class GetUserJarAndCreditAPIView(APIView):
 				# 'jars': jars.data,
 				'users': users.data
 			}
+			import pprint
+			pprint.pprint(data)
+			#settings.dbgprint(data)
 			return Response(data)
 		else:
 			return Response({"Fail":"Enter Phone number "}, status.HTTP_400_BAD_REQUEST)
 
 class GetUserCreditAndJarByStorewise(APIView):
 	def get_current_store(self):
+		settings.DLFPRINT()
 		print('jpt')
 		store_id_auth_user = StoreUser.objects.filter(fk_user=self.request.user).first().fk_store
 		# print(store_id_auth_user)
@@ -805,6 +831,7 @@ class GetUserCreditAndJarByStorewise(APIView):
 		return Response(response_data)
 		
 	def get(self, request):
+		settings.DLFPRINT()
 		return self.get_current_store()
 
 

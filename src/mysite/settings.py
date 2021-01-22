@@ -50,6 +50,8 @@ def DPRINT(arg, ForcePrint=0):
         print(arg)
     return
 
+def dbgprint(arg, fp):
+    DPRINT(arg,fp)
 # call at begin of function
 # To know which function is being called
 # debug line and file print
