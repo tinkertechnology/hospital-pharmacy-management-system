@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Account, CustomerRegisterSurvey
+from .models import Account, CustomerRegisterSurvey, CallLog
 
 User = get_user_model()
 
@@ -122,4 +122,7 @@ class UserSerializer(serializers.ModelSerializer):
 	# 		delivery_boys = DeliveryUserSerializer(User.objects.filter(pk__in=store_users), many=True)
 	# 		return delivery_boys.data
 		
-	
+class CallLogSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = CallLog
+		fields = '__all__'

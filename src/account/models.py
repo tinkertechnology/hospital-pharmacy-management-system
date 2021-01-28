@@ -119,3 +119,10 @@ class CustomerMessage(models.Model):
 	def __str__(self):
 		return str(self.message)
 
+class CallLog(models.Model):
+	number = models.CharField(max_length=10, null=True, blank=True)
+	is_existing = models.BooleanField(default=False)
+	timestamp = models.DateTimeField(verbose_name='call timestamp', auto_now_add=True)
+	timestamp_str = models.IntegerField(null=True, blank=True)
+	def __str__(self):
+		return self.number

@@ -78,7 +78,8 @@ class Cart(models.Model):
 	#create_order garepachi 0 set huncha... yo bhaneko user ko cart chaina 
 	#1 bhayo bhane usko cart ma aru item ne add huncha. 
 	active = models.BooleanField(default=True)
-	is_auto_order = models.BooleanField(default=False)
+	# 0 online order , 1 offline staff order , 2 misscall order 
+	is_auto_order = models.IntegerField(default=0) 
 	credit = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
 	debit = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
 	fk_delivery_user_id = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="delivery_user", on_delete=models.CASCADE, null=True, blank=True, default=None) 

@@ -80,7 +80,8 @@ def CartItemCreateService(data):
 			'credit': (Decimal(cart_saved.total)-Decimal(debit))
 		}
 	print("user_acc_data",user_account_data)
-	UserAccountStoreWiseSaveService(user_account_data)
+	if cart_saved.is_auto_order==True: #AutoOrder bhaye matrai credit save garne 
+		UserAccountStoreWiseSaveService(user_account_data)
 	print(user_account_data)
 	return cartItem
 

@@ -12,7 +12,7 @@ from django.http import HttpResponse
 from account.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
 from blog.models import BlogPost
 from django.contrib.auth.hashers import make_password
-from .models import Account, PhoneOTP, PasswordResetOTP, CustomerRegisterSurvey, CustomerDepotRequest, CustomerMessage
+from .models import Account,CallLog, PhoneOTP, PasswordResetOTP, CustomerRegisterSurvey, CustomerDepotRequest, CustomerMessage
 from django.contrib.auth import get_user_model
 import uuid
 from django.shortcuts import get_object_or_404 
@@ -21,8 +21,14 @@ import requests
 from django.core.mail import send_mail
 from rest_framework.generics import CreateAPIView, ListAPIView
 from store.models import StoreAccount, StoreUser
-from .serializer import UserSerializer
+from .serializer import UserSerializer, CallLogSerializer
 from django.http import Http404
+from django.db.models import Count, Max, Min, Avg
+from carts.models import CartItem, Cart
+from carts.service import CartItemCreateService
+from orders.service import CreateOrderFromCart
+import datetime
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -834,6 +840,77 @@ class GetUserCreditAndJarByStorewise(APIView):
 		settings.DLFPRINT()
 		return self.get_current_store()
 
+
+
+
+class GetCallLogsStoreAPIView(APIView):
+	def post(self, request, *args, **kwargs):
+		# call_logs = {'number': ['9849298499', '77663355353', '12891298128', '1289891289']} #{'phone' : '9999911111', 'phone' :} #request.data.get('call_logs')
+		print(request.data)
+		calls = request.data['calls']
+		length = len(calls)
+		if calls:
+			for i in range(length):
+				call = calls[i]
+				calllogs = CallLog()
+				
+				# check_user = User.objects.filter(mobile__iexact=calls[i])
+				# if check_user:
+				cartitem = CartItem.objects.filter(cart__user__mobile=call.get('number'))\
+				.values('item_id') \
+				.annotate(countgroup=Count('item_id')).order_by('-countgroup') \
+				.first()
+				if cartitem:
+					calllogs.is_existing = True
+					user_id = 4
+					data = {
+						'user_id': user_id,
+						'item_id': cartitem.get('item_id'),
+						'quantity': 1,
+						'ordered_price': 50,
+						'is_auto_order': 2,
+						'credit': 0,
+						'debit': 0,
+						'fk_delivery_user_id' : 4 #request.user.id
+					}
+					print(data)
+					CartItemCreateService(data)
+					auto_carts = Cart.objects.filter(active=1).filter(is_auto_order=2).filter(user_id=user_id).all()
+					# import pprint
+					# pprint.pprint(auto_carts)
+					for cart in auto_carts:
+						order_data = {
+						'user_id': user_id,
+						'order_latitude': 1,
+						'order_longitude': 1,
+						'is_auto_order': 2,
+						'fk_payment_method': 1,
+						'is_delivered': 1,
+						'fk_delivery_user_id' : user_id
+						}
+						print(order_data)
+						CreateOrderFromCart(order_data) #
+				
+				calllogs.number = call.get('number')
+				calllogs.timestamp_str = call.get('timestamp')
+				tmstmp_str = CallLog.objects.filter(is_existing=False)
+				if  not tmstmp_str.filter(timestamp_str=call.get('timestamp')).first(): # save if timestamp_str in db not matched else save
+					calllogs.save()
+					a = datetime.datetime.fromtimestamp(int(call.get('timestamp')) / 1e3)
+					calllogs.timestamp = a 
+					calllogs.save()
+				return Response('Success', status=200)
+		return Response('failed to save', status=400)
+
+from django.db.models import Q			
+class MissCallUsersAPIView(APIView):
+	def get(self, request):
+		users = User.objects.all()
+		un_matched_users = CallLog.objects.filter(is_existing=False)#.filter(~Q(number__in=users.values_list('mobile')))
+		print(un_matched_users)
+		data = CallLogSerializer(un_matched_users , many=True).data
+	
+		return Response(data)
 
 
 

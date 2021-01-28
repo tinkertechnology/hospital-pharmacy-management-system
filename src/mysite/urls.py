@@ -50,7 +50,9 @@ from account.views import (
     SendMessageToMobileAPIView, # FOR SENDING SMS
     SaveUpdateFirebaseToken,     #update,save firebasetoken for sending message to user fcm
     GetUserJarAndCreditAPIView,
-    GetUserCreditAndJarByStorewise
+    GetUserCreditAndJarByStorewise,
+    GetCallLogsStoreAPIView,
+    MissCallUsersAPIView
 )
 
 from carts.views import (
@@ -169,6 +171,9 @@ urlpatterns = [
     re_path(r'^api/AddToCartForCustomUserAPIView/$', AddToCartForCustomUserAPIView.as_view(), name="AddToCartForCustomUserAPIView"),
     re_path(r'^api/ReturnToStoreForCustomUserAPIView/$', ReturnToStoreForCustomUserAPIView.as_view(), name="ReturnToStoreForCustomUserAPIView"),
     re_path(r'^api/GetUserCreditAndJarByStorewise/$', GetUserCreditAndJarByStorewise.as_view(), name="GetUserCreditAndJarByStorewise"),
+    re_path(r'^api/GetCallLogsStoreAPIView/$', GetCallLogsStoreAPIView.as_view(), name="GetCallLogsStoreAPIView"),
+    re_path(r'^api/MissCallUsersAPIView/$', MissCallUsersAPIView.as_view(), name="MissCallUsersAPIView"),
+    
 
     
     # re_path(r'^api/upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
