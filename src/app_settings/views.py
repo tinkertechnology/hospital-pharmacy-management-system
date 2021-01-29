@@ -28,7 +28,6 @@ import requests
 from django.core.mail import send_mail
 #from .services import GetGuestCartSessionId
 
-
 class AppSettingsAPIView(APIView):
 	def get(self, request):
 		return Response("1");
@@ -57,3 +56,20 @@ class MobileAppVersion(APIView):
 	def get(self, request):
 		return Response("1");
 
+#settings.DPRINT()
+# # add at begin of func
+
+# echo test, for get and post
+# for testing
+import pprint
+class JptEchoTest(APIView):
+	def get(self, request):
+		settings.DLFPRINT()
+		pprint.pprint(request.__dict__)
+		return Response("get")
+
+	def post(self, request):
+		settings.DLFPRINT()
+		pprint.pprint(request.data);
+		return HttpResponse(request.POST.items())
+		#return Response("post");
