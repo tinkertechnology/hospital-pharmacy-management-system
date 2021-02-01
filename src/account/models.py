@@ -123,6 +123,7 @@ class CallLog(models.Model):
 	number = models.CharField(max_length=10, null=True, blank=True)
 	is_existing = models.BooleanField(default=False)
 	timestamp = models.DateTimeField(verbose_name='call timestamp', auto_now_add=True)
-	timestamp_str = models.IntegerField(null=True, blank=True)
+	timestamp_str = models.CharField(max_length=100, blank=True, null=True)
+	timestamp_i64 = models.BigIntegerField(null=True, blank=True)
 	def __str__(self):
 		return self.number

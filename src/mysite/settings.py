@@ -15,6 +15,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 import datetime
 import os
+import pprint
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -44,10 +45,18 @@ if DEBUG:
 # for 
 def DPRINT(arg, ForcePrint=0):
     if(DEBUG):
-        #print(arg)
+        print(arg)
         pass
     if(ForcePrint != 0):
         print(arg)
+    return
+
+def dpprint(arg, ForcePrint=0):
+    if(DEBUG):
+        pprint.pprint(arg)
+        pass
+    if(ForcePrint != 0):
+        pprint.pprint(arg)
     return
 
 def dbgprint(arg, fp):
