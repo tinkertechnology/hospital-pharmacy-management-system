@@ -881,7 +881,7 @@ class GetCallLogsStoreAPIView(APIView):
 						'user_id': user_id,
 						'item_id': cartitem.get('item_id'),
 						'quantity': 1,
-						'ordered_price': cartitem.ordered_price,
+						'ordered_price': cartitem_of_num.ordered_price,
 						'is_auto_order': ORDER_TYPE_MISSCALL,
 						'credit': 0,
 						'debit': 0,
