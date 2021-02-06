@@ -158,6 +158,29 @@ def UserCountProductWiseReport(self):
 	# patientuser=serializers.serialize('json', row)
 	return HttpResponse(data, content_type='application/json;charset=utf8')
 
+def DailySalesOffline(self):
+	cursor = connection.cursor()
+	cursor.execute("""select 
+carts_cart.id as carts_id, firstname, lastname,mobile,   
+products_product.title,products_variation.title,quantity,h.id as hold_id, h.num_delta as hold_jar,
+created_at,
+total, debit as cash, credit
+from orders_storewiseorder 
+left join account_account on orders_storewiseorder.fk_auth_user_id = account_account.id 
+left join carts_cart on  orders_storewiseorder.cart_id = carts_cart.id
+left join carts_cartitem on carts_cartitem.cart_id = carts_cart.id
+left JOIN products_variation on products_variation.id = carts_cartitem.item_id
+left join products_product on products_variation.product_id = products_product.id
+left join orders_usercheckout on orders_usercheckout.user_id = account_account.id
+left join orders_useraddress on orders_useraddress.user_id = orders_usercheckout.user_id
+left join products_uservariationquantityhistory h on h.user_id = carts_cart.user_id
+where carts_cart.is_auto_order=True and carts_cart.timestamp > '2021-01-24'
+		;""");
+	# connection.commit()
+
+	data = json.dumps(dictfetchall(cursor))
+	# patientuser=serializers.serialize('json', row)
+	return HttpResponse(data, content_type='application/json;charset=utf8')
 
 def UserWithoutPurchaseReport(self):
 	query = """ select 
