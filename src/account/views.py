@@ -881,11 +881,11 @@ class GetCallLogsStoreAPIView(APIView):
 						'user_id': user_id,
 						'item_id': cartitem.get('item_id'),
 						'quantity': 1,
-						'ordered_price': 50,
+						'ordered_price': cartitem_of_num.ordered_price,
 						'is_auto_order': ORDER_TYPE_MISSCALL,
 						'credit': 0,
 						'debit': 0,
-						'fk_delivery_user_id' : 4 #request.user.id
+						'fk_delivery_user_id' : request.user.id
 					}
 					print(data)
 					CartItemCreateService(data)
@@ -917,13 +917,10 @@ class MissCallUsersAPIView(APIView):
 	def get(self, request):
 		settings.DLFPRINT()
 		users = User.objects.all()
-		
-		# return non existing users who miss called
-		# 
-		un_matched_users = CallLog.objects.filter(is_existing=False)#.filter(~Q(number__in=users.values_list('mobile')))
-		print(un_matched_users)
-		data = CallLogSerializer(un_matched_users , many=True).data
-	
+		un_matched_users = CallLog.objects#.filter(is_existing=False)#.filter(~Q(number__in=users.values_list('mobile')))
+		# print(un_matched_users)
+		un_matched_users = un_matched_users.filter(staff_entry_at=None)
+		data = CallLogSerializer(un_matched_users.all().order_by('-timestamp') , many=True).data
 		return Response(data)
 
 
