@@ -843,7 +843,7 @@ class GetUserCreditAndJarByStorewise(APIView):
 
 
 
-
+from orders.models import StoreWiseOrder
 class GetCallLogsStoreAPIView(APIView):
 	def post(self, request, *args, **kwargs):
 		settings.DLFPRINT()
@@ -866,61 +866,44 @@ class GetCallLogsStoreAPIView(APIView):
 				# maybe we need called number (kasko ma missed call ako)
 
 				calllogs = CallLog()				
-				cartitem_of_num_q = CartItem.objects.filter(cart__user__mobile=call.get('number'));
-				cartitem_of_num = cartitem_of_num_q.first()				
+				cartitem_of_phone_q = CartItem.objects.filter(cart__user__mobile=call.get('number'))
+				cartitem_of_phone = cartitem_of_phone_q.first()				
 				
-				if cartitem_of_num: #if already order is preasent for that phone no
+				if cartitem_of_phone: #if already order is preasent for that phone no
 					#get variation with most orders
-					cartitem = cartitem_of_num_q.values('item_id') \
+					variation_max = cartitem_of_phone_q.values('item_id') \
 					.annotate(countgroup=Count('item_id')).order_by('-countgroup') \
 					.first()
 					
 					calllogs.is_existing = True
-					user_id = cartitem_of_num.cart.user_id
-					data = {
-						'user_id': user_id,
-						'item_id': cartitem.get('item_id'),
-						'quantity': 1,
-						'ordered_price': cartitem_of_num.ordered_price,
-						'is_auto_order': ORDER_TYPE_MISSCALL,
-						'credit': 0,
-						'debit': 0,
-						'fk_delivery_user_id' : request.user.id
-					}
-					print(data)
-					CartItemCreateService(data)
-					auto_carts = Cart.objects.filter(active=1).filter(is_auto_order=2).filter(user_id=user_id).all()
-					# import pprint
-					# pprint.pprint(auto_carts)
-					for cart in auto_carts:
-						order_data = {
-							'user_id': user_id,
-							'order_latitude': 1,
-							'order_longitude': 1,
-							'is_auto_order': ORDER_TYPE_MISSCALL,
-							'fk_payment_method': 1,
-							'is_delivered': 1,
-							'fk_delivery_user_id' : user_id
-						}
-						print(order_data)
-						CreateOrderFromCart(order_data) #
+					calllogs.fk_variation_id = variation_max.get('item_id')
+					
+					user_id = cartitem_of_phone.cart.user_id
+					order = StoreWiseOrder.objects.filter(fk_auth_user_id=user_id) \
+						.filter(~Q(order_latitude=None)).filter(~Q(order_longitude=None)) \
+						.order_by('-id').first()
+					calllogs.order_latitude = order.order_latitude
+					calllogs.order_longitude = order.order_longitude
+
+					
+				calllogs.fk_staff_user = request.user
+				calllogs.fk_store = getUserStoreService(request.user.id)
 				calllogs.number = call.get('number')
 				calllogs.timestamp_str = call.get('timestamp')
 				calllogs.save()
-				
-				
 				return Response('Success', status=200)
 		return Response('failed to save', status=400)
 
-from django.db.models import Q			
+from django.db.models import Q
+from store.service import getUserStoreService		
 class MissCallUsersAPIView(APIView):
 	def get(self, request):
 		settings.DLFPRINT()
 		users = User.objects.all()
 		un_matched_users = CallLog.objects#.filter(is_existing=False)#.filter(~Q(number__in=users.values_list('mobile')))
 		# print(un_matched_users)
-		un_matched_users = un_matched_users.filter(staff_entry_at=None)
-		data = CallLogSerializer(un_matched_users.all().order_by('-timestamp') , many=True).data
+		un_matched_users = un_matched_users.filter(staff_entry_at=None).filter(fk_store=getUserStoreService(request.user.id))
+		data = CallLogSerializer(un_matched_users.all().order_by('timestamp') , many=True).data
 		return Response(data)
 
 

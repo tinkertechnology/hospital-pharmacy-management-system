@@ -402,7 +402,7 @@ class AddToCartForCustomUserAPIView(APIView):
 			VariationHistoryCountService(vh_data)
 			pass
 		
-		ServiceCallLogStaffEntryOrder({'phone': phone})
+		ServiceCallLogStaffEntryOrder({'number': phone})
 		
 		return Response({'Success': 'Saved sucessfully'}, status=200)
 		# cart = Cart.objects.filter(user_id=user_id).filter(active=1).first()

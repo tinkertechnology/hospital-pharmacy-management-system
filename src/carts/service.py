@@ -92,7 +92,7 @@ def CartItemCreateService(data):
 def CartItemSoftDelete(data):
 	cart_id = data.get('cart_id')
 	cart = Cart.objects.filter(pk=cart_id).first()
-	cart.isDeleted = true;
+	cart.isDeleted = true
 
 	# decrease credit from deleted cart
 	user_account_data = {

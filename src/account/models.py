@@ -119,12 +119,14 @@ class CustomerMessage(models.Model):
 	def __str__(self):
 		return str(self.message)
 from products.models import Variation
+from store.models import Store
 class CallLog(models.Model):
-	number = models.CharField(max_length=10, null=True, blank=True)
+	number = models.CharField(max_length=10, null=True, blank=True) #customer number
 	is_existing = models.BooleanField(default=False) #kam chaina
 	is_ordered = models.BooleanField(default=False) #kam chaina
 	staff_entry_at = models.DateTimeField(null=True, blank=True) #kati khera entry gareko delivery manche le
 	fk_variation  = models.ForeignKey(Variation, on_delete=models.CASCADE, null=True)
+	fk_store  = models.ForeignKey(Store, on_delete=models.CASCADE, null=True)
 	fk_staff_user =  models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
 	order_latitude = models.CharField(max_length=200, null=True, blank=True)
 	order_longitude = models.CharField(max_length=200, null=True, blank=True)
