@@ -126,6 +126,8 @@ class CallLog(models.Model):
 	staff_entry_at = models.DateTimeField(null=True, blank=True) #kati khera entry gareko delivery manche le
 	fk_variation  = models.ForeignKey(Variation, on_delete=models.CASCADE, null=True)
 	fk_staff_user =  models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
+	order_latitude = models.CharField(max_length=200, null=True, blank=True)
+	order_longitude = models.CharField(max_length=200, null=True, blank=True)
 	timestamp = models.DateTimeField(verbose_name='call timestamp', auto_now_add=True)
 	timestamp_str = models.CharField(max_length=100, blank=True, null=True)
 	timestamp_i64 = models.BigIntegerField(null=True, blank=True)
