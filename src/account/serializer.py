@@ -114,19 +114,29 @@ class UserSerializer(serializers.ModelSerializer):
 		comments = CommentSerializer(Comment.objects.filter(user=obj), many=True)
 		return comments.data
 	
-	# def get_delivery_boys(self, obj):
-	# 	# print(obj.id)
-	# 	store  = getUserStoreService(obj.id)
-	# 	if store:
-	# 		store_users = StoreUser.objects.filter(fk_store_id=store.id).filter(fk_store_usertypes_id=2).values('fk_user_id')
-	# 		delivery_boys = DeliveryUserSerializer(User.objects.filter(pk__in=store_users), many=True)
-	# 		return delivery_boys.data
-		
+from products.models import Variation
+from products.serializers import ProductVariationListSerializer		
+from datetime import datetime
 class CallLogSerializer(serializers.ModelSerializer):
 	info_dhikka = serializers.SerializerMethodField()
 	class Meta:
 		model = CallLog
 		fields = '__all__'
 	def get_info_dhikka(self, obj):
-		return 'Please, be very clear on your commit messages and pull requests, empty pull request messages may be rejected without reason.'
+		variation_id = CallLog.objects.filter(number=obj.number).first().fk_variation_id
+		# print(variation_id)
+		time = f'{obj.timestamp:%Y-%m-%d %H:%M}'
+		data = {}
+		if variation_id:
+			variation = Variation.objects.filter(pk=variation_id).first()
+			# serializer = 
+			data = {
+				"latitude" : obj.order_latitude,
+				"longitude" : obj.order_longitude,
+				"time" : time,
+				"product" : variation.title#ProductVariationListSerializer(variation, many=True).data
+			}
+		return data
+		
+		# return 'Please, be very clear on your commit messages and pull requests, empty pull request messages may be rejected without reason.'
 
