@@ -123,6 +123,10 @@ class UserSerializer(serializers.ModelSerializer):
 	# 		return delivery_boys.data
 		
 class CallLogSerializer(serializers.ModelSerializer):
+	info_dhikka = serializers.SerializerMethodField()
 	class Meta:
 		model = CallLog
 		fields = '__all__'
+	def get_info_dhikka(self, obj):
+		return 'Please, be very clear on your commit messages and pull requests, empty pull request messages may be rejected without reason.'
+

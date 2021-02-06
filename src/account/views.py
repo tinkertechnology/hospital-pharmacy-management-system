@@ -918,9 +918,9 @@ class MissCallUsersAPIView(APIView):
 		settings.DLFPRINT()
 		users = User.objects.all()
 		un_matched_users = CallLog.objects#.filter(is_existing=False)#.filter(~Q(number__in=users.values_list('mobile')))
-		print(un_matched_users)
+		# print(un_matched_users)
+		un_matched_users = un_matched_users.filter(staff_entry_at=None)
 		data = CallLogSerializer(un_matched_users.all().order_by('-timestamp') , many=True).data
-	
 		return Response(data)
 
 
