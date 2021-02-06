@@ -121,8 +121,8 @@ class CustomerMessage(models.Model):
 from products.models import Variation
 class CallLog(models.Model):
 	number = models.CharField(max_length=10, null=True, blank=True)
-	is_existing = models.BooleanField(default=False)
-	is_ordered = models.BooleanField(default=False)
+	is_existing = models.BooleanField(default=False) #kam chaina
+	is_ordered = models.BooleanField(default=False) #kam chaina
 	staff_entry_at = models.DateTimeField(null=True, blank=True) #kati khera entry gareko delivery manche le
 	fk_variation  = models.ForeignKey(Variation, on_delete=models.CASCADE, null=True)
 	fk_staff_user =  models.ForeignKey(Account, on_delete=models.CASCADE, null=True)

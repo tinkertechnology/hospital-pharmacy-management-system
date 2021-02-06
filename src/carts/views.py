@@ -321,7 +321,7 @@ from carts.service import CartItemCreateService
 from orders.service import CreateOrderFromCart, VariationHistoryCountService
 
 from carts.models import Cart
-
+from account.service_call_log import ServiceCallLogStaffEntryOrder
 
 from account.serializer import CreateUserSerializer
 import random, string
@@ -331,6 +331,7 @@ def randomword(length):
 class AddToCartForCustomUserAPIView(APIView):
 	serializer_class = CartItemSerializer
 	def post(self, request, *args, **kwargs):
+		settings.DLFPRINT()
 		print(request.data)
 		item_id = request.data.get('item_id')
 		phone = request.data.get('phone')
@@ -400,6 +401,9 @@ class AddToCartForCustomUserAPIView(APIView):
 			}
 			VariationHistoryCountService(vh_data)
 			pass
+		
+		ServiceCallLogStaffEntryOrder({'phone': phone})
+		
 		return Response({'Success': 'Saved sucessfully'}, status=200)
 		# cart = Cart.objects.filter(user_id=user_id).filter(active=1).first()
 		# if not cart: 
