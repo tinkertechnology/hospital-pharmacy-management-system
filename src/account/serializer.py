@@ -127,16 +127,31 @@ class CallLogSerializer(serializers.ModelSerializer):
 		# print(variation_id)
 		time = f'{obj.timestamp:%Y-%m-%d %H:%M}'
 		data = {}
+		customer = User.objects.filter(mobile__iexact=obj.number).first()
+		customer_name=""
 		if variation_id:
 			variation = Variation.objects.filter(pk=variation_id).first()
+			if customer:
+				customer_name = self.get_customer_name(customer)
 			# serializer = 
 			data = {
 				"latitude" : obj.order_latitude,
 				"longitude" : obj.order_longitude,
+				"name": customer_name,
 				"time" : time,
 				"product" : variation.title#ProductVariationListSerializer(variation, many=True).data
 			}
 		return data
+	
+	def get_customer_name(self, customer_obj):
+		name = ""
+		if customer_obj.firstname:
+			name+= customer_obj.firstname
+		if customer_obj.lastname:
+			name+= ' '+ customer_obj.lastname
+		if customer_obj.nick_name:
+			name+= ' ' + customer.nick_name
+		return name
 		
 		# return 'Please, be very clear on your commit messages and pull requests, empty pull request messages may be rejected without reason.'
 

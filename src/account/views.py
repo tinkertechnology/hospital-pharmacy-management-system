@@ -810,7 +810,6 @@ class GetUserJarAndCreditAPIView(APIView):
 class GetUserCreditAndJarByStorewise(APIView):
 	def get_current_store(self):
 		settings.DLFPRINT()
-		print('jpt')
 		store_id_auth_user = StoreUser.objects.filter(fk_user=self.request.user).first().fk_store
 		# print(store_id_auth_user)
 		credit_users_lists = StoreAccount.objects.filter(fk_store=store_id_auth_user)
