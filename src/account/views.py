@@ -891,7 +891,7 @@ class GetCallLogsStoreAPIView(APIView):
 				calllogs.number = call.get('number')
 				calllogs.timestamp_str = call.get('timestamp')
 				calllogs.save()
-				return Response('Success', status=200)
+			return Response('Success', status=200)
 		return Response('failed to save', status=400)
 
 from django.db.models import Q
