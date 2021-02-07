@@ -123,7 +123,7 @@ class CallLogSerializer(serializers.ModelSerializer):
 		model = CallLog
 		fields = '__all__'
 	def get_info_dhikka(self, obj):
-		variation_id = CallLog.objects.filter(number=obj.number).first().fk_variation_id
+		variation_id = obj.fk_variation_id
 		# print(variation_id)
 		time = f'{obj.timestamp:%Y-%m-%d %H:%M}'
 		data = {}
@@ -135,8 +135,8 @@ class CallLogSerializer(serializers.ModelSerializer):
 				customer_name = self.get_customer_name(customer)
 			# serializer = 
 			data = {
-				"latitude" : obj.order_latitude,
-				"longitude" : obj.order_longitude,
+				# "latitude" : obj.order_latitude,
+				# "longitude" : obj.order_longitude,
 				"name": customer_name,
 				"time" : time,
 				"product" : variation.title#ProductVariationListSerializer(variation, many=True).data
@@ -150,7 +150,7 @@ class CallLogSerializer(serializers.ModelSerializer):
 		if customer_obj.lastname:
 			name+= ' '+ customer_obj.lastname
 		if customer_obj.nick_name:
-			name+= ' ' + customer.nick_name
+			name+= ' ' + customer_obj.nick_name
 		return name
 		
 		# return 'Please, be very clear on your commit messages and pull requests, empty pull request messages may be rejected without reason.'
