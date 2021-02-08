@@ -339,8 +339,8 @@ class AddToCartForCustomUserAPIView(APIView):
 		firstname = request.data.get('firstname', ' ')
 		lastname = request.data.get('lastname', ' ')
 		nickname = request.data.get('nick_name', ' ')
-		order_latitude = request.data.get('order_latitude', ' ')
-		order_longitude = request.data.get('order_longitude', ' ')
+		order_latitude = request.data.get('order_latitude', None)
+		order_longitude = request.data.get('order_longitude', None)
 		user = User.objects.filter(mobile__iexact=phone).first()
 		if not phone:
 			return Response('Phone number is required.', status=400)
