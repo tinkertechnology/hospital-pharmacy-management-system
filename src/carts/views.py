@@ -328,6 +328,7 @@ import random, string
 def randomword(length):
 	letters = string.ascii_lowercase
 	return ''.join(random.choice(letters) for i in range(length))
+
 class AddToCartForCustomUserAPIView(APIView):
 	serializer_class = CartItemSerializer
 	def post(self, request, *args, **kwargs):
@@ -338,6 +339,8 @@ class AddToCartForCustomUserAPIView(APIView):
 		firstname = request.data.get('firstname', ' ')
 		lastname = request.data.get('lastname', ' ')
 		nickname = request.data.get('nick_name', ' ')
+		order_latitude = request.data.get('order_latitude', ' ')
+		order_longitude = request.data.get('order_longitude', ' ')
 		user = User.objects.filter(mobile__iexact=phone).first()
 		if not phone:
 			return Response('Phone number is required.', status=400)
@@ -385,8 +388,8 @@ class AddToCartForCustomUserAPIView(APIView):
 		for cart in auto_carts:
 			order_data = {
 			'user_id': user.id,
-			'order_latitude': 1,
-			'order_longitude': 1,
+			'order_latitude': order_latitude,
+			'order_longitude': order_longitude,
 			'is_auto_order': True,
 			'fk_payment_method': 1,
 			'is_delivered': 1,
