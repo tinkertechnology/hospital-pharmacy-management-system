@@ -2,8 +2,6 @@ from rest_framework import serializers
 from django.conf import settings
 
 from .models import Category, Product, Variation, ProductFeatured, Company, GenericName, Brand, ProductUnit, ProductImage, ProductCommon, UserVariationQuantityHistory
-
-from wsc.models import WaterSupplyCompany
 from store.models import Store
 from store.serializers import *
 
@@ -36,7 +34,8 @@ class VariationSerializer(serializers.ModelSerializer):
 			"price",
 			'sale_price',
 			'discount',
-			'inventory'
+			'inventory',
+			"expiry_date",
 		]
 	def get_queryset(self, obj):
 		return obj.filter(is_internal=False)
@@ -191,7 +190,6 @@ class ProductSerializer(serializers.ModelSerializer):
 			"id",
 			"title",
 			"image",
-			"price",
 			"description",
 			"variation_set",
 			"productimage_set",
@@ -291,14 +289,6 @@ class CategorySerializer(serializers.ModelSerializer):
 		]
 
 
-class WSCSerializer(serializers.ModelSerializer):
-	url = serializers.HyperlinkedIdentityField(view_name='wscs_detail_api')
-	product_set = ProductSerializer(many=True)
-	# fk_category = SubCategorySerializer(many=True)
-	# children_list = serializers.SerializerMethodField('_get_children')
-	# zer.datadef _get_children(self, obj):
-	# 	serializer = SubCategorySerializer(Category.objects.filter(fk_category=obj.id), many=True)
-	# 	return seriali
 
 
 	class Meta:

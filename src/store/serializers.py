@@ -5,7 +5,6 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from store.models import StoreUser
 from users.serializers import UserSerializer
-from routes.serializers import RouteSerializer
 User = get_user_model()
 
 from .models import Store
@@ -48,8 +47,6 @@ class StoreUserTypeSerializer(serializers.ModelSerializer):
 
 class StoreUserListSerializer(serializers.ModelSerializer):
 	fk_user = UserSerializer()
-	fk_store = StoreSerializer()
-	fk_route = RouteSerializer()
 	class Meta:
 		model = StoreUser
 		fields = '__all__'

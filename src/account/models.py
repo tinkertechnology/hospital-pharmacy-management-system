@@ -50,7 +50,12 @@ class Account(AbstractBaseUser):
 	is_superuser			= models.BooleanField(default=False)
 	mobile 					= models.CharField(validators=[phone_regex],max_length=15, unique=True)
 	nick_name 				= models.CharField(max_length=100, null=True, blank=True)
+	date_of_birth			= models.DateField(null=True)
+	address					= models.CharField(max_length=200, null=True, blank=True)
+	gender					= models.CharField(max_length=200, null=True, blank=True)
 	firebase_token          = models.CharField(max_length=500, null=True, blank=True)
+	
+
 
 
 	USERNAME_FIELD = 'mobile'

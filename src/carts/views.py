@@ -25,7 +25,7 @@ from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView,
 from rest_framework import permissions
 from orders.forms import GuestCheckoutForm
 from orders.mixins import CartOrderMixin
-from orders.models import UserCheckout, Order, UserAddress
+# from orders.models import UserCheckout, Order, UserAddress
 from orders.serializers import OrderSerializer, FinalizedOrderSerializer
 from products.models import Variation, UserVariationQuantityHistory
 from .mixins import TokenMixin, CartUpdateAPIMixin, CartTokenMixin
@@ -219,10 +219,10 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 	#permission_classes = [IsAuthenticated]
 	token_param = "token"
 	cart = None
-	def get_cart(self):
-		data, cart_obj, response_status = self.get_cart_from_token()
+	def get_cart(self, pid):
+		data, cart_obj, response_status = self.get_cart_from_token(pid)
 		# if cart_obj == None or not cart_obj.active:
-		print(cart_obj)
+		# print(cart_obj)
 		if cart_obj == None:
 
 			cart = Cart()
@@ -240,15 +240,25 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 
 
 	def get(self, request, format=None):
-		cart = self.get_cart()
-		self.cart = cart
-		self.update_cart()
+		patient_id = request.GET.get('patient_id')
+		if patient_id:
+			cart = Cart()
+			cart.user_id = patient_id 
+			cart.save()
+		else:
+			cart_id = request.GET.get('cart_id')
+		# print(pid)
+		# cart = self.get_cart(pid)
+			cart = Cart.objects.filter(pk=cart_id).first()
+		
+		# self.cart = cart
+		# self.update_cart()
 		#token = self.create_token(cart.id)
 		items = CartItemSerializer(cart.cartitem_set.all(), many=True)
-		print(items)
-		print(cart.items.all())
+		# print(items)
+		# print(cart.items.all())
 		data = {
-			"token": self.token,
+			# "token": self.token,
 			"cart" : cart.id,
 			"total": cart.total,
 			"subtotal": cart.subtotal,
@@ -531,7 +541,11 @@ class AddToCartView(CreateAPIView):
 	serializer_class = CartItemModelSerializer 
 	# serializer_class = RemoveCartItemFromCartSerializer 
 
-
+class CartItemSaveView(CreateAPIView):
+	# permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+	queryset=CartItem.objects.all()
+	serializer_class = CartItemModelSerializer 
+	# serializer_class = RemoveCartItemFromCartSerializer 
 
 
 
@@ -727,10 +741,6 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 			new_order.user = user_checkout
 			new_order.save()
 		return get_data
-
-
-
-
 
 
 class CheckoutFinalView(CartOrderMixin, View):

@@ -1,0 +1,278 @@
+
+{% extends 'personal/dashboard_layout/app.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="col-sm-12" id="pos">
+    <div class="card-box table-responsive">
+        <div class="col-lg-12">
+            <div class="demo-box p-2">
+                <h4 class="header-title"></h4>
+                <div class="row mb-4">
+                    <div class="col-sm-12">
+                        
+                            <div class="form-group">
+                                <label class="sr-only" for="exampleInputEmail21">Search Patient</label>
+                                <input type="text" class="form-control" id="exampleInputEmail21" placeholder="Enter Patient name">
+                            </div>
+
+                            <div class="form-group ml-2">
+                                <label class="sr-only" for="exampleInputPassword2">Password</label>
+                                <input type="password" class="form-control" id="exampleInputPassword2" placeholder="Password">
+                            </div>
+                            <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Add Customer</button>
+                    </div>
+
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table m-0">
+
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Username</th>
+                                <th>Mobile</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for patient in object_list %}
+                            <tr>
+                                <th scope="row">{{ patient.id }}</th>
+                                <td>{{patient.firstname}}</td>
+                                <td>{{ patient.lastname }}</td>
+                                <td>{{ patient.mobile}}</td>
+                                <td>{{patient.mobile}}</td>
+                                <td><a class="btn btn-primary" href="/carts?user_id={{patient.id}}">details</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% if is_paginated %}
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if page_obj.has_previous %}          
+                                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                            {% endif %}
+                    
+                            <span class="current">
+                              {{ page_obj.number }}
+                            </span>
+                    
+                            {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"  style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                        <h4 class="modal-title mt-0">Add Customer</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="field-1" name="firstname" class="control-label">Firstname</label>
+                                <input type="text" name="lastname"  v-model="customerForm.firstname" class="form-control" id="field-1" placeholder="John">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="field-2" class="control-label">Lastname</label>
+                                <input type="text" name="lastname" v-model="customerForm.lastname" class="form-control" id="field-2" placeholder="Doe">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="field-3" class="control-label">Mobile</label>
+                                <input type="text" name="mobile" v-model="customerForm.mobile" class="form-control" id="field-3" placeholder="Address">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="field-3" class="control-label">Email</label>
+                                <input type="text" name="email"  v-model="customerForm.email" class="form-control" id="field-3" placeholder="Address">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="field-3" class="control-label">Date of Birth</label>
+                                <input type="text" class="form-control" v-model="customerForm.dob" placeholder="mm/dd/yyyy" id="datepicker-autoclose">
+                                                                        <div class="input-group-append">
+                                                                            <span class="input-group-text bg-primary text-white b-0"><i class="mdi mdi-calendar"></i></span>
+                                                                        </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="field-3" class="control-label">Address</label>
+                                <input type="text"  name="address"  v-model="customerForm.address" class="form-control" placeholder="Address" id="datepicker-autoclose">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="field-4" class="control-label">Patient Type</label>
+                                <!-- <input type="text" class="form-control" id="field-4" placeholder="Boston"> -->
+                                <select v-model="customerForm.patienttype">
+                                    <option value="opd">OPD</option>
+                                    <option value="ipd">IPD</option>
+                                    <option value="er">ER</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                    <button type="button"  @click="savePatient" class="btn btn-info waves-effect waves-light">Save changes</button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+ </div>
+
+ 
+ {% endblock %}
+
+ {% block script %}
+ <script>
+    // var Toasted = require('vue-toasted').default
+    Vue.use(VueToast);
+    var app = new Vue({
+        
+        delimiters: ['[[', ']]'],
+      el: '#pos',
+      data: {
+        loading: false,
+        products : [],
+        showModal : false,
+        
+        patients : [{
+            id: 0,
+            firstname: "",
+            lastname: "",
+            mobile: "",
+            patient_type: {
+                p_type_id: null,
+                p_type_title: ""
+            }
+    }],
+    patient :{},
+        selectedVal : 1,
+        users:[{name:'',email:'',mobno:''}],
+        selected : '',
+        patientType:'',
+        quantity: 1,
+
+        cart :{
+        "token": null,
+        "cart": 107,
+        "total": 6510.0,
+        "subtotal": 6000.0,
+        "tax_total": 510.0,
+        "count": 1,
+        "items": [
+            {
+                "product_id": 1,
+                "image": "/static/no-image.jpg",
+                "item": 1,
+                "item_title": "Aspirin-hib (aspirin)",
+                "price": 150.0,
+                "product": 1,
+                "quantity": "40.00",
+                "line_item_total": "6000.00",
+                "fk_store_title": "",
+                variation : {id: '',title :"",price:"",sale_price:null,discount:"",inventory:""},
+            }
+        ]
+    },
+    customerForm : {
+        firstname : "",
+        lastname: "",
+        email : "",
+        patient_type : "",
+        mobile : "",
+        address: "",
+        patienttype: "",
+        dob : ""
+    },
+
+}, //Data Closed
+      methods : {
+        savePatient: function() {
+                axios({
+                method: 'post',
+                url:  '/api/register/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                    firstname : this.customerForm.firstname,
+                    lastname : this.customerForm.lastname,
+                    mobile : this.customerForm.mobile,
+                    email : this.customerForm.email,
+
+                  // This is the body part
+                },
+                }) //.then(response=> cartitem.variation = response.data)
+                .then((getResponse) => {
+                    $('#con-close-modal').modal('hide')
+                    console.log(getResponse.data);
+                    this.patientType = getResponse.data.user_id;
+                    
+
+                }) 
+                .catch(function (error) {
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });
+                  
+        }
+
+       
+      }, //end method
+      
+
+     
+
+      mounted() {
+
+      },
+    })
+  </script>
+
+ <!-- Datatables init -->
+ {% endblock %}

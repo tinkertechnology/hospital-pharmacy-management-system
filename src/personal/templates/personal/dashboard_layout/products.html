@@ -1,0 +1,338 @@
+{% extends 'personal/dashboard_layout/app.html' %}
+
+{% load static %}
+
+{% block content %}
+<div id="pos"> 
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <!-- <div class="panel-heading">
+                    <h4>Invoice</h4>
+                </div> -->
+            <div class="card-body">
+                <div class="clearfix">
+                    <div class="float-left">
+                        <!-- <h3 class="mt-0"><img src="assets/images/logo-sm.png" alt="" height="24" class="mr-1"> -->
+                            HMS
+                    </div>
+                </div>
+                <hr>
+                <!-- end row -->
+                <div class="row">
+                    <div class="col-md-3">
+                        
+                    </div>
+                    <!-- <div class="col-md-3">
+                        <input type="text" class="form-control" name="type" placeholder="type">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" name="unit" placeholder="Unit">
+                    </div> -->
+                    <div class="col-md-3">
+                        <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Add Customer</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table mt-4">
+                                <thead>
+                                    <tr>
+                                        <th>S.N</th>
+                                        <th>Product Name</th>
+                                        <th>Exp Date</th>
+                                        <th>Quantity</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for='(cartitem, index) in products.results'>
+                                        <td>1</td>
+                                        <td>
+                                            [[ _$GF.IFDEF(cartitem,['product','title']) ]]   
+                                            
+                                        </td>
+                                        <td>[[ _$GF.IFDEF(cartitem,['product','title']) ]]</td>
+                                        <td>[[ _$GF.IFDEF(cartitem,['product','price']) ]]</td>
+                                        <td><button class="btn btn-danger"  @click="deleteRow(index)">X</button></td>
+                                    </tr>
+                                    <button class="btn btn-primary" @click="addRow">+</button>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"  style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-6">
+                    <h4 class="modal-title mt-0">Add Item</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-teal btn-rounded waves-light waves-effect width-md">View</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="field-1" name="firstname" class="control-label">Product Name</label>
+                            <input type="text" name="lastname"  v-model="productForm.title" class="form-control" id="field-1" placeholder="John">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="field-2" class="control-label">Description</label>
+                            <input type="text" name="title" v-model="productForm.description" class="form-control" id="field-2" placeholder="Title">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                <button type="button"  @click="savePatient" class="btn btn-info waves-effect waves-light">Save changes</button>
+                
+            </div>
+        </div>
+    </div>
+   
+</div>
+<!-- /.modal -->
+<div class="loader" v-if="loading"></div>
+</div>
+<style>
+    .loader{  /* Loader Div Class */
+position: absolute;
+top:0px;
+right:0px;
+width:100%;
+height:100%;
+background-color:#eceaea;
+background-image: url('https://media0.giphy.com/media/xTk9ZvMnbIiIew7IpW/giphy.gif?cid=ecf05e47tgd4qh1a0t3gvkbnoc2t2soiexi7d3srsu0v2ffg&rid=giphy.gif');
+background-size: 50px;
+background-repeat:no-repeat;
+background-position:center;
+z-index:10000000;
+opacity: 0.8;
+filter: alpha(opacity=40);
+}
+</style>
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+    Vue.use(VueToast);
+    var app = new Vue({
+        delimiters: ['[[', ']]'],
+      el: '#pos',
+      data: {
+        loading: false,
+        products : [],
+        showModal : false,
+        
+        patients : [{
+            id: 0,
+            firstname: "",
+            lastname: "",
+            mobile: "",
+            patient_type: {
+                p_type_id: null,
+                p_type_title: ""
+            }
+    }],
+    patient :{},
+        selectedVal : 1,
+        users:[{name:'',email:'',mobno:''}],
+        selected : '',
+        patientType:'',
+        quantity: 1,
+    productForm : {
+        title : "",
+        description: "",
+    },
+
+}, //Data Closed
+      methods : {
+        getProduct: function() {
+            axios.get('/api/products/')
+                .then((getResponse) => {
+                    console.log("GET Response")
+                    console.log(getResponse.data);
+                    // data = getResponse.data;
+                    // response.send(data);
+                    this.products = getResponse.data;
+                    // print(products);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });  
+        },
+        addRow: function() {  
+                this.addToCart();   
+               this.cart.items.push({product_id: '',name:'',email:'',mobno:''})
+               
+            },
+        deleteRow(index){ 
+            // alert('hi');  
+            // console.log(index);
+            if(index==0){
+                return;
+            }
+            this.cart.items.splice(index,1);             
+        } ,
+        getProductAttributes: function(cartitem) {
+            this.loading= true,
+                axios({
+                method: 'post',
+                url:  '/api/VariationByPatientAPIView/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                    product_id: cartitem.product_id,
+                    p_type:  _$GF.IFDEF(this.patient,['patient_type','p_type_id']) 
+                  // This is the body part
+                }
+                }) //.then(response=> cartitem.variation = response.data)
+                .then((getResponse) => {
+                    console.log(getResponse.data);
+                    // data = getResponse.data;
+                    // response.send(data);
+                    // this.patients = getResponse.data;
+                    // this.variation = getResponse.data;
+                    cartitem.variation= getResponse.data; 
+                    console.log(cartitem);
+                    this.$forceUpdate();
+                    this.loading = false;
+                    // cartitem.variation.title = 'jpt';
+                    //Vue.set(cartitem, 'variation', getResponse.data);
+                    
+                    // print(products);
+                }) 
+                .catch(function (error) {
+                    this.loading = false;
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });
+                  
+        },
+
+        addProduct: function() {
+            this.loading= true,
+                axios({
+                method: 'post',
+                url:  '/api/products_add/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                    title: productForm.title,
+                    description: productForm.description,
+                  // This is the body part
+                }
+                }) //.then(response=> cartitem.variation = response.data)
+                .then((getResponse) => {
+                    console.log(getResponse.data);
+                    this.getProduct();
+
+                }) 
+                .catch(function (error) {
+                    this.loading = false;
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });
+                  
+        },
+
+        savePatient: function() {
+                axios({
+                method: 'post',
+                url:  '/api/register/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                    firstname : this.customerForm.firstname,
+                    lastname : this.customerForm.lastname,
+                    mobile : this.customerForm.mobile,
+                    email : this.customerForm.email,
+
+                  // This is the body part
+                },
+                }) //.then(response=> cartitem.variation = response.data)
+                .then((getResponse) => {
+                    $('#con-close-modal').modal('hide')
+                    console.log(getResponse.data);
+                    this.patientType = getResponse.data.user_id;
+                    
+
+                }) 
+                .catch(function (error) {
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });
+                  
+        },
+
+        addToCart : function(){
+            axios({
+                method: 'post',
+                url:  '/api/create_cart/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                    item: 1,
+                    quantity: 1,
+                    fk_store_id : 1,
+                    p_id: this.patients.id, 
+                  // This is the body part
+                }
+                }).then(function (response) {
+                    console.log(response);
+                    $.notify("added", "success");
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        },
+        
+      }, //end method
+      
+
+     
+
+      mounted() {
+          this.getProduct();
+        //   this.getPatient();
+        //   this.getCart();
+
+      },
+    })
+  </script>
+
+
+{% endblock %}
+

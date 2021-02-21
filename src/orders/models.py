@@ -10,7 +10,6 @@ from products.models import Product
 
 from payment.models import PaymentMethod
 from store.models import Store
-from routes.models import Route
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -24,65 +23,65 @@ if settings.DEBUG:
 
 
 
-class UserCheckout(models.Model):
-	user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True) #not required
-	email = models.EmailField(unique=True) #--> required
-	braintree_id = models.CharField(max_length=120, null=True, blank=True)
+# class UserCheckout(models.Model):
+# 	user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True) #not required
+# 	email = models.EmailField(unique=True) #--> required
+# 	braintree_id = models.CharField(max_length=120, null=True, blank=True)
 
-	def __str__(self): #def __str__(self):
-		return self.email
+# 	def __str__(self): #def __str__(self):
+# 		return self.email
 
-	@property
-	def get_braintree_id(self,):
-		instance = self
-		if not instance.braintree_id:
-			result = braintree.Customer.create({
-			    "email": instance.email,
-			})
-			if result.is_success:
-				instance.braintree_id = result.customer.id
-				instance.save()
-		return instance.braintree_id
+# 	@property
+# 	def get_braintree_id(self,):
+# 		instance = self
+# 		if not instance.braintree_id:
+# 			result = braintree.Customer.create({
+# 			    "email": instance.email,
+# 			})
+# 			if result.is_success:
+# 				instance.braintree_id = result.customer.id
+# 				instance.save()
+# 		return instance.braintree_id
 
-	def get_client_token(self):
-		customer_id = self.get_braintree_id
-		if customer_id:
-			client_token = braintree.ClientToken.generate({
-			    "customer_id": customer_id
-			})
-			return client_token
-		return None
-
-
-def update_braintree_id(sender, instance, *args, **kwargs):
-	if not instance.braintree_id:
-		instance.get_braintree_id
+# 	def get_client_token(self):
+# 		customer_id = self.get_braintree_id
+# 		if customer_id:
+# 			client_token = braintree.ClientToken.generate({
+# 			    "customer_id": customer_id
+# 			})
+# 			return client_token
+# 		return None
 
 
-post_save.connect(update_braintree_id, sender=UserCheckout)
+# def update_braintree_id(sender, instance, *args, **kwargs):
+# 	if not instance.braintree_id:
+# 		instance.get_braintree_id
+
+
+# post_save.connect(update_braintree_id, sender=UserCheckout)
 
 
 
 
-ADDRESS_TYPE = (
-	('billing', 'Billing'),
-	('shipping', 'Shipping'),
-)
+# ADDRESS_TYPE = (
+# 	('billing', 'Billing'),
+# 	('shipping', 'Shipping'),
+# )
 
-class UserAddress(models.Model):
-	user = models.ForeignKey(UserCheckout, on_delete=models.CASCADE, blank=True)
-	type = models.CharField(max_length=120, choices=ADDRESS_TYPE)
-	street = models.CharField(max_length=120)
-	city = models.CharField(max_length=120)
-	state = models.CharField(max_length=120)
-	zipcode = models.CharField(max_length=120)
-	phone = models.CharField(max_length=120, null=True)
+# class UserAddress(models.Model):
+# 	user = models.ForeignKey(UserCheckout, on_delete=models.CASCADE, blank=True)
+# 	type = models.CharField(max_length=120, choices=ADDRESS_TYPE)
+# 	street = models.CharField(max_length=120)
+# 	city = models.CharField(max_length=120)
+# 	state = models.CharField(max_length=120)
+# 	zipcode = models.CharField(max_length=120)
+# 	phone = models.CharField(max_length=120, null=True)
 
-	def __str__(self):
-		return self.street
+# 	def __str__(self):
+# 		return self.street
 
-	def get_address(self):
-		return "%s, %s, %s %s" %(self.street, self.city, self.state, self.zipcode)
+# 	def get_address(self):
+# 		return "%s, %s, %s %s" %(self.street, self.city, self.state, self.zipcode)
 
 
 ORDER_STATUS_CHOICES = (
@@ -96,9 +95,9 @@ ORDER_STATUS_CHOICES = (
 class Order(models.Model):
 	status = models.CharField(max_length=120, choices=ORDER_STATUS_CHOICES, default='created')
 	cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-	user = models.ForeignKey(UserCheckout,on_delete=models.CASCADE, null=True, )
-	billing_address = models.ForeignKey(UserAddress,on_delete=models.CASCADE, related_name='billing_address', blank=True, null=True)
-	shipping_address = models.ForeignKey(UserAddress, on_delete=models.CASCADE, related_name='shipping_address', blank=True, null=True)
+	# user = models.ForeignKey(UserCheckout,on_delete=models.CASCADE, null=True, )
+	# billing_address = models.ForeignKey(UserAddress,on_delete=models.CASCADE, related_name='billing_address', blank=True, null=True)
+	# shipping_address = models.ForeignKey(UserAddress, on_delete=models.CASCADE, related_name='shipping_address', blank=True, null=True)
 	shipping_total_price = models.DecimalField(max_digits=50, decimal_places=2, default=5.99)
 	order_total = models.DecimalField(max_digits=50, decimal_places=2, )
 	tax_amount = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
@@ -178,7 +177,6 @@ class StoreWiseOrder(models.Model):
 	updated_at = models.DateTimeField(blank=True, null=True)
 	order_latitude = models.CharField(max_length=200, null=True, blank=True)
 	order_longitude = models.CharField(max_length=200, null=True, blank=True)
-	fk_route = models.ForeignKey(Route, related_name='fk_route_storewiseorder', on_delete=models.CASCADE, null=True, blank=True)
 	is_auto_order = models.IntegerField(default=0)
 	
 	class Meta:
@@ -186,15 +184,15 @@ class StoreWiseOrder(models.Model):
 
 
 
-class Quotation(models.Model):
-	fk_product = models.ForeignKey(Product, on_delete=models.CASCADE)
-	email = models.CharField(max_length=200, null=True, blank=True)
-	message = models.CharField(max_length=200,null=True,blank=True)
+# class Quotation(models.Model):
+# 	fk_product = models.ForeignKey(Product, on_delete=models.CASCADE)
+# 	email = models.CharField(max_length=200, null=True, blank=True)
+# 	message = models.CharField(max_length=200,null=True,blank=True)
 
-	class Meta:
-		ordering = ['-id']
-	def __str__(self):
-		return '%s %s' %(self.email, self.message) 
+# 	class Meta:
+# 		ordering = ['-id']
+# 	def __str__(self):
+# 		return '%s %s' %(self.email, self.message) 
 
 
 

@@ -2,7 +2,7 @@ from django import forms
 from django.forms import ModelForm
 from django.contrib.auth import get_user_model
 
-from .models import UserAddress, Order
+from .models import  Order
 User = get_user_model()
 
 class GuestCheckoutForm(forms.Form):
@@ -24,39 +24,39 @@ class GuestCheckoutForm(forms.Form):
 
 
 
-class AddressForm(forms.Form):
-	billing_address = forms.ModelChoiceField(
-			queryset=UserAddress.objects.filter(type="billing"),
-			widget = forms.RadioSelect,
-			empty_label = None
-			)
-	shipping_address = forms.ModelChoiceField(
-		queryset=UserAddress.objects.filter(type="shipping"),
-		widget = forms.RadioSelect,
-		empty_label = None,
+# class AddressForm(forms.Form):
+# 	billing_address = forms.ModelChoiceField(
+# 			queryset=UserAddress.objects.filter(type="billing"),
+# 			widget = forms.RadioSelect,
+# 			empty_label = None
+# 			)
+# 	shipping_address = forms.ModelChoiceField(
+# 		queryset=UserAddress.objects.filter(type="shipping"),
+# 		widget = forms.RadioSelect,
+# 		empty_label = None,
 		
-		)
+# 		)
 
 
 
-class UserAddressForm(forms.ModelForm):
-	class Meta:
-		model = UserAddress
-		fields = [
-			'street',
-			'city',
-			'state',
-			'zipcode',
-			'type'
-		]
+# class UserAddressForm(forms.ModelForm):
+# 	class Meta:
+# 		model = UserAddress
+# 		fields = [
+# 			'street',
+# 			'city',
+# 			'state',
+# 			'zipcode',
+# 			'type'
+# 		]
 
 
-class UserOrderForm(ModelForm):
-	userorder = forms.ModelChoiceField(queryset=Order.objects.filter(), widget=forms.Select(attrs={'class':'form-control'}), empty_label='Select Order')
+# class UserOrderForm(ModelForm):
+# 	userorder = forms.ModelChoiceField(queryset=Order.objects.filter(), widget=forms.Select(attrs={'class':'form-control'}), empty_label='Select Order')
 	
-	class Meta:
-		model = Order
-		fields = '__all__'
+# 	class Meta:
+# 		model = Order
+# 		fields = '__all__'
 
 
 

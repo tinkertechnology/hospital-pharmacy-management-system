@@ -67,13 +67,3 @@ class AccountUpdateForm(forms.ModelForm):
 
 
 
-
-
-
-
-
-
-
-
-
-

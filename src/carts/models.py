@@ -4,6 +4,8 @@ from django.conf import settings
 from django.urls import reverse
 from django.db import models
 from django.db.models.signals import pre_save, post_save, post_delete
+from django.contrib.auth import get_user_model
+User = get_user_model()
 # from orders.models import StoreWiseOrder
 
 
@@ -66,7 +68,7 @@ post_delete.connect(cart_item_post_save_receiver, sender=CartItem)
 
 
 class Cart(models.Model):
-	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 	items = models.ManyToManyField(Variation, through=CartItem)
 	timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
 	updated = models.DateTimeField(auto_now_add=False, auto_now=True)
@@ -78,6 +80,7 @@ class Cart(models.Model):
 	#create_order garepachi 0 set huncha... yo bhaneko user ko cart chaina 
 	#1 bhayo bhane usko cart ma aru item ne add huncha. 
 	active = models.BooleanField(default=True)
+	fk_bill_created_user = models.ForeignKey(User, related_name="bill_created_by", on_delete=models.CASCADE, null=True, blank=True)
 	# 0 online order , 1 offline staff order , 2 misscall order 
 	is_auto_order = models.IntegerField(default=0) 
 	credit = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)

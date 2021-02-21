@@ -24,9 +24,8 @@ from .filters import ProductFilter
 from .forms import VariationInventoryFormSet, ProductFilterForm
 from .mixins import StaffRequiredMixin
 from .models import Product, Variation, Category, ProductFeatured, Company, Brand, GenericName, ProductUnit, ProductCommon, ProductImage
-from wsc.models import WaterSupplyCompany
 from store.models import Store, StoreUser
-from .pagination import ProductPagination, CategoryPagination, WSCPagination
+from .pagination import ProductPagination, CategoryPagination
 from .serializers import (
 		CategorySerializer, 
 		ProductSerializer,
@@ -37,7 +36,6 @@ from .serializers import (
 		 BrandSerializer,
 		 GenericNameSerializer,
 		 ProductUnitSerializer,
-		 WSCSerializer,
 		 CommonProductSerializer,
 		 AllProductSerializer,
 		 AllProductDetailSerializer,
@@ -184,19 +182,6 @@ class CategoryRetrieveAPIView(generics.RetrieveAPIView):
 	serializer_class = CategorySerializer
 
 
-class WSCListAPIView(generics.ListAPIView):
-	queryset = Store.objects.all()
-	serializer_class = WSCSerializer
-	pagination_class = CategoryPagination
-
-
-
-class WSCRetrieveAPIView(generics.RetrieveAPIView):
-	#authentication_classes = [SessionAuthentication]
-	#permission_classes = [IsAuthenticated]
-	queryset = WaterSupplyCompany.objects.all()
-	serializer_class = WSCSerializer
-
 class ProductListAPIView(generics.ListAPIView): 
 	#permission_classes = [IsAuthenticated]
 	queryset = Product.objects.all()
@@ -213,32 +198,29 @@ class ProductListAPIView(generics.ListAPIView):
 
 	def get_queryset(self):
 		settings.DLFPRINT()
-		# queryset = Product.objects.all() ##debug if not working location
+		queryset = Product.objects.all() ##debug if not working location
 		# return queryset
-		users_store = None #user ko store (instance of Store)
-		main_users_store = Store.objects.filter(fk_user_id=self.request.user.id).first() #company / depo ko main user #(instance Store)
+		# users_store = None #user ko store (instance of Store)
+		# main_users_store = Store.objects.filter(fk_user_id=self.request.user.id).first() #company / depo ko main user #(instance Store)
 		
 		#todo: make service for getting store of user, isUserStore, isUserCustomer
-		if main_users_store is not None:
-			users_store = main_users_store
-		else:
-			storeUser = StoreUser.objects.filter(fk_user_id=self.request.user.id).first()
-			if(storeUser is not None):
-				users_store = storeUser.fk_store
-		settings.DPRINT(users_store)
-		if users_store is not None:
-			settings.DPRINT(1)
-			if self.request.GET.get('view_my_products', None):
-				queryset = Product.objects.filter(fk_store_id=users_store.id)
-				return queryset
-			
-			# Depo login bhayeko cha bhane 
-			# water supply company ko matrai product dekhnu paryo
-			queryset = Product.objects.exclude(fk_store_id=None) \
-				.exclude(fk_store__fk_store_type_id=None) \
-				.exclude(fk_store__fk_store_type_id=2) #exclude products from depo, #todo define constant for 2
-			settings.DPRINT(queryset.query)
-			return queryset
+		# if main_users_store is not None:
+		# 	users_store = main_users_store
+		# else:
+		# 	storeUser = StoreUser.objects.filter(fk_user_id=self.request.user.id).first()
+		# 	if(storeUser is not None):
+		# 		users_store = storeUser.fk_store
+		# settings.DPRINT(users_store)
+		# if users_store is not None:
+		# 	settings.DPRINT(1)
+		# 	if self.request.GET.get('view_my_products', None):
+		# 		queryset = Product.objects.filter(fk_store_id=users_store.id)
+		# 		return queryset
+		# 	queryset = Product.objects.exclude(fk_store_id=None) \
+		# 		.exclude(fk_store__fk_store_type_id=None) \
+		# 		.exclude(fk_store__fk_store_type_id=2) #exclude products from depo, #todo define constant for 2
+		# 	settings.DPRINT(queryset.query)
+		return queryset
 		
 		if self.request.query_params.get('id'):
 			id = self.request.query_params.get('id')
@@ -344,6 +326,19 @@ class ProductVariationRetrieveAPIView(generics.RetrieveAPIView):
 	queryset = Variation.objects.all()
 	serializer_class = ProductVariationSerializer
 
+
+
+
+class VariationByPatientAPIView(APIView):
+	def post(self, request):
+		print(request.data)
+		p_type = request.data.get('p_type')
+		product_id = request.data.get('product_id')
+		# print(product_id)
+		p_type=5
+		variation = Variation.objects.filter(fk_user_type_id=p_type).filter(product_id=product_id).first()
+		# print(variation.query())
+		return Response(VariationSerializer(variation, read_only=True).data)
 
 
 class AllProductRetrieveAPIView(generics.RetrieveAPIView):
@@ -470,7 +465,7 @@ class AddProductAPIView(APIView):
 		product_amount = request.data.get('product_amount', 0.0)
 		generic_names_id =request.data.get('generic_names_id', None)
 		company_id =request.data.get('company_id', None)
-		sale_price = request.data.get('sale_price', None)
+		# sale_price = request.data.get('sale_price', None)
 		image  = request.FILES.get('file', None)
 		
 		settings.DPRINT(image)
@@ -478,26 +473,25 @@ class AddProductAPIView(APIView):
 			settings.DPRINT('yes product')
 			settings.DPRINT(product_id);
 			pass
-		else:
-			if image is None:
-				return Response({"Fail": "Select product image"}, status.HTTP_400_BAD_REQUEST)
-
+		# else:
+		# 	if image is None:
+		# 		return Response({"Fail": "Select product image"}, status.HTTP_400_BAD_REQUEST)
 		if product_title is None:
 			return Response({"Fail": "Product name must be provided"}, status.HTTP_400_BAD_REQUEST)
 		if description is None:
 			return Response({"Fail": "product description must be provided"}, status.HTTP_400_BAD_REQUEST)
-		if price is None:
-			return Response({"Fail": "product price must be provided"}, status.HTTP_400_BAD_REQUEST)
-		if category_id is None:
-			return Response({"Fail": "category must be provided"}, status.HTTP_400_BAD_REQUEST)
-		if brand_id is None:
-			return Response({"Fail": "brand must be provided"}, status.HTTP_400_BAD_REQUEST)
-		if product_unit_id is None:
-			return Response({"Fail": "product unit must be provided"}, status.HTTP_400_BAD_REQUEST)
-		if generic_names_id is None:
-			return Response({"Fail": "Generic name must be provided"}, status.HTTP_400_BAD_REQUEST)
-		if company_id is None:
-			return Response({"Fail": "Company name must be provided"}, status.HTTP_400_BAD_REQUEST)
+		# if price is None:
+		# 	return Response({"Fail": "product price must be provided"}, status.HTTP_400_BAD_REQUEST)
+		# if category_id is None:
+		# 	return Response({"Fail": "category must be provided"}, status.HTTP_400_BAD_REQUEST)
+		# if brand_id is None:
+		# 	return Response({"Fail": "brand must be provided"}, status.HTTP_400_BAD_REQUEST)
+		# if product_unit_id is None:
+		# 	return Response({"Fail": "product unit must be provided"}, status.HTTP_400_BAD_REQUEST)
+		# if generic_names_id is None:
+		# 	return Response({"Fail": "Generic name must be provided"}, status.HTTP_400_BAD_REQUEST)
+		# if company_id is None:
+		# 	return Response({"Fail": "Company name must be provided"}, status.HTTP_400_BAD_REQUEST)
 
 		# if categories is None:
 		# 	return Response({"Fail": "Select product categories"}, status.HTTP_400_BAD_REQUEST)
@@ -734,3 +728,9 @@ class ProductVariationRetrieveUpdateDestroyApiView(RetrieveUpdateDestroyAPIView)
     serializer_class = Product
     def get_queryset(self, *args, **kwargs):
         return MembershipType.objects.all()
+
+def hmsproducts(request):
+	context = {
+		'title' : 'HMS products'
+	}
+	return render(request, "personal/dashboard_layout/products.html", context)

@@ -4,9 +4,9 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
-from wsc.models import WaterSupplyCompany
+# from wsc.models import WaterSupplyCompany
 from store.models import Store
-
+from users.models import UserType
 from django.conf import settings
 # Create your models here.
 
@@ -46,16 +46,14 @@ class Product(models.Model):
 	fk_common_product = models.ForeignKey(ProductCommon, on_delete=models.CASCADE, null=True, blank=True)
 	title = models.CharField(max_length=120)
 	description = models.TextField(blank=True, null=True)
-	price = models.DecimalField(decimal_places=2, max_digits=20)
+	# price = models.DecimalField(decimal_places=2, max_digits=20)
 	active = models.BooleanField(default=True)
-	
 	categories = models.ManyToManyField('Category', blank=True)
 	brand = models.ForeignKey('Brand', on_delete=models.CASCADE, blank=True, null=True)
 	generic_name = models.ForeignKey('GenericName', on_delete=models.CASCADE, blank=True, null=True)
 	company = models.ForeignKey('Company', on_delete=models.CASCADE, blank=True, null=True)
 	amount = models.FloatField(null=True, default=0.0, blank=True)
 	product_unit = models.ForeignKey('ProductUnit', on_delete=models.CASCADE, blank=True, null=True)
-	fk_wsc = models.ForeignKey(WaterSupplyCompany, on_delete=models.CASCADE, blank=True, null=True)
 	fk_store = models.ForeignKey(Store, on_delete=models.CASCADE, blank=True, null=True)
 	is_featured = models.BooleanField(default = False, blank=True)
 	#Store najik navayeni saman jata pani availalbe huncha, 
@@ -99,6 +97,9 @@ class Variation(models.Model):
 	active = models.BooleanField(default=True)
 	inventory = models.IntegerField(null=True, blank=True) #refer none == unlimited amount
 	is_refill = models.BooleanField(default=False)
+	keep_stock = models.BooleanField(default=False)
+	fk_user_type = models.ForeignKey(UserType, on_delete=models.CASCADE, null=True) #for patient type drug filter
+	expiry_date = models.DateField(null=True, blank=True)
 	# can only ordered  by internal staff
 	# not visible by app
 	is_internal = models.BooleanField(default=False) 

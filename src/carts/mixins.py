@@ -68,7 +68,8 @@ class CartTokenMixin(TokenMixin, object):
 	token_param = "cart_token"
 	token = None
 
-	def get_cart_from_token(self):
+	def get_cart_from_token(self, pid):
+		#pid  is patient_id
 		request = self.request
 		response_status = status.HTTP_200_OK
 		cart_token = request.GET.get(self.token_param)
@@ -77,7 +78,9 @@ class CartTokenMixin(TokenMixin, object):
 		
 		cart_token_data = self.parse_token(cart_token)
 		# cart_id = cart_token_data.get("cart_id")
-		cart = Cart.objects.filter(user_id=request.user.id).filter(active=1).first()
+		# cart = Cart.objects.filter(user_id=request.user.id).filter(active=1).first()
+		cart = Cart.objects.filter(user_id=pid).filter(active=1).first()
+
 		# print(cart_id.id)
 
 		# print(cart_id)

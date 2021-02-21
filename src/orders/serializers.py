@@ -4,7 +4,7 @@ from carts.mixins import TokenMixin
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from .models import UserAddress, Order, Quotation, UserCheckout, StoreWiseOrder
+from .models import Order, StoreWiseOrder#, UserAddress, Quotation, UserCheckout, 
 from datetime import timedelta
 from products.models import Product, ProductImage
 from carts.models import Cart, CartItem
@@ -13,8 +13,7 @@ from store.serializers import StoreWiseOrderSerializer, StoreSerializer
 import pprint
 from django.contrib.auth import get_user_model
 from django.conf import settings
-from routes.models import get_nearest_route
-from mysite.utils import jwt_response_payload_handler
+from hms.utils import jwt_response_payload_handler
 User = get_user_model()
 
 # parse order token
@@ -23,13 +22,13 @@ User = get_user_model()
 # mark cart complete
 # mark order done
 
-class QuotationSerializer(serializers.ModelSerializer):
-	# authentication_classes = [, BasicAuthentication]
-	permission_classes = [IsAuthenticated]
-	class Meta:
-		model = Quotation
-		fields= '__all__'
-		# fields = []
+# class QuotationSerializer(serializers.ModelSerializer):
+# 	# authentication_classes = [, BasicAuthentication]
+# 	permission_classes = [IsAuthenticated]
+# 	class Meta:
+# 		model = Quotation
+# 		fields= '__all__'
+# 		# fields = []
 
 
 class FinalizedOrderSerializer(TokenMixin, serializers.Serializer):
@@ -100,46 +99,46 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 
-class UserAddressSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = UserAddress
-		fields = [
-			"id",
-			"user",
-			"type",
-			"street",
-			"state",
-			"city",
-			"zipcode",
-			"phone"
-		]
+# class UserAddressSerializer(serializers.ModelSerializer):
+# 	class Meta:
+# 		model = UserAddress
+# 		fields = [
+# 			"id",
+# 			"user",
+# 			"type",
+# 			"street",
+# 			"state",
+# 			"city",
+# 			"zipcode",
+# 			"phone"
+# 		]
 
-	def create(self,  validated_data):
-		user = self.context['request'].user
-		usercheckout = UserCheckout.objects.filter(user_id=user.id).first()
+	# def create(self,  validated_data):
+	# 	user = self.context['request'].user
+	# 	usercheckout = UserCheckout.objects.filter(user_id=user.id).first()
 		
-		if usercheckout is None:
+	# 	if usercheckout is None:
 
-			usercheckout = UserCheckout()
-			usercheckout.user_id = user.id
-			usercheckout.email = user.email
-			usercheckout.braintree_id = '0'
-			usercheckout.save()
+	# 		usercheckout = UserCheckout()
+	# 		usercheckout.user_id = user.id
+	# 		usercheckout.email = user.email
+	# 		usercheckout.braintree_id = '0'
+	# 		usercheckout.save()
 
-		useraddress = UserAddress.objects.filter(user_id=usercheckout.id).first()
-		if useraddress is None:
-			print('sadsd')
-			useraddress = UserAddress()
+	# 	useraddress = UserAddress.objects.filter(user_id=usercheckout.id).first()
+	# 	if useraddress is None:
+	# 		print('sadsd')
+	# 		useraddress = UserAddress()
 
-		useraddress.user_id = usercheckout.id
-		useraddress.type = validated_data.get('type')
-		useraddress.street = validated_data.get('street')
-		useraddress.city =  validated_data.get('city')
-		useraddress.zipcode = validated_data.get('zipcode')
-		useraddress.state = validated_data.get('state')
-		useraddress.phone = validated_data.get('phone')
-		useraddress.save()
-		return useraddress
+	# 	useraddress.user_id = usercheckout.id
+	# 	useraddress.type = validated_data.get('type')
+	# 	useraddress.street = validated_data.get('street')
+	# 	useraddress.city =  validated_data.get('city')
+	# 	useraddress.zipcode = validated_data.get('zipcode')
+	# 	useraddress.state = validated_data.get('state')
+	# 	useraddress.phone = validated_data.get('phone')
+	# 	useraddress.save()
+	# 	return useraddress
 
 
 from . import service as OrderService

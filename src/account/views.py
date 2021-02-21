@@ -8,9 +8,9 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from .serializer import CreateUserSerializer, ProfileSerializer, SurveyRegisterSerializer
 from django.http import HttpResponse
-
+from .serializer import PatientSerializer
+from users.models import UserType
 from account.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
-from blog.models import BlogPost
 from django.contrib.auth.hashers import make_password
 from .models import Account,CallLog, PhoneOTP, PasswordResetOTP, CustomerRegisterSurvey, CustomerDepotRequest, CustomerMessage
 from django.contrib.auth import get_user_model
@@ -67,31 +67,10 @@ def privacy_policy(request):
 def login_view(request):
 	settings.DLFPRINT()
 	print('login')
-	# if request.method == 'POST':
-	# 	mobile = request.POST.get('mobile')
-	# 	password = request.POST.get('password')
-	# 	print(mobile)
-	# 	print(password)
-
-	# 	user = authenticate(mobile=mobile, password=password)
-	# 	print(user)
-
-	# 	if user:
-	# 		if user.is_active:
-	# 			login(request, user)
-	# 			return redirect('dashboard')
-	# 		else:
-	# 			return HttpResponse('Your account was inactive')
-	# 	else:
-	# 		return HttpResponse('Invalid login credentials')
-
-	# return render(request, "account/login.html")
-	
 	context = {}
 
 	user = request.user
 	if user.is_authenticated: 
-		print(1)
 		return redirect('/dashboard')
 
 	if request.POST:
@@ -101,7 +80,6 @@ def login_view(request):
 		# print(password)
 		form = AccountAuthenticationForm(request.POST)
 		if form.is_valid():
-			print('passed')
 			user = authenticate(mobile=mobile, password=password)
 
 			if user:
@@ -118,10 +96,6 @@ def login_view(request):
 	# print(form)
 	return render(request, "account/login.html", context)
 
-
-def account_jpt(view):
-	settings.DLFPRINT()
-	return render(request, "jpt.html")
 
 def account_view(request):
 	settings.DLFPRINT()
@@ -284,11 +258,13 @@ class RegisterAPI(APIView):
 		settings.DLFPRINT()
 		print('first')
 		mobile = request.data.get('mobile', False)
-		password = request.data.get('password', False)
+		# password = request.data.get('password', False)
+		password = mobile
 		email = request.data.get('email', False)
 		username = mobile
 		firstname = request.data.get('firstname')
 		lastname = request.data.get('lastname')
+		patient_type = request.data.get('patient_type')
 		# if firstname and lastname:
 		# 	return Response({"Fail": "Please enter your firstname and lastname"}, status.HTTP_400_BAD_REQUEST)
 
@@ -307,11 +283,17 @@ class RegisterAPI(APIView):
 			serializer = CreateUserSerializer(data = temp_data)
 			serializer.is_valid(raise_exception = True)
 			user = serializer.save()
+			##saving the created user as patient 
+			usertype = UserType()
+			usertype.user_id = user.id
+			usertype.user_type_id = 5
+			usertype.save() 
 			# old.delete()
-
+			data = {}
 			return Response({
 				'status': True,
-				'detail': 'Account Created'
+				'detail': 'Account Created',
+				'user_id' : user.id
 				})
 
 			old = PhoneOTP.objects.filter(mobile__iexact=mobile)
@@ -907,3 +889,41 @@ class MissCallUsersAPIView(APIView):
 
 
 
+
+# class CustomerPatientUserList(ListAPIView):
+    # def get_context_data(self, **kwargs):
+    #     ctx = super(CustomerPatientUserList, self).get_context_data(**kwargs)
+    #     ctx['title'] = 'My Title'
+    #     ctx['description'] = 'My Description'
+    #     return ctx
+
+from django.views.generic.list import ListView
+class CustomerPatientUserList(ListView):
+	model = Account
+	template_name = "personal/dashboard_layout/patients.html"
+	paginate_by = 20
+
+	def get_queryset(self):
+		q = self.request.GET.get('q')
+		new_context = Account.objects.all()
+		return new_context
+
+	def get_context_data(self, **kwargs):
+		context = super(CustomerPatientUserList, self).get_context_data(**kwargs)
+		# context['filter'] = self.request.GET.get('filter', 'give-default-value')
+		# context['orderby'] = self.request.GET.get('orderby', 'give-default-value')
+
+		return context
+
+class PatientUserListAPIView(APIView):
+	serializer_class = PatientSerializer
+	class Meta:
+		model = User
+	def get(self, request):
+		pids = UserType.objects.all()
+		patients = User.objects.filter(pk__in=pids.values('user_id'))
+		return Response(PatientSerializer(patients, many=True).data)
+
+		
+
+		 

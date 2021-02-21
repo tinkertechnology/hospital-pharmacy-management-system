@@ -18,11 +18,11 @@ import pytz
 
 from carts.mixins import TokenMixin
 from rest_framework import permissions
-from .forms import AddressForm, UserAddressForm, UserOrderForm
+# from .forms import AddressForm, UserAddressForm, UserOrderForm
 from .mixins import CartOrderMixin, LoginRequiredMixin
-from .models import UserAddress, UserCheckout, Order, Quotation
+from .models import  Order#UserAddress, UserCheckout, Order, Quotation
 from .permissions import IsOwnerAndAuth
-from .serializers import UserAddressSerializer, OrderSerializer, OrderDetailSerializer, QuotationSerializer, CartOrderSerializer, \
+from .serializers import  OrderSerializer, OrderDetailSerializer, CartOrderSerializer, \
 		OrderListStoreSerializer, CartOrderListStoreSerializer, CartItemSerializer, UpdateOrderStatusSerializer, \
 		StoreWiseOrderListSerializer, UpdateStoreWiseOrderStatusSerializer
 import requests
@@ -57,11 +57,7 @@ def AccountsResetPasswordView(request):
 	return render(request, 'registration/password_reset_form.html', {'form':request.GET})
 
 
-class SendQuotationApiView(CreateAPIView):
-	model = Quotation
-	serializer_class = QuotationSerializer
-	permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-	
+
 
 
 
@@ -89,95 +85,10 @@ class OrderListAPIView(ListAPIView):
 
 
 
-class UserAddressCreateAPIView(CreateAPIView):
-	model = UserAddress
-	serializer_class = UserAddressSerializer
-
-
-class UserAddressListAPIView(TokenMixin, ListAPIView):
-	model = UserAddress
-	queryset = UserAddress.objects.all()
-	serializer_class = UserAddressSerializer
-
-	def get_queryset(self, *args, **kwargs):
-		user_checkout_token = self.request.GET.get("checkout_token")
-		user_checkout_data = self.parse_token(user_checkout_token)
-		user_checkout_id = user_checkout_data.get("user_checkout_id")
-		if self.request.user.is_authenticated:
-			return UserAddress.objects.filter(user__user=self.request.user)
-		elif user_checkout_id:
-			return UserAddress.objects.filter(user__id=int(user_checkout_id))
-		else:
-			return []
 
 
 
-class UserCheckoutMixin(TokenMixin, object):
-	def user_failure(self, message=None):
-		data = {
-			"message": "There was an error. Please try again.",
-			"success": False
-		}
-		if message:
-			data["message"] = message
-		return data
 
-
-	def get_checkout_data(self, user=None, email=None):
-		if email and not user:
-			user_exists = User.objects.filter(email=email).count()
-			if user_exists != 0:
-				return self.user_failure(message="This user already exists, please login.")
-
-		data = {}
-		user_checkout = None
-		if user and not email:
-			if user.is_authenticated:
-				user_checkout = UserCheckout.objects.get_or_create(user=user, email=user.email)[0] #(instance, created)
-			
-		elif email:
-			try:
-				user_checkout = UserCheckout.objects.get_or_create(email=email)[0]
-				if user:
-					user_checkout.user = user
-					user_checkout.save()
-			except:
-				pass #(instance, created)
-		else:
-			pass
-
-		if user_checkout:
-			data["success"]= True
-			data["braintree_id"] = user_checkout.get_braintree_id
-			data["user_checkout_id"] = user_checkout.id
-			data["user_checkout_token"] = self.create_token(data)
-			
-			del data["braintree_id"]
-			del data["user_checkout_id"]
-			data["braintree_client_token"] = user_checkout.get_client_token()
-
-		return data
-
-
-class UserCheckoutAPI(UserCheckoutMixin, APIView):
-	permission_classes = [AllowAny]
-	def get(self, request, format=None):
-		data = self.get_checkout_data(user=request.user)
-		return Response(data)
-
-	def post(self, request, format=None):
-		data = {}
-		email = request.data.get("email")
-		if request.user.is_authenticated:
-			if email == request.user.email:
-				data = self.get_checkout_data(user=request.user, email=email)
-			else:
-				data = self.get_checkout_data(user=request.user)
-		elif email and not request.user.is_authenticated:
-			data = self.get_checkout_data(email=email)
-		else:
-			data = self.user_failure(message="Make sure you are authenticated or using a valid email.")
-		return Response(data)
 
 
 
@@ -501,72 +412,10 @@ class StoreWiseCartOrderLists(ListAPIView):
 		# settings.DPRINT(orders.__dict__)
 		# return orders
 
-class UserAddressCreateView(CreateView):
-	form_class = UserAddressForm
-	template_name = "forms.html"
-	success_url = "/checkout/address/"
-
-	def get_checkout_user(self):
-		user_check_id = self.request.session.get("user_checkout_id")
-		user_checkout = UserCheckout.objects.get(id=user_check_id)
-		return user_checkout
-
-	def form_valid(self, form, *args, **kwargs):
-		form.instance.user = self.get_checkout_user()
-		return super(UserAddressCreateView, self).form_valid(form, *args, **kwargs)
 
 
 
-class AddressSelectFormView(CartOrderMixin, FormView):
-	form_class = AddressForm
-	template_name = "orders/address_select.html"
 
-
-	def dispatch(self, *args, **kwargs):
-		b_address, s_address = self.get_addresses()
-		if b_address.count() == 0:
-			messages.success(self.request, "Please add a billing address before continuing")
-			return redirect("user_address_create")
-		elif s_address.count() == 0:
-			messages.success(self.request, "Please add a shipping address before continuing")
-			return redirect("user_address_create")
-		else:
-			return super(AddressSelectFormView, self).dispatch(*args, **kwargs)
-
-
-	def get_addresses(self, *args, **kwargs):
-		user_check_id = self.request.session.get("user_checkout_id")
-		user_checkout = UserCheckout.objects.get(id=user_check_id)
-		b_address = UserAddress.objects.filter(
-				user=user_checkout,
-				type='billing',
-			)
-		s_address = UserAddress.objects.filter(
-				user=user_checkout,
-				type='shipping',
-			)
-		return b_address, s_address
-
-
-	def get_form(self, *args, **kwargs):
-		form = super(AddressSelectFormView, self).get_form(*args, **kwargs)
-		b_address, s_address = self.get_addresses()
-
-		form.fields["billing_address"].queryset = b_address
-		form.fields["shipping_address"].queryset = s_address
-		return form
-
-	def form_valid(self, form, *args, **kwargs):
-		billing_address = form.cleaned_data["billing_address"]
-		shipping_address = form.cleaned_data["shipping_address"]
-		order = self.get_order()
-		order.billing_address = billing_address
-		order.shipping_address = shipping_address
-		order.save()
-		return  super(AddressSelectFormView, self).form_valid(form, *args, **kwargs)
-
-	def get_success_url(self, *args, **kwargs):
-		return "/checkout/"
 
 
 # /api/api/create_order/
@@ -800,4 +649,35 @@ class CustomerCancelOrderAPIView(APIView):
 
 
 
+def pos(request):
+	context = {}
+	return render(request, "personal/dashboard_layout/pos.html", context)
+
 				
+def pos1(request):
+	cart = Cart.objects.filter(pk=request.GET.get('cart_id')).first()
+	# print(cart_id)
+	context = {
+		# 'user_id' : patient_id
+		"cart" : cart,
+		'cart_id' : cart.id
+	}
+	return render(request, "personal/dashboard_layout/pos_test.html", context)
+
+
+def cartitems(request):
+	return pos1(request)
+
+def carts(request):
+	user_id = request.GET.get('user_id')
+	user = User.objects.get(pk=user_id)
+	carts = Cart.objects.all()#(user_id=user_id)
+	# print(cart_id)
+	context = {
+		'user_id' : user_id,
+		'carts' : carts,
+		'user' : user
+		# 'cart_id' : cart_id.id
+	}
+	return render(request, "personal/dashboard_layout/carts.html", context)
+	

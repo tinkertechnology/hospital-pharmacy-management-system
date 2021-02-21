@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
-from orders.models import UserAddress, UserCheckout
+# from orders.models import UserAddress, UserCheckout
 from products.models import Variation
 from store.serializers import StoreSerializer
 
@@ -115,11 +115,12 @@ class ProductImageSerializer(serializers.ModelSerializer):
 	
 
 
-
+from products.serializers import VariationSerializer
 class CartItemSerializer(serializers.ModelSerializer):
 	#item = CartVariationSerializer(read_only=True)
 	# url = serializers.HyperlinkedIdentityField(view_name='products_detail_api')
 	item = serializers.SerializerMethodField()
+	variation = serializers.SerializerMethodField()
 	product_id = serializers.SerializerMethodField()
 	item_title = serializers.SerializerMethodField()
 	product = serializers.SerializerMethodField()
@@ -132,6 +133,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 		model = CartItem
 		fields = [
 			# "url",
+			"id",
 			"product_id",
 			"image",
 			"item",
@@ -140,14 +142,18 @@ class CartItemSerializer(serializers.ModelSerializer):
 			"product",
 			"quantity",
 			"line_item_total",
-			"fk_store_title"
+			"fk_store_title",
+			"variation"
 		]
+
+	def get_variation(self, obj):
+		return VariationSerializer(obj.item).data
 
 	def get_item(self,obj):
 		return obj.item.id
 
 	def get_product_id(self, obj):
-		return obj.id
+		return obj.item.product.id
 		
 	def get_item_title(self, obj):
 		return "%s (%s)" %(obj.item.title, obj.item.product.title)
@@ -223,13 +229,18 @@ class CartItemModelSerializer(serializers.ModelSerializer):
 
 	def create(self, validated_data):
 		request = self.context['request']
+		# print(request.data)
 		user =  self.context['request'].user
-
+		# print(validated_data)
 		data = {}
-		data['user_id'] = user.id
+		# print('cart-id',request.data.get('cart_id'))
+		data['user_id'] = request.data.get('p_id')
+		data['fk_bill_created_user_id'] = user.id
 		data['item_id'] = validated_data.get('item').id
 		data['quantity'] = validated_data['quantity']
 		data['is_add_sub_qty'] = request.GET.get('is_add_sub_qty', None)
+		data['cart_id'] = request.data.get('cart_id')
+		data['cartitem_id'] = request.data.get('cartitem_id')
 		cartItem = CartService.CartItemCreateService(data)
 
 		return cartItem

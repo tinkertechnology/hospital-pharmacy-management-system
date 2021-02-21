@@ -5,7 +5,7 @@ from carts.mixins import TokenMixin
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from .models import UserAddress, Order, Quotation, UserCheckout, StoreWiseOrder
+from .models import  Order, StoreWiseOrder
 
 from products.models import Product, ProductImage, UserVariationQuantityHistory
 from carts.models import Cart, CartItem
@@ -14,7 +14,6 @@ from store.serializers import StoreWiseOrderSerializer, StoreSerializer
 import pprint
 from django.contrib.auth import get_user_model
 from django.conf import settings
-from routes.models import get_nearest_route
 from decimal import Decimal
 User = get_user_model()
 

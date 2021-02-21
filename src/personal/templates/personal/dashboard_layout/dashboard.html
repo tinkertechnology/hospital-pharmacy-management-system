@@ -1,0 +1,107 @@
+
+{% extends 'personal/dashboard_layout/app.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card widget-box-one border border-primary bg-soft-primary">
+            <div class="card-body">
+                <div class="float-right avatar-lg rounded-circle mt-3">
+                    <i class="mdi mdi-chart-areaspline font-30 widget-icon rounded-circle avatar-title text-primary"></i>
+                </div>
+                <div class="wigdet-one-content">
+                    <p class="m-0 text-uppercase font-weight-bold text-muted" title="Statistics">Statistics</p>
+                    <h2><span data-plugin="counterup">34578</span> <i class="mdi mdi-arrow-up text-success font-24"></i></h2>
+                    <p class="text-muted m-0"><span class="font-weight-medium">Last:</span> 30.4k</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end col -->
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card widget-box-one border border-warning bg-soft-warning">
+            <div class="card-body">
+                <div class="float-right avatar-lg rounded-circle mt-3">
+                    <i class="mdi mdi-layers font-30 widget-icon rounded-circle avatar-title text-warning"></i>
+                </div>
+                <div class="wigdet-one-content">
+                    <p class="m-0 text-uppercase font-weight-bold text-muted" title="User This Month">User This Month</p>
+                    <h2><span data-plugin="counterup">52410</span> <i class="mdi mdi-arrow-up text-success font-24"></i></h2>
+                    <p class="text-muted m-0"><span class="font-weight-medium">Last:</span> 40.33k</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end col -->
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card widget-box-one border border-danger bg-soft-danger">
+            <div class="card-body">
+                <div class="float-right avatar-lg rounded-circle mt-3">
+                    <i class="mdi mdi-av-timer font-30 widget-icon rounded-circle avatar-title text-danger"></i>
+                </div>
+                <div class="wigdet-one-content">
+                    <p class="m-0 text-uppercase font-weight-bold text-muted" title="Statistics">Statistics</p>
+                    <h2><span data-plugin="counterup">6352</span> <i class="mdi mdi-arrow-up text-success font-24"></i></h2>
+                    <p class="text-muted m-0"><span class="font-weight-medium">Last:</span> 956</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end col -->
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card widget-box-one border border-success bg-soft-success">
+            <div class="card-body">
+                <div class="float-right avatar-lg rounded-circle mt-3">
+                    <i class="mdi mdi-account-convert font-30 widget-icon rounded-circle avatar-title text-success"></i>
+                </div>
+                <div class="wigdet-one-content">
+                    <p class="m-0 text-uppercase font-weight-bold text-muted" title="User Today">User Today</p>
+                    <h2><span data-plugin="counterup">895</span> <i class="mdi mdi-arrow-down text-danger font-24"></i></h2>
+                    <p class="text-muted m-0"><span class="font-weight-medium">Last:</span> 1250</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end col -->
+</div>
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card-box">
+            <h4 class="header-title mb-4">Total Revenue</h4>
+
+            <div id="website-stats" style="height: 320px; padding: 0px; position: relative;" class="flot-chart"><canvas class="flot-base" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 620px; height: 320px;" width="1240" height="640"></canvas><div class="flot-text" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; font-size: smaller; color: rgb(84, 84, 84);"><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"><div style="position: absolute; max-width: 73px; top: 304px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 21px; text-align: center;">0</div><div style="position: absolute; max-width: 73px; top: 304px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 119px; text-align: center;">2</div><div style="position: absolute; max-width: 73px; top: 304px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 217px; text-align: center;">4</div><div style="position: absolute; max-width: 73px; top: 304px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 315px; text-align: center;">6</div><div style="position: absolute; max-width: 73px; top: 304px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 413px; text-align: center;">8</div><div style="position: absolute; max-width: 73px; top: 304px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 508px; text-align: center;">10</div><div style="position: absolute; max-width: 73px; top: 304px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 606px; text-align: center;">12</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"><div style="position: absolute; top: 287px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 7px; text-align: right;">0</div><div style="position: absolute; top: 215px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 7px; text-align: right;">5</div><div style="position: absolute; top: 144px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 1px; text-align: right;">10</div><div style="position: absolute; top: 72px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 1px; text-align: right;">15</div><div style="position: absolute; top: 1px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 1px; text-align: right;">20</div></div></div><canvas class="flot-overlay" width="1240" height="640" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 620px; height: 320px;"></canvas><div class="legend"><div style="position: absolute; width: 262px; height: 30px; top: -16px; right: 8px; background-color: transparent; opacity: 0.85;"> </div><table style="position:absolute;top:-16px;right:8px;;font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid null;padding:1px"><div style="width:4px;height:0;border:5px solid #4bd396;overflow:hidden"></div></div></td><td class="legendLabel">Google&nbsp;&nbsp;</td><td class="legendColorBox"><div style="border:1px solid null;padding:1px"><div style="width:4px;height:0;border:5px solid #f5707a;overflow:hidden"></div></div></td><td class="legendLabel">Yahoo&nbsp;&nbsp;</td><td class="legendColorBox"><div style="border:1px solid null;padding:1px"><div style="width:4px;height:0;border:5px solid #188ae2;overflow:hidden"></div></div></td><td class="legendLabel">Facebbok&nbsp;&nbsp;</td></tr></tbody></table></div></div>
+        </div>
+    </div>
+
+    <div class="col-xl-6">
+        <div class="card-box">
+            <h4 class="header-title mb-4">Sales Analytics</h4>
+
+            <div class="float-right">
+                <div id="reportrange" class="form-control form-control-sm">
+                    <i class="far fa-calendar-alt mr-1"></i>
+                    <span>January 22, 2021 - February 20, 2021</span>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+
+            <div id="donut-chart">
+                <div id="donut-chart-container" class="flot-chart" style="height: 246px; padding: 0px; position: relative;">
+                <canvas class="flot-base" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 620px; height: 246px;" width="1240" height="492"></canvas><canvas class="flot-overlay" width="1240" height="492" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 620px; height: 246px;"></canvas><div class="legend"><div style="position: absolute; width: 89px; height: 120px; top: 50px; right: 50px; background-color: transparent; opacity: 0.85;"> </div><table style="position:absolute;top:50px;right:50px;;font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid null;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,152,0);overflow:hidden"></div></div></td><td class="legendLabel"><div style="font-size:14px;">&nbsp;Series 1</div></td></tr><tr><td class="legendColorBox"><div style="border:1px solid null;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(141,110,99);overflow:hidden"></div></div></td><td class="legendLabel"><div style="font-size:14px;">&nbsp;Series 2</div></td></tr><tr><td class="legendColorBox"><div style="border:1px solid null;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(38,166,154);overflow:hidden"></div></div></td><td class="legendLabel"><div style="font-size:14px;">&nbsp;Series 3</div></td></tr><tr><td class="legendColorBox"><div style="border:1px solid null;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(127,193,252);overflow:hidden"></div></div></td><td class="legendLabel"><div style="font-size:14px;">&nbsp;Series 4</div></td></tr></tbody></table></div></div>
+            </div>
+
+            <p class="text-muted mb-0 mt-3 text-truncate">Pie chart is used to see the proprotion of each data groups, making Flot pie chart is pretty simple, in order to make pie chart you have to incldue jquery.flot.pie.js plugin.</p>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -155,3 +155,26 @@ class CallLogSerializer(serializers.ModelSerializer):
 		
 		# return 'Please, be very clear on your commit messages and pull requests, empty pull request messages may be rejected without reason.'
 
+from users.models import UserType
+
+class UserTypeSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = UserType
+		fields = '__all__'
+
+class PatientSerializer(serializers.ModelSerializer):
+	patient_type = serializers.SerializerMethodField()
+	class Meta:
+		model = User
+		fields = ['id','firstname','lastname', 'mobile', 'patient_type']
+
+	def get_patient_type(self, obj):
+		ptype =  UserType.objects.filter(user=obj).first()
+		data = {}
+		if ptype:
+			data = {
+				'p_type_id': ptype.user_type.id,
+				'p_type_title' : ptype.user_type.title
+			}
+		return data
+		# return UserTypeSerializer(ptypes, read_only=True).data
