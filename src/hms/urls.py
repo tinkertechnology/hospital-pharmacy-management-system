@@ -54,7 +54,8 @@ from account.views import (
     MissCallUsersAPIView,
     ## hms
     PatientUserListAPIView,
-    CustomerPatientUserList
+    CustomerPatientUserList,
+    DoctorUserListAPIView
 )
 
 
@@ -370,6 +371,7 @@ urlpatterns += [
     path('api/patients/', PatientUserListAPIView.as_view(), name="patients-lists"),
 
     path('CustomerPatientUserList', CustomerPatientUserList.as_view(), name="CustomerPatientUserList"),
+    path('api/DoctorUserListAPIView/', DoctorUserListAPIView.as_view(), name="DoctorUserListAPIView"),
     path('api/VariationByPatientAPIView/', VariationByPatientAPIView.as_view(), name="variation-by-patient-type"),
     
 ]

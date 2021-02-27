@@ -286,7 +286,7 @@ class RegisterAPI(APIView):
 			##saving the created user as patient 
 			usertype = UserType()
 			usertype.user_id = user.id
-			usertype.user_type_id = 5
+			usertype.user_type_id = 1
 			usertype.save() 
 			# old.delete()
 			data = {}
@@ -898,6 +898,8 @@ class MissCallUsersAPIView(APIView):
     #     return ctx
 
 from django.views.generic.list import ListView
+from .serializer import DoctorSerializer
+from .models import Doctor
 class CustomerPatientUserList(ListView):
 	model = Account
 	template_name = "personal/dashboard_layout/patients.html"
@@ -925,5 +927,11 @@ class PatientUserListAPIView(APIView):
 		return Response(PatientSerializer(patients, many=True).data)
 
 		
+class DoctorUserListAPIView(ListAPIView):
+	serializer_class = DoctorSerializer
 
+	def get_queryset(self):
+		doctors_assigned = Doctor.objects.all()
+		queryset = User.objects.filter(id__in=doctors_assigned.values('fk_user_id'))
+		return queryset
 

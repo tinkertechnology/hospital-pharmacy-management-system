@@ -84,6 +84,9 @@ class Doctor(models.Model):
 		return self.fk_user.mobile
 
 
+# class PatientType(models.Model):
+# 	title = models.CharField(max_length=100, null=True, blank=True)
+
 
 class PhoneOTP(models.Model):
 	phone_regex = RegexValidator( regex =r'^\+?1?\d{9,14}$', message="phone number must be entered in the format: '+97799999'. Up to 15 digits allowed")

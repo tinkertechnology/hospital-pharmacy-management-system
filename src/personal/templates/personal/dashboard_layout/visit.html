@@ -14,7 +14,7 @@
                 <div class="col-lg-6">
                     <div class="form-horizontal">
                         <div class="form-group row">
-                            <label class="col-md-2 control-label">Amount</label>
+                            <label class="col-md-2 control-label">Reg. Charge / Amount</label>
                             <div class="col-md-10">
                                 <input type="text" class="form-control" v-model="Visit.amount" value="" placeholder="amount...">
                             </div>
@@ -44,14 +44,27 @@
                         <div class="form-group row">
                             <label class="col-sm-2 control-label"> Customer</label>
                             <div class="col-sm-8">
-                                <select class="form-control">
-                                    <option v-for="(item, index) in patients">[[ item.firstname ]] [[item.lastname]] [[item.mobile]]</option>
+                                <select class="form-control" v-model="selectedPatient">
+                                    <option  v-for="(patient, index) in patients" v-bind:value="patient.id">[[ patient.firstname ]] [[patient.lastname]] [[patient.mobile]]</option>
                                 </select>
                             </div>
                             <div class="col-sm-2">
                                 <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Add Customer</button>
                             </div>
                         </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label"> Reffer Doctor</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" v-model="selectedDoctor">
+                                    <option  v-for="(doctor, index) in doctors.results" v-bind:value="doctor.id">[[ doctor.firstname ]] [[doctor.lastname]] [[doctor.mobile]]</option>
+                                </select>
+                            </div>
+                            <!-- <div class="col-sm-2">
+                                <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Add Customer</button>
+                            </div> -->
+                        </div>
+
                         <div class="form-group row">
                             <label class="col-md-2 control-label"> Remarks</label>
                             <div class="col-md-10">
@@ -61,6 +74,7 @@
                     </div>
                 </div>
             <button class="btn btn-info" @click="saveVisit">Submit</button>
+
             </div>
 
         
@@ -149,10 +163,14 @@
        delimiters: ['[[', ']]'],
      el: '#add_visit',
      data: {
+       selectedPatient : null,
+       selectedDoctor : null,
        loading: false,
        products : [],
+       doctors: [],
        showModal : false,
-       patients : [{
+       patients:[],
+       patient : [{
             id: 0,
             firstname: "",
             lastname: "",
@@ -165,9 +183,10 @@
        Visit : [{
            id: 0,
            amount: "",
-           fk_type_id: "",
+           fk_type_id: "", //visit-type id ho yo
            comment: "",
            cartitem_id :  "",
+
    }],
    customerForm : {
         firstname : "",
@@ -219,7 +238,7 @@
         console.log(event.target.value);
         this.Visit.cartitem_id = event.target.value;
        },
-       getPatient: function() {
+       getPatient() {
             this.loading = true;
             axios.get('/api/patients/')
                 .then((getResponse) => {
@@ -228,6 +247,7 @@
                     // data = getResponse.data;
                     // response.send(data);
                     this.patients = getResponse.data;
+                    // this.selectedPatient = '11';
                     this.loading = false;
                     // print(products);
                 })
@@ -238,6 +258,26 @@
                 });  
         },
 
+        getDoctors() {
+            this.loading = true;
+            axios.get('/api/DoctorUserListAPIView/')
+                .then((getResponse) => {
+                    console.log("GET Response - patients")
+                    console.log(getResponse.data);
+                    // data = getResponse.data;
+                    // response.send(data);
+                    this.doctors = getResponse.data;
+                    // this.selectedPatient = '11';
+                    this.loading = false;
+                    // print(products);
+                })
+                .catch(function (error) {
+                    this.loading = false;
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });  
+        },
+        
         savePatient: function() {
                 axios({
                 method: 'post',
@@ -258,10 +298,12 @@
                 .then((getResponse) => {
                     $('#con-close-modal').modal('hide')
                     console.log(getResponse.data);
-                    this.patientType = getResponse.data.user_id;
+                    this.getPatient();
+                    this.selectedPatient = getResponse.data.user_id;
+                    console.log(this);
                     
 
-                }) 
+                })
                 .catch(function (error) {
                     console.log(error);
                     console.log("Error while fetching market updates");
@@ -277,6 +319,7 @@
 
      mounted() {
         this.getPatient();
+        this.getDoctors();
      },
    })
  </script>

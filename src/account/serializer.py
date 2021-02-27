@@ -178,3 +178,8 @@ class PatientSerializer(serializers.ModelSerializer):
 			}
 		return data
 		# return UserTypeSerializer(ptypes, read_only=True).data
+from .models import Doctor
+class DoctorSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = User
+		fields = ['id', 'firstname', 'lastname', 'mobile']
