@@ -26,7 +26,7 @@ from rest_framework import permissions
 from orders.forms import GuestCheckoutForm
 from orders.mixins import CartOrderMixin
 # from orders.models import UserCheckout, Order, UserAddress
-from orders.serializers import OrderSerializer, FinalizedOrderSerializer
+from orders.serializers import OrderSerializer #, FinalizedOrderSerialize
 from products.models import Variation, UserVariationQuantityHistory
 from .mixins import TokenMixin, CartUpdateAPIMixin, CartTokenMixin
 from .models import Cart, CartItem
@@ -642,6 +642,7 @@ class CartView(SingleObjectMixin, View):
 			try:
 				tax_total = cart_item.cart.tax_total
 			except:
+				
 				tax_total = None
 
 			try:
@@ -777,8 +778,7 @@ class CheckoutFinalView(CartOrderMixin, View):
 		return redirect("checkout")
 
 
-
-
+		
 
 
 

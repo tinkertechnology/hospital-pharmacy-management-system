@@ -1,7 +1,7 @@
 from .models import Cart, CartItem
 from django.conf import settings
 from products.models import Variation
-from store.service import UserAccountStoreWiseSaveService
+# from store.service import UserAccountStoreWiseSaveService
 from decimal import Decimal
 from orders.service import  VariationHistoryCountService
 
@@ -86,11 +86,11 @@ def CartItemCreateService(data):
 		#cart instance chai signal le db ma save garyo ... tara mathi instance ma aaudaina..
 		#  tei bhayera db ko new instance taneko..jasma signal le save gareko total ne aauxa
 		# print(cart_saved.__dict__)
-		user_account_data = {
-				'fk_user_id': user_id,
-				'fk_store_id': Variation.objects.get(pk=item_id).product.fk_store.id,
-				'credit': (Decimal(cart_saved.total)-Decimal(debit))
-			}
+		# user_account_data = {
+		# 		'fk_user_id': user_id,
+		# 		'fk_store_id': Variation.objects.get(pk=item_id).product.fk_store.id,
+		# 		'credit': (Decimal(cart_saved.total)-Decimal(debit))
+		# 	}
 		# print("user_acc_data",user_account_data)
 		if cart_saved.is_auto_order==True: #AutoOrder bhaye matrai credit save garne 
 			UserAccountStoreWiseSaveService(user_account_data)

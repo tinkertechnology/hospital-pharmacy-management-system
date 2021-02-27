@@ -1,0 +1,283 @@
+{% extends 'personal/dashboard_layout/app.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="row" id="add_visit">
+    <div class="col-sm-12">
+        <div class="card-box">
+            <h4 class="header-title">Visit </h4>
+            <p class="sub-header">
+                Most common form control, text-based input fields. Includes support for all HTML5 types: <code>text</code>, <code>password</code>, <code>datetime</code>, <code>datetime-local</code>, <code>date</code>, <code>month</code>, <code>time</code>, <code>week</code>, <code>number</code>, <code>email</code>, <code>url</code>, <code>search</code>, <code>tel</code>, and <code>color</code>.
+            </p>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-horizontal">
+                        <div class="form-group row">
+                            <label class="col-md-2 control-label">Amount</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" v-model="Visit.amount" value="" placeholder="amount...">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 control-label" for="example-email">Type</label>
+                            <div class="col-md-10">
+                                <!-- <input type="email" id="example-email" name="example-email" class="form-control" placeholder="Email"> -->
+                                <select name="" @change="onChangeVisitType($event)" v-model="Visit.fk_type_id" class="select2">
+                                    {% for  type in visits_type %}
+                                        <option value="{{type.id}}">{{type.title}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 control-label" for="example-email">Service/ Items</label>
+                            <div class="col-md-10">
+                                <!-- <input type="email" id="example-email" name="example-email" class="form-control" placeholder="Email"> -->
+                                <select name="" v-model="Visit.cartitem_id" class="select2" @change="onChangeVariation($event)">
+                                    {% for  variation in variations %}
+                                        <option value="{{variation.id}}">{{variation.title}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label"> Customer</label>
+                            <div class="col-sm-8">
+                                <select class="form-control">
+                                    <option v-for="(item, index) in patients">[[ item.firstname ]] [[item.lastname]] [[item.mobile]]</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Add Customer</button>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 control-label"> Remarks</label>
+                            <div class="col-md-10">
+                                <input type="text" v-model="Visit.comment" class="form-control" value="" placeholder="Remarks">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <button class="btn btn-info" @click="saveVisit">Submit</button>
+            </div>
+
+        
+            </div>
+            <!-- end row -->
+
+            <!-- end row -->
+
+        </div>
+        <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"  style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row">
+                            <div class="col-md-6">
+                            <h4 class="modal-title mt-0">Add Customer</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-teal btn-rounded waves-light waves-effect width-md">View</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="field-1" name="firstname" class="control-label">Firstname</label>
+                                    <input type="text" name="lastname"  v-model="customerForm.firstname" class="form-control" id="field-1" placeholder="John">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="field-2" class="control-label">Lastname</label>
+                                    <input type="text" name="lastname" v-model="customerForm.lastname" class="form-control" id="field-2" placeholder="Doe">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="field-3" class="control-label">Mobile</label>
+                                    <input type="text" name="mobile" v-model="customerForm.mobile" class="form-control" id="field-3" placeholder="Address">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="field-3" class="control-label">Email</label>
+                                    <input type="text" name="email"  v-model="customerForm.email" class="form-control" id="field-3" placeholder="Address">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="field-4" class="control-label">Patient Type</label>
+                                    <input type="text" class="form-control" id="field-4" placeholder="Boston">
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                        <button type="button"  @click="savePatient" class="btn btn-info waves-effect waves-light">Save changes</button>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+   // var Toasted = require('vue-toasted').default
+   Vue.use(VueToast);
+   var app = new Vue({
+       
+       delimiters: ['[[', ']]'],
+     el: '#add_visit',
+     data: {
+       loading: false,
+       products : [],
+       showModal : false,
+       patients : [{
+            id: 0,
+            firstname: "",
+            lastname: "",
+            mobile: "",
+            patient_type: {
+                p_type_id: null,
+                p_type_title: ""
+            }
+        }],
+       Visit : [{
+           id: 0,
+           amount: "",
+           fk_type_id: "",
+           comment: "",
+           cartitem_id :  "",
+   }],
+   customerForm : {
+        firstname : "",
+        lastname: "",
+        email : "",
+        patient_type : "",
+        mobile : ""
+    },
+
+}, //Data Closed
+     methods : {
+       saveVisit: function() {
+               axios({
+               method: 'post',
+               url:  '/api/CartItemSaveView/',
+               headers: {
+                               'Content-Type': 'application/json',
+                               'X-CSRFToken': '{{ csrf_token }}'
+                           }, 
+               data: {
+                   fk_type_id : this.Visit.fk_type_id,
+                   amount : this.Visit.amount,
+                   comment : this.Visit.comment,
+                   item: this.Visit.cartitem_id,
+                   user_id : 1, //customer dropdown selection after
+                   quantity : 1,
+
+                 // This is the body part
+               },
+               }) //.then(response=> cartitem.variation = response.data)
+               .then((getResponse) => {
+                   $('#con-close-modal').modal('hide')
+                   console.log(getResponse.data);
+                   this.patientType = getResponse.data.user_id;
+                   
+
+               }) 
+               .catch(function (error) {
+                   console.log(error);
+                   console.log("Error while fetching market updates");
+               });
+                 
+       },
+       onChangeVisitType(event){
+           this.Visit.fk_type_id = event.target.value;
+           console.log(event.target.value);
+       },
+       onChangeVariation(event){
+        console.log(event.target.value);
+        this.Visit.cartitem_id = event.target.value;
+       },
+       getPatient: function() {
+            this.loading = true;
+            axios.get('/api/patients/')
+                .then((getResponse) => {
+                    console.log("GET Response - patients")
+                    console.log(getResponse.data);
+                    // data = getResponse.data;
+                    // response.send(data);
+                    this.patients = getResponse.data;
+                    this.loading = false;
+                    // print(products);
+                })
+                .catch(function (error) {
+                    this.loading = false;
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });  
+        },
+
+        savePatient: function() {
+                axios({
+                method: 'post',
+                url:  '/api/register/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                    firstname : this.customerForm.firstname,
+                    lastname : this.customerForm.lastname,
+                    mobile : this.customerForm.mobile,
+                    email : this.customerForm.email,
+
+                  // This is the body part
+                },
+                }) //.then(response=> cartitem.variation = response.data)
+                .then((getResponse) => {
+                    $('#con-close-modal').modal('hide')
+                    console.log(getResponse.data);
+                    this.patientType = getResponse.data.user_id;
+                    
+
+                }) 
+                .catch(function (error) {
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });
+                  
+        }
+
+      
+     }, //end method
+     
+
+    
+
+     mounted() {
+        this.getPatient();
+     },
+   })
+ </script>
+ {% endblock %}

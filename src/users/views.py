@@ -7,7 +7,7 @@ from .models import UserType
 from inquiry.models import Message
 # from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
-from store.service import getUserStoreService
+# from store.service import getUserStoreService
 from store.models import Store, StoreUser
 User = get_user_model()
 

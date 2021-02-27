@@ -153,7 +153,7 @@ class OrderLists(ListAPIView):
 		return orders
 
 
-from store.service import getUserStoreService
+# from store.service import getUserStoreService
 class StoreWiseOrderLists(ListAPIView):
 	# queryset = Order.objects.all()
 	
@@ -563,7 +563,7 @@ class UpdateStoreWiseOrderStatusApiView(CreateAPIView):
 
 
 
-from store.service import getUserStoreService
+# from store.service import getUserStoreService
 class myStoreName(APIView):
 	permission_classes = [permissions.IsAuthenticated]
 	def get(self, request, *args, **kwargs):
@@ -681,3 +681,17 @@ def carts(request):
 	}
 	return render(request, "personal/dashboard_layout/carts.html", context)
 	
+
+
+
+###HMS
+from products.models import Variation
+from carts.models import TransactionType
+def visit(request):
+	variations = Variation.objects.all()
+	visits_type = TransactionType.objects.all()
+	context ={
+		'variations' : variations,
+		'visits_type' : visits_type
+	}
+	return render(request, "personal/dashboard_layout/visit.html", context)

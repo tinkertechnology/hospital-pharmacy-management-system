@@ -54,7 +54,7 @@ class Account(AbstractBaseUser):
 	address					= models.CharField(max_length=200, null=True, blank=True)
 	gender					= models.CharField(max_length=200, null=True, blank=True)
 	firebase_token          = models.CharField(max_length=500, null=True, blank=True)
-	
+
 
 
 
@@ -76,6 +76,13 @@ class Account(AbstractBaseUser):
 	# Does this user have permission to view this app? (ALWAYS YES FOR SIMPLICITY)
 	def has_module_perms(self, app_label):
 		return True
+
+class Doctor(models.Model):
+	fk_user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
+
+	def __str__(self):
+		return self.fk_user.mobile
+
 
 
 class PhoneOTP(models.Model):

@@ -241,8 +241,18 @@ class CartItemModelSerializer(serializers.ModelSerializer):
 		data['is_add_sub_qty'] = request.GET.get('is_add_sub_qty', None)
 		data['cart_id'] = request.data.get('cart_id')
 		data['cartitem_id'] = request.data.get('cartitem_id')
+		data['amount'] = request.data.get('amount') #for transaction table default = 0
+		data['comment'] = request.data.get('comment') # if remarks added
+		data['fk_type_id'] = request.data.get('fk_type_id') #transaction types like refund deposit etc
 		cartItem = CartService.CartItemCreateService(data)
-
+		print(cartItem.__dict__)
+		transaction = {
+			"fk_cart_id" : cartItem.cart_id,
+			"amount" : request.data.get('amount'),
+			"comment" : request.data.get('comment'),
+			"fk_type_id" : request.data.get('fk_type_id')
+		}
+		transaction= Transaction.objects.create(**transaction)
 		return cartItem
 
 
@@ -281,4 +291,8 @@ class RemoveCartItemFromCartSerializer(serializers.ModelSerializer):
 		# return item 
 
 
-
+from .models import Transaction
+class TransactionSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Transaction
+		fields = '__all__'

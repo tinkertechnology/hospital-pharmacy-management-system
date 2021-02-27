@@ -62,10 +62,10 @@ from account.views import (
 from carts.views import (
         CartAPIView,
         CartView, 
-        CheckoutAPIView,
-        CheckoutFinalizeAPIView,
-        CheckoutView, 
-        CheckoutFinalView,
+        # CheckoutAPIView,
+        # CheckoutFinalizeAPIView,
+        # CheckoutView, 
+        # CheckoutFinalView,
         ItemCountView, 
         AddToCartView,
         CartItemSaveView,
@@ -105,7 +105,8 @@ from orders.views import (
                     pos,
                     pos1,
                     carts,
-                    cartitems
+                    cartitems,
+                    visit
                     )
 
 from products.views import (
@@ -362,6 +363,7 @@ urlpatterns += [
     path('carts', carts, name="carts"),
     path('cartitems', cartitems, name="cartitems"),
     path('hmsproducts', hmsproducts, name="hmsproducts"),
+    path('visit/', visit, name="visittype"),
 
     path('api/send_invoice_pdf/<int:cart_id>/',GeneratePDF.as_view(), name='pdf_send_email'),
 

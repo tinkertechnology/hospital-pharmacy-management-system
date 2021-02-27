@@ -20,7 +20,7 @@ import random
 import requests
 from django.core.mail import send_mail
 from rest_framework.generics import CreateAPIView, ListAPIView
-from store.models import StoreAccount, StoreUser
+from store.models import StoreUser #., StoreAccount, 
 from .serializer import UserSerializer, CallLogSerializer
 from django.http import Http404
 from django.db.models import Count, Max, Min, Avg
@@ -876,7 +876,7 @@ class GetCallLogsStoreAPIView(APIView):
 		return Response('failed to save', status=400)
 
 from django.db.models import Q
-from store.service import getUserStoreService		
+# from store.service import getUserStoreService		
 class MissCallUsersAPIView(APIView):
 	def get(self, request):
 		settings.DLFPRINT()
@@ -926,4 +926,4 @@ class PatientUserListAPIView(APIView):
 
 		
 
-		 
+

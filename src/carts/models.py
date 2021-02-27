@@ -19,7 +19,7 @@ class CartItem(models.Model):
 
 	# will be filled later
 	# after this cart item is added to storewiseorder table
-	fk_storewise_order = models.ForeignKey("orders.StoreWiseOrder", on_delete=models.CASCADE, blank=True, null=True) 
+	# fk_storewise_order = models.ForeignKey("orders.StoreWiseOrder", on_delete=models.CASCADE, blank=True, null=True) 
 	item = models.ForeignKey(Variation, on_delete=models.CASCADE)
 	# quantity = models.PositiveIntegerField(default=1)
 	quantity = models.DecimalField(max_digits=25, decimal_places=2, default=1.00)	
@@ -39,21 +39,17 @@ def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
 	qty = instance.quantity
 	if Decimal(qty) >= 0:
 		price = instance.item.get_price()
-		if instance.fk_storewise_order is not None:	
-			pass	# price = instance.ordered_price
-		else:
-			if instance.ordered_price!=0:
-				price = instance.ordered_price
-			instance.orginal_price = price
-			# if qty>=3:
-			# 	price = price-Decimal(float(price)*(3/10))
-			# elif qty>=2:
-			# 	price = price-Decimal(float(price)*(2/10))
-			instance.ordered_price = price
-			line_item_total = Decimal(qty) * Decimal(price)
-			instance.line_item_total = line_item_total
-			instance.tax_amount = Decimal(float(line_item_total)*settings.TAX_PERCENT_DECIMAL)
-
+		if instance.ordered_price!=0:
+			price = instance.ordered_price
+		instance.orginal_price = price
+		# if qty>=3:
+		# 	price = price-Decimal(float(price)*(3/10))
+		# elif qty>=2:
+		# 	price = price-Decimal(float(price)*(2/10))
+		instance.ordered_price = price
+		line_item_total = Decimal(qty) * Decimal(price)
+		instance.line_item_total = line_item_total
+		instance.tax_amount = Decimal(float(line_item_total)*settings.TAX_PERCENT_DECIMAL)
 
 pre_save.connect(cart_item_pre_save_receiver, sender=CartItem)
 
@@ -133,6 +129,24 @@ class Comment(models.Model):
 	updated_at =  models.DateTimeField(auto_now_add=True, auto_now=False)
 	def __unicode__(self):
 		return self.user.mobile
+
+
+class TransactionType(models.Model):
+	title = models.CharField(max_length=100, null=True, blank=True)
+	def __str__(self):
+		return self.title
+
+class Transaction(models.Model):
+	date = models.DateTimeField(auto_now_add=True, auto_now=False)
+	fk_type = models.ForeignKey(TransactionType, on_delete=models.CASCADE, null=True)
+	amount = models.DecimalField(max_digits=25, decimal_places=2, default=0.00)
+	comment = models.CharField(null=True, max_length=100, blank=True)
+	entered_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+	fk_cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True, blank=True)
+	def __str__(self):
+		return '%s %s' %(self.amount, self.fk_type.title)
+
+
 
 
 
