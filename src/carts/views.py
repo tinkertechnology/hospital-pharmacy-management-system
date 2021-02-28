@@ -30,6 +30,7 @@ from orders.serializers import OrderSerializer #, FinalizedOrderSerialize
 from products.models import Variation, UserVariationQuantityHistory
 from .mixins import TokenMixin, CartUpdateAPIMixin, CartTokenMixin
 from .models import Cart, CartItem
+from account.models import Visit
 from .serializers import CartItemSerializer, CheckoutSerializer, AddToCartSerializer, CartItemModelSerializer, RemoveCartItemFromCartSerializer
 from products.serializers import UserVariationQuantityHistorySerializer
 from django.contrib.auth import get_user_model
@@ -240,10 +241,14 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 
 
 	def get(self, request, format=None):
-		patient_id = request.GET.get('patient_id')
+		fk_visit = Visit.objects.filter(id=request.GET.get('fk_visit_id')).first()
+		patient_id = fk_visit.fk_customer_user_id
+
+		# patient_id = request.GET.get('patient_id')
 		if patient_id:
 			cart = Cart()
 			cart.user_id = patient_id 
+			cart.fk_visit_id = fk_visit.id
 			cart.save()
 		else:
 			cart_id = request.GET.get('cart_id')
@@ -255,7 +260,7 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 		# self.update_cart()
 		#token = self.create_token(cart.id)
 		items = CartItemSerializer(cart.cartitem_set.all(), many=True)
-		# print(items)
+		print(items)
 		# print(cart.items.all())
 		data = {
 			# "token": self.token,
@@ -263,7 +268,7 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 			"total": cart.total,
 			"subtotal": cart.subtotal,
 			"tax_total": cart.tax_total,
-			"count": cart.items.count(),
+			"count": cart.cartitems.count(),
 			"items": items.data,
 			# "product_id": items.id,
 		}

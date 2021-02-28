@@ -898,7 +898,7 @@ class MissCallUsersAPIView(APIView):
     #     return ctx
 
 from django.views.generic.list import ListView
-from .serializer import DoctorSerializer
+from .serializer import DoctorSerializer, VisitSeriailizer
 from .models import Doctor
 class CustomerPatientUserList(ListView):
 	model = Account
@@ -935,3 +935,40 @@ class DoctorUserListAPIView(ListAPIView):
 		queryset = User.objects.filter(id__in=doctors_assigned.values('fk_user_id'))
 		return queryset
 
+# class VisitListAPIView(ListView):
+	
+# 	def get_queryset(self):
+# 		doctors_assigned = Doctor.objects.all()
+# 		queryset = User.objects.filter(id__in=doctors_assigned.values('fk_user_id'))
+# 		return queryset
+
+from .models import Visit
+class VisitAPIView(APIView):
+	serializer_class = VisitSeriailizer
+
+	def get(self, request):
+		customer_id = request.GET.get('customer_id')
+		qs = Visit.objects.filter(fk_customer_user_id=customer_id)
+		template_name = "personal/dashboard_layout/visits.html"
+		return render(request, template_name, {'visits': qs})
+		
+	def post(self, request):
+		print(request.data)
+		fk_customer_user_id = request.data.get('fk_customer_user_id')
+		fk_doctor_user_id =  request.data.get('fk_doctor_user_id')
+		remarks =  request.data.get('remarks')
+		appointment_date =  request.data.get('appointmentDate')
+
+		if fk_customer_user_id and fk_doctor_user_id:
+			visit = Visit.objects.create(fk_customer_user_id=fk_customer_user_id,
+										 fk_doctor_user_id=fk_doctor_user_id,
+										 appointment_date=appointment_date,
+										 remarks=remarks)
+			data = {
+				'success': 'Created',
+				'id' : visit.id,
+				'fk_customer_user_id' :visit.fk_customer_user_id
+			}
+			return Response(data, status=200)
+		else:
+			return Response('failed', status=400)

@@ -10,7 +10,7 @@ User = get_user_model()
 
 
 
-from products.models import Variation
+from products.models import Variation, VariationBatch
 # Create your models here.
 
 
@@ -20,7 +20,8 @@ class CartItem(models.Model):
 	# will be filled later
 	# after this cart item is added to storewiseorder table
 	# fk_storewise_order = models.ForeignKey("orders.StoreWiseOrder", on_delete=models.CASCADE, blank=True, null=True) 
-	item = models.ForeignKey(Variation, on_delete=models.CASCADE)
+	# item = models.ForeignKey(Variation, on_delete=models.CASCADE)
+	fk_variation_batch = models.ForeignKey(VariationBatch, on_delete=models.CASCADE, null=True)
 	# quantity = models.PositiveIntegerField(default=1)
 	quantity = models.DecimalField(max_digits=25, decimal_places=2, default=1.00)	
 	tax_amount = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
@@ -61,11 +62,12 @@ def cart_item_post_save_receiver(sender, instance, *args, **kwargs):
 post_save.connect(cart_item_post_save_receiver, sender=CartItem)
 
 post_delete.connect(cart_item_post_save_receiver, sender=CartItem)
-
+from account.models import Visit
 
 class Cart(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-	items = models.ManyToManyField(Variation, through=CartItem)
+	cartitems = models.ManyToManyField(VariationBatch, through=CartItem)
+	fk_visit = models.ForeignKey(Visit, on_delete=models.CASCADE, null=True, blank=True)
 	timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
 	updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 	subtotal = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)

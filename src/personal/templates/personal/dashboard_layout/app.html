@@ -26,7 +26,12 @@
     <link href="https://coderthemes.com/zircos/layouts/vertical/assets/libs/datatables/dataTables.colVis.css" rel="stylesheet" type="text/css" />
     <link href="https://coderthemes.com/zircos/layouts/vertical/assets/libs/datatables/fixedColumns.bootstrap4.min.css" rel="stylesheet" type="text/css" />      
     <link href="https://coderthemes.com/zircos/layouts/vertical/assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
-
+    <link href="https://coderthemes.com/zircos/layouts/vertical/assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://coderthemes.com/zircos/layouts/vertical/assets/libs/clockpicker/bootstrap-clockpicker.min.css" rel="stylesheet">
+    <link href="https://coderthemes.com/zircos/layouts/vertical/assets/libs/bootstrap-timepicker/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://coderthemes.com/zircos/layouts/vertical/assets/libs/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+    <link href="https://coderthemes.com/zircos/layouts/vertical/assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
+      <link href="https://coderthemes.com/zircos/layouts/vertical/assets/libs/custombox/custombox.min.css" rel="stylesheet" type="text/css" />
       <!-- Init the plugin -->
  
       
@@ -308,10 +313,13 @@
                                 <!-- <span class="menu-arrow"></span> -->
                             </a>
                             </li>
-
-
-                          
-
+                            <li>
+                              <a href="/hmsproducts/" class="waves-effect waves-light">
+                                  <i class="mdi mdi-invert-colors"></i>
+                                  <span> Items / Services </span>
+                                  <!-- <span class="menu-arrow"></span> -->
+                              </a>
+                              </li>
                     </ul>
 
                 </div>
@@ -442,13 +450,17 @@
       <script src="https://coderthemes.com/zircos/layouts/vertical/assets/libs/morris-js/morris.min.js"></script>
       <script src="https://coderthemes.com/zircos/layouts/vertical/assets/js/app.min.js"></script>
       <script src="https://coderthemes.com/zircos/layouts/vertical/assets/js/pages/dashboard.init.js"></script>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
       <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous"></script>
       <script src="https://coderthemes.com/zircos/layouts/vertical/assets/libs/bootstrap-colorpicker/bootstrap-colorpicker.min.js"></script>
       <script src="https://coderthemes.com/zircos/layouts/vertical/assets/libs/bootstrap-timepicker/bootstrap-timepicker.min.js"></script>
       <script src="https://coderthemes.com/zircos/layouts/vertical/assets/libs/clockpicker/bootstrap-clockpicker.min.js"></script>
       <script src="https://coderthemes.com/zircos/layouts/vertical/assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
       <script src="https://coderthemes.com/zircos/layouts/vertical/assets/js/pages/form-pickers.init.js"></script>
-       <script>
+      <script src="https://coderthemes.com/zircos/layouts/vertical/assets/libs/custombox/custombox.min.js"></script>
+       <script>   
+
       // $: single $ means function
       // $$: means variable added in vue
       Vue.prototype.$WINDOW = function () { return window; } // this worked

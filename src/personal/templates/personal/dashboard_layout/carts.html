@@ -5,33 +5,16 @@
 
 {% block content %}
 
-<div class="col-sm-12">
+<div class="col-sm-12" id="cartpage">
     <div class="card-box table-responsive">
         <div class="col-lg-12">
             <div class="demo-box p-2">
                 <h4 class="header-title">Firstname: {{ user.firstname }} lastname: {{user.lastname}} Patient ID: {{ user.id}}</h4>
                 <div class="row mb-4">
                     <div class="col-sm-12">
-                        <!-- <form class="form-inline">
                             <div class="form-group">
-                                <label class="sr-only" for="exampleInputEmail21">Search Patient</label>
-                                <input type="text" class="form-control" id="exampleInputEmail21" placeholder="Enter Patient name">
+                               <button class="btn btn-primary" @click="createCart">Create Cart</button>
                             </div>
-
-                            <div class="form-group ml-2">
-                                <label class="sr-only" for="exampleInputPassword2">Password</label>
-                                <input type="password" class="form-control" id="exampleInputPassword2" placeholder="Password">
-                            </div>
-                            <div class="form-group ml-2">
-                                <div class="checkbox checkbox-primary pl-3">
-                                    <input id="checkbox3" type="checkbox">
-                                    <label for="checkbox3">
-                                        Remember me
-                                    </label>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-success waves-effect waves-light ml-2 btn-md">Sign in</button>
-                        </form> -->
                     </div>
 
                 </div>
@@ -112,48 +95,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <div class="table-responsive">
-                    <table class="table m-0">
-
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Username</th>
-                                <th>Mobile</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for cart in carts %}
-                            <tr>
-                                <th scope="row">{{cart.id}}</th>
-                                <td>{{cart.timestamp}}</td>
-                                <td><a href="/cartitems?cart_id={{cart.id}}">alu</a></td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% if is_paginated %}
-                    <div class="pagination">
-                        <span class="step-links">
-                            {% if page_obj.has_previous %}          
-                                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-                            {% endif %}
-                    
-                            <span class="current">
-                              {{ page_obj.number }}
-                            </span>
-                    
-                            {% if page_obj.has_next %}
-                                <a href="?page={{ page_obj.next_page_number }}">next</a>
-                            {% endif %}
-                        </span>
-                    </div>
-                {% endif %}
-                </div>
             </div>
 
         </div>
@@ -162,8 +103,58 @@
  {% endblock %}
 
  {% block script %}
+ <script>
+    // var Toasted = require('vue-toasted').default
+    Vue.use(VueToast);
+    var app = new Vue({
+        
+        delimiters: ['[[', ']]'],
+      el: '#cartpage',
+      data: {
+        // fk_visit_id : null,
+ 
+ }, //Data Closed
+      methods : {
+        createCart: function() {
+                axios({
+                method: 'get',
+                url:  '/api/cart/?fk_visit_id='+{{visit_id}},
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                // data: {
+                //     fk_visit_id : {{visit_id}}
 
+                // },
+                }) //.then(response=> cartitem.variation = response.data)
+                .then((getResponse) => {
+                    $('#con-close-modal').modal('hide')
+                 //    console.log(getResponse.data);
+                    //  window.location='/api/VisitAPIView/?customer_id='+ getResponse.data.fk_customer_user_id;
+                    window.location.reload();
+                 //    this.patientType = getResponse.data.user_id;
+                    
+ 
+                }) 
+                .catch(function (error) {
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });
+                  
+        }
+     
+ 
+       
+      }, //end method
+      
+ 
+     
+ 
+      mounted() {
+        // 
+      },
+    })
+  </script>
 
-
- <!-- Datatables init -->
- {% endblock %}
+  {% endblock %}

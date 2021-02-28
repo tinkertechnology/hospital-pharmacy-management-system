@@ -55,7 +55,8 @@ from account.views import (
     ## hms
     PatientUserListAPIView,
     CustomerPatientUserList,
-    DoctorUserListAPIView
+    DoctorUserListAPIView,
+    VisitAPIView
 )
 
 
@@ -129,7 +130,9 @@ from products.views import (
         ProductVariationRetrieveAPIView,
         StoreWiseProductListAPIView,
         VariationByPatientAPIView,
-        hmsproducts
+        hmsproducts,
+        hmsvariations,
+        VariationBatchAPIView
         
 
     )
@@ -363,8 +366,11 @@ urlpatterns += [
     path('pos1/<int:patient_id>/', pos1, name='pos'),
     path('carts', carts, name="carts"),
     path('cartitems', cartitems, name="cartitems"),
-    path('hmsproducts', hmsproducts, name="hmsproducts"),
+    path('hmsproducts/', hmsproducts, name="hmsproducts"),
+    path('hmsvariations/<int:id>/', hmsvariations, name="hmsvariations"),
+    
     path('visit/', visit, name="visittype"),
+    path('api/VisitAPIView/', VisitAPIView.as_view(), name="VisitAPIView"),
 
     path('api/send_invoice_pdf/<int:cart_id>/',GeneratePDF.as_view(), name='pdf_send_email'),
 
@@ -373,6 +379,8 @@ urlpatterns += [
     path('CustomerPatientUserList', CustomerPatientUserList.as_view(), name="CustomerPatientUserList"),
     path('api/DoctorUserListAPIView/', DoctorUserListAPIView.as_view(), name="DoctorUserListAPIView"),
     path('api/VariationByPatientAPIView/', VariationByPatientAPIView.as_view(), name="variation-by-patient-type"),
+    path('api/VariationBatchAPIView/', VariationBatchAPIView.as_view(), name="VariationBatchAPIView"),
+    
     
 ]
  # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

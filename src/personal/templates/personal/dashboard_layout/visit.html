@@ -13,12 +13,14 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="form-horizontal">
+                        {% comment %}
                         <div class="form-group row">
                             <label class="col-md-2 control-label">Reg. Charge / Amount</label>
                             <div class="col-md-10">
                                 <input type="text" class="form-control" v-model="Visit.amount" value="" placeholder="amount...">
                             </div>
                         </div>
+                        
                         <div class="form-group row">
                             <label class="col-md-2 control-label" for="example-email">Type</label>
                             <div class="col-md-10">
@@ -30,6 +32,7 @@
                                 </select>
                             </div>
                         </div>
+                        
                         <div class="form-group row">
                             <label class="col-md-2 control-label" for="example-email">Service/ Items</label>
                             <div class="col-md-10">
@@ -41,10 +44,11 @@
                                 </select>
                             </div>
                         </div>
+                        {% endcomment %}
                         <div class="form-group row">
                             <label class="col-sm-2 control-label"> Customer</label>
                             <div class="col-sm-8">
-                                <select class="form-control" v-model="selectedPatient">
+                                <select class="form-control" v-model="fk_customer_user_id">
                                     <option  v-for="(patient, index) in patients" v-bind:value="patient.id">[[ patient.firstname ]] [[patient.lastname]] [[patient.mobile]]</option>
                                 </select>
                             </div>
@@ -56,7 +60,7 @@
                         <div class="form-group row">
                             <label class="col-sm-2 control-label"> Reffer Doctor</label>
                             <div class="col-sm-8">
-                                <select class="form-control" v-model="selectedDoctor">
+                                <select class="form-control" v-model="fk_doctor_user_id">
                                     <option  v-for="(doctor, index) in doctors.results" v-bind:value="doctor.id">[[ doctor.firstname ]] [[doctor.lastname]] [[doctor.mobile]]</option>
                                 </select>
                             </div>
@@ -64,11 +68,24 @@
                                 <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Add Customer</button>
                             </div> -->
                         </div>
+                        <div class="form-group">
+                            <label>Appointment Date</label>
+                            <div>
+                                <div class="input-group">
+                                    <input type="text"  v-model="appointmentDate" class="form-control" placeholder="mm/dd/yyyy" id="datepicker">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text bg-primary text-white b-0"><i class="mdi mdi-calendar"></i></span>
+                                    </div>
+
+                                </div>
+                                <!-- input-group -->
+                            </div>
+                        </div>
 
                         <div class="form-group row">
                             <label class="col-md-2 control-label"> Remarks</label>
                             <div class="col-md-10">
-                                <input type="text" v-model="Visit.comment" class="form-control" value="" placeholder="Remarks">
+                                <input type="text" v-model="remarks" class="form-control" value="" placeholder="Remarks">
                             </div>
                         </div>
                     </div>
@@ -156,6 +173,11 @@
 
 {% block script %}
 <script>
+    $(document).ready(function(){
+        $('#datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+        });
+    });
    // var Toasted = require('vue-toasted').default
    Vue.use(VueToast);
    var app = new Vue({
@@ -163,6 +185,10 @@
        delimiters: ['[[', ']]'],
      el: '#add_visit',
      data: {
+        fk_customer_user_id : null,
+        fk_doctor_user_id : null,
+        appointmentDate : '',
+        remarks: '',
        selectedPatient : null,
        selectedDoctor : null,
        loading: false,
@@ -186,6 +212,7 @@
            fk_type_id: "", //visit-type id ho yo
            comment: "",
            cartitem_id :  "",
+        //    appointmentDate : '',
 
    }],
    customerForm : {
@@ -201,26 +228,23 @@
        saveVisit: function() {
                axios({
                method: 'post',
-               url:  '/api/CartItemSaveView/',
+               url:  '/api/VisitAPIView/',
                headers: {
                                'Content-Type': 'application/json',
                                'X-CSRFToken': '{{ csrf_token }}'
                            }, 
                data: {
-                   fk_type_id : this.Visit.fk_type_id,
-                   amount : this.Visit.amount,
-                   comment : this.Visit.comment,
-                   item: this.Visit.cartitem_id,
-                   user_id : 1, //customer dropdown selection after
-                   quantity : 1,
-
-                 // This is the body part
+                    fk_customer_user_id: this.fk_customer_user_id,
+                    fk_doctor_user_id : this.fk_doctor_user_id,
+                    appointmentDate : this.appointmentDate,
+                    remarks : this.remarks,
                },
                }) //.then(response=> cartitem.variation = response.data)
                .then((getResponse) => {
                    $('#con-close-modal').modal('hide')
-                   console.log(getResponse.data);
-                   this.patientType = getResponse.data.user_id;
+                //    console.log(getResponse.data);
+                    window.location='/api/VisitAPIView/?customer_id='+ getResponse.data.fk_customer_user_id;
+                //    this.patientType = getResponse.data.user_id;
                    
 
                }) 

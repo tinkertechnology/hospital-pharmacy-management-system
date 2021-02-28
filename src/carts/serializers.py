@@ -235,6 +235,7 @@ class CartItemModelSerializer(serializers.ModelSerializer):
 		data = {}
 		# print('cart-id',request.data.get('cart_id'))
 		data['user_id'] = request.data.get('p_id')
+		data['fk_visit_id'] = request.data.get('fk_visit_id')
 		data['fk_bill_created_user_id'] = user.id
 		data['item_id'] = validated_data.get('item').id
 		data['quantity'] = validated_data['quantity']

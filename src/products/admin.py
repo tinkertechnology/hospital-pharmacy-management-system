@@ -3,7 +3,7 @@ from django.contrib import admin
 # Register your models here.
 
 
-from .models import Product, Variation, ProductImage, Category, ProductFeatured, Company, Brand, GenericName, ProductUnit, ProductCommon
+from .models import Product, Variation, ProductImage, Category, ProductFeatured, Company, Brand, GenericName, ProductUnit, ProductCommon, VariationBatch
 
 class ProductImageInline(admin.TabularInline):
 	model = ProductImage
@@ -46,6 +46,7 @@ admin.site.register(GenericName)
 admin.site.register(ProductUnit)
 
 admin.site.register(ProductCommon)
+admin.site.register(VariationBatch)
 
 
 

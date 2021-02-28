@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.conf import settings
 
-from .models import Category, Product, Variation, ProductFeatured, Company, GenericName, Brand, ProductUnit, ProductImage, ProductCommon, UserVariationQuantityHistory
+from .models import Category, Product, Variation, ProductFeatured, Company, GenericName, Brand, ProductUnit, ProductImage, ProductCommon, UserVariationQuantityHistory, VariationBatch
 from store.models import Store
 from store.serializers import *
 
@@ -59,6 +59,12 @@ class VariationSerializer(serializers.ModelSerializer):
 		# 	return self.price
 		# return ""
 		# print(self.price)	
+
+class VariationBatchSerializer(serializers.ModelSerializer):
+	fk_variation = VariationSerializer()
+	class Meta:
+		model = VariationBatch
+		fields ='__all__'
 
 class UserVariationQuantityHistorySerializer(serializers.ModelSerializer):
 	variation = VariationSerializer()

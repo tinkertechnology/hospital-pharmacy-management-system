@@ -8,7 +8,7 @@
     <div class="col-lg-12">
         <div class="card-box">
             <div class="row">
-                <div class="col-sm-8">
+                <div class="col-sm-6">
                     <form>
                         <div class="form-group search-box">
                             <input type="text" id="search-input" class="form-control product-search" placeholder="Search here...">
@@ -18,6 +18,10 @@
                 </div>
                 <div class="col-sm-4">
                     <a href="#custom-modal" class="btn btn-success btn-rounded btn-md waves-effect waves-light mb-4" data-animation="fadein" data-plugin="custommodal" data-overlayspeed="200" data-overlaycolor="#36404a"><i class="md md-add"></i> Add New Item</a>
+                </div>
+                <div class="col-sm-2">
+                   Adding variations to [[product_description.product.title]]
+                   <p>[[product_description.description]]</p>
                 </div>
             </div>
 
@@ -44,17 +48,16 @@
                                 </div>
                             </th> -->
                             <th>Name</th>
-                            <th>Description</th>
-                            <th>Status</th>
-                            <th>Brand</th>
-                            <th>Manufacturer</th>
-                            <th>Generic name</th>
-                            <th>Variations</th>
+                            <th>Price</th>
+                            <th>Sale Price</th>
+                            <th>Inventory</th>
+                            <th>Keep Stock</th>
+                            <th>Expiry Date</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        <tr class="active" v-for="(item, index) in products.results"  v-bind:value="[[  item.id ]]" :key="item.id">
+                        <tr class="active" v-for="(item, index) in products"  v-bind:value="[[  item.id ]]" :key="item.id">
                             <td>[[++index]]</td>
                             <!-- <td>
                                 <div class="checkbox checkbox-primary checkbox-single mr-3 ml-1">
@@ -68,18 +71,17 @@
                             </td>
 
                             <td>
-                                <a href="#">[[item.description]]</a>
+                                <a href="#">[[item.price]]</a>
                             </td>
 
                             <td>
-                                active
+                                [[item.sale_price]]
                             </td>
                             <td>
-                                brand name
+                                [[item.inventory]]
                             </td>
-                            <td>company name</td>
-                            <td>Generic Name</td>
-                            <td>[[item.variation_set.length]]</td>
+                            <td>[[item.expiry_date]]</td>
+                            <td></td>
                             <td>
                                 <a href="#" class="table-action-btn h3"><i class="mdi mdi-pencil-box-outline text-success"></i></a>
                                 <a href="#" class="table-action-btn h3"><i class="mdi mdi-close-box-outline text-danger"></i></a>
@@ -159,7 +161,7 @@ filter: alpha(opacity=40);
       data: {
         loading: false,
         products : [],
-        items : [],
+        product_description : [],
         showModal : false,
         
         patients : [{
@@ -185,15 +187,16 @@ filter: alpha(opacity=40);
 
 }, //Data Closed
       methods : {
-        getProduct: function() {
+        getProductVariation: function() {
             this.loading = true;
-            axios.get('/api/products/')
+            axios.get('/api/ProductVariationRetrive/{{product_id}}/')
                 .then((getResponse) => {
                     console.log("GET Response")
                     console.log(getResponse.data);
                     // data = getResponse.data;
                     // response.send(data);
-                    this.products = getResponse.data;
+                    this.products = getResponse.data.product.variation_set;
+                    this.product_description = getResponse.data;
                     this.loading = false;
                     // print(products);
                 })
@@ -204,7 +207,7 @@ filter: alpha(opacity=40);
                 });  
         },
         variationPage : function(product_id) {
-            window.location = '/hmsvariations/'+product_id+'/';
+            window.location = '';
         },
         addRow: function() {  
                 this.addToCart();   
@@ -292,7 +295,7 @@ filter: alpha(opacity=40);
      
 
       mounted() {
-          this.getProduct();
+          this.getProductVariation();
         //   this.getPatient();
         //   this.getCart();
 

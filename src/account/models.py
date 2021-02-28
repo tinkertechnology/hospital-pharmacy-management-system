@@ -88,6 +88,16 @@ class Doctor(models.Model):
 # 	title = models.CharField(max_length=100, null=True, blank=True)
 
 
+class Visit(models.Model):
+	fk_customer_user = models.ForeignKey(Account, on_delete=models.CASCADE)
+	fk_doctor_user = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="doctors_assigned")
+	appointment_date = models.DateField(null=True, blank=True)
+	remarks = models.CharField(max_length=200, null=True, blank=True)
+	timestamp = models.DateTimeField(verbose_name='visit date', auto_now_add=True, null=True)
+
+	def __str__(self):
+		return '%s-%s' %(self.fk_customer_user.mobile, self.fk_doctor_user.mobile)
+
 class PhoneOTP(models.Model):
 	phone_regex = RegexValidator( regex =r'^\+?1?\d{9,14}$', message="phone number must be entered in the format: '+97799999'. Up to 15 digits allowed")
 	mobile = models.CharField(validators=[phone_regex], max_length=15, unique=True)

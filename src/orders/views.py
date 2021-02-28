@@ -670,13 +670,17 @@ def cartitems(request):
 
 def carts(request):
 	user_id = request.GET.get('user_id')
-	user = User.objects.get(pk=user_id)
-	carts = Cart.objects.all()#(user_id=user_id)
+	visit_id = request.GET.get('visit_id')
+	user = None
+	if user_id:
+		user = User.objects.get(pk=user_id)
+	carts = Cart.objects.order_by('-id').all()#(user_id=user_id)
 	# print(cart_id)
 	context = {
 		'user_id' : user_id,
 		'carts' : carts,
-		'user' : user
+		'user' : user,
+		"visit_id" : visit_id
 		# 'cart_id' : cart_id.id
 	}
 	return render(request, "personal/dashboard_layout/carts.html", context)

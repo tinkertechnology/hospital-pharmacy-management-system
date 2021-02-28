@@ -10,6 +10,7 @@ def CartItemCreateService(data):
 	user_id = data.get('user_id')
 	cart_id = data.get('cart_id')
 	item_id = data.get('item_id')
+	fk_visit_id = data.get('fk_visit_id')
 	quantity = data.get('quantity')
 	print(data)
 	cartitem_id = data.get('cartitem_id')
@@ -32,6 +33,7 @@ def CartItemCreateService(data):
 		dict_cart = {}
 		cart = Cart.objects.create(user_id=user_id,  **dict_cart) 
 		cart.active = 1
+		cart.fk_visit_id = fk_visit_id
 		cart.credit = credit
 		cart.debit = debit
 		cart.fk_bill_created_user_id = fk_bill_created_user_id

@@ -23,7 +23,7 @@ from products.serializers import VariationSerializer
 from .filters import ProductFilter
 from .forms import VariationInventoryFormSet, ProductFilterForm
 from .mixins import StaffRequiredMixin
-from .models import Product, Variation, Category, ProductFeatured, Company, Brand, GenericName, ProductUnit, ProductCommon, ProductImage
+from .models import Product, Variation, Category, ProductFeatured, Company, Brand, GenericName, ProductUnit, ProductCommon, ProductImage, VariationBatch
 from store.models import Store, StoreUser
 from .pagination import ProductPagination, CategoryPagination
 from .serializers import (
@@ -39,7 +39,8 @@ from .serializers import (
 		 CommonProductSerializer,
 		 AllProductSerializer,
 		 AllProductDetailSerializer,
-		 ProductVariationSerializer
+		 ProductVariationSerializer,
+		 VariationBatchSerializer
 		)
 
 from django.core.exceptions import ValidationError
@@ -334,11 +335,14 @@ class VariationByPatientAPIView(APIView):
 		print(request.data)
 		p_type = request.data.get('p_type')
 		product_id = request.data.get('product_id')
-		# print(product_id)
 		p_type=5
 		variation = Variation.objects.filter(fk_user_type_id=p_type).filter(product_id=product_id).first()
 		# print(variation.query())
 		return Response(VariationSerializer(variation, read_only=True).data)
+
+class VariationBatchAPIView(APIView):
+	def get(self, request):
+		return Response(VariationBatchSerializer(VariationBatch.objects.all(), many=True).data)
 
 
 class AllProductRetrieveAPIView(generics.RetrieveAPIView):
@@ -734,3 +738,9 @@ def hmsproducts(request):
 		'title' : 'HMS products'
 	}
 	return render(request, "personal/dashboard_layout/products.html", context)
+
+def hmsvariations(request, id):
+	context = {
+		'product_id' : id
+	}
+	return render(request, "personal/dashboard_layout/variation.html", context)

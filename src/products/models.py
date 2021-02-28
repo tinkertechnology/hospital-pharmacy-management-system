@@ -8,6 +8,7 @@ from django.utils.text import slugify
 from store.models import Store
 from users.models import UserType
 from django.conf import settings
+from datetime import date
 # Create your models here.
 
 class ProductQuerySet(models.query.QuerySet):
@@ -132,8 +133,31 @@ class Variation(models.Model):
 	def get_title(self):
 		return "%s - %s" %(self.product.title, self.title)
 	
+class VariationBatch(models.Model):
+	fk_variation = models.ForeignKey(Variation, on_delete=models.CASCADE,)
+	quantity = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
+	batchno = models.CharField(max_length=100, null=True, blank=True)
+	price = models.DecimalField(decimal_places=2, max_digits=20)
+	sale_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
+	created_at = models.DateField(default=date.today)
+	use_batch = models.BooleanField(default=True)
 
-from datetime import date
+	def __str__(self):
+		return '%s-%s' %(self.fk_variation.title, self.batchno)
+
+class VariationPrice(models.Model):
+	fk_user_type = models.ForeignKey(UserType, on_delete=models.CASCADE, null=True) #for patient type drug filter
+	fk_variation = models.ForeignKey(Variation, on_delete=models.CASCADE, null=True)
+	price = models.DecimalField(decimal_places=2, max_digits=20, null=True)
+	sale_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
+
+class VariationBatchPrice(models.Model):
+	fk_variation_batch = models.ForeignKey(VariationBatch, on_delete=models.CASCADE, null=True) #for patient type drug filter
+	price = models.DecimalField(decimal_places=2, max_digits=20, null=True)
+	sale_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
+
+
+
 class UserVariationQuantityHistory(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="jar_users", on_delete=models.CASCADE, null=True, blank=True)
 	variation = models.ForeignKey(Variation, on_delete=models.CASCADE)
