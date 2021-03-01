@@ -68,8 +68,7 @@
                                 <thead>
                                     <tr>
                                         <th>S.N</th>
-                                        <th>Item</th>
-                                        <th>Variation</th>
+                                        <th>Particulars</th>
                                         <th>Exp Date</th>
                                         <th>Quantity</th>
                                         <th>Generic name</th>
@@ -84,16 +83,24 @@
                                     <tr v-for='(cartitem, index) in cart.items'>
                                         <td>[[++index]]</td>
                                         <td>
-                                                <select class="form-control select2" name="product" v-bind:value="[[cartitem.product_id]]" @change="onChangeCartItemProduct(cartitem, $event)"> 
-                                                        <option v-for="(item, index) in products.results"  v-bind:value="[[item.id]]" :key="item.id" >[[ item['title'] ]]</option>
+                                                <!-- <select class="form-control product" name="product" v-bind:value="[[cartitem.product_id]]" @change="onChangeCartItemProduct(cartitem, $event)"> 
+                                                        <option v-for="(i, index) in products"  v-bind:value="i.id" :key="item.id" >[[jpt(i)]]</option>
+                                                        
+                                                </select> -->
+
+                                                <!-- <select class="form-control" v-model="fk_doctor_user_id">
+                                                    <option  v-for="(doctor, index) in products" v-bind:value="doctor.id">[[doctor.fk_variation.title]][[ doctor.batchno ]]</option>
+                                                </select> -->
+                                                 <select class="form-control" @change="onChangeCartItemProduct(cartitem,$event)">
+                                                    <option  v-for="(item, index) in products" v-bind:value="item.id">[[item.fk_variation.title]][[ item.batchno ]]</option>
                                                 </select>
                                             
                                         </td>
-                                        <td>[[ _$GF.IFDEF(cartitem,['variation','title']) ]]</td>
+
                                         <td>[[ _$GF.IFDEF(cartitem,['variation','expiry_date']) ]]</td>
                                         <td><input type="text" class="form-control"  @change="onChangeCartItemQuantiy(cartitem, $event)" v-bind:value="[[cartitem.quantity]]"></td>
                                         <td>generic name</td>
-                                        <td>[[ _$GF.IFDEF(cartitem,['variation','price']) ]]</td>
+                                        <td>[[ cartitem.price ]]</td>
                                         <td>[[ _$GF.IFDEF(cartitem,['line_item_total']) ]]</td>
                                         <!-- <td>[[cartitem.variation.expiry_date]]</td> -->
                                         <!-- <td><input type="text" class="form-control" @keyup.enter="lineItem()" v-model="quantity"></td> -->
@@ -223,7 +230,10 @@
 {% endblock %}
 
 {% block script %}
+<script>
+    $(".product").select2();
 
+</script>
 <script>
     // var Toasted = require('vue-toasted').default
     Vue.use(VueToast);
@@ -235,7 +245,7 @@
         loading: false,
         products : [],
         showModal : false,
-        
+        price: null,
         patients : [{
             id: 0,
             firstname: "",
@@ -273,7 +283,7 @@
                 "fk_store_title": "",
                 variation : {id: '',title :"",price:"",sale_price:null,discount:"",inventory:""},
             }
-        ]
+        ],
     },
     customerForm : {
         firstname : "",
@@ -286,28 +296,48 @@
 }, //Data Closed
       methods : {
         getProduct: function() {
-            axios.get('/api/products/')
+            axios.get('/api/VariationBatchAPIView/')
                 .then((getResponse) => {
                     console.log("GET Response")
                     console.log(getResponse.data);
                     // data = getResponse.data;
                     // response.send(data);
                     this.products = getResponse.data;
-                    // print(products);
+                    console.log('product',this.products);
                 })
                 .catch(function (error) {
                     console.log(error);
                     console.log("Error while fetching market updates");
                 });  
         },
-        onChangeCartItemProduct(cartitem, event) {
+        onChangeCartItemProduct(cartitem,event) {
             // console.log('The new value is: ', event.target.value);
-            cartitem.product_id = event.target.value;
-            console.log('cartitem',cartitem);
-            this.getProductAttributes(cartitem);
+            // cartitem.product_id = event.target.value;
+            console.log('event',event.target.value);
+            cartitem.fk_variation_batch_id = event.target.value;
+            // this.getProductAttributes(cartitem);
+            this.getVariationBatchPrice(cartitem);
             // this.addToCart(cartitem);
         },
+
+        getVariationBatchPrice: function(cartitem) {
+            axios.get('/api/VariationBatchPriceAPIView/?variation_batch_id='+cartitem.fk_variation_batch_id+'&fk_user_type_id={{cart.user.usertype.user_type_id}}')
+                .then((getResponse) => {
+                    console.log(getResponse.data);
+                    // data = getResponse.data;
+                    // response.send(data);
+                    cartitem.price = getResponse.data.price;
+                    this.$forceUpdate();
+                    // console.log('product',this.products);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });  
+        },
         
+        jpt(a) {console.log('jptjpt',a); return a},
+
 
         onChangeCartItemQuantiy(cartitem, event) {
             // console.log('The new value is: ', event.target.value);

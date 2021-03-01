@@ -120,13 +120,13 @@ class CartItemSerializer(serializers.ModelSerializer):
 	#item = CartVariationSerializer(read_only=True)
 	# url = serializers.HyperlinkedIdentityField(view_name='products_detail_api')
 	item = serializers.SerializerMethodField()
-	variation = serializers.SerializerMethodField()
+	# variation = serializers.SerializerMethodField()
 	product_id = serializers.SerializerMethodField()
 	item_title = serializers.SerializerMethodField()
 	product = serializers.SerializerMethodField()
 	price = serializers.SerializerMethodField()
 	image = serializers.SerializerMethodField()
-	fk_store_title = serializers.SerializerMethodField() #StoreSerializer(read_only=True)
+	# fk_store_title = serializers.SerializerMethodField() #StoreSerializer(read_only=True)
 
 
 	class Meta:
@@ -142,44 +142,48 @@ class CartItemSerializer(serializers.ModelSerializer):
 			"product",
 			"quantity",
 			"line_item_total",
-			"fk_store_title",
-			"variation"
+			# "fk_store_title",
+			# "variation"
 		]
 
-	def get_variation(self, obj):
-		return VariationSerializer(obj.item).data
+	# def get_variation(self, obj):
+	# 	return VariationSerializer(obj.item).data
 
 	def get_item(self,obj):
-		return obj.item.id
+		return obj.fk_variation_batch.fk_variation.id
 
 	def get_product_id(self, obj):
-		return obj.item.product.id
+		# return obj.item.product.id
+		return obj.fk_variation_batch.fk_variation.product.id
 		
 	def get_item_title(self, obj):
-		return "%s (%s)" %(obj.item.title, obj.item.product.title)
+		return "%s (%s)" %(obj.fk_variation_batch.fk_variation.title, obj.fk_variation_batch.batchno)
 
 	def get_product(self, obj):
-		return obj.item.product.id
+		return obj.fk_variation_batch.fk_variation.id
 
-	def get_fk_store_title(self, obj):
-		title=""
-		if obj.item.product.fk_store:
-			title = obj.item.product.fk_store.title 
-		#return  StoreSerializer(obj.item.product.fk_store)
-		return title
+	# def get_fk_store_title(self, obj):
+	# 	title=""
+	# 	if obj.item.product.fk_store:
+	# 		title = obj.item.product.fk_store.title 
+	# 	#return  StoreSerializer(obj.item.product.fk_store)
+	# 	return title
 
 	def get_price(self, obj):
-		print(obj.item.sale_price)
-		print(obj.item.price)
-		print(obj.item.id)
 		# print(obj.item.sale_price)
-		if obj.item.sale_price is None:
-			return obj.item.price
-		return obj.item.sale_price
+		# print(obj.item.price)
+		# print(obj.item.id)
+		# print(obj.item.sale_price)
+		# if obj.item.sale_price is None:
+		# 	return obj.item.price
+		# return obj.item.sale_price
+		if obj.fk_variation_batch.sale_price is None:
+			return obj.fk_variation_batch.price
+		return obj.fk_variation_batch.sale_price
 
 	def get_image(self, obj):
 		# image_url = ProductImage.objects.filter(product_id=obj.item.id).first()
-		variation = obj.item
+		variation = obj.fk_variation_batch.fk_variation
 		product = variation.product
 
 		image_url = ProductImage.objects.filter(product=product).first()

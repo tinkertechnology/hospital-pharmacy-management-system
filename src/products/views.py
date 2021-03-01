@@ -23,7 +23,7 @@ from products.serializers import VariationSerializer
 from .filters import ProductFilter
 from .forms import VariationInventoryFormSet, ProductFilterForm
 from .mixins import StaffRequiredMixin
-from .models import Product, Variation, Category, ProductFeatured, Company, Brand, GenericName, ProductUnit, ProductCommon, ProductImage, VariationBatch
+from .models import Product, Variation, Category, ProductFeatured, Company, Brand, GenericName, ProductUnit, ProductCommon, ProductImage, VariationBatch, VariationBatchPrice
 from store.models import Store, StoreUser
 from .pagination import ProductPagination, CategoryPagination
 from .serializers import (
@@ -343,6 +343,16 @@ class VariationByPatientAPIView(APIView):
 class VariationBatchAPIView(APIView):
 	def get(self, request):
 		return Response(VariationBatchSerializer(VariationBatch.objects.all(), many=True).data)
+
+class VariationBatchPriceAPIView(APIView):
+	def get(self, request):
+		fk_user_type_id = request.GET.get('fk_user_type_id')
+		fk_variation_batch_id = request.GET.get('variation_batch_id')
+		variation_batch_price = VariationBatchPrice.objects.filter(fk_user_type_id=fk_user_type_id).filter(fk_variation_batch_id=fk_variation_batch_id).first()
+		data = {
+			'price':variation_batch_price.price if variation_batch_price else 0
+		}
+		return Response(data)
 
 
 class AllProductRetrieveAPIView(generics.RetrieveAPIView):

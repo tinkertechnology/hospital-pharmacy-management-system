@@ -241,20 +241,23 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 
 
 	def get(self, request, format=None):
-		fk_visit = Visit.objects.filter(id=request.GET.get('fk_visit_id')).first()
-		patient_id = fk_visit.fk_customer_user_id
-
+		fk_visit_id = request.GET.get('fk_visit_id')
+		cart =Cart
+		action = request.GET.get('action')
+		if action:
+			if action=="create_cart":
+				fk_visit = Visit.objects.filter(id=fk_visit_id).first()
+				patient_id = fk_visit.fk_customer_user_id
 		# patient_id = request.GET.get('patient_id')
-		if patient_id:
-			cart = Cart()
-			cart.user_id = patient_id 
-			cart.fk_visit_id = fk_visit.id
-			cart.save()
-		else:
-			cart_id = request.GET.get('cart_id')
-		# print(pid)
-		# cart = self.get_cart(pid)
-			cart = Cart.objects.filter(pk=cart_id).first()
+		# patient_id = None
+				if patient_id:
+					cart = Cart()
+					cart.user_id = patient_id 
+					cart.fk_visit_id = fk_visit.id
+					cart.save()
+				
+		cart_id = request.GET.get('cart_id', cart.id) #cart_id nahunda new create hunxa 
+		cart = Cart.objects.filter(pk=cart_id).first()
 		
 		# self.cart = cart
 		# self.update_cart()

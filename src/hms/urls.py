@@ -132,7 +132,8 @@ from products.views import (
         VariationByPatientAPIView,
         hmsproducts,
         hmsvariations,
-        VariationBatchAPIView
+        VariationBatchAPIView,
+        VariationBatchPriceAPIView
         
 
     )
@@ -380,8 +381,7 @@ urlpatterns += [
     path('api/DoctorUserListAPIView/', DoctorUserListAPIView.as_view(), name="DoctorUserListAPIView"),
     path('api/VariationByPatientAPIView/', VariationByPatientAPIView.as_view(), name="variation-by-patient-type"),
     path('api/VariationBatchAPIView/', VariationBatchAPIView.as_view(), name="VariationBatchAPIView"),
-    
-    
+    path('api/VariationBatchPriceAPIView/', VariationBatchPriceAPIView.as_view(), name="VariationBatchPriceAPIView"),  
 ]
  # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

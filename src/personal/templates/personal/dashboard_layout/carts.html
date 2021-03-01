@@ -118,7 +118,7 @@
         createCart: function() {
                 axios({
                 method: 'get',
-                url:  '/api/cart/?fk_visit_id='+{{visit_id}},
+                url:  '/api/cart/?fk_visit_id='+{{visit_id}}+'&action=create_cart',
                 headers: {
                                 'Content-Type': 'application/json',
                                 'X-CSRFToken': '{{ csrf_token }}'

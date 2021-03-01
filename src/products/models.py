@@ -6,7 +6,7 @@ from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 # from wsc.models import WaterSupplyCompany
 from store.models import Store
-from users.models import UserType
+from users.models import UserType, UserTypes
 from django.conf import settings
 from datetime import date
 # Create your models here.
@@ -146,15 +146,19 @@ class VariationBatch(models.Model):
 		return '%s-%s' %(self.fk_variation.title, self.batchno)
 
 class VariationPrice(models.Model):
-	fk_user_type = models.ForeignKey(UserType, on_delete=models.CASCADE, null=True) #for patient type drug filter
+	fk_user_type = models.ForeignKey(UserTypes, on_delete=models.CASCADE, null=True) #for patient type drug filter
 	fk_variation = models.ForeignKey(Variation, on_delete=models.CASCADE, null=True)
 	price = models.DecimalField(decimal_places=2, max_digits=20, null=True)
 	sale_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
 
 class VariationBatchPrice(models.Model):
+	fk_user_type = models.ForeignKey(UserTypes, on_delete=models.CASCADE, null=True) #for patient type drug filter
 	fk_variation_batch = models.ForeignKey(VariationBatch, on_delete=models.CASCADE, null=True) #for patient type drug filter
 	price = models.DecimalField(decimal_places=2, max_digits=20, null=True)
 	sale_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
+
+	def __str__(self):
+		return 'batch number :%s for Patient-type-[%s]-price-%s' %(self.fk_variation_batch.batchno, self.fk_user_type.title, self.price)
 
 
 
