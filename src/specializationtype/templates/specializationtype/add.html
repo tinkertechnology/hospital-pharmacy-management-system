@@ -1,0 +1,27 @@
+{% extends 'personal/dashboard_layout/app.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<!-- Page-body start -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card-box">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Name</label>
+                    {{ form.name }}
+                </div>
+                
+                <button type="submit" class="btn btn-success waves-effect waves-light">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Page-body ends -->
+
+
+
+{% endblock %}

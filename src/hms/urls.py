@@ -381,7 +381,18 @@ urlpatterns += [
     path('api/VariationByPatientAPIView/', VariationByPatientAPIView.as_view(), name="variation-by-patient-type"),
     path('api/VariationBatchAPIView/', VariationBatchAPIView.as_view(), name="VariationBatchAPIView"),
     
-    
+
+    # DEPARTMENT ROUTE
+    re_path(r'^department/', include('department.urls')),
+
+    # DOCTOR ROUTE
+    re_path(r'^doctor/', include('doctor.urls')),
+
+    # SPECIALIZATION TYPE ROUTE
+    re_path(r'^specializationtype/', include('specializationtype.urls')),
+
+    # NURSE ROUTE
+    re_path(r'^nurse/', include('nurse.urls')),
 ]
  # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
