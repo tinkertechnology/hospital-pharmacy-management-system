@@ -1,0 +1,60 @@
+{% extends 'personal/dashboard_layout/app.html' %}
+
+{% load static %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card-box">
+                <!-- <h4 class="header-title">Nurse List </h4>
+                
+                <div class="form-group text-right">
+                    <a href="{% url 'nurse:add' %}">
+                        <button type="submit" class="btn btn-primary waves-effect waves-light">Add New</button>
+                    </a>
+                </div>
+ -->
+                <div class="form-inline">
+                    <div class="form-group mr-3">
+                        <h4 class="header-title">Nurse List </h4>
+                    </div>
+
+                    
+                        <a href="{% url 'nurse:add' %}">
+                            <button type="submit" class="btn btn-primary waves-effect waves-light">Add New</button>
+                        </a>
+                    
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table m-0 mt-3">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if nurse_list %}
+                                {% for item in nurse_list %}
+                                    <tr>
+                                        <th>{{ forloop.counter }}</th>
+                                        <td>{{ item.fk_user }}</td>
+                                        <td>{{ item.fk_department }}</td>
+                                        <td>
+                                            <a href="{% url 'nurse:edit' item.id %}"><i class="fas fa-edit">Edit</i></a>
+                                            <a href="{% url 'nurse:delete' item.id %}" onclick="return confirm('Are you sure you want to delete?')"><i class="fas fa-close"></i></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
