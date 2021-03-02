@@ -1,0 +1,60 @@
+{% extends 'personal/dashboard_layout/app.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<!-- Page-body start -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card-box">
+            <h4 class="header-title">
+                {% if fstatusType %}
+                    Add New
+                {% else %}
+                    Update 
+                {% endif %} 
+                
+                {{ fpostType }}
+            </h4>
+            
+            <form action="" method="POST" data-parsley-validate="" novalidate>
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Name<span class="text-danger">*</span></label>
+                            {{ form.fk_user }}
+                            <!-- <ul class="parsley-errors-list filled" id="parsley-id-5">
+                                <li class="parsley-required">This value is required.</li>
+                            </ul> -->
+                        </div>
+
+                        <div class="form-group">
+                            <label>Specialization Type</label>
+                            {{ form.fk_specialization_type }}
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success waves-effect waves-light">Submit</button>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Department</label>
+                            {{ form.fk_department }}
+                        </div>
+                    </div>
+
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Page-body ends -->
+
+
+
+{% endblock %}

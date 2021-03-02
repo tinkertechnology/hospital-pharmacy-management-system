@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import RegexValidator
+from department.models import Department
+from specializationtype.models import SpecializationType
 
 class MyAccountManager(BaseUserManager):
 	def create_user(self,email,mobile, username, password=None):
@@ -67,7 +69,8 @@ class Account(AbstractBaseUser):
 		return self.email
 
 	def __str__(self):
-		return  self.mobile + self.email + self.username
+		return  self.firstname + ' ' + self.lastname
+		# return  self.mobile + self.email + self.username
 
 	# For checking permissions. to keep it simple all admin have ALL permissons
 	def has_perm(self, perm, obj=None):
@@ -79,6 +82,16 @@ class Account(AbstractBaseUser):
 
 class Doctor(models.Model):
 	fk_user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
+	fk_department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name="doctor_department", null=True)
+	fk_specialization_type = models.ForeignKey(SpecializationType, on_delete=models.CASCADE, related_name="doctor_specialist", null=True)
+
+	def __str__(self):
+		return self.fk_user.firstname
+
+
+class Nurse(models.Model):
+	fk_user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
+	fk_department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name="nurse_department", null=True)
 
 	def __str__(self):
 		return self.fk_user.mobile

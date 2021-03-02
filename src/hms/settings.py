@@ -133,7 +133,11 @@ INSTALLED_APPS = [
     # 'drfpasswordless',
     'rest_registration',
     'hms_web',
-    'app_settings'
+    'app_settings',
+    'department',
+    'doctor',
+    'specializationtype',
+    'nurse'
 
 
  
