@@ -349,8 +349,15 @@ class VariationBatchPriceAPIView(APIView):
 		fk_user_type_id = request.GET.get('fk_user_type_id')
 		fk_variation_batch_id = request.GET.get('variation_batch_id')
 		variation_batch_price = VariationBatchPrice.objects.filter(fk_user_type_id=fk_user_type_id).filter(fk_variation_batch_id=fk_variation_batch_id).first()
+		# print('var-batch', variation_batch_price)
+		quantity = 0
+		if variation_batch_price:
+			var_batch = variation_batch_price.fk_variation_batch
+			if var_batch:
+				quantity = var_batch.quantity
 		data = {
-			'price':variation_batch_price.price if variation_batch_price else 0
+			'price':variation_batch_price.price if variation_batch_price else 0,
+			'stock' : quantity
 		}
 		return Response(data)
 

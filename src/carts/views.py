@@ -263,7 +263,7 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 		# self.update_cart()
 		#token = self.create_token(cart.id)
 		items = CartItemSerializer(cart.cartitem_set.all(), many=True)
-		print(items)
+		# print(items)
 		# print(cart.items.all())
 		data = {
 			# "token": self.token,

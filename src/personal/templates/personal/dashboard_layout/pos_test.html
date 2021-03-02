@@ -91,7 +91,7 @@
                                                 <!-- <select class="form-control" v-model="fk_doctor_user_id">
                                                     <option  v-for="(doctor, index) in products" v-bind:value="doctor.id">[[doctor.fk_variation.title]][[ doctor.batchno ]]</option>
                                                 </select> -->
-                                                 <select class="form-control" @change="onChangeCartItemProduct(cartitem,$event)">
+                                                 <select class="form-control product" @change="onChangeCartItemProduct(cartitem,$event)">
                                                     <option  v-for="(item, index) in products" v-bind:value="item.id">[[item.fk_variation.title]][[ item.batchno ]]</option>
                                                 </select>
                                             
@@ -110,7 +110,7 @@
                                         <!-- <td>[[ cartitem.variation.price ]]</td> -->
                                         <!-- <td>[[ lineItem() ]]</td> -->
                                         <!-- <td>[[ getStock() ]]</td> -->
-                                        <td>[[ _$GF.IFDEF(cartitem,['variation','inventory']) ]]</td>
+                                        <td>[[ cartitem.stock_quantity ]]</td>
                                         <td><button class="btn btn-danger"  @click="deleteRow(cartitem.id, index)">X</button></td>
                                     </tr>
                                     <button class="btn btn-primary float-right" @click="addRow" >+</button>
@@ -231,7 +231,11 @@
 
 {% block script %}
 <script>
-    $(".product").select2();
+    $(document).ready(function() {
+        $('.product').select2({
+            placeholder: 'Select an option'
+        });
+});
 
 </script>
 <script>
@@ -243,7 +247,9 @@
       el: '#pos',
       data: {
         loading: false,
-        products : [],
+        products : [{
+          value: null, text: 'Choose an option'
+        },],
         showModal : false,
         price: null,
         patients : [{
@@ -281,6 +287,7 @@
                 "quantity": "40.00",
                 "line_item_total": "6000.00",
                 "fk_store_title": "",
+                "stock_quantity":"",
                 variation : {id: '',title :"",price:"",sale_price:null,discount:"",inventory:""},
             }
         ],
@@ -302,7 +309,26 @@
                     console.log(getResponse.data);
                     // data = getResponse.data;
                     // response.send(data);
+                    initvalue =     {
+                            "id": 3,
+                            "fk_variation": {
+                                "id": null,
+                                "title": "Select Item",
+                                "price": "",
+                                "sale_price": null,
+                                "discount": "",
+                                "inventory": null,
+                                "expiry_date": ""
+                            },
+                            "quantity": "10000.00",
+                            "batchno": "",
+                            "price": "150.00",
+                            "sale_price": null,
+                            "created_at": "2021-03-01",
+                            "use_batch": true
+                        },
                     this.products = getResponse.data;
+                    this.products.unshift(initvalue);
                     console.log('product',this.products);
                 })
                 .catch(function (error) {
@@ -311,24 +337,19 @@
                 });  
         },
         onChangeCartItemProduct(cartitem,event) {
-            // console.log('The new value is: ', event.target.value);
-            // cartitem.product_id = event.target.value;
             console.log('event',event.target.value);
             cartitem.fk_variation_batch_id = event.target.value;
-            // this.getProductAttributes(cartitem);
             this.getVariationBatchPrice(cartitem);
-            // this.addToCart(cartitem);
         },
 
         getVariationBatchPrice: function(cartitem) {
             axios.get('/api/VariationBatchPriceAPIView/?variation_batch_id='+cartitem.fk_variation_batch_id+'&fk_user_type_id={{cart.user.usertype.user_type_id}}')
                 .then((getResponse) => {
-                    console.log(getResponse.data);
-                    // data = getResponse.data;
-                    // response.send(data);
+                    console.log('variationpriceapiview',getResponse.data);
                     cartitem.price = getResponse.data.price;
+                    // cartitem.stock = getResponse.data.stock;
                     this.$forceUpdate();
-                    // console.log('product',this.products);
+                    this.addToCart(cartitem);
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -552,7 +573,7 @@
         addToCart : function(cartitem){
             // var ref = this;
             console.log(JSON.stringify(cartitem));
-            if(!cartitem.variation)
+            if(!cartitem.fk_variation_batch_id)
             {return;}
             axios({
                 method: 'post',
@@ -563,7 +584,7 @@
                             }, 
                 data: {
                     cart_id : {{cart_id}},
-                    item: cartitem.variation.id,
+                    fk_variation_batch_id: cartitem.fk_variation_batch_id,
                     quantity: cartitem.quantity,
                     cartitem_id : cartitem.id
                     // fk_store_id : 1,

@@ -4,12 +4,14 @@ from products.models import Variation
 # from store.service import UserAccountStoreWiseSaveService
 from decimal import Decimal
 from orders.service import  VariationHistoryCountService
+from products.models import VariationBatch
 
 def CartItemCreateService(data):
 	is_auto_order = data.get('is_auto_order', False); #auto order, by customer
 	user_id = data.get('user_id')
 	cart_id = data.get('cart_id')
-	item_id = data.get('item_id')
+	# item_id = data.get('item_id')
+	fk_variation_batch_id = data.get('fk_variation_batch_id')
 	fk_visit_id = data.get('fk_visit_id')
 	quantity = data.get('quantity')
 	print(data)
@@ -42,12 +44,18 @@ def CartItemCreateService(data):
 		cart.is_auto_order = is_auto_order
 		cart.save()
 
-	active_cart_id = cart.id	
+	active_cart_id = cart.id
 	if cartitem_id:
 		print('yei chireko cha')
 		aitem = CartItem.objects.filter(pk=cartitem_id).first() #.filter(cart_id=cart.id).first()
 		aitem.quantity = quantity
-		aitem.item_id = item_id
+		variation_changes = VariationBatch.objects.filter(id=aitem.fk_variation_batch_id).first()
+		print(variation_changes)
+		if variation_changes:
+			variation_changes.quantity -= quantity
+			variation_changes.save()
+		# aitem.item_id = item_id
+		aitem.fk_variation_batch_id = fk_variation_batch_id
 		aitem.save()
 		return aitem
 	# print('aitem')
@@ -66,7 +74,7 @@ def CartItemCreateService(data):
 		cart_item = {
 			"quantity": quantity, 
 			#"item" : data.get('item'], 
-			"item_id" : item_id, 
+			"fk_variation_batch_id" : fk_variation_batch_id, 
 			"cart_id" : cart.id,
 			"ordered_price" : ordered_price
 			# "credit" : credit
