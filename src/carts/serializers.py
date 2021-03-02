@@ -292,10 +292,13 @@ class RemoveCartItemFromCartSerializer(serializers.ModelSerializer):
 		fields = '__all__'
 
 	def destroy(self, request, *args, **kwargs):
+		print('jssdjsppt')
 		try:
+			print('delete')
 			instance = self.get_object()
 			quantity = instance.quantity
 			var_batch = instance.fk_variation_batch
+			print('var-batch',var_batch)
 			if var_batch:
 				var_batch.quantity += quantity
 				var_batch.save()

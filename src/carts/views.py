@@ -557,10 +557,16 @@ class CartItemSaveView(CreateAPIView):
 
 
 
-class RemoveCartItemFromCart(DestroyAPIView):
+class RemoveCartItemFromCart(APIView):
 	# permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 	queryset=CartItem.objects.all()
 	serializer_class = RemoveCartItemFromCartSerializer
+
+	def delete(self, request, *args, **kwargs):
+		cartitem = CartItem.objects.get(pk=kwargs['pk'])
+		# return(Response(1))
+	
+	# def delete(self)
 
 
 

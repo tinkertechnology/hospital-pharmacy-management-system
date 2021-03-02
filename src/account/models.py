@@ -83,7 +83,7 @@ class Account(AbstractBaseUser):
 class Doctor(models.Model):
 	fk_user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
 	fk_department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name="doctor_department", null=True)
-	fk_specialization_type = models.ForeignKey(SpecializationType, on_delete=models.CASCADE, related_name="doctor_specialist", null=True)
+	fk_specialization_type = models.ForeignKey(SpecializationType, on_delete=models.CASCADE, null=True)
 
 	def __str__(self):
 		return self.fk_user.firstname

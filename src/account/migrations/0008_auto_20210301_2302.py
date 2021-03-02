@@ -7,6 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('specializationtype', '__first__'),
         ('account', '0007_auto_20210301_2258'),
     ]
 

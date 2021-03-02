@@ -47,30 +47,15 @@ def CartItemCreateService(data):
 	active_cart_id = cart.id
 	if cartitem_id:
 		print('yei chireko cha')
-		aitem = CartItem.objects.filter(pk=cartitem_id).first() #.filter(cart_id=cart.id).first()
-		aitem.quantity = quantity
-		variation_changes = VariationBatch.objects.filter(id=aitem.fk_variation_batch_id).first()
-		print(variation_changes)
-		if variation_changes:
-			variation_changes.quantity -= quantity
-			variation_changes.save()
+		cartItem = CartItem.objects.filter(pk=cartitem_id).first() #.filter(cart_id=cart.id).first()
+		old_quantity = cartItem.quantity
+		cartItem.quantity = quantity
 		# aitem.item_id = item_id
-		aitem.fk_variation_batch_id = fk_variation_batch_id
-		aitem.save()
-		return aitem
-	# print('aitem')
-	# # print(aitem.item)
-	# if aitem and False:		
-	# 	if is_add_sub_qty:
-	# 		aitem.quantity = quantity
-	# 		aitem.save()
-	# 		return aitem
-	# 	update_cart_items = quantity + aitem.quantity
-
-	# 	aitem.quantity = update_cart_items
-	# 	aitem.save()
-	# 	return aitem
+		cartItem.fk_variation_batch_id = fk_variation_batch_id
+		cartItem.save()
+		# return aitem
 	else:
+		old_quantity = 0
 		cart_item = {
 			"quantity": quantity, 
 			#"item" : data.get('item'], 
@@ -81,31 +66,15 @@ def CartItemCreateService(data):
 		}
 		
 		cartItem= CartItem.objects.create(**cart_item)
-		# cart_id = cart.id
-
-
-		# self.request.session["cart_id"] = cart_id
-		# Cart.objects.filter(user_id=self.request.user.id).first().id= cart_id
-		
-		# cart_id = cart.id
-		# cart = Cart.objects.get(id=cart_id)
-		# if self.request.user.is_authenticated:
-		# 	cart.user = self.request.user
-		# 	cart.save()
 		cart_saved = Cart.objects.filter(pk=cart.id).first() #Signal le garda hamle jadu gareko
-		#cart instance chai signal le db ma save garyo ... tara mathi instance ma aaudaina..
-		#  tei bhayera db ko new instance taneko..jasma signal le save gareko total ne aauxa
-		# print(cart_saved.__dict__)
-		# user_account_data = {
-		# 		'fk_user_id': user_id,
-		# 		'fk_store_id': Variation.objects.get(pk=item_id).product.fk_store.id,
-		# 		'credit': (Decimal(cart_saved.total)-Decimal(debit))
-		# 	}
-		# print("user_acc_data",user_account_data)
 		if cart_saved.is_auto_order==True: #AutoOrder bhaye matrai credit save garne 
 			UserAccountStoreWiseSaveService(user_account_data)
 		# print(user_account_data)
-		return cartItem
+	variation_batch = VariationBatch.objects.filter(id=cartItem.fk_variation_batch_id).first()
+	if variation_batch:
+		variation_batch.quantity -= (quantity - old_quantity)
+		variation_batch.save()
+	return cartItem
 
 
 
