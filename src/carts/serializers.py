@@ -116,16 +116,18 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 from products.serializers import VariationSerializer
+
 class CartItemSerializer(serializers.ModelSerializer):
 	#item = CartVariationSerializer(read_only=True)
 	# url = serializers.HyperlinkedIdentityField(view_name='products_detail_api')
 	item = serializers.SerializerMethodField()
-	# variation = serializers.SerializerMethodField()
-	product_id = serializers.SerializerMethodField()
+	batchno = serializers.SerializerMethodField()
+	fk_variation_batch_id = serializers.SerializerMethodField()
 	item_title = serializers.SerializerMethodField()
 	product = serializers.SerializerMethodField()
 	price = serializers.SerializerMethodField()
 	image = serializers.SerializerMethodField()
+	expiry_date = serializers.SerializerMethodField()
 	stock_quantity = serializers.SerializerMethodField()
 	# fk_store_title = serializers.SerializerMethodField() #StoreSerializer(read_only=True)
 	class Meta:
@@ -133,7 +135,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 		fields = [
 			# "url",
 			"id",
-			"product_id",
+			"fk_variation_batch_id",
 			"image",
 			"item",
 			"item_title",
@@ -141,24 +143,33 @@ class CartItemSerializer(serializers.ModelSerializer):
 			"product",
 			"quantity",
 			"line_item_total",
-			"stock_quantity"
-			# "fk_store_title",
-			# "variation"
+			"stock_quantity",
+			"batchno",
+			"expiry_date"
 		]
 
 	# def get_variation(self, obj):
 	# 	return VariationSerializer(obj.item).data
 
+	def get_expiry_date(self, obj):
+		return obj.fk_variation_batch.expiry_date
 	def get_item(self,obj):
 		return obj.fk_variation_batch.id
+	
 	def get_stock_quantity(self, obj):
 		stock = 0
 		var_batch = obj.fk_variation_batch
 		if var_batch:
 			stock = var_batch.quantity
 		return stock
+	def get_batchno(self, obj):
+		batchno = ''
+		batch = obj.fk_variation_batch
+		if batch:
+			batchno = batch.batchno
+		return batchno
 
-	def get_product_id(self, obj):
+	def get_fk_variation_batch_id(self, obj):
 		# return obj.item.product.id
 		print('obj', obj)
 		return obj.fk_variation_batch.id

@@ -948,7 +948,11 @@ class VisitAPIView(APIView):
 
 	def get(self, request):
 		customer_id = request.GET.get('customer_id')
-		qs = Visit.objects.filter(fk_customer_user_id=customer_id)
+		qs = Visit.objects
+		if customer_id:
+			qs = qs.filter(fk_customer_user_id=customer_id)
+		else:
+			qs = qs.all()
 		template_name = "personal/dashboard_layout/visits.html"
 		return render(request, template_name, {'visits': qs})
 		

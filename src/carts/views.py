@@ -35,6 +35,7 @@ from .serializers import CartItemSerializer, CheckoutSerializer, AddToCartSerial
 from products.serializers import UserVariationQuantityHistorySerializer
 from django.contrib.auth import get_user_model
 from decimal import Decimal
+from orders.invoice import generate_amount_words
 User = get_user_model()
 
 # 
@@ -273,58 +274,12 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 			"tax_total": cart.tax_total,
 			"count": cart.cartitems.count(),
 			"items": items.data,
+			"in_words" : generate_amount_words(cart.total)
 			# "product_id": items.id,
 		}
 		# print(cart.items)
 		return Response(data)
 
-
-# class PastCartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
-# 	# authentication_classes = [SessionAuthentication]
-# 	# permission_classes = [IsAuthenticated]
-# 	token_param = "token"
-# 	cart = None
-# 	def get_cart(self):
-# 		# data, cart_obj, response_status = self.get_cart_from_token()
-# 		# if cart_obj == None or not cart_obj.active:
-
-# 		print(cart_obj)
-# 		if cart_obj == None:
-
-# 			cart = Cart()
-# 			cart.tax_percentage = settings.TAX_PERCENT_DECIMAL #0.13
-# 			if self.request.user.is_authenticated:
-# 				cart.user = self.request.user
-# 			cart.save()
-# 			data = {
-# 				"cart_id": str(cart.id)
-# 			}
-# 			self.create_token(data)
-# 			cart_obj = cart
-
-# 		return cart_obj
-
-
-# 	def get(self, request, format=None):
-# 		cart = self.get_cart()
-# 		self.cart = cart
-# 		self.update_cart()
-# 		#token = self.create_token(cart.id)
-# 		items = CartItemSerializer(cart.cartitem_set.all(), many=True)
-# 		print(items)
-# 		print(cart.items.all())
-# 		data = {
-# 			"token": self.token,
-# 			"cart" : cart.id,
-# 			"total": cart.total,
-# 			"subtotal": cart.subtotal,
-# 			"tax_total": cart.tax_total,
-# 			"count": cart.items.count(),
-# 			"items": items.data,
-# 			# "product_id": items.id,
-# 		}
-# 		# print(cart.items)
-# 		return Response(data)
 
 
 if settings.DEBUG:
@@ -564,6 +519,13 @@ class RemoveCartItemFromCart(APIView):
 
 	def delete(self, request, *args, **kwargs):
 		cartitem = CartItem.objects.get(pk=kwargs['pk'])
+		var_batch = cartitem.fk_variation_batch
+		if var_batch:
+			var_batch.quantity += cartitem.quantity
+			var_batch.save()
+		cartitem.delete()
+		return Response('Item removed', status=200)
+
 		# return(Response(1))
 	
 	# def delete(self)
