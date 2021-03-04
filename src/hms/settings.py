@@ -130,7 +130,6 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
-    # 'drfpasswordless',
     'rest_registration',
     'hms_web',
     'app_settings',
@@ -138,9 +137,9 @@ INSTALLED_APPS = [
     'doctor',
     'specializationtype',
     'nurse',
-    'counter'
+    'counter',
     'office',
-    'vendor'
+    'vendor',
 
 
  
