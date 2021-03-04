@@ -7,15 +7,16 @@ from io import BytesIO
 import mimetypes
 import smtplib
 
-
+from counter.models import Counter
 from .forms import * 
 
 def index(request):
 	page_title = 'Home'
 	lang = request.GET.get('lang')
+	counters = Counter.objects.all()
 	if request.user.is_authenticated:
 		return redirect('/dashboard/')
-	return render(request, 'hms/index.html', {'title_content':page_title, 'lang':lang})
+	return render(request, 'hms/index.html', {'title_content':page_title, 'lang':lang, 'counters': counters})
 	# return HttpResponse('index page')
 
 

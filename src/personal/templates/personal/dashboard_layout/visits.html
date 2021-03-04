@@ -16,6 +16,7 @@
                         <thead>
                             <tr>
                                 <th>visit no.</th>
+                                <th> Date</th>
                                 <th>Patient ID</th>
                                 <th>Name</th>
                                 <th> Address</th>
@@ -29,6 +30,7 @@
                             {% for visit in visits %}
                             <tr>
                                 <td>{{visit.id}}</td>
+                                <td>{{visit.timestamp}}</td>
                                 <th scope="row">{{ visit.fk_customer_user.id }}</th>
                                 <td>{{visit.fk_customer_user.firstname}} {{visit.fk_customer_user.lastname}}</td>
                                 <td>{{visit.fk_customer_user.address}}</td>
@@ -40,23 +42,23 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                    {% if is_paginated %}
                     <div class="pagination">
                         <span class="step-links">
-                            {% if page_obj.has_previous %}          
+                            {% if visits.has_previous %}
+                                <a href="?page=1">&laquo; first</a>
                                 <a href="?page={{ visits.previous_page_number }}">previous</a>
                             {% endif %}
                     
                             <span class="current">
-                              {{ page_obj.number }}
+                                Page {{ visits.number }} of {{ contacts.paginator.num_pages }}.
                             </span>
                     
-                            {% if page_obj.has_next %}
+                            {% if visits.has_next %}
                                 <a href="?page={{ visits.next_page_number }}">next</a>
+                                <a href="?page={{ visits.paginator.num_pages }}">last &raquo;</a>
                             {% endif %}
                         </span>
                     </div>
-                {% endif %}
                 </div>
             </div>
 

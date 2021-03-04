@@ -137,7 +137,8 @@ INSTALLED_APPS = [
     'department',
     'doctor',
     'specializationtype',
-    'nurse'
+    'nurse',
+    'counter'
 
 
  
@@ -323,6 +324,7 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 
 # AUTHENTICATION_BACKENDS = (
 #     'hms.backends.UsernameOrEmailBackend',
-#     'django.contrib.auth.backends.ModelBackend' )
+# #     'django.contrib.auth.backends.ModelBackend' 
+# )
 
 

@@ -30,6 +30,7 @@ from orders.service import CreateOrderFromCart
 from orders.constants import ORDER_TYPE_MISSCALL
 import datetime
 from django.utils import timezone
+from counter.models import Counter
 
 User = get_user_model()
 
@@ -51,6 +52,7 @@ def registration_view(request):
 	else:
 		form = RegistrationForm()
 		context['registration_form'] = form
+		context['counters'] = Counter.objects.all()
 	return render(request, 'account/register.html', context)
 
 
@@ -67,7 +69,7 @@ def privacy_policy(request):
 def login_view(request):
 	settings.DLFPRINT()
 	print('login')
-	context = {}
+	context = {}#{'counters' : Counter.objects.all()}
 
 	user = request.user
 	if user.is_authenticated: 
@@ -78,13 +80,14 @@ def login_view(request):
 		password = request.POST.get('password')
 		# print(mobile)
 		# print(password)
+		print(request.POST)
 		form = AccountAuthenticationForm(request.POST)
-		if form.is_valid():
-			user = authenticate(mobile=mobile, password=password)
-
-			if user:
-				login(request, user)
-				return redirect('dashboard')
+		# if form.is_valid():
+		user = authenticate(mobile=mobile, password=password)
+		print(user)
+		if user:
+			login(request, user)
+			return redirect('dashboard')
 		else:
 			print('Failed')
 
@@ -92,6 +95,8 @@ def login_view(request):
 		form = AccountAuthenticationForm()
 
 	context['login_form'] = form
+	context['visits'] = Counter.objects.all()
+	
 
 	# print(form)
 	return render(request, "account/login.html", context)
@@ -943,6 +948,7 @@ class DoctorUserListAPIView(ListAPIView):
 # 		return queryset
 
 from .models import Visit
+from django.core.paginator import Paginator
 class VisitAPIView(APIView):
 	serializer_class = VisitSeriailizer
 
@@ -953,8 +959,15 @@ class VisitAPIView(APIView):
 			qs = qs.filter(fk_customer_user_id=customer_id)
 		else:
 			qs = qs.all()
+		paginator = Paginator(qs, 5)  # Show 25 contacts per page
+		# Get the current page number
+		page = request.GET.get('page')
+		# Get the current slice (page) of products
+		qs = paginator.get_page(page)
 		template_name = "personal/dashboard_layout/visits.html"
 		return render(request, template_name, {'visits': qs})
+
+	
 		
 	def post(self, request):
 		print(request.data)
