@@ -137,7 +137,9 @@ INSTALLED_APPS = [
     'department',
     'doctor',
     'specializationtype',
-    'nurse'
+    'nurse',
+    'office',
+    'vendor'
 
 
  

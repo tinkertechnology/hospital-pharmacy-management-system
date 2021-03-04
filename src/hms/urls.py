@@ -395,6 +395,12 @@ urlpatterns += [
 
     # NURSE ROUTE
     re_path(r'^nurse/', include('nurse.urls')),
+
+    # OFFICE ROUTE
+    re_path(r'^office/', include('office.urls')),
+
+    # VENDOR ROUTE
+    re_path(r'^vendor/', include('vendor.urls')),
 ]
  # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
