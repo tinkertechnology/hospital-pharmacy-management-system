@@ -332,11 +332,11 @@ from orders.invoice import GeneratePDF
 
 urlpatterns += [
     path(r'admin/', admin.site.urls),
-    path('', include('hms_web.urls')),
+    # path('', include('hms_web.urls')),
     # path('', home_screen_view, name="home"),
     path('dashboard/', dashboard_view, name="dashboard"),
     path('account/', account_view, name="account"),
-    path('login/', login_view, name="login"),
+    path('', login_view, name="login"),
     path('logout/', logout_view, name="logout"),
     path('privacy-policy/', privacy_policy, name="privacy_policy"),
 	path('must_authenticate/', must_authenticate_view, name="must_authenticate"),
