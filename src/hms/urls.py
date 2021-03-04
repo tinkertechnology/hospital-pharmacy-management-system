@@ -41,10 +41,6 @@ from account.views import (
     PasswordResetSendOTP,
     ValidateResetPasswordOTP,
     ChangePasswordAfterOtpAPIView,
-    CustomerRegisterSurveyAPIView,
-    CustomerMessageForDepotAPIView,
-    CustomerMessageAPIView,
-    SurveyRegisterAPIView,
     CheckTokenAPIView,
     SendMessageToMobileAPIView, # FOR SENDING SMS
     SaveUpdateFirebaseToken,     #update,save firebasetoken for sending message to user fcm
@@ -175,10 +171,6 @@ urlpatterns = [
     re_path(r'^api/change_password_afterotp/', ChangePasswordAfterOtpAPIView.as_view(), name="change_password_afterotp"),
     re_path(r'^api/change_password/', ChangePasswordAPIView.as_view(), name="change_password"),
     re_path(r'^api/file_upload/$', ApiPostFile.as_view(), name='file_upload'),
-    re_path(r'^api/CustomerRegisterSurvey/$', CustomerRegisterSurveyAPIView.as_view(), name='CustomerRegisterSurvey'),
-    re_path(r'^api/CustomerMessageForDepot/$', CustomerMessageForDepotAPIView.as_view(), name='CustomerMessageForDepot'),
-    re_path(r'^api/CustomerMessage/$', CustomerMessageAPIView.as_view(), name='CustomerMessage'),
-    re_path(r'^api/CustomerSurveryInfo/$', SurveyRegisterAPIView.as_view(), name="CustomerSurveryInfo"),
     re_path(r'^api/SaveUpdateFirebaseToken/$', SaveUpdateFirebaseToken.as_view(), name="SaveUpdateFirebaseToken"),
     re_path(r'^api/GetUserJarAndCreditAPIView/$', GetUserJarAndCreditAPIView.as_view(), name="GetUserJarAndCreditAPIView"),
     re_path(r'^api/AddToCartForCustomUserAPIView/$', AddToCartForCustomUserAPIView.as_view(), name="AddToCartForCustomUserAPIView"),

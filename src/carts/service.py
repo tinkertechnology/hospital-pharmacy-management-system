@@ -72,8 +72,9 @@ def CartItemCreateService(data):
 		# print(user_account_data)
 	variation_batch = VariationBatch.objects.filter(id=cartItem.fk_variation_batch_id).first()
 	if variation_batch:
-		variation_batch.quantity -= (quantity - old_quantity)
-		variation_batch.save()
+		if variation_batch.use_batch:
+			variation_batch.quantity -= (quantity - old_quantity)
+			variation_batch.save()
 	return cartItem
 
 

@@ -673,10 +673,13 @@ def cartitems(request):
 def carts(request):
 	user_id = request.GET.get('user_id')
 	visit_id = request.GET.get('visit_id')
-	user = None
+	user = User.objects.filter(pk=user_id).first()
 	if user_id:
-		user = User.objects.get(pk=user_id)
-	carts = Cart.objects.order_by('-id').all()#(user_id=user_id)
+		# user = User.objects.get(pk=user_id)
+		carts = Cart.objects.order_by('-id').filter(user_id=user_id)
+	if visit_id:
+		carts = Cart.objects.order_by('-id').filter(fk_visit_id=visit_id)#(user_id=user_id)
+
 	# print(cart_id)
 	context = {
 		'user_id' : user_id,

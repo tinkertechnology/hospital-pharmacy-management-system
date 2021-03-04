@@ -114,12 +114,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # My apps
+    
     'personal',
     'account',
     'carts',
     'products',
     'orders',
     'inquiry',
+    
     'users',
     'store',
     'payment',
@@ -140,6 +142,7 @@ INSTALLED_APPS = [
     'counter',
     'office',
     'vendor',
+
 
 
  
