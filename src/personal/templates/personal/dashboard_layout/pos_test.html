@@ -43,9 +43,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="float-right mt-3">
-                            <p><strong>Order Date: </strong> Jan 17, 2016</p>
+                            <p><strong>Order Date: </strong> {{cart.timestamp}}</p>
                             <p><strong>Order Status: </strong> <span class="badge badge-danger">Pending</span></p>
-                            <p><strong>Order ID: </strong> #123456</p>
+                            <p><strong>Order ID: </strong> #{{cart_id}}</p>
                         </div>
                         <div class="flaot-left mt-3">
                             <address>
@@ -69,10 +69,9 @@
                                     <tr>
                                         <th>S.N</th>
                                         <th>Particulars</th>
-                                        <th>Exp Date</th>
+                                        <th>Expiry Date</th>
                                         <th>Quantity</th>
-                                        <th>Generic name</th>
-                                        <!-- <th>Unit</th> -->
+                                        <th>Batch</th>
                                         <th>Rate</th>
                                         <th>Line Item</th>
                                         <th>Stock</th>
@@ -83,34 +82,22 @@
                                     <tr v-for='(cartitem, index) in cart.items'>
                                         <td>[[++index]]</td>
                                         <td>
-                                                <!-- <select class="form-control product" name="product" v-bind:value="[[cartitem.product_id]]" @change="onChangeCartItemProduct(cartitem, $event)"> 
-                                                        <option v-for="(i, index) in products"  v-bind:value="i.id" :key="item.id" >[[jpt(i)]]</option>
-                                                        
-                                                </select> -->
-
-                                                <!-- <select class="form-control" v-model="fk_doctor_user_id">
-                                                    <option  v-for="(doctor, index) in products" v-bind:value="doctor.id">[[doctor.fk_variation.title]][[ doctor.batchno ]]</option>
-                                                </select> -->
-                                                 <select class="form-control" @change="onChangeCartItemProduct(cartitem,$event)">
+                                                 <select class="form-control product" v-model="cartitem.fk_variation_batch_id" @change="onChangeCartItemProduct(cartitem,$event)">
+                                                     <option>Select Item</option>
                                                     <option  v-for="(item, index) in products" v-bind:value="item.id">[[item.fk_variation.title]][[ item.batchno ]]</option>
                                                 </select>
                                             
                                         </td>
 
-                                        <td>[[ _$GF.IFDEF(cartitem,['variation','expiry_date']) ]]</td>
+                                        <td>[[ cartitem.expiry_date ]]</td>
                                         <td><input type="text" class="form-control"  @change="onChangeCartItemQuantiy(cartitem, $event)" v-bind:value="[[cartitem.quantity]]"></td>
-                                        <td>generic name</td>
+                                        <td>[[cartitem.batchno]]</td>
                                         <td>[[ cartitem.price ]]</td>
-                                        <td>[[ _$GF.IFDEF(cartitem,['line_item_total']) ]]</td>
-                                        <!-- <td>[[cartitem.variation.expiry_date]]</td> -->
-                                        <!-- <td><input type="text" class="form-control" @keyup.enter="lineItem()" v-model="quantity"></td> -->
-                                        <!-- <td><input type="text" class="form-control" v-model="quantity"></td> -->
-                                        <!-- <td>[[ cartitem.variation.price ]]</td> -->
-                                        <!-- <td><td>[[ _$GF.IFDEF(cartitem,['variation','price']) ]]</td></td> -->
-                                        <!-- <td>[[ cartitem.variation.price ]]</td> -->
-                                        <!-- <td>[[ lineItem() ]]</td> -->
-                                        <!-- <td>[[ getStock() ]]</td> -->
-                                        <td>[[ _$GF.IFDEF(cartitem,['variation','inventory']) ]]</td>
+                                        <td>[[ cartitem.line_item_total ]]</td>
+                                        <td v-if="cartitem.stock_quantity <= 10" class="text-danger">[[ cartitem.stock_quantity ]]
+                                            <td v-else>
+                                                [[ cartitem.stock_quantity ]]
+                                        </td>
                                         <td><button class="btn btn-danger"  @click="deleteRow(cartitem.id, index)">X</button></td>
                                     </tr>
                                     <button class="btn btn-primary float-right" @click="addRow" >+</button>
@@ -122,7 +109,9 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="clearfix mt-4">
-                            <h5 class="small text-dark">PAYMENT TERMS AND POLICIES</h5>
+                            <h5 class="small text-dark">IN WORDS :  [[cart.in_words.toUpperCase()]]</h5>
+                            <br />
+                            <h5 class="small text-dark">PAYMENT TERMS AND POLICIES</h5><hr />
 
                             <small>
                                     All accounts are to be paid within 7 days from receipt of
@@ -131,6 +120,7 @@
                                     supplied as confirmation of work undertaken will be charged the
                                     agreed quoted fee noted above.
                                 </small>
+                            
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -138,7 +128,7 @@
                         <p class="text-right">Discout: Rs. 0.0</p>
                         <p class="text-right">VAT: Rs. [[ cart.tax_total ]]</p>
                         <hr>
-                        <h3 class="text-right">Total [[ cart.total ]]</h3>
+                        <h3 class="text-right">Total Rs.[[ cart.total ]]</h3>
                     </div>
                 </div>
                 <hr>
@@ -231,7 +221,11 @@
 
 {% block script %}
 <script>
-    $(".product").select2();
+    $(document).ready(function() {
+        // $('.product').select2({
+        //     placeholder: 'Select an option'
+        // });
+});
 
 </script>
 <script>
@@ -243,7 +237,9 @@
       el: '#pos',
       data: {
         loading: false,
-        products : [],
+        products : [{
+          value: null, text: 'Choose an option'
+        },],
         showModal : false,
         price: null,
         patients : [{
@@ -281,6 +277,8 @@
                 "quantity": "40.00",
                 "line_item_total": "6000.00",
                 "fk_store_title": "",
+                "stock_quantity":"",
+                "batchno": "",
                 variation : {id: '',title :"",price:"",sale_price:null,discount:"",inventory:""},
             }
         ],
@@ -303,6 +301,7 @@
                     // data = getResponse.data;
                     // response.send(data);
                     this.products = getResponse.data;
+                    // this.products.unshift(initvalue);
                     console.log('product',this.products);
                 })
                 .catch(function (error) {
@@ -311,24 +310,22 @@
                 });  
         },
         onChangeCartItemProduct(cartitem,event) {
-            // console.log('The new value is: ', event.target.value);
-            // cartitem.product_id = event.target.value;
             console.log('event',event.target.value);
             cartitem.fk_variation_batch_id = event.target.value;
-            // this.getProductAttributes(cartitem);
             this.getVariationBatchPrice(cartitem);
-            // this.addToCart(cartitem);
         },
 
         getVariationBatchPrice: function(cartitem) {
             axios.get('/api/VariationBatchPriceAPIView/?variation_batch_id='+cartitem.fk_variation_batch_id+'&fk_user_type_id={{cart.user.usertype.user_type_id}}')
                 .then((getResponse) => {
-                    console.log(getResponse.data);
-                    // data = getResponse.data;
-                    // response.send(data);
+                    console.log('variationpriceapiview',getResponse.data);
                     cartitem.price = getResponse.data.price;
+                    cartitem.batchno = getResponse.data.batchno;
+                    cartitem.expiry_date = getResponse.data.expiry_date;
+                    // cartitem.stock = getResponse.data.stock;
+                    this.addToCart(cartitem);
                     this.$forceUpdate();
-                    // console.log('product',this.products);
+                   
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -336,14 +333,11 @@
                 });  
         },
         
-        jpt(a) {console.log('jptjpt',a); return a},
 
 
         onChangeCartItemQuantiy(cartitem, event) {
-            // console.log('The new value is: ', event.target.value);
             cartitem.quantity = event.target.value;
-            console.log('cartitem',cartitem);
-            // this.getProductAttributes(cartitem);
+            // console.log('cartitem',cartitem);
             this.addToCart(cartitem);
         },
 
@@ -552,7 +546,7 @@
         addToCart : function(cartitem){
             // var ref = this;
             console.log(JSON.stringify(cartitem));
-            if(!cartitem.variation)
+            if(!cartitem.fk_variation_batch_id)
             {return;}
             axios({
                 method: 'post',
@@ -563,7 +557,7 @@
                             }, 
                 data: {
                     cart_id : {{cart_id}},
-                    item: cartitem.variation.id,
+                    fk_variation_batch_id: cartitem.fk_variation_batch_id,
                     quantity: cartitem.quantity,
                     cartitem_id : cartitem.id
                     // fk_store_id : 1,

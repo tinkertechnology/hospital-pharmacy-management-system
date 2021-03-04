@@ -130,14 +130,16 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
-    # 'drfpasswordless',
     'rest_registration',
     'hms_web',
     'app_settings',
     'department',
     'doctor',
     'specializationtype',
-    'nurse'
+    'nurse',
+    'counter',
+    'office',
+    'vendor',
 
 
  
@@ -323,6 +325,7 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 
 # AUTHENTICATION_BACKENDS = (
 #     'hms.backends.UsernameOrEmailBackend',
-#     'django.contrib.auth.backends.ModelBackend' )
+# #     'django.contrib.auth.backends.ModelBackend' 
+# )
 
 

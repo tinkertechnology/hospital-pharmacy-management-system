@@ -39,7 +39,15 @@ class CartItem(models.Model):
 def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
 	qty = instance.quantity
 	if Decimal(qty) >= 0:
-		price = instance.item.get_price()
+		# price = instance.item.get_price()
+		print('instance',instance)
+		varition_batch = instance.fk_variation_batch
+		if varition_batch:
+			price = varition_batch.price #price , not saleprice
+			var_batch_price = varition_batch.variationbatchprice_set.first()
+			if var_batch_price:
+				price = var_batch_price.price
+		# price = instance.fk_variation_batch.variationbatchprice_set.first().price
 		if instance.ordered_price!=0:
 			price = instance.ordered_price
 		instance.orginal_price = price

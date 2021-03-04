@@ -32,6 +32,8 @@ from orders.models import StoreWiseOrder
 from products.models import Product, Variation, UserVariationQuantityHistory
 from django.conf import settings
 from django.db.models import Q
+from products.models import Variation
+from carts.models import TransactionType
 User = get_user_model()
 
 
@@ -689,8 +691,7 @@ def carts(request):
 
 
 ###HMS
-from products.models import Variation
-from carts.models import TransactionType
+
 def visit(request):
 	variations = Variation.objects.all()
 	visits_type = TransactionType.objects.all()

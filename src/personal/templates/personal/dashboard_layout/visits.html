@@ -15,40 +15,50 @@
 
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Patient</th>
-                               <th>Assigned Doctor</th>>
+                                <th>visit no.</th>
+                                <th> Date</th>
+                                <th>Patient ID</th>
+                                <th>Name</th>
+                                <th> Address</th>
+                                <td> phone</td>
+                                <th> Email</th>
+                               <th>Assigned Doctor</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for visit in visits %}
                             <tr>
-                                <th scope="row">{{ visit.id }}</th>
+                                <td>{{visit.id}}</td>
+                                <td>{{visit.timestamp}}</td>
+                                <th scope="row">{{ visit.fk_customer_user.id }}</th>
+                                <td>{{visit.fk_customer_user.firstname}} {{visit.fk_customer_user.lastname}}</td>
+                                <td>{{visit.fk_customer_user.address}}</td>
                                 <td>{{visit.fk_customer_user.mobile}}</td>
-                                <td>{{ visit.fk_doctor_user.mobile }}</td>
+                                <td>{{visit.fk_customer_user.email}}}</td>
+                                <td>{{ visit.fk_doctor_user.firstname }} {{ visit.fk_doctor_user.lastname }}</td>
                                 <td><a class="btn btn-primary" href="/carts?visit_id={{visit.id}}">details</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
-                    {% if is_paginated %}
                     <div class="pagination">
                         <span class="step-links">
-                            {% if page_obj.has_previous %}          
+                            {% if visits.has_previous %}
+                                <a href="?page=1">&laquo; first</a>
                                 <a href="?page={{ visits.previous_page_number }}">previous</a>
                             {% endif %}
                     
                             <span class="current">
-                              {{ page_obj.number }}
+                                Page {{ visits.number }} of {{ contacts.paginator.num_pages }}.
                             </span>
                     
-                            {% if page_obj.has_next %}
+                            {% if visits.has_next %}
                                 <a href="?page={{ visits.next_page_number }}">next</a>
+                                <a href="?page={{ visits.paginator.num_pages }}">last &raquo;</a>
                             {% endif %}
                         </span>
                     </div>
-                {% endif %}
                 </div>
             </div>
 

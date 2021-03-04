@@ -32,7 +32,7 @@
     <link href="https://coderthemes.com/zircos/layouts/vertical/assets/libs/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
     <link href="https://coderthemes.com/zircos/layouts/vertical/assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
       <link href="https://coderthemes.com/zircos/layouts/vertical/assets/libs/custombox/custombox.min.css" rel="stylesheet" type="text/css" />
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" />
+      
       <!-- Init the plugin -->
  
       
@@ -309,11 +309,18 @@
 
                         <li>
                             <a href="/CustomerPatientUserList" class="waves-effect waves-light">
+                              <i class="mdi mdi-invert-colors"></i>
+                              <span> Patients </span>
+                              <!-- <span class="menu-arrow"></span> -->
+                           </a>
+                           </li>
+                           <li>
+                              <a href="/api/VisitAPIView/" class="waves-effect waves-light">
                                 <i class="mdi mdi-invert-colors"></i>
-                                <span> Patients </span>
+                                <span> Visits </span>
                                 <!-- <span class="menu-arrow"></span> -->
-                            </a>
-                            </li>
+                             </a>
+                             </li>
                             <li>
                               <a href="/hmsproducts/" class="waves-effect waves-light">
                                   <i class="mdi mdi-invert-colors"></i>
@@ -321,6 +328,32 @@
                                   <!-- <span class="menu-arrow"></span> -->
                               </a>
                               </li>
+                              <li>
+                                 <a href="/doctor/" class="waves-effect waves-light">
+                                     <i class="mdi mdi-invert-colors"></i>
+                                     <span> Doctors </span>
+                                     <!-- <span class="menu-arrow"></span> -->
+                                 </a>
+                                 </li>
+                                 <li>
+                                    <a href="/nurse/" class="waves-effect waves-light">
+                                        <i class="mdi mdi-invert-colors"></i>
+                                        <span> Nurses </span>
+                                        <!-- <span class="menu-arrow"></span> -->
+                                    </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="javascript: void(0);" class="waves-effect waves-light">
+                                            <i class="mdi mdi-layers"></i>
+                                            <span>  Settings </span>
+                                            <span class="menu-arrow"></span>
+                                        </a>
+                                        <ul class="nav-second-level mm-collapse" aria-expanded="false">
+                                            <li><a href="/office/" class="waves-effect waves-light">Office</a></li>
+                                            <li><a href="/vendor/">Vendor</a></li>
+                                        </ul>
+                                    </li>
                     </ul>
 
                 </div>
@@ -460,7 +493,8 @@
       <script src="https://coderthemes.com/zircos/layouts/vertical/assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
       <script src="https://coderthemes.com/zircos/layouts/vertical/assets/js/pages/form-pickers.init.js"></script>
       <script src="https://coderthemes.com/zircos/layouts/vertical/assets/libs/custombox/custombox.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous"></script>
+      <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+      <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
        <script>   
 
       // $: single $ means function

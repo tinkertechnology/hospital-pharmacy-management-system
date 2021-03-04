@@ -116,25 +116,26 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 from products.serializers import VariationSerializer
+
 class CartItemSerializer(serializers.ModelSerializer):
 	#item = CartVariationSerializer(read_only=True)
 	# url = serializers.HyperlinkedIdentityField(view_name='products_detail_api')
 	item = serializers.SerializerMethodField()
-	# variation = serializers.SerializerMethodField()
-	product_id = serializers.SerializerMethodField()
+	batchno = serializers.SerializerMethodField()
+	fk_variation_batch_id = serializers.SerializerMethodField()
 	item_title = serializers.SerializerMethodField()
 	product = serializers.SerializerMethodField()
 	price = serializers.SerializerMethodField()
 	image = serializers.SerializerMethodField()
+	expiry_date = serializers.SerializerMethodField()
+	stock_quantity = serializers.SerializerMethodField()
 	# fk_store_title = serializers.SerializerMethodField() #StoreSerializer(read_only=True)
-
-
 	class Meta:
 		model = CartItem
 		fields = [
 			# "url",
 			"id",
-			"product_id",
+			"fk_variation_batch_id",
 			"image",
 			"item",
 			"item_title",
@@ -142,19 +143,36 @@ class CartItemSerializer(serializers.ModelSerializer):
 			"product",
 			"quantity",
 			"line_item_total",
-			# "fk_store_title",
-			# "variation"
+			"stock_quantity",
+			"batchno",
+			"expiry_date"
 		]
 
 	# def get_variation(self, obj):
 	# 	return VariationSerializer(obj.item).data
 
+	def get_expiry_date(self, obj):
+		return obj.fk_variation_batch.expiry_date
 	def get_item(self,obj):
-		return obj.fk_variation_batch.fk_variation.id
+		return obj.fk_variation_batch.id
+	
+	def get_stock_quantity(self, obj):
+		stock = 0
+		var_batch = obj.fk_variation_batch
+		if var_batch:
+			stock = var_batch.quantity
+		return stock
+	def get_batchno(self, obj):
+		batchno = ''
+		batch = obj.fk_variation_batch
+		if batch:
+			batchno = batch.batchno
+		return batchno
 
-	def get_product_id(self, obj):
+	def get_fk_variation_batch_id(self, obj):
 		# return obj.item.product.id
-		return obj.fk_variation_batch.fk_variation.product.id
+		print('obj', obj)
+		return obj.fk_variation_batch.id
 		
 	def get_item_title(self, obj):
 		return "%s (%s)" %(obj.fk_variation_batch.fk_variation.title, obj.fk_variation_batch.batchno)
@@ -241,7 +259,8 @@ class CartItemModelSerializer(serializers.ModelSerializer):
 		data['user_id'] = request.data.get('p_id')
 		data['fk_visit_id'] = request.data.get('fk_visit_id')
 		data['fk_bill_created_user_id'] = user.id
-		data['item_id'] = validated_data.get('item').id
+		# data['item_id'] = validated_data.get('item').id
+		data['fk_variation_batch_id'] = request.data.get('fk_variation_batch_id')
 		data['quantity'] = validated_data['quantity']
 		data['is_add_sub_qty'] = request.GET.get('is_add_sub_qty', None)
 		data['cart_id'] = request.data.get('cart_id')
@@ -251,13 +270,13 @@ class CartItemModelSerializer(serializers.ModelSerializer):
 		data['fk_type_id'] = request.data.get('fk_type_id') #transaction types like refund deposit etc
 		cartItem = CartService.CartItemCreateService(data)
 		print(cartItem.__dict__)
-		transaction = {
-			"fk_cart_id" : cartItem.cart_id,
-			"amount" : request.data.get('amount'),
-			"comment" : request.data.get('comment'),
-			"fk_type_id" : request.data.get('fk_type_id')
-		}
-		transaction= Transaction.objects.create(**transaction)
+		# transaction = {
+		# 	"fk_cart_id" : cartItem.cart_id,
+		# 	"amount" :  cartItem.ordered_price,#request.data.get('amount'),
+		# 	"comment" : request.data.get('comment'),
+		# 	"fk_type_id" : request.data.get('fk_type_id')
+		# }
+		# transaction= Transaction.objects.create(**transaction)
 		return cartItem
 
 
@@ -284,8 +303,16 @@ class RemoveCartItemFromCartSerializer(serializers.ModelSerializer):
 		fields = '__all__'
 
 	def destroy(self, request, *args, **kwargs):
+		print('jssdjsppt')
 		try:
+			print('delete')
 			instance = self.get_object()
+			quantity = instance.quantity
+			var_batch = instance.fk_variation_batch
+			print('var-batch',var_batch)
+			if var_batch:
+				var_batch.quantity += quantity
+				var_batch.save()
 			self.perform_destroy(instance)
 		except Http404:
 			pass

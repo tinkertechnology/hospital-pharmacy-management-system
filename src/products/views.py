@@ -48,98 +48,8 @@ from rest_framework.exceptions import APIException
 from django.conf import settings
 
 
-# API CBVS
 
 
-# class APIHomeView(APIView):
-# 	# authentication_classes = [SessionAuthentication]
-# 	permission_classes = [IsAuthenticated]
-# 	def get(self, request, format=None):
-# 		data = {
-# 			"auth": {
-# 				"login_url":  api_reverse("auth_login_api", request=request),
-# 				"refresh_url":  api_reverse("refresh_token_api", request=request), 
-# 				"user_checkout":  api_reverse("user_checkout_api", request=request), 
-# 			},
-# 			"address": {
-# 				"url": api_reverse("user_address_list_api", request=request),
-# 				"create":   api_reverse("user_address_create_api", request=request),
-# 			},
-# 			"checkout": {
-# 				"cart": api_reverse("cart_api", request=request),
-# 				"checkout": api_reverse("checkout_api", request=request),
-# 				"finalize": api_reverse("checkout_finalize_api", request=request),
-# 			},
-# 			"products": {
-# 				"count": Product.objects.all().count(),
-# 				"url": api_reverse("products_api", request=request)
-# 			},
-# 			"categories": {
-# 				"count": Category.objects.all().count(),
-# 				"url": api_reverse("categories_api", request=request)
-# 			},
-# 			"orders": {
-# 				"url": api_reverse("orders_api", request=request),
-# 			},
-# 			"inquiry": {
-# 				"url": api_reverse("inquiry_api", request=request),
-# 			},
-# 			"create_cart": {
-# 				"url": api_reverse("create_cart_api", request=request),
-# 			},
-
-# 			"add_order": {
-# 				"url": api_reverse("create_order_api", request=request),
-# 			},
-
-# 			"featured_products": {
-# 				"url": api_reverse("product_featured_api", request=request),
-# 			},
-
-
-# 			"lists_apis": {
-# 				"generic_names": api_reverse("generic_name_list_api", request=request),
-# 				"brand_names": api_reverse("brands_list_api", request=request),
-# 				"company_names": api_reverse("company_list_api", request=request),
-# 				"product_units": api_reverse("product_unit_list_api", request=request),
-# 			}
-
-# 		}
-# 		return Response(data)
-
-
-class StoreWiseProductListAPIView(generics.ListAPIView):
-	queryset = Variation.objects.all()
-	serializer_class = VariationSerializer
-	class Meta:
-		model = Product
-	
-	def get_queryset(self):
-		store = getUserStoreService(self.request.user.id)
-			# store_id_auth_user = Store.objects.get(fk_user=self.request.user) #StoreUser.objects.get(fk_user=self.request.user).fk_store
-		if store is None:
-			raise Http404
-		
-		# products = Product.objects.filter(fk_store=store_id_auth_user.id)
-		# for product in products:
-		# return VariationSerializer(product.variation_set.all().filter(is_internal=True), many=True)
-		exclued_list = []
-		variation = Variation.objects.filter(is_internal=True).filter(product__fk_store__id=store.id)
-		return variation
-
-		# for item in variation:
-		# 	if item.product.fk_store.id!=store_id_auth_user.id:
-		# 		exclued_list.append(item.id)
-		# variations = Variation.objects.exclude(id__in=exclued_list)
-		# # print(variations)
-		# # serializer = VariationSerializer(variations,many=True)
-		# # return serializer.data
-		# return variations
-
-		# for item in variation:
-		# 	if item.product.fk_store.id == StoreUser.objects.
-		# series = Product.objects.filter(id=series_id).prefetch_related('section_set', 'section_set__episode_set').get()
-		# return products
 
 
 class CommonProductListAPIView(generics.ListAPIView):
@@ -200,100 +110,8 @@ class ProductListAPIView(generics.ListAPIView):
 	def get_queryset(self):
 		settings.DLFPRINT()
 		queryset = Product.objects.all() ##debug if not working location
-		# return queryset
-		# users_store = None #user ko store (instance of Store)
-		# main_users_store = Store.objects.filter(fk_user_id=self.request.user.id).first() #company / depo ko main user #(instance Store)
-		
-		#todo: make service for getting store of user, isUserStore, isUserCustomer
-		# if main_users_store is not None:
-		# 	users_store = main_users_store
-		# else:
-		# 	storeUser = StoreUser.objects.filter(fk_user_id=self.request.user.id).first()
-		# 	if(storeUser is not None):
-		# 		users_store = storeUser.fk_store
-		# settings.DPRINT(users_store)
-		# if users_store is not None:
-		# 	settings.DPRINT(1)
-		# 	if self.request.GET.get('view_my_products', None):
-		# 		queryset = Product.objects.filter(fk_store_id=users_store.id)
-		# 		return queryset
-		# 	queryset = Product.objects.exclude(fk_store_id=None) \
-		# 		.exclude(fk_store__fk_store_type_id=None) \
-		# 		.exclude(fk_store__fk_store_type_id=2) #exclude products from depo, #todo define constant for 2
-		# 	settings.DPRINT(queryset.query)
 		return queryset
 		
-		if self.request.query_params.get('id'):
-			id = self.request.query_params.get('id')
-			queryset = Product.objects.filter(id__gte=id)
-			return queryset
-
-		#pass customer latitude and longitude to api
-		#http://localhost:8000/api/products/?latitude=1&longitude=1
-		if users_store is  None: #this user must be customer
-			# ulat=, ulng=, 
-			product_id = self.request.GET.get('product_id', None) ##
-			common_product_id = self.request.GET.get('common_product_id', None)
-
-			latitude=self.request.GET.get('latitude', None);
-			longitude=self.request.GET.get('longitude', None);
-			max_distance=settings.CUSTOMER_STORE_MAX_DISTANCE_KM #2 #setting. store max distance
-			distance = None #
-
-			nearest_store = None
-			if(latitude and longitude ):
-				storeQs = StoreService.get_qs_store_locations_nearby_coords(latitude, longitude, distance, 2) #2: depo
-				nearest_store = storeQs.first()
-				settings.DPRINT('nearest-store')
-				settings.DPRINT(nearest_store.__dict__)
-			queryset= Product.objects
-			
-			if common_product_id:
-				queryset = queryset.filter(fk_common_product_id=common_product_id)
-				#product_id = Product.objects.filter(fk_common_product_id=common_product_id).filter(fk_store=nearest_store).first().id
-				#settings.DPRINT(['product_id:', product_id])
-
-			if nearest_store is not None:
-				d = nearest_store.distance
-
-				if d <= max_distance:
-					queryset = queryset.filter(Q(fk_store_id=nearest_store.id)) #.all()
-					# if product_id:
-					# 	queryset = queryset.filter(Q(fk_store_id=nearest_store.id) | Q(can_sell_everywhere=True)) #.all()
-					# else:
-					# 	queryset = queryset.filter(Q(fk_store_id=nearest_store.id)) #.all()
-				else:
-					queryset = queryset.filter(fk_store_id=nearest_store.id).filter(can_sell_everywhere=True)
-				# cs = Product.objects.filter(can_sell_everywhere=True)
-				# queryset = queryset.filter(fk_store_id=nearest_store.id)
-				# settings.DPRINT(nearest_store.__dict__)
-				#queryset = queryset.filter(Q(fk_store_id=nearest_store.id) | Q(can_sell_everywhere=True)) #.all()
-			else:
-				queryset = queryset.filter(can_sell_everywhere=True)
-			
-			# mobile app user (customer), see non internal products only
-			queryset = queryset.filter(is_internal=False)
-			#active nabhako nadekhaune..
-			queryset = queryset.filter(active=True)
-
-			if product_id:
-				queryset = queryset.filter(id=product_id)
-			
-			settings.DPRINT(queryset.query)
-			queryset = queryset.all()
-			return queryset
-			if True:
-				pass
-			else:
-				raise APIException({
-					"redirect_for_apple" : '1',
-					"message":"Products View require: latitude and longitude, within distance limit, for customer user, to find nearest store"
-				}
-
-				)
-		#
-		queryset = Product.objects.all()
-		return queryset
 
 
 class AllProductListAPIView(generics.ListAPIView): ##for pharma
@@ -349,8 +167,19 @@ class VariationBatchPriceAPIView(APIView):
 		fk_user_type_id = request.GET.get('fk_user_type_id')
 		fk_variation_batch_id = request.GET.get('variation_batch_id')
 		variation_batch_price = VariationBatchPrice.objects.filter(fk_user_type_id=fk_user_type_id).filter(fk_variation_batch_id=fk_variation_batch_id).first()
+		quantity = 0
+		batchno = ''
+		expiry_date = ''
+		if variation_batch_price:
+			var_batch = variation_batch_price.fk_variation_batch
+			if var_batch:
+				quantity = var_batch.quantity
+				batchno = var_batch.batchno
+				expiry_date = var_batch.expiry_date
 		data = {
-			'price':variation_batch_price.price if variation_batch_price else 0
+			'price':variation_batch_price.price if variation_batch_price else 0,
+			'stock' : quantity,
+			"batchno" : batchno
 		}
 		return Response(data)
 

@@ -128,7 +128,6 @@ from products.views import (
         AllProductListAPIView,
         AllProductRetrieveAPIView,
         ProductVariationRetrieveAPIView,
-        StoreWiseProductListAPIView,
         VariationByPatientAPIView,
         hmsproducts,
         hmsvariations,
@@ -182,7 +181,6 @@ urlpatterns = [
     re_path(r'^api/CustomerSurveryInfo/$', SurveyRegisterAPIView.as_view(), name="CustomerSurveryInfo"),
     re_path(r'^api/SaveUpdateFirebaseToken/$', SaveUpdateFirebaseToken.as_view(), name="SaveUpdateFirebaseToken"),
     re_path(r'^api/GetUserJarAndCreditAPIView/$', GetUserJarAndCreditAPIView.as_view(), name="GetUserJarAndCreditAPIView"),
-    re_path(r'^api/StoreWiseProductListAPIView/$', StoreWiseProductListAPIView.as_view(), name="StoreWiseProductListAPIView"),
     re_path(r'^api/AddToCartForCustomUserAPIView/$', AddToCartForCustomUserAPIView.as_view(), name="AddToCartForCustomUserAPIView"),
     re_path(r'^api/ReturnToStoreForCustomUserAPIView/$', ReturnToStoreForCustomUserAPIView.as_view(), name="ReturnToStoreForCustomUserAPIView"),
     re_path(r'^api/GetUserCreditAndJarByStorewise/$', GetUserCreditAndJarByStorewise.as_view(), name="GetUserCreditAndJarByStorewise"),
@@ -395,6 +393,12 @@ urlpatterns += [
 
     # NURSE ROUTE
     re_path(r'^nurse/', include('nurse.urls')),
+
+    # OFFICE ROUTE
+    re_path(r'^office/', include('office.urls')),
+
+    # VENDOR ROUTE
+    re_path(r'^vendor/', include('vendor.urls')),
 ]
  # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
