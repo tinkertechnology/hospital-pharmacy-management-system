@@ -35,6 +35,7 @@ from django.db.models import Q
 from products.models import Variation
 from carts.models import TransactionType
 from payment.models import PaymentMethod
+from account.models import VisitType
 User = get_user_model()
 
 
@@ -699,9 +700,12 @@ def carts(request):
 
 def visit(request):
 	variations = Variation.objects.all()
-	visits_type = TransactionType.objects.all()
+	# visits_type = TransactionType.objects.all()
+	visits_types = VisitType.objects.all()
+	
 	context ={
 		'variations' : variations,
-		'visits_type' : visits_type
+		# 'visits_type' : visits_type,
+		'visits_types' : visits_types
 	}
 	return render(request, "personal/dashboard_layout/visit.html", context)
