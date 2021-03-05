@@ -37,16 +37,16 @@
         </tr>
 
         <tr>
-            <td colspan="6" style="text-align: right;">&nbsp;</td>
+            <td colspan="10" style="text-align: right;">&nbsp;{{hospital_info.name}}</td>
         </tr>
         <tr>
-            <td colspan="6" style="text-align: right;">&nbsp;</td>
+            <td colspan="6" style="text-align: right;">&nbsp;{{hospital_info.address}}</td>
         </tr>
         <tr>
-            <td colspan="6" style="text-align: right;">&nbsp;</td>
+            <td colspan="6" style="text-align: right;">&nbsp;PAN no: {{hospital_info.pan}}</td>
         </tr>
         <tr>
-            <td colspan="6" style="text-align: right;">&nbsp;</td>
+            <td colspan="6" style="text-align: right;">&nbsp;Tel.no: {{hospital_info.phone}}</td>
         </tr>
         <tr>
             <td colspan="6" style="text-align: right;">inlinetech.com.np</td>
@@ -54,7 +54,7 @@
         <tr>
             <td colspan="15" style="text-align: center; border-top: solid #000000; border-bottom: solid #000000; 
             font-weight: 600; font-size: 18px; padding-top: 5px;">&nbsp;
-         Bill to : {{cart.user.firstname}} {{cart.user.id}}     
+         Bill to : {{cart.user.firstname}} {{cart.user.lastname}}    
         </td>
         </tr>
 
@@ -64,8 +64,9 @@
         </tr>
 
         <tr style="text-align: center; border-top: solid #000000; border-bottom: solid #000000; font-weight: 600; font-size: 16px; padding-top: 4px;">
-            <td colspan="3">Item No.</td>
-            <td colspan="4" style="text-align: left;">Name</td>
+            <td colspan="3">S.N</td>
+            <td colspan="4" style="text-align: left;">Particulars</td>
+            <td colspan="4" style="text-align: left;">Batch (if any)</td>
             <td colspan="5" style="text-align: left;">Quantity</td>
             <td colspan="5">Unit Price</td>
             <td colspan="5">Line Price</td>
@@ -74,7 +75,8 @@
         {% for item in items %}
         <tr class="gradeX odd" style="text-align: center; font-size: 14px; padding-top: 2px; padding-bottom: 2px;">
             <td colspan="3">{{ forloop.counter }}</td>
-            <td colspan="4" style="text-align: left;">{{item.item.product.title}} {{item.item.title}}</td>
+            <td colspan="4" style="text-align: left;">{{item.fk_variation_batch.fk_variation.title}}</td>
+            <td colspan="5" style="text-align: left;">{{item.fk_variation_batch.batchno}}</td>
             <td colspan="5" style="text-align: left;">{{item.quantity}}</td>
             <td colspan="5">{{item.ordered_price}}</td>
             <td colspan="5">{{item.line_item_total}}</td>

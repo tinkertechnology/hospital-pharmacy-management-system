@@ -571,10 +571,12 @@ class ProductVariationRetrieveUpdateDestroyApiView(RetrieveUpdateDestroyAPIView)
     serializer_class = Product
     def get_queryset(self, *args, **kwargs):
         return MembershipType.objects.all()
-
+from vendor.models import Vendor
 def hmsproducts(request):
 	context = {
-		'title' : 'HMS products'
+		'title' : 'HMS products',
+		'products' : Variation.objects.all(),
+		'suppliers' : Vendor.objects.all()
 	}
 	return render(request, "personal/dashboard_layout/products.html", context)
 
@@ -583,3 +585,20 @@ def hmsvariations(request, id):
 		'product_id' : id
 	}
 	return render(request, "personal/dashboard_layout/variation.html", context)
+
+
+
+class PurchaseVariationBatchAPIView(APIView):
+	
+	def post(self, request, *args, **kwargs):
+		variation_batch = VariationBatch()
+		print(request.data)
+		variation_batch.fk_variation_id = request.data.get('fk_variation_id')
+		variation_batch.batchno = request.data.get('batchno')
+		variation_batch.quantity = request.data.get('quantity')
+		variation_batch.purchase_date = request.data.get('purchase_date')
+		variation_batch.expiry_date = request.data.get('expiration_date')
+		variation_batch.use_batch = request.data.get('use_batch')
+		variation_batch.price = request.data.get('price')
+		variation_batch.save()
+		return Response('Success', status=200)

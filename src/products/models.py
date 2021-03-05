@@ -141,6 +141,7 @@ class VariationBatch(models.Model):
 	sale_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
 	created_at = models.DateField(default=date.today)
 	expiry_date = models.DateField(null=True, blank=True)
+	purchase_date = models.DateField(null=True, blank=True)
 	use_batch = models.BooleanField(default=True)
 
 	def __str__(self):

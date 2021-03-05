@@ -34,6 +34,7 @@ from django.conf import settings
 from django.db.models import Q
 from products.models import Variation
 from carts.models import TransactionType
+from payment.models import PaymentMethod
 User = get_user_model()
 
 
@@ -662,7 +663,8 @@ def pos1(request):
 	context = {
 		# 'user_id' : patient_id
 		"cart" : cart,
-		'cart_id' : cart.id
+		'cart_id' : cart.id,
+		'paymentmethods' : PaymentMethod.objects.all()
 	}
 	return render(request, "personal/dashboard_layout/pos_test.html", context)
 

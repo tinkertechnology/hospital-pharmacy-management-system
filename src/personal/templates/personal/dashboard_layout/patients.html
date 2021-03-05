@@ -149,6 +149,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-info waves-effect waves-light" @click="savePatient">Save changes</button>
+                <button  @click="savePatient">save</button>
             </div>
         </div>
     </div>
@@ -223,7 +224,7 @@
         patient_type : "",
         mobile : "",
         address: "",
-        patienttype: "",
+        fk_patient_type_id: "",
         dob : ""
     },
 
@@ -242,6 +243,9 @@
                     lastname : this.customerForm.lastname,
                     mobile : this.customerForm.mobile,
                     email : this.customerForm.email,
+                    address : this.customerForm.address,
+                    date_of_brith: this.customerForm.dob,
+                    fk_patient_type_id :this.customerForm.fk_patient_type_id
 
                   // This is the body part
                 },
@@ -267,6 +271,7 @@
      
 
       mounted() {
+          console.log('mounted patients.html');
 
       },
     })

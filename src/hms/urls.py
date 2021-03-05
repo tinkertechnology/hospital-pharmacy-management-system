@@ -128,7 +128,8 @@ from products.views import (
         hmsproducts,
         hmsvariations,
         VariationBatchAPIView,
-        VariationBatchPriceAPIView
+        VariationBatchPriceAPIView,
+        PurchaseVariationBatchAPIView
         
 
     )
@@ -372,6 +373,7 @@ urlpatterns += [
     path('api/VariationByPatientAPIView/', VariationByPatientAPIView.as_view(), name="variation-by-patient-type"),
     path('api/VariationBatchAPIView/', VariationBatchAPIView.as_view(), name="VariationBatchAPIView"),
     path('api/VariationBatchPriceAPIView/', VariationBatchPriceAPIView.as_view(), name="VariationBatchPriceAPIView"),  
+    path('api/PurchaseVariationBatchAPIView/', PurchaseVariationBatchAPIView.as_view(), name="PurchaseVariationBatchAPIView"),
     
 
     # DEPARTMENT ROUTE
