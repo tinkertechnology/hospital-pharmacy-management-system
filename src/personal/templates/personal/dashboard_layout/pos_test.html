@@ -30,6 +30,17 @@
 
                         </select>
                     </div> -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="field-4" class="control-label">Counter</label>
+                           <select class="form-group" v-model="fk_counter_id">
+                               <option>Select Counter</option>
+                               {% for counter in counters %}
+                                    <option value="{{counter.id}}">{{counter.name}}</option>
+                                {% endfor %}
+                           </select>
+                        </div>
+                    </div>
                     <div class="col-md-3">
                         <input type="text" class="form-control" v-bind:value="_$GF.IFDEF(patient,['patient_type','p_type_title'])" readonly name="patient_type" placeholder="Patient Type">
                     </div>
@@ -207,6 +218,7 @@
                             <input type="text" class="form-control" id="field-4" placeholder="Boston">
                         </div>
                     </div>
+                  
                     
                 </div>
             </div>
@@ -243,6 +255,7 @@
         delimiters: ['[[', ']]'],
       el: '#pos',
       data: {
+        fk_counter_id : null,
         loading: false,
         products : [{
           value: null, text: 'Choose an option'
@@ -552,6 +565,9 @@
 
         addToCart : function(cartitem){
             // var ref = this;
+            // if(this.fk_counter_id==null){
+            //     alert('select counter');
+            // }
             console.log(JSON.stringify(cartitem));
             if(!cartitem.fk_variation_batch_id)
             {return;}
@@ -566,7 +582,8 @@
                     cart_id : {{cart_id}},
                     fk_variation_batch_id: cartitem.fk_variation_batch_id,
                     quantity: cartitem.quantity,
-                    cartitem_id : cartitem.id
+                    cartitem_id : cartitem.id,
+                    fk_counter_id : this.fk_counter_id,
                     // fk_store_id : 1,
                     // cart_id : {{cart_id}},
                     // p_id: this.patients.id, 

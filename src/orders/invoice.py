@@ -57,3 +57,51 @@ class GeneratePDF(APIView):
 			return response
 			return HttpResponse("Not found")
 		# return HttpResponse(pdf, content_type='application/pdf')
+
+class GenerateFullPDF(APIView):
+	def get(self, request, cart_id, *args, **kwargs):
+		something = request.GET.get('preview', None)
+		hospital_info = Office.objects.all().first()	
+		user_id = request.GET.get('user_id')
+		print(user_id)
+		carts = Cart.objects.filter(user_id=user_id)
+		print(carts)
+		total_in_words = generate_amount_words(1000)
+		print(total_in_words)
+		# items = cart.cartitem_set.all()#CartItem.objects.filter(cart_id=ordered_cart_id)
+		template = get_template('personal/dashboard_layout/invoice_full.html')
+		context = {
+			'carts': carts,
+			# 'items': items,
+			'total_in_words':total_in_words,
+			'hospital_info' : hospital_info
+		}
+
+		mail = EmailMessage(
+		    'Hello', #+ customer.name,
+		    'Quotation from Tinker-Tech',
+		    'xunilparajuli2002@gmail.com',
+		    #[customer.email],
+		    ['sunilparajuli2002@gmail.com'],
+		    reply_to=['sunilparajuli2002@gmail.com'],
+		    headers={'Message-ID': 'foo'},
+		)
+
+		html = template.render(context)
+		pdf_value = render_to_pdf_value('orders/invoice_full.html', context)
+		pdf = render_to_pdf('orders/invoice_full.html', context)
+		if pdf:
+			response = HttpResponse(pdf, content_type='application/pdf')
+			filename = "Invoice_%s.pdf" %("12341231")
+			if(something !='1'):
+				print('email attach')
+				mail.attach(filename, pdf_value, 'application/pdf')
+				# mail.send()
+			content = "inline; filename='%s'" %(filename)
+			download = request.GET.get("download")
+			if download:
+				content = "attachment; filename=%s" %(filename)
+				response['Content-Disposition'] = content
+			return response
+			return HttpResponse("Not found")
+		# return HttpResponse(pdf, content_type='application/pdf')

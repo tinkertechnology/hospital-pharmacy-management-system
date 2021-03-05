@@ -15,7 +15,6 @@ from rest_framework import status
 from rest_framework.views import APIView
 from django.utils import timezone
 import pytz
-
 from carts.mixins import TokenMixin
 from rest_framework import permissions
 # from .forms import AddressForm, UserAddressForm, UserOrderForm
@@ -30,12 +29,14 @@ from carts.models import Cart, CartItem
 from store.models import Store, StoreUser
 from orders.models import StoreWiseOrder
 from products.models import Product, Variation, UserVariationQuantityHistory
+from users.models import UserTypes
 from django.conf import settings
 from django.db.models import Q
 from products.models import Variation
 from carts.models import TransactionType
 from payment.models import PaymentMethod
 from account.models import VisitType
+from counter.models import Counter
 User = get_user_model()
 
 
@@ -661,11 +662,14 @@ def pos(request):
 def pos1(request):
 	cart = Cart.objects.filter(pk=request.GET.get('cart_id')).first()
 	# print(cart_id)
+	counters = Counter.objects.all()
+	
 	context = {
 		# 'user_id' : patient_id
 		"cart" : cart,
 		'cart_id' : cart.id,
-		'paymentmethods' : PaymentMethod.objects.all()
+		'paymentmethods' : PaymentMethod.objects.all(),
+		'counters' : counters
 	}
 	return render(request, "personal/dashboard_layout/pos_test.html", context)
 
@@ -677,6 +681,7 @@ def carts(request):
 	user_id = request.GET.get('user_id')
 	visit_id = request.GET.get('visit_id')
 	user = User.objects.filter(pk=user_id).first()
+	
 	if user_id:
 		# user = User.objects.get(pk=user_id)
 		carts = Cart.objects.order_by('-id').filter(user_id=user_id)
@@ -689,6 +694,7 @@ def carts(request):
 		'carts' : carts,
 		'user' : user,
 		"visit_id" : visit_id
+		
 		# 'cart_id' : cart_id.id
 	}
 	return render(request, "personal/dashboard_layout/carts.html", context)
@@ -700,12 +706,13 @@ def carts(request):
 
 def visit(request):
 	variations = Variation.objects.all()
-	# visits_type = TransactionType.objects.all()
 	visits_types = VisitType.objects.all()
+	
 	
 	context ={
 		'variations' : variations,
 		# 'visits_type' : visits_type,
-		'visits_types' : visits_types
+		'visits_types' : visits_types,
+		'patient_types' : UserTypes.objects.all()
 	}
 	return render(request, "personal/dashboard_layout/visit.html", context)

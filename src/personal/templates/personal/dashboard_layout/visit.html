@@ -8,8 +8,9 @@
         <div class="card-box">
             <h4 class="header-title">Visit </h4>
             <p class="sub-header">
-                Most common form control, text-based input fields. Includes support for all HTML5 types: <code>text</code>, <code>password</code>, <code>datetime</code>, <code>datetime-local</code>, <code>date</code>, <code>month</code>, <code>time</code>, <code>week</code>, <code>number</code>, <code>email</code>, <code>url</code>, <code>search</code>, <code>tel</code>, and <code>color</code>.
+               Register New Visit 
             </p>
+
             <div class="row">
                 <div class="col-lg-6">
                     <div class="form-horizontal">
@@ -61,53 +62,47 @@
 
                         <div class="form-group row">
                             <label class="col-sm-2 control-label"> Reffer Doctor</label>
-                            <div class="col-sm-8">
+                            <div class="col-sm-6">
                                 <select class="form-control" v-model="fk_doctor_user_id">
                                     <option  v-for="(doctor, index) in doctors.results" v-bind:value="doctor.id">[[ doctor.firstname ]] [[doctor.lastname]] [[doctor.mobile]]</option>
                                 </select>
                             </div>
-                            <!-- <div class="col-sm-2">
-                                <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Add Customer</button>
-                            </div> -->
+                            <label class="col-sm-2 control-label"> Visit Type</label>
+                            <div class="col-sm-2">
+                                <div class="form-group">                                   
+                                    <select class="form-control" v-model="visit_type">
+                                        {% for visit_type in visits_types %}
+                                            <option value="{{visit_type.id}}">{{visit_type.title}}</option>
+                                        {% endfor %}
+                                        
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Appointment Date</label>
-                            <div>
-                                <div class="input-group">
-                                    <input type="text"  v-model="appointmentDate" class="form-control" placeholder="mm/dd/yyyy" id="datepicker">
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label">Appointment Date</label>
+                            
+                                <div class="input-group col-sm-4">
+                                    <input type="text"  v-model="appointmentDate" class="form-control datepicker" placeholder="mm/dd/yyyy" id="">
                                     <div class="input-group-append">
                                         <span class="input-group-text bg-primary text-white b-0"><i class="mdi mdi-calendar"></i></span>
                                     </div>
 
                                 </div>
-                                <!-- input-group -->
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-md-2 control-label"> Remarks</label>
-                            <div class="col-md-10">
+                                <label class="col-md-1 control-label"> Remarks</label>
+                            <div class="col-sm-5">
                                 <input type="text" v-model="remarks" class="form-control" value="" placeholder="Remarks">
                             </div>
+                            
                         </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="field-6" class="control-label">Visit Type</label>
-                                <select class="form-control" v-model="customerForm.patienttype">
-                                    {% for visit_type in visits_type %}
-                                        <option value="{{visit_type.id}}">{{visit_type.title}}</option>
-                                    {% endfor %}
-                                    
-                                </select>
-                            </div>
-                        </div>
+                       
                     </div>
                 </div>
-            <button class="btn btn-info" @click="saveVisit">Submit</button>
+         
 
             </div>
-
+            <button class="btn btn-info" @click="saveVisit">Submit</button>
         
             </div>
             <!-- end row -->
@@ -157,7 +152,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="field-5" class="control-label">Date of Birth (BS)</label>
-                                    <input type="text" class="form-control" v-model="customerForm.dob" id="datepicker"  placeholder="">
+                                    <input type="text" v-model="customerForm.date_of_birth" class="form-control datepicker" v-model="customerForm.dob" id=""  placeholder="">
                                 </div>
                             </div>
                         </div>
@@ -174,7 +169,8 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="field-6" class="control-label">Patient Type</label>
-                                    <select class="form-control" v-model="customerForm.patienttype">
+                                    <select class="form-control" v-model="customerForm.patient_type_id">
+                                        <option value="">Normal</option>
                                         {% for patient_type in patient_types %}
                                             <option value="{{patient_type.id}}">{{patient_type.title}}</option>
                                         {% endfor %}
@@ -198,70 +194,22 @@
                         <!-- <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button> -->
                         <button type="button" class="btn btn-purple waves-effect waves-light" @click="savePatient">Add Patient</button>
                         <!-- <button  @click="savePatient">save</button> -->
+              
                     </div>
-                <!-- <div class="modal-content">
-                    <div class="modal-header">
-                        <div class="row">
-                            <div class="col-md-6">
-                            <h4 class="modal-title mt-0">Add Customer</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="col-md-6">
-                                <button type="button" class="btn btn-teal btn-rounded waves-light waves-effect width-md">View</button>
-                            </div>
-                        </div>
+                    <div v-if="message.error_status==true"class="alert alert-icon alert-danger alert-dismissible fade show mb-0" role="alert">
+                        <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button> -->
+                        <i class="mdi mdi-block-helper mr-2"></i>
+                        <strong>[[message.error_message_body.Fail]]</strong>
+                        <strong>[[message.error_message_body.username]]</strong>
+                        <strong>[[message.error_message_body.mobile]]</strong>
+                        <strong>[[message.error_message_body.firstname]]</strong>
+                        <strong>[[message.error_message_body.lastname]]</strong>
+                        <strong>[[message.error_message_body.email]]</strong>
+
                     </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="field-1" name="firstname" class="control-label">Firstname</label>
-                                    <input type="text" name="lastname"  v-model="customerForm.firstname" class="form-control" id="field-1" placeholder="John">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="field-2" class="control-label">Lastname</label>
-                                    <input type="text" name="lastname" v-model="customerForm.lastname" class="form-control" id="field-2" placeholder="Doe">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="field-3" class="control-label">Mobile</label>
-                                    <input type="text" name="mobile" v-model="customerForm.mobile" class="form-control" id="field-3" placeholder="Address">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="field-3" class="control-label">Email</label>
-                                    <input type="text" name="email"  v-model="customerForm.email" class="form-control" id="field-3" placeholder="Address">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="field-4" class="control-label">Patient Type</label>
-                                    <input type="text" class="form-control" id="field-4" placeholder="Boston">
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                        <button type="button"  @click="savePatient" class="btn btn-info waves-effect waves-light">Save changes</button>
-                        
-                    </div>
-                
-                </div> -->
-            </div>
+            
         </div>
 </div>
 
@@ -270,11 +218,11 @@
 
 {% block script %}
 <script>
-    $(document).ready(function(){
-        $('#datepicker').datepicker({
-            format: 'yyyy-mm-dd',
-        });
-    });
+    // $(document).ready(function(){
+    //     $('.datepicker').datepicker({
+    //         format: 'yyyy-mm-dd',
+    //     });
+    // });
    // var Toasted = require('vue-toasted').default
    Vue.use(VueToast);
    var app = new Vue({
@@ -286,6 +234,7 @@
         fk_doctor_user_id : null,
         appointmentDate : '',
         remarks: '',
+        visit_type: '',
        selectedPatient : null,
        selectedDoctor : null,
        loading: false,
@@ -303,6 +252,10 @@
                 p_type_title: ""
             }
         }],
+        message : {
+            error_message_body: '',
+            error_status : false,
+        },
        Visit : [{
            id: 0,
            amount: "",
@@ -316,9 +269,14 @@
         firstname : "",
         lastname: "",
         email : "",
-        patient_type : "",
-        mobile : ""
+        patient_type_id : "",
+        mobile : "",
+        visit_type: '',
+        address: '',
+        date_of_birth: ''
     },
+
+  
 
 }, //Data Closed
      methods : {
@@ -333,8 +291,9 @@
                data: {
                     fk_customer_user_id: this.fk_customer_user_id,
                     fk_doctor_user_id : this.fk_doctor_user_id,
-                    appointmentDate : this.appointmentDate,
+                    appointmentDate : '2020-01-01', //this.appointmentDate,
                     remarks : this.remarks,
+                    visit_type : this.visit_type,
                },
                }) //.then(response=> cartitem.variation = response.data)
                .then((getResponse) => {
@@ -411,6 +370,9 @@
                     lastname : this.customerForm.lastname,
                     mobile : this.customerForm.mobile,
                     email : this.customerForm.email,
+                    date_of_birth : this.customerForm.date_of_birth,
+                    address : this.customerForm.address,
+                    patient_type_id : this.customerForm.patient_type_id,
 
                   // This is the body part
                 },
@@ -419,7 +381,8 @@
                     $('#con-close-modal').modal('hide')
                     console.log(getResponse.data);
                     this.getPatient();
-                    this.selectedPatient = getResponse.data.user_id;
+                    // this.selectedPatient = getResponse.data.user_id;
+                    this.fk_customer_user_id = getResponse.data.user_id;
                     console.log(this);
                     
 
@@ -427,47 +390,15 @@
                 .catch((error) => {    
                     console.log(error.response.data);
                     if(error.response){
-                        this.error_messages.message = error.response.data;
+                        this.message.error_message_body = error.response.data;
+                        this.message.error_status = true;
                     }
                             // console.log(error.response.status);
                             // console.log(error.response.headers);
                 });
                   
         }
-        // savePatient: function() {
-        //         axios({
-        //         method: 'post',
-        //         url:  '/api/register/',
-        //         headers: {
-        //                         'Content-Type': 'application/json',
-        //                         'X-CSRFToken': '{{ csrf_token }}'
-        //                     }, 
-        //         data: {
-        //             firstname : this.customerForm.firstname,
-        //             lastname : this.customerForm.lastname,
-        //             mobile : this.customerForm.mobile,
-        //             email : this.customerForm.email,
-
-        //           // This is the body part
-        //         },
-        //         }) //.then(response=> cartitem.variation = response.data)
-        //         .then((getResponse) => {
-        //             $('#con-close-modal').modal('hide')
-        //             console.log(getResponse.data);
-        //             this.getPatient();
-        //             this.selectedPatient = getResponse.data.user_id;
-        //             console.log(this);
-                    
-
-        //         })
-        //         .catch(function (error) {
-        //             console.log(error);
-        //             console.log("Error while fetching market updates");
-        //         });
-                  
-        // }
-
-      
+    
      }, //end method
      
 
@@ -476,6 +407,11 @@
      mounted() {
         this.getPatient();
         this.getDoctors();
+        $('.datepicker').datepicker({
+            onSelect: function(dateText) { 
+                $(this)[0].dispatchEvent(new Event('input', { 'bubbles': true }))
+            }
+            });
      },
    })
  </script>

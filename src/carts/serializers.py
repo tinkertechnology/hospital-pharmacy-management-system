@@ -263,6 +263,7 @@ class CartItemModelSerializer(serializers.ModelSerializer):
 		data['amount'] = request.data.get('amount') #for transaction table default = 0
 		data['comment'] = request.data.get('comment') # if remarks added
 		data['fk_type_id'] = request.data.get('fk_type_id') #transaction types like refund deposit etc
+		data['fk_counter_id'] = request.data.get('fk_counter_id')
 		cartItem = CartService.CartItemCreateService(data)
 		print(cartItem.__dict__)
 		# transaction = {

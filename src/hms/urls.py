@@ -321,7 +321,7 @@ handler500 = views.handler500
 
 
 
-from orders.invoice import GeneratePDF
+from orders.invoice import GeneratePDF, GenerateFullPDF
 
 urlpatterns += [
     path(r'admin/', admin.site.urls),
@@ -365,6 +365,7 @@ urlpatterns += [
     path('api/VisitAPIView/', VisitAPIView.as_view(), name="VisitAPIView"),
 
     path('api/send_invoice_pdf/<int:cart_id>/',GeneratePDF.as_view(), name='pdf_send_email'),
+    path('api/full_bill/<int:cart_id>/',GenerateFullPDF.as_view(), name='pdf_send_email'),
 
     path('api/patients/', PatientUserListAPIView.as_view(), name="patients-lists"),
 

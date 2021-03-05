@@ -256,7 +256,7 @@ class ValidateOTP(APIView):
 		else:
 			return Response({"Fail": "Please both OTP code and mobile number"}, status.HTTP_400_BAD_REQUEST)
 
-
+from datetime import datetime
 class RegisterAPI(APIView):
 
 	@csrf_exempt
@@ -271,9 +271,10 @@ class RegisterAPI(APIView):
 		firstname = request.data.get('firstname')
 		lastname = request.data.get('lastname')
 		patient_type = request.data.get('patient_type')
-		# if firstname and lastname:
-		# 	return Response({"Fail": "Please enter your firstname and lastname"}, status.HTTP_400_BAD_REQUEST)
-
+		date_of_birth = request.data.get('date_of_birth')
+		if date_of_birth:
+			date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d').date()
+		
 		if mobile and password:	
 			if len(mobile)!=10:
 				return Response({"Fail": "Please check your mobile number, it should be 10 digit"}, status.HTTP_400_BAD_REQUEST)
@@ -283,18 +284,20 @@ class RegisterAPI(APIView):
 						'email': email,
 						'username': mobile,
 						'firstname': firstname,
-						'lastname':lastname
+						'lastname':lastname,
+						'date_of_birth': date_of_birth,
 
 					}
 			serializer = CreateUserSerializer(data = temp_data)
 			serializer.is_valid(raise_exception = True)
 			user = serializer.save()
 			##saving the created user as patient 
-			usertype = UserType()
-			usertype.user_id = user.id
-			usertype.user_type_id = 1
-			usertype.save() 
-			# old.delete()
+			## only save if usertype is selected from form
+			if request.data.get('patient_type_id'):
+				usertype = UserType()
+				usertype.user_id = user.id
+				usertype.user_type_id = request.data.get('patient_type_id')
+				usertype.save() 
 			data = {}
 			return Response({
 				'status': True,

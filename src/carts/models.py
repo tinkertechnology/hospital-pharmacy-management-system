@@ -17,11 +17,6 @@ from products.models import Variation, VariationBatch
 
 class CartItem(models.Model):
 	cart = models.ForeignKey("Cart", on_delete=models.CASCADE, blank=True)
-
-	# will be filled later
-	# after this cart item is added to storewiseorder table
-	# fk_storewise_order = models.ForeignKey("orders.StoreWiseOrder", on_delete=models.CASCADE, blank=True, null=True) 
-	# item = models.ForeignKey(Variation, on_delete=models.CASCADE)
 	fk_variation_batch = models.ForeignKey(VariationBatch, on_delete=models.CASCADE, null=True)
 	# quantity = models.PositiveIntegerField(default=1)
 	quantity = models.DecimalField(max_digits=25, decimal_places=2, default=1.00)	
@@ -83,12 +78,8 @@ class Cart(models.Model):
 	tax_percentage  = models.DecimalField(max_digits=10, decimal_places=5, default=0.085)
 	tax_total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
-	#user ko cart active 1uta matrai huncha db ma...
-	#create_order garepachi 0 set huncha... yo bhaneko user ko cart chaina 
-	#1 bhayo bhane usko cart ma aru item ne add huncha. 
 	active = models.BooleanField(default=True)
 	fk_bill_created_user = models.ForeignKey(User, related_name="bill_created_by", on_delete=models.CASCADE, null=True, blank=True)
-	# 0 online order , 1 offline staff order , 2 misscall order 
 	is_auto_order = models.IntegerField(default=0) 
 	credit = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
 	debit = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
