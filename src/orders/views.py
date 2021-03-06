@@ -678,6 +678,7 @@ def cartitems(request):
 	return pos1(request)
 
 def carts(request):
+	today = datetime.now().date()
 	user_id = request.GET.get('user_id')
 	visit_id = request.GET.get('visit_id')
 	user = User.objects.filter(pk=user_id).first()
@@ -687,7 +688,7 @@ def carts(request):
 		carts = Cart.objects.order_by('-id').filter(user_id=user_id)
 	if visit_id:
 		carts = Cart.objects.order_by('-id').filter(fk_visit_id=visit_id)#(user_id=user_id)
-
+	print(timezone.now())
 	# print(cart_id)
 	context = {
 		'user_id' : user_id,

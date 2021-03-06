@@ -7,6 +7,7 @@ from django.db.models.signals import pre_save, post_save, post_delete
 from django.contrib.auth import get_user_model
 from counter.models import Counter
 User = get_user_model()
+from orders.convert_num_to_words import generate_amount_words
 # from orders.models import StoreWiseOrder
 
 
@@ -101,6 +102,9 @@ class Cart(models.Model):
 	def is_complete(self):
 		self.active = False
 		self.save()
+	
+	def in_words(self):
+		return generate_amount_words(self.total)
 
 
 

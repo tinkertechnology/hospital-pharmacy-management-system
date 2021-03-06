@@ -880,6 +880,7 @@ class DoctorUserListAPIView(ListAPIView):
 # 		return queryset
 
 from .models import Visit
+from django.utils import timezone
 from django.core.paginator import Paginator
 
 class VisitAPIView(APIView):
@@ -897,7 +898,7 @@ class VisitAPIView(APIView):
 		if customer_name:
 			qs=qs.filter(fk_customer_user__firstname=customer_name, fk_customer_user__lastname=customer_name)
 		else:
-			qs = qs.all()
+			qs = qs.filter(timestamp__gte=timezone.now().replace(hour=0, minute=0, second=0), timestamp__lte=timezone.now().replace(hour=23, minute=59, second=59))#all()
 		paginator = Paginator(qs, 5)  # Show 25 contacts per page
 		# Get the current page number
 		page = request.GET.get('page')
