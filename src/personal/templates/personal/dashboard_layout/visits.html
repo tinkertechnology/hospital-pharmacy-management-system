@@ -22,7 +22,15 @@
                     </div>
                     <div class="form-group mr-3">
                         <label for="exampleInputEmail2" class="mr-1">Visit Time</label>
-                        <input type="email" class="form-control" id="exampleInputEmail2">
+                        <input type="text" data-date-format="yyyy-mm-dd"  max="2222-05-26" name="visit_date" class="form-control date" id="exampleInputEmail2">
+                    </div>
+                    <div class="form-group mr-3">
+                        <label for="exampleInputEmail2" class="mr-1">Visit Type</label>
+                        <select name="fk_visit" class="form-group">
+                            {% for visit in visit_types %}    
+                                <option value="{{visit.id}}">{{visit.title}}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="form-group mr-3">
                         <button class="btn btn-purple">Filter</button>
@@ -55,6 +63,7 @@
                                 <th> Email</th>
                                <th>Assigned Doctor</th>
                                <th>Visit Status</th>
+                               <th>Visit Type</th>
                                <th>Checkout Time</th>
                                 <th>Action</th>
                             </tr>
@@ -71,6 +80,7 @@
                                 <td>{{visit.fk_customer_user.email}}}</td>
                                 <td>{{ visit.fk_doctor_user.firstname }} {{ visit.fk_doctor_user.lastname }}</td>
                                 <td>{% if visit.status %}Finished {% else %} Pending {% endif %}</td>
+                                <td>{{visit.fk_visit.title}}</td>
                                 <td>{{visit.checkout_at}}</td>
                                 <td><a class="btn btn-primary" href="/carts?visit_id={{visit.id}}">details</a></td>
                             </tr>
@@ -294,7 +304,12 @@
      
 
       mounted() {
-
+            $('.date').datepicker({
+                // dateFormat: 'yyyy-mm-dd',
+                onSelect: function(dateText) { 
+                    $(this)[0].dispatchEvent(new Event('input', { 'bubbles': true }))
+                }
+                });
       },
     })
   </script>

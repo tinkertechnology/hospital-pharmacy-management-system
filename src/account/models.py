@@ -99,7 +99,11 @@ class Nurse(models.Model):
 
 # class PatientType(models.Model):
 # 	title = models.CharField(max_length=100, null=True, blank=True)
+class VisitType(models.Model):
+	title = models.CharField(max_length=100, null=True, blank=True)
 
+	def __str__(self):
+		return self.title
 
 class Visit(models.Model):
 	fk_customer_user = models.ForeignKey(Account, on_delete=models.CASCADE)
@@ -109,7 +113,10 @@ class Visit(models.Model):
 	timestamp = models.DateTimeField(verbose_name='visit date', auto_now_add=True, null=True)
 	visit_status = models.BooleanField(default=0, null=True, blank=True)
 	checkout_at = models.DateTimeField(verbose_name='visit out time',null=True, blank=True)
-
+	fk_visit = models.ForeignKey(VisitType, null=True, blank=True, on_delete=models.CASCADE)
+	
+	class Meta:
+		ordering = ['-timestamp']
 	def __str__(self):
 		return '%s-%s' %(self.fk_customer_user.mobile, self.fk_doctor_user.mobile)
 
@@ -136,9 +143,5 @@ class PasswordResetOTP(models.Model):
 		return str(self.mobile) + 'is sent' +str(self.otp)
 
 
-class VisitType(models.Model):
-	title = models.CharField(max_length=100, null=True, blank=True)
 
-	def __str__(self):
-		return self.title
 # from products.models import Variation

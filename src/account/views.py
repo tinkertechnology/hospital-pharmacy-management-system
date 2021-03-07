@@ -879,17 +879,22 @@ class DoctorUserListAPIView(ListAPIView):
 # 		queryset = User.objects.filter(id__in=doctors_assigned.values('fk_user_id'))
 # 		return queryset
 
-from .models import Visit
+from .models import Visit, VisitType
 from django.utils import timezone
+from datetime import datetime as dt, timedelta
 from django.core.paginator import Paginator
 
 class VisitAPIView(APIView):
 	serializer_class = VisitSeriailizer
 
 	def get(self, request):
+		visit_types = VisitType.objects.all()
 		customer_id = request.GET.get('customer_id')
 		customer_mobile = request.GET.get('customer_mobile')
 		customer_name = request.GET.get('customer_name')
+		visit_date = request.GET.get('visit_date')
+		#dt.datetime(strptime(visit_date, '%Y-%m-%d'))
+		fk_visit = request.GET.get('fk_visit')
 		qs = Visit.objects
 		if customer_id:
 			qs = qs.filter(fk_customer_user_id=customer_id)
@@ -897,6 +902,11 @@ class VisitAPIView(APIView):
 			qs = qs.filter(fk_customer_user__mobile=customer_mobile)
 		if customer_name:
 			qs=qs.filter(fk_customer_user__firstname=customer_name, fk_customer_user__lastname=customer_name)
+		if visit_date:
+			visit_datetime_obj = dt.fromisoformat(visit_date)
+			qs = qs.filter(timestamp__gte=visit_datetime_obj, timestamp__lte=visit_datetime_obj+timedelta(hours=23, minutes=59, seconds=29))#all()
+		if fk_visit:
+			qs = qs.filter(fk_visit__id=fk_visit)
 		else:
 			qs = qs.filter(timestamp__gte=timezone.now().replace(hour=0, minute=0, second=0), timestamp__lte=timezone.now().replace(hour=23, minute=59, second=59))#all()
 		paginator = Paginator(qs, 5)  # Show 25 contacts per page
@@ -905,7 +915,7 @@ class VisitAPIView(APIView):
 		# Get the current slice (page) of products
 		qs = paginator.get_page(page)
 		template_name = "personal/dashboard_layout/visits.html"
-		return render(request, template_name, {'visits': qs})
+		return render(request, template_name, {'visits': qs, 'visit_types': visit_types})
 
 	
 		
@@ -915,11 +925,13 @@ class VisitAPIView(APIView):
 		fk_doctor_user_id =  request.data.get('fk_doctor_user_id')
 		remarks =  request.data.get('remarks')
 		appointment_date =  request.data.get('appointmentDate')
+		visit_type = request.data.get('visit_type')
 
 		if fk_customer_user_id and fk_doctor_user_id:
 			visit = Visit.objects.create(fk_customer_user_id=fk_customer_user_id,
 										 fk_doctor_user_id=fk_doctor_user_id,
 										 appointment_date=appointment_date,
+										 fk_visit_id=visit_type,
 										 remarks=remarks)
 			data = {
 				'success': 'Created',
