@@ -7,7 +7,7 @@
 
 <head>
     <style>
-          @font-face {
+          /* @font-face {
             font-family: Kalimati;
             src: url("/Users/abc/Downloads/Kalimati.ttf");
             }
@@ -15,7 +15,7 @@
 
             body {
             font-family: Kalimati;
-            }
+            } */
         @page {
             margin: 1cm;
             margin-bottom: 2cm;
@@ -102,7 +102,7 @@
             <tr>
                 <td style="text-align:left;vertical-align:top" colspan="7"></td>
             </tr>
-            
+            {% for cart in carts %}
                 <tr>
                     <td style="text-align:left;vertical-align:top">S.No.</td>
                     <td style="text-align:left;vertical-align:top">Description</td>
@@ -134,7 +134,7 @@
                  <tr>
                     <td>Total Incl. VAT: {{ cart.total }}</td>
                 </tr>
-           
+           {% endfor %}
         </tbody>
     </table>
 
@@ -144,7 +144,7 @@
             <td style="text-align: center;" colspan="3">{{hospital_info.name}} - page <pdf:pagenumber> of <pdf:pagecount></td>
             <td style="text-align: right;"colspan="2">Printed On: 12/06/2021 4:43:43 PM</td>
         </tr> -->
-       Printed By: CHANDRA    {{hospital_info.name}} - page <pdf:pagenumber> of <pdf:pagecount>   Printed On: 12/06/2021 4:43:43 PM
+       Printed By: {{printed_by}}  - page <pdf:pagenumber> of <pdf:pagecount>   Printed On: 12/06/2021 4:43:43 PM
     </div>
     <!-- <p class="separator">&nbsp;<p> -->
 </body>

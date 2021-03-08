@@ -27,8 +27,10 @@
                                 <th>#</th>
                                 <th>First Name</th>
                                 <th>Last Name</th>
+                                <th>Age</th>
                                 <th>Username</th>
                                 <th>Mobile</th>
+                                <th>Last Visit</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -38,8 +40,10 @@
                                 <th scope="row">{{ patient.id }}</th>
                                 <td>{{patient.firstname}}</td>
                                 <td>{{ patient.lastname }}</td>
+                                <td>{{patient.get_age}}</td>
                                 <td>{{ patient.mobile}}</td>
                                 <td>{{patient.mobile}}</td>
+                                <td>{{patient.get_last_visit}}</td>
                                 <td><a class="btn btn-primary" href="/carts?user_id={{patient.id}}">details</a></td>
                             </tr>
                             {% endfor %}

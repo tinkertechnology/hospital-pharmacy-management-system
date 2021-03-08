@@ -71,6 +71,7 @@ class GenerateFullPDF(APIView):
 		# total_sum_of_all_carts = sum(items.values_list('price', flat=True))
 		
 		total_in_words = generate_amount_words(total_sum_amount)
+		printed_by = request.user.firstname +' '+ request.user.lastname
 		print(total_in_words)
 		# items = cart.cartitem_set.all()#CartItem.objects.filter(cart_id=ordered_cart_id)
 		template = get_template('personal/dashboard_layout/invoice_full.html')
@@ -81,6 +82,7 @@ class GenerateFullPDF(APIView):
 			'hospital_info' : hospital_info,
 			'total_sum_subtotal' : total_sum_subtotal,
 			'total_sum_amount':total_sum_amount,
+			'printed_by' : printed_by
 
 		}
 

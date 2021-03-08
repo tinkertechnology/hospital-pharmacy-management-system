@@ -598,6 +598,7 @@
                     console.log(response);
                     this.getCart({{cart_id}});
                     $.notify("Item updated! ", "success");
+                    this.addRow();
 
                 })
                 .catch(function (error) {

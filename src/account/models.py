@@ -3,6 +3,9 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import RegexValidator
 from department.models import Department
 from specializationtype.models import SpecializationType
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+
 
 class MyAccountManager(BaseUserManager):
 	def create_user(self,email,mobile, username, password=None):
@@ -80,6 +83,18 @@ class Account(AbstractBaseUser):
 	def has_module_perms(self, app_label):
 		return True
 
+	def get_age(self):
+		delta = 'N/A'
+		if self.date_of_birth:
+			delta = relativedelta(datetime.now().date(), self.date_of_birth) 
+			return str(delta.years) + ' years'
+		return delta
+	
+	def get_last_visit(self, obj):
+		print(obj)
+		last_visit = obj.fk_customer_user.order_by('-timestamp').first()
+		print('last', last_visit)
+		return last_visit
 class Doctor(models.Model):
 	fk_user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
 	fk_department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name="doctor_department", null=True)
@@ -106,7 +121,7 @@ class VisitType(models.Model):
 		return self.title
 
 class Visit(models.Model):
-	fk_customer_user = models.ForeignKey(Account, on_delete=models.CASCADE)
+	fk_customer_user = models.ForeignKey(Account, related_name="fk_customer_user", on_delete=models.CASCADE)
 	fk_doctor_user = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="doctors_assigned")
 	appointment_date = models.DateField(null=True, blank=True)
 	remarks = models.CharField(max_length=200, null=True, blank=True)
