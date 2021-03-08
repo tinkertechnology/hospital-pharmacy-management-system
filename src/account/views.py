@@ -32,6 +32,10 @@ import datetime
 from django.utils import timezone
 from counter.models import Counter
 from users.models import UserTypes
+from .models import Visit, VisitType
+from datetime import datetime as dt, timedelta
+from django.core.paginator import Paginator
+from django.contrib import messages
 
 User = get_user_model()
 
@@ -879,10 +883,7 @@ class DoctorUserListAPIView(ListAPIView):
 # 		queryset = User.objects.filter(id__in=doctors_assigned.values('fk_user_id'))
 # 		return queryset
 
-from .models import Visit, VisitType
-from django.utils import timezone
-from datetime import datetime as dt, timedelta
-from django.core.paginator import Paginator
+
 
 class VisitAPIView(APIView):
 	serializer_class = VisitSeriailizer
@@ -941,3 +942,63 @@ class VisitAPIView(APIView):
 			return Response(data, status=200)
 		else:
 			return Response('failed', status=400)
+
+
+
+# Create your views here.
+def visit_type_index(request):
+	visit_types = VisitType.objects.all()
+	return render(request, 'account/visit_type_index.html', {'visit_types': visit_types})
+
+from .forms import VisitTypeForm
+def  visit_type_add(request):
+	fstatusType = "Add"
+	fpostType = "Visit Type"
+
+	if request.method=='POST':
+		visit_types = VisitTypeForm(request.POST)
+
+		if visit_types.is_valid():
+			print('Passed')
+			visit_types.save()
+			return redirect('/visit-type/', messages.success(request, 'Visit Type added successfully.', 'alert-success'))
+			# return HttpResponse('Added successfully')
+		else:
+			print(vendor_details.errors)
+			print('Failed')
+			return redirect('/visit-type/', messages.success(request, 'All fields are required.', 'alert-success'))
+	else:
+		form = VisitTypeForm()
+	
+	return render(request, 'account/visit_type_add.html', {'form':form, 'fstatusType': fstatusType, 'fpostType': fpostType})
+
+
+
+
+def visit_type_edit(request, id):
+	visit_types = VisitTypeForm(request.POST)
+
+	fstatusType = "Update"
+	fpostType = "Visit Type"
+	if request.method=='POST':
+		form = VisitTypeForm(request.POST, instance=visit_types)
+
+		if form.is_valid():
+			print('Passed')
+			if form.save():
+				# return redirect('/employee/%s/edit' %(emp_id), messages.success(request, 'Education Info added successfully.', 'alert-success'))
+				return redirect('/visit-type/', messages.success(request, 'Vendor Management updated successfully', 'alert-success'))
+			else:
+				return redirect('/visit-type/', messages.success(request, 'There was a problem connecting to the server. Please try again later.', 'alert-success'))
+			form.save()
+			# return redirect('/employee/%s/edit' %(emp_id), messages.success(request, 'Educations Info added successfully.', 'alert-success'))
+	else:
+		form = VisitTypeForm(instance=visit_types)
+
+	return render(request, 'account/visit_type_add.html', {'form':form, 'fpostType':fpostType})
+
+
+def delete(request, id):
+	print(id)
+
+

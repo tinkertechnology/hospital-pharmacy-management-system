@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
-
-from account.models import Account
+from django.forms import ModelForm
+from account.models import Account, VisitType
 
 
 class RegistrationForm(UserCreationForm):
@@ -66,4 +66,10 @@ class AccountUpdateForm(forms.ModelForm):
 		raise forms.ValidationError('Mobile "%s" is already in use.' % account)
 
 
+
+class VisitTypeForm(ModelForm):
+	forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class':'form-control'}), required=True)
+	class Meta:
+		model = VisitType
+		fields = '__all__'
 

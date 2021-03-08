@@ -64,13 +64,12 @@ class GenerateFullPDF(APIView):
 		hospital_info = Office.objects.all().first()	
 		user_id = request.GET.get('user_id')
 		# print(user_id)
-		carts = Cart.objects.filter(user_id=user_id)
+		carts = Cart.objects.filter(user_id=user_id).order_by('-timestamp')
 		total_sum_amount = sum(carts.values_list('total', flat=True))
 		total_sum_subtotal = sum(carts.values_list('subtotal', flat=True))
 		# print(dict_total)
 		# total_sum_of_all_carts = sum(items.values_list('price', flat=True))
 		
-
 		total_in_words = generate_amount_words(total_sum_amount)
 		print(total_in_words)
 		# items = cart.cartitem_set.all()#CartItem.objects.filter(cart_id=ordered_cart_id)
@@ -81,7 +80,7 @@ class GenerateFullPDF(APIView):
 			'total_in_words':total_in_words,
 			'hospital_info' : hospital_info,
 			'total_sum_subtotal' : total_sum_subtotal,
-			'total_sum_amount':total_sum_amount
+			'total_sum_amount':total_sum_amount,
 
 		}
 

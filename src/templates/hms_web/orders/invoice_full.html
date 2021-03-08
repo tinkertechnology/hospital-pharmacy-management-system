@@ -2,11 +2,20 @@
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Invoice #123</title>
 
 <head>
     <style>
+          @font-face {
+            font-family: Kalimati;
+            src: url("/Users/abc/Downloads/Kalimati.ttf");
+            }
+            
+
+            body {
+            font-family: Kalimati;
+            }
         @page {
             margin: 1cm;
             margin-bottom: 2cm;
@@ -23,13 +32,15 @@
             table { -pdf-keep-with-next: true; }
             .page-break{
         page-break-after: always;
+
+      
     }
             
         }
     </style>
  
 <body>
-
+   
     <!-- <p>Keep these lines</p> -->
     <table border="0" style="font-family: sans-serif, serif; font-size: 14px; padding: 0px;">
         <div id="header_content">
@@ -93,11 +104,27 @@
             <td colspan="4" style="text-align: left;">Particulars</td>
             <td colspan="4" style="text-align: left;">Batch (if any)</td>
             <td colspan="5" style="text-align: left;">Quantity</td>
+            <td colspan="5"> Bill.no </td>
             <td colspan="5">Unit Price</td>
             <td colspan="5">Amount</td>
-            <td colspan="2">tax</td>
+            <td colspan="2">Date</td>
         </tr>
         {% for item in cart.cartitem_set.all %}
+        {% if item.is_return %}
+            <b>Returned</b>
+            <tr class="gradeX odd" style="text-align: center; font-size: 14px; padding-top: 2px; padding-bottom: 2px;">
+                <td colspan="3">{{ forloop.counter }}</td>
+                <td colspan="4" style="text-align: left;">{{item.fk_variation_batch.fk_variation.title}}</td>
+                <td colspan="5" style="text-align: left;">{{item.fk_variation_batch.batchno}}</td>
+                <td colspan="5" style="text-align: left;">{{item.quantity}}</td>
+                <td colspan="5" style="text-align: left;">{{cart.id}}</td>
+                <td colspan="5">{{item.ordered_price}}</td>
+                <td colspan="5">{{item.line_item_total}}</td>
+                <td colspan="2">{{item.tax_amount}}</td>          
+            </tr>   
+        
+
+        {% else %}
         <tr class="gradeX odd" style="text-align: center; font-size: 14px; padding-top: 2px; padding-bottom: 2px;">
             <td colspan="3">{{ forloop.counter }}</td>
             <td colspan="4" style="text-align: left;">{{item.fk_variation_batch.fk_variation.title}}</td>
@@ -107,7 +134,7 @@
             <td colspan="5">{{item.line_item_total}}</td>
             <td colspan="2">{{item.tax_amount}}</td>          
         </tr>   
-      
+        {% endif %}
       
         {% endfor %}
 

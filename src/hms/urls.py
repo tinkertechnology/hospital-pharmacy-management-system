@@ -52,7 +52,11 @@ from account.views import (
     PatientUserListAPIView,
     CustomerPatientUserList,
     DoctorUserListAPIView,
-    VisitAPIView
+    VisitAPIView,
+    ##fbv
+    visit_type_index,
+    visit_type_add,
+    visit_type_edit
 )
 
 
@@ -375,6 +379,9 @@ urlpatterns += [
     path('api/VariationBatchAPIView/', VariationBatchAPIView.as_view(), name="VariationBatchAPIView"),
     path('api/VariationBatchPriceAPIView/', VariationBatchPriceAPIView.as_view(), name="VariationBatchPriceAPIView"),  
     path('api/PurchaseVariationBatchAPIView/', PurchaseVariationBatchAPIView.as_view(), name="PurchaseVariationBatchAPIView"),
+    re_path('^visit-type/', visit_type_index, name="visit-types"),
+    re_path('^visit_type_add/', visit_type_add, name="visit_type_add"),
+    re_path('^visit-type/<int:id>/edit/', visit_type_edit, name="visit-types-edit"),
     
 
     # DEPARTMENT ROUTE

@@ -25,6 +25,7 @@ class CartItem(models.Model):
 	line_item_total = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
 	orginal_price = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	ordered_price = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)	
+	is_return = models.BooleanField(default=False, null=True, blank=True)
 
 	def __unicode__(self):
 		return self.item.title

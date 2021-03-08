@@ -19,6 +19,7 @@ def CartItemCreateService(data):
 	cartitem_id = data.get('cartitem_id')
 	print('cartitem_id',cartitem_id)
 	debit = data.get('debit', 0)
+	is_return = data.get('is_return')
 	credit = data.get('credit', 0)
 	fk_bill_created_user_id = data.get('fk_bill_created_user_id')
 	fk_delivery_user_id = data.get('fk_delivery_user_id', None)
@@ -54,7 +55,7 @@ def CartItemCreateService(data):
 		cartItem.quantity = quantity
 		# aitem.item_id = item_id
 		cartItem.fk_variation_batch_id = fk_variation_batch_id
-	
+		cartItem.is_return = is_return
 		cartItem.save()
 
 		# return aitem

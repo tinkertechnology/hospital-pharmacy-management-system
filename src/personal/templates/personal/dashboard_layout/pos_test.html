@@ -93,6 +93,7 @@
                                         <th>Rate</th>
                                         <th>Line Item</th>
                                         <th>Stock</th>
+                                        <th>Return</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -116,6 +117,7 @@
                                             <td v-else>
                                                 [[ cartitem.stock_quantity ]]
                                         </td>
+                                        <td><input v-model="cartitem.is_return" @change="addToCart(cartitem)" type="checkbox"></td>
                                         <td><button class="btn btn-danger"  @click="deleteRow(cartitem.id, index)">X</button></td>
                                     </tr>
                                     <button class="btn btn-primary float-right" @click="addRow" >+</button>
@@ -299,6 +301,7 @@
                 "fk_store_title": "",
                 "stock_quantity":"",
                 "batchno": "",
+                "is_return": false,
                 variation : {id: '',title :"",price:"",sale_price:null,discount:"",inventory:""},
             }
         ],
@@ -584,6 +587,7 @@
                     quantity: cartitem.quantity,
                     cartitem_id : cartitem.id,
                     fk_counter_id : this.fk_counter_id,
+                    is_return : cartitem.is_return
                     // fk_store_id : 1,
                     // cart_id : {{cart_id}},
                     // p_id: this.patients.id, 
