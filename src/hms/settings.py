@@ -113,13 +113,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     # My apps
+    
     'personal',
     'account',
     'carts',
     'products',
     'orders',
     'inquiry',
+    
     'users',
     'store',
     'payment',
@@ -130,7 +133,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
-    'rest_registration',
+    # 'rest_registration',
     'hms_web',
     'app_settings',
     'department',
@@ -142,6 +145,7 @@ INSTALLED_APPS = [
     'vendor',
 
 
+
  
 ]
 
@@ -150,6 +154,7 @@ AUTH_USER_MODEL = 'account.Account'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -303,24 +308,12 @@ FCM_SERVER_KEY = 'AAAApJ4RTPk:APA91bE0xSBIy2bGRLwWTtP6tgBP0ii8rnc7DCqS8kLGqxataC
 
 
 
-
-
-REST_REGISTRATION = {
-    'SEND_RESET_PASSWORD_LINK_SERIALIZER_USE_EMAIL': True,
-    'REGISTER_VERIFICATION_ENABLED': True,
-    'RESET_PASSWORD_VERIFICATION_ENABLED': True,
-    'REGISTER_EMAIL_VERIFICATION_ENABLED': True,
-
-    'REGISTER_EMAIL_VERIFICATION_URL': SERVER_HOST+'/accounts/verify-email/',
-    # 'REGISTER_VERIFICATION_URL': 'http://localhost:8000/accounts/verify-registration/',
-    'REGISTER_VERIFICATION_URL': SERVER_HOST+'/accounts-verify-registration/',
-
-    'RESET_PASSWORD_VERIFICATION_URL': SERVER_HOST+ '/accounts-reset-password/',
-    # 'SEND_RESET_PASSWORD_LINK' : 'http://localhost:8000/jpt/',
-    
-
-    'VERIFICATION_FROM_EMAIL': EMAIL_HOST_USER,
-}
+CORS_ALLOWED_ORIGINS = [
+    "https://example.com",
+    "https://sub.example.com",
+    "http://localhost:8080",
+    "http://127.0.0.1:9000"
+]
 LOGIN_REDIRECT_URL = '/dashboard/'
 
 # AUTHENTICATION_BACKENDS = (

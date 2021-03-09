@@ -6,13 +6,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from .serializer import CreateUserSerializer, ProfileSerializer, SurveyRegisterSerializer
+from .serializer import CreateUserSerializer, ProfileSerializer #, SurveyRegisterSerializer
 from django.http import HttpResponse
 from .serializer import PatientSerializer
 from users.models import UserType
 from account.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
 from django.contrib.auth.hashers import make_password
-from .models import Account,CallLog, PhoneOTP, PasswordResetOTP, CustomerRegisterSurvey, CustomerDepotRequest, CustomerMessage
+from .models import Account, PhoneOTP, PasswordResetOTP #FsurvgisterSurvey, CustomerDepotRequest, CustomerMessage
 from django.contrib.auth import get_user_model
 import uuid
 from django.shortcuts import get_object_or_404 
@@ -21,7 +21,7 @@ import requests
 from django.core.mail import send_mail
 from rest_framework.generics import CreateAPIView, ListAPIView
 from store.models import StoreUser #., StoreAccount, 
-from .serializer import UserSerializer, CallLogSerializer
+from .serializer import UserSerializer#, CallLogSerializer
 from django.http import Http404
 from django.db.models import Count, Max, Min, Avg
 from carts.models import CartItem, Cart
@@ -31,6 +31,11 @@ from orders.constants import ORDER_TYPE_MISSCALL
 import datetime
 from django.utils import timezone
 from counter.models import Counter
+from users.models import UserTypes
+from .models import Visit, VisitType
+from datetime import datetime as dt, timedelta
+from django.core.paginator import Paginator
+from django.contrib import messages
 
 User = get_user_model()
 
@@ -69,7 +74,7 @@ def privacy_policy(request):
 def login_view(request):
 	settings.DLFPRINT()
 	print('login')
-	context = {}#{'counters' : Counter.objects.all()}
+	context = {'counters' : Counter.objects.all()}
 
 	user = request.user
 	if user.is_authenticated: 
@@ -255,7 +260,7 @@ class ValidateOTP(APIView):
 		else:
 			return Response({"Fail": "Please both OTP code and mobile number"}, status.HTTP_400_BAD_REQUEST)
 
-
+from datetime import datetime
 class RegisterAPI(APIView):
 
 	@csrf_exempt
@@ -270,9 +275,10 @@ class RegisterAPI(APIView):
 		firstname = request.data.get('firstname')
 		lastname = request.data.get('lastname')
 		patient_type = request.data.get('patient_type')
-		# if firstname and lastname:
-		# 	return Response({"Fail": "Please enter your firstname and lastname"}, status.HTTP_400_BAD_REQUEST)
-
+		date_of_birth = request.data.get('date_of_birth')
+		if date_of_birth:
+			date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d').date()
+		
 		if mobile and password:	
 			if len(mobile)!=10:
 				return Response({"Fail": "Please check your mobile number, it should be 10 digit"}, status.HTTP_400_BAD_REQUEST)
@@ -282,18 +288,20 @@ class RegisterAPI(APIView):
 						'email': email,
 						'username': mobile,
 						'firstname': firstname,
-						'lastname':lastname
+						'lastname':lastname,
+						'date_of_birth': date_of_birth,
 
 					}
 			serializer = CreateUserSerializer(data = temp_data)
 			serializer.is_valid(raise_exception = True)
 			user = serializer.save()
 			##saving the created user as patient 
-			usertype = UserType()
-			usertype.user_id = user.id
-			usertype.user_type_id = 1
-			usertype.save() 
-			# old.delete()
+			## only save if usertype is selected from form
+			if request.data.get('patient_type_id'):
+				usertype = UserType()
+				usertype.user_id = user.id
+				usertype.user_type_id = request.data.get('patient_type_id')
+				usertype.save() 
 			data = {}
 			return Response({
 				'status': True,
@@ -562,61 +570,6 @@ from django.core.mail import send_mail
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
-class CustomerRegisterSurveyAPIView(APIView):
-	def post(self, request, *args, **kwargs):
-		settings.DLFPRINT()
-		print(request.data)
-		mobile = request.data.get('mobile', False)
-		firstname = request.data.get('firstname', False)
-		lastname = request.data.get('lastname', False)
-		location = request.data.get('location', False)
-		email = request.data.get('email', False)
-		try:
-			validate_email(email.strip())
-		except:
-			return Response({"Fail": "Incorrect email format, please try again"}, status.HTTP_400_BAD_REQUEST)
-
-		# if not valid_email:
-		# 	return Response({"Fail": "Email format is incorrect, please input correct email address"}, status.HTTP_400_BAD_REQUEST)
-		know_about_us = request.data.get('know_about_us', False)
-		other = request.data.get('other', False)
-		if not mobile:
-			return Response({"Fail": "Mobile number required"}, status.HTTP_400_BAD_REQUEST)
-		if len(mobile)<10:
-			return Response({"Fail": "Mobile number must be 10 digits"}, status.HTTP_400_BAD_REQUEST)
-		if not firstname and not lastname:
-			return Response({"Fail": "Both firstname and lastname is required"}, status.HTTP_400_BAD_REQUEST)
-		if not location:
-			return Response({"Fail": "Location is required"}, status.HTTP_400_BAD_REQUEST)
-		if not email:
-			return Response({"Fail": "Your email is required"}, status.HTTP_400_BAD_REQUEST)
-		if not know_about_us:
-			return Response({"Fail": "let us know how you know about us"}, status.HTTP_400_BAD_REQUEST)
-		# if not other:
-		# 	return Response({"Fail": "Message is required"}, status.HTTP_400_BAD_REQUEST)
-		
-		survey_data = CustomerRegisterSurvey()
-		survey_data.mobile = mobile
-		survey_data.firstname = firstname
-		survey_data.lastname = lastname
-		survey_data.location = location
-		survey_data.email = email
-		survey_data.know_about_us = know_about_us
-		# survey_data.other = other
-		survey_data.save()
-
-		send_mail(
-		    'Survey Notification',
-		    'Name:'+ firstname + ' ' + lastname  + ' mobile:'+mobile + ' location: '+location 
-		    	+ 'i know sarovara by: '+know_about_us ,
-		    [email],
-		    [settings.EMAIL_HOST_USER],
-		    fail_silently=False,
-		)
-		return Response({
-			'status': True,
-			'detail': 'Thank you for your time'
-		})
 
 
 class CustomerMessageForDepotAPIView(APIView):
@@ -689,24 +642,6 @@ class CustomerMessageAPIView(APIView):
 			'status': True,
 			'detail': 'Thank you for your Message'
 		})
-
-class SurveyRegisterAPIView(ListAPIView):
-	serializer_class = SurveyRegisterSerializer
-	def get(self, request):
-		settings.DLFPRINT()
-		mobile = request.GET.get('mobile', '')
-
-		data = CustomerRegisterSurvey.objects.filter(mobile__iexact=mobile).last()
-		details = {}
-		if data:
-			details = {
-			
-			 "firstname": data.firstname, "lastname":data.lastname, "email": data.email
-			}
-		else:
-			return Response({"Fail": "not found"}, status.HTTP_400_BAD_REQUEST)
-
-		return Response(details) 
 
 
 class CheckTokenAPIView(APIView):
@@ -917,6 +852,7 @@ class CustomerPatientUserList(ListView):
 
 	def get_context_data(self, **kwargs):
 		context = super(CustomerPatientUserList, self).get_context_data(**kwargs)
+		context['patient_types'] = UserTypes.objects.all()
 		# context['filter'] = self.request.GET.get('filter', 'give-default-value')
 		# context['orderby'] = self.request.GET.get('orderby', 'give-default-value')
 
@@ -947,25 +883,40 @@ class DoctorUserListAPIView(ListAPIView):
 # 		queryset = User.objects.filter(id__in=doctors_assigned.values('fk_user_id'))
 # 		return queryset
 
-from .models import Visit
-from django.core.paginator import Paginator
+
+
 class VisitAPIView(APIView):
 	serializer_class = VisitSeriailizer
 
 	def get(self, request):
+		visit_types = VisitType.objects.all()
 		customer_id = request.GET.get('customer_id')
+		customer_mobile = request.GET.get('customer_mobile')
+		customer_name = request.GET.get('customer_name')
+		visit_date = request.GET.get('visit_date')
+		#dt.datetime(strptime(visit_date, '%Y-%m-%d'))
+		fk_visit = request.GET.get('fk_visit')
 		qs = Visit.objects
 		if customer_id:
 			qs = qs.filter(fk_customer_user_id=customer_id)
+		if customer_mobile:
+			qs = qs.filter(fk_customer_user__mobile=customer_mobile)
+		if customer_name:
+			qs=qs.filter(fk_customer_user__firstname=customer_name, fk_customer_user__lastname=customer_name)
+		if visit_date:
+			visit_datetime_obj = dt.fromisoformat(visit_date)
+			qs = qs.filter(timestamp__gte=visit_datetime_obj, timestamp__lte=visit_datetime_obj+timedelta(hours=23, minutes=59, seconds=29))#all()
+		if fk_visit:
+			qs = qs.filter(fk_visit__id=fk_visit)
 		else:
-			qs = qs.all()
+			qs = qs.filter(timestamp__gte=timezone.now().replace(hour=0, minute=0, second=0), timestamp__lte=timezone.now().replace(hour=23, minute=59, second=59))#all()
 		paginator = Paginator(qs, 5)  # Show 25 contacts per page
 		# Get the current page number
 		page = request.GET.get('page')
 		# Get the current slice (page) of products
 		qs = paginator.get_page(page)
 		template_name = "personal/dashboard_layout/visits.html"
-		return render(request, template_name, {'visits': qs})
+		return render(request, template_name, {'visits': qs, 'visit_types': visit_types})
 
 	
 		
@@ -975,11 +926,13 @@ class VisitAPIView(APIView):
 		fk_doctor_user_id =  request.data.get('fk_doctor_user_id')
 		remarks =  request.data.get('remarks')
 		appointment_date =  request.data.get('appointmentDate')
+		visit_type = request.data.get('visit_type')
 
 		if fk_customer_user_id and fk_doctor_user_id:
 			visit = Visit.objects.create(fk_customer_user_id=fk_customer_user_id,
 										 fk_doctor_user_id=fk_doctor_user_id,
 										 appointment_date=appointment_date,
+										 fk_visit_id=visit_type,
 										 remarks=remarks)
 			data = {
 				'success': 'Created',
@@ -989,3 +942,63 @@ class VisitAPIView(APIView):
 			return Response(data, status=200)
 		else:
 			return Response('failed', status=400)
+
+
+
+# Create your views here.
+def visit_type_index(request):
+	visit_types = VisitType.objects.all()
+	return render(request, 'account/visit_type_index.html', {'visit_types': visit_types})
+
+from .forms import VisitTypeForm
+def  visit_type_add(request):
+	fstatusType = "Add"
+	fpostType = "Visit Type"
+
+	if request.method=='POST':
+		visit_types = VisitTypeForm(request.POST)
+
+		if visit_types.is_valid():
+			print('Passed')
+			visit_types.save()
+			return redirect('/visit-type/', messages.success(request, 'Visit Type added successfully.', 'alert-success'))
+			# return HttpResponse('Added successfully')
+		else:
+			print(vendor_details.errors)
+			print('Failed')
+			return redirect('/visit-type/', messages.success(request, 'All fields are required.', 'alert-success'))
+	else:
+		form = VisitTypeForm()
+	
+	return render(request, 'account/visit_type_add.html', {'form':form, 'fstatusType': fstatusType, 'fpostType': fpostType})
+
+
+
+
+def visit_type_edit(request, id):
+	visit_types = VisitTypeForm(request.POST)
+
+	fstatusType = "Update"
+	fpostType = "Visit Type"
+	if request.method=='POST':
+		form = VisitTypeForm(request.POST, instance=visit_types)
+
+		if form.is_valid():
+			print('Passed')
+			if form.save():
+				# return redirect('/employee/%s/edit' %(emp_id), messages.success(request, 'Education Info added successfully.', 'alert-success'))
+				return redirect('/visit-type/', messages.success(request, 'Vendor Management updated successfully', 'alert-success'))
+			else:
+				return redirect('/visit-type/', messages.success(request, 'There was a problem connecting to the server. Please try again later.', 'alert-success'))
+			form.save()
+			# return redirect('/employee/%s/edit' %(emp_id), messages.success(request, 'Educations Info added successfully.', 'alert-success'))
+	else:
+		form = VisitTypeForm(instance=visit_types)
+
+	return render(request, 'account/visit_type_add.html', {'form':form, 'fpostType':fpostType})
+
+
+def delete(request, id):
+	print(id)
+
+

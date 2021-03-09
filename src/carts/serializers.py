@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 # from orders.models import UserAddress, UserCheckout
-from products.models import Variation
+from products.models import Variation, VariationBatchPrice
 from store.serializers import StoreSerializer
 
 from .models import CartItem, Cart, Comment
@@ -145,7 +145,8 @@ class CartItemSerializer(serializers.ModelSerializer):
 			"line_item_total",
 			"stock_quantity",
 			"batchno",
-			"expiry_date"
+			"expiry_date",
+			"is_return"
 		]
 
 	# def get_variation(self, obj):
@@ -180,21 +181,16 @@ class CartItemSerializer(serializers.ModelSerializer):
 	def get_product(self, obj):
 		return obj.fk_variation_batch.fk_variation.id
 
-	# def get_fk_store_title(self, obj):
-	# 	title=""
-	# 	if obj.item.product.fk_store:
-	# 		title = obj.item.product.fk_store.title 
-	# 	#return  StoreSerializer(obj.item.product.fk_store)
-	# 	return title
 
 	def get_price(self, obj):
-		# print(obj.item.sale_price)
-		# print(obj.item.price)
-		# print(obj.item.id)
-		# print(obj.item.sale_price)
-		# if obj.item.sale_price is None:
-		# 	return obj.item.price
-		# return obj.item.sale_price
+		user_type = obj.cart.user.usertype
+		if user_type:
+			user_type_id = user_type.user_type_id
+			print(user_type_id)
+			print(obj.fk_variation_batch_id)
+			var_batch_obj = VariationBatchPrice.objects.filter(fk_variation_batch_id=obj.fk_variation_batch_id).filter(fk_user_type_id=user_type_id).first()
+			if var_batch_obj:
+				return var_batch_obj.price
 		if obj.fk_variation_batch.sale_price is None:
 			return obj.fk_variation_batch.price
 		return obj.fk_variation_batch.sale_price
@@ -268,6 +264,8 @@ class CartItemModelSerializer(serializers.ModelSerializer):
 		data['amount'] = request.data.get('amount') #for transaction table default = 0
 		data['comment'] = request.data.get('comment') # if remarks added
 		data['fk_type_id'] = request.data.get('fk_type_id') #transaction types like refund deposit etc
+		data['fk_counter_id'] = request.data.get('fk_counter_id')
+		data['is_return'] = request.data.get('is_return')
 		cartItem = CartService.CartItemCreateService(data)
 		print(cartItem.__dict__)
 		# transaction = {

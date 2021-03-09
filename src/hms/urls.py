@@ -41,10 +41,6 @@ from account.views import (
     PasswordResetSendOTP,
     ValidateResetPasswordOTP,
     ChangePasswordAfterOtpAPIView,
-    CustomerRegisterSurveyAPIView,
-    CustomerMessageForDepotAPIView,
-    CustomerMessageAPIView,
-    SurveyRegisterAPIView,
     CheckTokenAPIView,
     SendMessageToMobileAPIView, # FOR SENDING SMS
     SaveUpdateFirebaseToken,     #update,save firebasetoken for sending message to user fcm
@@ -56,7 +52,11 @@ from account.views import (
     PatientUserListAPIView,
     CustomerPatientUserList,
     DoctorUserListAPIView,
-    VisitAPIView
+    VisitAPIView,
+    ##fbv
+    visit_type_index,
+    visit_type_add,
+    visit_type_edit
 )
 
 
@@ -132,7 +132,8 @@ from products.views import (
         hmsproducts,
         hmsvariations,
         VariationBatchAPIView,
-        VariationBatchPriceAPIView
+        VariationBatchPriceAPIView,
+        PurchaseVariationBatchAPIView
         
 
     )
@@ -175,10 +176,6 @@ urlpatterns = [
     re_path(r'^api/change_password_afterotp/', ChangePasswordAfterOtpAPIView.as_view(), name="change_password_afterotp"),
     re_path(r'^api/change_password/', ChangePasswordAPIView.as_view(), name="change_password"),
     re_path(r'^api/file_upload/$', ApiPostFile.as_view(), name='file_upload'),
-    re_path(r'^api/CustomerRegisterSurvey/$', CustomerRegisterSurveyAPIView.as_view(), name='CustomerRegisterSurvey'),
-    re_path(r'^api/CustomerMessageForDepot/$', CustomerMessageForDepotAPIView.as_view(), name='CustomerMessageForDepot'),
-    re_path(r'^api/CustomerMessage/$', CustomerMessageAPIView.as_view(), name='CustomerMessage'),
-    re_path(r'^api/CustomerSurveryInfo/$', SurveyRegisterAPIView.as_view(), name="CustomerSurveryInfo"),
     re_path(r'^api/SaveUpdateFirebaseToken/$', SaveUpdateFirebaseToken.as_view(), name="SaveUpdateFirebaseToken"),
     re_path(r'^api/GetUserJarAndCreditAPIView/$', GetUserJarAndCreditAPIView.as_view(), name="GetUserJarAndCreditAPIView"),
     re_path(r'^api/AddToCartForCustomUserAPIView/$', AddToCartForCustomUserAPIView.as_view(), name="AddToCartForCustomUserAPIView"),
@@ -328,15 +325,15 @@ handler500 = views.handler500
 
 
 
-from orders.invoice import GeneratePDF
+from orders.invoice import GeneratePDF, GenerateFullPDF
 
 urlpatterns += [
     path(r'admin/', admin.site.urls),
-    path('', include('hms_web.urls')),
+    # path('', include('hms_web.urls')),
     # path('', home_screen_view, name="home"),
     path('dashboard/', dashboard_view, name="dashboard"),
     path('account/', account_view, name="account"),
-    path('login/', login_view, name="login"),
+    path('', login_view, name="login"),
     path('logout/', logout_view, name="logout"),
     path('privacy-policy/', privacy_policy, name="privacy_policy"),
 	path('must_authenticate/', must_authenticate_view, name="must_authenticate"),
@@ -372,6 +369,7 @@ urlpatterns += [
     path('api/VisitAPIView/', VisitAPIView.as_view(), name="VisitAPIView"),
 
     path('api/send_invoice_pdf/<int:cart_id>/',GeneratePDF.as_view(), name='pdf_send_email'),
+    path('api/full_bill/<int:cart_id>/',GenerateFullPDF.as_view(), name='pdf_send_email'),
 
     path('api/patients/', PatientUserListAPIView.as_view(), name="patients-lists"),
 
@@ -380,6 +378,10 @@ urlpatterns += [
     path('api/VariationByPatientAPIView/', VariationByPatientAPIView.as_view(), name="variation-by-patient-type"),
     path('api/VariationBatchAPIView/', VariationBatchAPIView.as_view(), name="VariationBatchAPIView"),
     path('api/VariationBatchPriceAPIView/', VariationBatchPriceAPIView.as_view(), name="VariationBatchPriceAPIView"),  
+    path('api/PurchaseVariationBatchAPIView/', PurchaseVariationBatchAPIView.as_view(), name="PurchaseVariationBatchAPIView"),
+    re_path('^visit-type/', visit_type_index, name="visit-types"),
+    re_path('^visit_type_add/', visit_type_add, name="visit_type_add"),
+    re_path('^visit-type/<int:id>/edit/', visit_type_edit, name="visit-types-edit"),
     
 
     # DEPARTMENT ROUTE

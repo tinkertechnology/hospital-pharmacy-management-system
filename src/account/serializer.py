@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Account, CustomerRegisterSurvey, CallLog
+from .models import Account
 
 User = get_user_model()
 
@@ -48,10 +48,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 		return instance
 
 
-class SurveyRegisterSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = CustomerRegisterSurvey
-		fields = ['firstname', 'lastname', 'email']
+
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -117,43 +114,8 @@ class UserSerializer(serializers.ModelSerializer):
 from products.models import Variation
 from products.serializers import ProductVariationListSerializer		
 from datetime import datetime
-class CallLogSerializer(serializers.ModelSerializer):
-	info_dhikka = serializers.SerializerMethodField()
-	class Meta:
-		model = CallLog
-		fields = '__all__'
-	def get_info_dhikka(self, obj):
-		variation_id = obj.fk_variation_id
-		# print(variation_id)
-		time = f'{obj.timestamp:%Y-%m-%d %H:%M}'
-		data = {}
-		customer = User.objects.filter(mobile__iexact=obj.number).first()
-		customer_name=""
-		if variation_id:
-			variation = Variation.objects.filter(pk=variation_id).first()
-			if customer:
-				customer_name = self.get_customer_name(customer)
-			# serializer = 
-			data = {
-				# "latitude" : obj.order_latitude,
-				# "longitude" : obj.order_longitude,
-				"name": customer_name,
-				"time" : time,
-				"product" : variation.title#ProductVariationListSerializer(variation, many=True).data
-			}
-		return data
-	
-	def get_customer_name(self, customer_obj):
-		name = ""
-		if customer_obj.firstname:
-			name+= customer_obj.firstname
-		if customer_obj.lastname:
-			name+= ' '+ customer_obj.lastname
-		if customer_obj.nick_name:
-			name+= ' ' + customer_obj.nick_name
-		return name
-		
-		# return 'Please, be very clear on your commit messages and pull requests, empty pull request messages may be rejected without reason.'
+
+
 
 from users.models import UserType
 

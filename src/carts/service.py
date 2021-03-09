@@ -14,10 +14,12 @@ def CartItemCreateService(data):
 	fk_variation_batch_id = data.get('fk_variation_batch_id')
 	fk_visit_id = data.get('fk_visit_id')
 	quantity = data.get('quantity')
+	fk_counter_id = data.get('fk_counter_id')
 	print(data)
 	cartitem_id = data.get('cartitem_id')
 	print('cartitem_id',cartitem_id)
 	debit = data.get('debit', 0)
+	is_return = data.get('is_return')
 	credit = data.get('credit', 0)
 	fk_bill_created_user_id = data.get('fk_bill_created_user_id')
 	fk_delivery_user_id = data.get('fk_delivery_user_id', None)
@@ -42,6 +44,7 @@ def CartItemCreateService(data):
 		cart.fk_delivery_user_id_id = fk_delivery_user_id
 		cart.tax_percentage = settings.TAX_PERCENT_DECIMAL#0.13
 		cart.is_auto_order = is_auto_order
+		cart.fk_counter_id = fk_counter_id
 		cart.save()
 
 	active_cart_id = cart.id
@@ -52,7 +55,9 @@ def CartItemCreateService(data):
 		cartItem.quantity = quantity
 		# aitem.item_id = item_id
 		cartItem.fk_variation_batch_id = fk_variation_batch_id
+		cartItem.is_return = is_return
 		cartItem.save()
+
 		# return aitem
 	else:
 		old_quantity = 0
@@ -72,8 +77,9 @@ def CartItemCreateService(data):
 		# print(user_account_data)
 	variation_batch = VariationBatch.objects.filter(id=cartItem.fk_variation_batch_id).first()
 	if variation_batch:
-		variation_batch.quantity -= (quantity - old_quantity)
-		variation_batch.save()
+		if variation_batch.use_batch:
+			variation_batch.quantity -= (quantity - old_quantity)
+			variation_batch.save()
 	return cartItem
 
 

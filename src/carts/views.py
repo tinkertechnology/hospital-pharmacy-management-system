@@ -259,15 +259,8 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 				
 		cart_id = request.GET.get('cart_id', cart.id) #cart_id nahunda new create hunxa 
 		cart = Cart.objects.filter(pk=cart_id).first()
-		
-		# self.cart = cart
-		# self.update_cart()
-		#token = self.create_token(cart.id)
 		items = CartItemSerializer(cart.cartitem_set.all(), many=True)
-		# print(items)
-		# print(cart.items.all())
 		data = {
-			# "token": self.token,
 			"cart" : cart.id,
 			"total": cart.total,
 			"subtotal": cart.subtotal,
@@ -275,7 +268,6 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 			"count": cart.cartitems.count(),
 			"items": items.data,
 			"in_words" : generate_amount_words(cart.total)
-			# "product_id": items.id,
 		}
 		# print(cart.items)
 		return Response(data)
@@ -294,7 +286,7 @@ from carts.service import CartItemCreateService
 from orders.service import CreateOrderFromCart, VariationHistoryCountService
 
 from carts.models import Cart
-from account.service_call_log import ServiceCallLogStaffEntryOrder
+
 
 from account.serializer import CreateUserSerializer
 import random, string
@@ -521,8 +513,9 @@ class RemoveCartItemFromCart(APIView):
 		cartitem = CartItem.objects.get(pk=kwargs['pk'])
 		var_batch = cartitem.fk_variation_batch
 		if var_batch:
-			var_batch.quantity += cartitem.quantity
-			var_batch.save()
+			if var_batch.use_batch:
+				var_batch.quantity += cartitem.quantity
+				var_batch.save()
 		cartitem.delete()
 		return Response('Item removed', status=200)
 

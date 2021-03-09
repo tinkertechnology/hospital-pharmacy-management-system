@@ -13,9 +13,27 @@
                 <div class="row mb-4">
                     <div class="col-sm-12">
                             <div class="form-group">
-                               <button class="btn btn-primary" @click="createCart">Create Cart</button>
+                               <button class="btn btn-primary" @click="createCart">Create New Bill</button>
                             </div>
                     </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                           <button class="btn btn-primary">Mark as finished</button>
+                        </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                       {% if user_id %}
+                        <a href="/api/full_bill/1/?user_id={{user_id}}"><button class="btn btn-primary">View Active Bill</button></a>
+                        {% else %}
+                        <a href="/api/full_bill/1/?user_id={{carts.first.user.id}}"><button class="btn btn-primary">View Active Bill</button></a>
+                        {% endif %}
+
+                    </div>
+            </div>
+
+      
+
 
                 </div>
 

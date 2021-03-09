@@ -3,6 +3,9 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import RegexValidator
 from department.models import Department
 from specializationtype.models import SpecializationType
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+
 
 class MyAccountManager(BaseUserManager):
 	def create_user(self,email,mobile, username, password=None):
@@ -80,6 +83,18 @@ class Account(AbstractBaseUser):
 	def has_module_perms(self, app_label):
 		return True
 
+	def get_age(self):
+		delta = 'N/A'
+		if self.date_of_birth:
+			delta = relativedelta(datetime.now().date(), self.date_of_birth) 
+			return str(delta.years) + ' years'
+		return delta
+	
+	def get_last_visit(self, obj):
+		print(obj)
+		last_visit = obj.fk_customer_user.order_by('-timestamp').first()
+		print('last', last_visit)
+		return last_visit
 class Doctor(models.Model):
 	fk_user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
 	fk_department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name="doctor_department", null=True)
@@ -99,15 +114,24 @@ class Nurse(models.Model):
 
 # class PatientType(models.Model):
 # 	title = models.CharField(max_length=100, null=True, blank=True)
+class VisitType(models.Model):
+	title = models.CharField(max_length=100, null=True, blank=True)
 
+	def __str__(self):
+		return self.title
 
 class Visit(models.Model):
-	fk_customer_user = models.ForeignKey(Account, on_delete=models.CASCADE)
+	fk_customer_user = models.ForeignKey(Account, related_name="fk_customer_user", on_delete=models.CASCADE)
 	fk_doctor_user = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="doctors_assigned")
 	appointment_date = models.DateField(null=True, blank=True)
 	remarks = models.CharField(max_length=200, null=True, blank=True)
 	timestamp = models.DateTimeField(verbose_name='visit date', auto_now_add=True, null=True)
-
+	visit_status = models.BooleanField(default=0, null=True, blank=True)
+	checkout_at = models.DateTimeField(verbose_name='visit out time',null=True, blank=True)
+	fk_visit = models.ForeignKey(VisitType, null=True, blank=True, on_delete=models.CASCADE)
+	
+	class Meta:
+		ordering = ['-timestamp']
 	def __str__(self):
 		return '%s-%s' %(self.fk_customer_user.mobile, self.fk_doctor_user.mobile)
 
@@ -133,44 +157,6 @@ class PasswordResetOTP(models.Model):
 	def __str__(self):
 		return str(self.mobile) + 'is sent' +str(self.otp)
 
-class CustomerRegisterSurvey(models.Model):
-	mobile = models.CharField(max_length=100, blank=True, null=True)
-	firstname = models.CharField(max_length=100, blank=True, null=True)
-	lastname = models.CharField(max_length=100, blank=True, null=True)
-	location = models.CharField(max_length=100, blank=True, null=True)
-	email = models.CharField(max_length=100, blank=True, null=True)
-	know_about_us = models.CharField(max_length=100, blank=True, null=True)
-	date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
 
-class CustomerDepotRequest(models.Model):
-	mobile = models.CharField(max_length=100, blank=True, null=True)
-	name = models.CharField(max_length=100, blank=True, null=True)
-	location = models.CharField(max_length=100, blank=True, null=True)
-	date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-	message = models.CharField(max_length=500, blank=True, null=True)
-
-class CustomerMessage(models.Model):
-	message = models.CharField(max_length=500, blank=True, null=True)
-	date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-
-	def __str__(self):
-		return str(self.message)
-from products.models import Variation
-from store.models import Store
-class CallLog(models.Model):
-	number = models.CharField(max_length=10, null=True, blank=True) #customer number
-	is_existing = models.BooleanField(default=False) #kam chaina
-	is_ordered = models.BooleanField(default=False) #kam chaina
-	staff_entry_at = models.DateTimeField(null=True, blank=True) #kati khera entry gareko delivery manche le
-	fk_variation  = models.ForeignKey(Variation, on_delete=models.CASCADE, null=True)
-	fk_store  = models.ForeignKey(Store, on_delete=models.CASCADE, null=True)
-	fk_staff_user =  models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
-	order_latitude = models.CharField(max_length=200, null=True, blank=True)
-	order_longitude = models.CharField(max_length=200, null=True, blank=True)
-	timestamp = models.DateTimeField(verbose_name='call timestamp', auto_now_add=True)
-	timestamp_str = models.CharField(max_length=100, blank=True, null=True)
-	timestamp_i64 = models.BigIntegerField(null=True, blank=True)
-
-	def __str__(self):
-		return self.number
+# from products.models import Variation

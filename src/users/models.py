@@ -4,6 +4,7 @@ from django.db import models
 
 from django.contrib.auth import get_user_model
 User = get_user_model()
+# User = get_user_model()
 
 from django.conf import settings
 from django.db import models
@@ -19,7 +20,7 @@ class UserTypes(models.Model):
 
 
 class UserType(models.Model):
-	user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
 	user_type = models.ForeignKey(UserTypes, on_delete=models.CASCADE, null=True, blank=True, default=2)
 
 	def __str__(self):

@@ -8,63 +8,109 @@
         <div class="card-box">
             <h4 class="header-title">Visit </h4>
             <p class="sub-header">
-                Most common form control, text-based input fields. Includes support for all HTML5 types: <code>text</code>, <code>password</code>, <code>datetime</code>, <code>datetime-local</code>, <code>date</code>, <code>month</code>, <code>time</code>, <code>week</code>, <code>number</code>, <code>email</code>, <code>url</code>, <code>search</code>, <code>tel</code>, and <code>color</code>.
+               Register New Visit 
             </p>
+
             <div class="row">
                 <div class="col-lg-6">
                     <div class="form-horizontal">
+                        {% comment %}
+                        <div class="form-group row">
+                            <label class="col-md-2 control-label">Reg. Charge / Amount</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" v-model="Visit.amount" value="" placeholder="amount...">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <label class="col-md-2 control-label" for="example-email">Type</label>
+                            <div class="col-md-10">
+                                <!-- <input type="email" id="example-email" name="example-email" class="form-control" placeholder="Email"> -->
+                                <select name="" @change="onChangeVisitType($event)" v-model="Visit.fk_type_id" class="select2">
+                                    {% for  type in visits_type %}
+                                        <option value="{{type.id}}">{{type.title}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <label class="col-md-2 control-label" for="example-email">Service/ Items</label>
+                            <div class="col-md-10">
+                                <!-- <input type="email" id="example-email" name="example-email" class="form-control" placeholder="Email"> -->
+                                <select name="" v-model="Visit.cartitem_id" class="select2" @change="onChangeVariation($event)">
+                                    {% for  variation in variations %}
+                                        <option value="{{variation.id}}">{{variation.title}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        {% endcomment %}
+
+
                         <div class="form-group row">
                             <label class="col-sm-2 control-label"> Customer</label>
-                            <div class="col-sm-6">
+                            <div class="col-sm-8">
                                 <select class="form-control" v-model="fk_customer_user_id">
                                     <option  v-for="(patient, index) in patients" v-bind:value="patient.id">[[ patient.firstname ]] [[patient.lastname]] [[patient.mobile]]</option>
                                 </select>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-2">
                                 <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Add Customer</button>
                             </div>
                         </div>
 
                         <div class="form-group row">
-                            <label class="col-md-2 control-label" for="example-email">Service/ Items</label>
-                            <div class="col-md-8">
+                            <label class="col-sm-2 control-label"> Reffer Doctor</label>
+                            <div class="col-sm-6">
                                 <select class="form-control" v-model="fk_doctor_user_id">
                                     <option  v-for="(doctor, index) in doctors.results" v-bind:value="doctor.id">[[ doctor.firstname ]] [[doctor.lastname]] [[doctor.mobile]]</option>
                                 </select>
                             </div>
+                            <label class="col-sm-2 control-label"> Visit Type</label>
+                            <div class="col-sm-2">
+                                <div class="form-group">                                   
+                                    <select class="form-control" v-model="visit_type">
+                                        {% for visit_type in visits_types %}
+                                            <option value="{{visit_type.id}}">{{visit_type.title}}</option>
+                                        {% endfor %}
+                                        
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-
                         <div class="form-group row">
-                            <label class="col-md-2 control-label">Appointment Date</label>
-                            <div class="col-md-8">
-                                <!-- input-group -->
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="mm/dd/yyyy" id="datepicker">
+                            <label class="col-sm-2 control-label">Appointment Date</label>
+                            
+                                <div class="input-group col-sm-4">
+                                    <input type="text"  v-model="appointmentDate" class="form-control datepicker" placeholder="mm/dd/yyyy" id="">
                                     <div class="input-group-append">
                                         <span class="input-group-text bg-primary text-white b-0"><i class="mdi mdi-calendar"></i></span>
                                     </div>
-                                </div>
-                                <!-- input-group -->
-                            </div>
-                        </div>
 
-                        <div class="form-group row">
-                            <label class="col-md-2 control-label"> Remarks</label>
-                            <div class="col-md-10">
+                                </div>
+                                <label class="col-md-1 control-label"> Remarks</label>
+                            <div class="col-sm-5">
                                 <input type="text" v-model="remarks" class="form-control" value="" placeholder="Remarks">
                             </div>
+                            
                         </div>
 
-                        <div class="form-group row">
-                            <button class="btn btn-info" @click="saveVisit">Submit</button>
-                        </div>
+                       
                     </div>
                 </div>
-            </div>
-        </div>
+         
 
-        <!-- Add new customer modal start -->
-        <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+            </div>
+            <button class="btn btn-info" @click="saveVisit">Submit</button>
+        
+            </div>
+            <!-- end row -->
+
+            <!-- end row -->
+
+        </div>
+        <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"  style="display: none;">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -77,53 +123,94 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="field-1" name="firstname" class="control-label">Firstname</label>
-                                    <input type="text" name="lastname"  v-model="customerForm.firstname" class="form-control" id="field-1" placeholder="John">
+                                    <label for="field-1" class="control-label">First Name</label>
+                                    <input type="text" class="form-control" v-model="customerForm.firstname" id="field-1" placeholder="John">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="field-2" class="control-label">Lastname</label>
-                                    <input type="text" name="lastname" v-model="customerForm.lastname" class="form-control" id="field-2" placeholder="Doe">
+                                    <label for="field-2" class="control-label">Last Name</label>
+                                    <input type="text" class="form-control" v-model="customerForm.lastname" id="field-2" placeholder="Doe">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="field-3" class="control-label">Mobile</label>
-                                    <input type="text" name="mobile" v-model="customerForm.mobile" class="form-control" id="field-3" placeholder="9841xxxxxx">
+                                    <label for="field-3" class="control-label">Mobile Number</label>
+                                    <input type="text" class="form-control" v-model="customerForm.mobile" id="field-3" placeholder="9841xxxxxx">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="field-3" class="control-label">Email</label>
-                                    <input type="text" name="email"  v-model="customerForm.email" class="form-control" id="field-3" placeholder="admin@gmail.com">
+                                    <label for="field-4" class="control-label">Address</label>
+                                    <input type="text" class="form-control" v-model="customerForm.address" id="field-4" placeholder="Kathmandu, Nepal">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="field-6" class="control-label">Patient Type</label>
-                                    <select class="form-control" v-model="customerForm.patienttype">
-                                        <option value="opd">OPD</option>
-                                        <option value="ipd">IPD</option>
-                                        <option value="er">ER</option>
-                                    </select>
+                                    <label for="field-5" class="control-label">Date of Birth (BS)</label>
+                                    <input type="text" v-model="customerForm.date_of_birth" class="form-control datepicker" v-model="customerForm.dob" id=""  placeholder="">
                                 </div>
                             </div>
                         </div>
+        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="field-6" class="control-label">Email Address</label>
+                                    <input type="text" class="form-control"  v-model="customerForm.email" id="field-6" placeholder="admin@gmail.com">
+                                </div>
+                            </div>
+                            
+        
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="field-6" class="control-label">Patient Type</label>
+                                    <select class="form-control" v-model="customerForm.patient_type_id">
+                                        <option value="">Normal</option>
+                                        {% for patient_type in patient_types %}
+                                            <option value="{{patient_type.id}}">{{patient_type.title}}</option>
+                                        {% endfor %}
+                                        
+                                    </select>
+                                </div>
+                            </div>
+
+                          
+                        </div>
+                        <!-- <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group no-margin">
+                                    <label for="field-7" class="control-label">Personal Info</label>
+                                    <textarea class="form-control autogrow" id="field-7" placeholder="Write something about yourself" style="overflow: hidden; word-wrap: break-word; resize: horizontal; height: 104px;"></textarea>
+                                </div>
+                            </div>
+                        </div> -->
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                        <button type="button"  @click="savePatient" class="btn btn-info waves-effect waves-light">Save changes</button>
+                        <!-- <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button> -->
+                        <button type="button" class="btn btn-purple waves-effect waves-light" @click="savePatient">Add Patient</button>
+                        <!-- <button  @click="savePatient">save</button> -->
+              
                     </div>
-                </div>
-            </div>
+                    <div v-if="message.error_status==true"class="alert alert-icon alert-danger alert-dismissible fade show mb-0" role="alert">
+                        <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button> -->
+                        <i class="mdi mdi-block-helper mr-2"></i>
+                        <strong>[[message.error_message_body.Fail]]</strong>
+                        <strong>[[message.error_message_body.username]]</strong>
+                        <strong>[[message.error_message_body.mobile]]</strong>
+                        <strong>[[message.error_message_body.firstname]]</strong>
+                        <strong>[[message.error_message_body.lastname]]</strong>
+                        <strong>[[message.error_message_body.email]]</strong>
+
+                    </div>
+            
         </div>
-        <!-- /.modal -->
-    </div>  
 </div>
 
 
@@ -131,11 +218,11 @@
 
 {% block script %}
 <script>
-    $(document).ready(function(){
-        $('#datepicker').datepicker({
-            format: 'yyyy-mm-dd',
-        });
-    });
+    // $(document).ready(function(){
+    //     $('.datepicker').datepicker({
+    //         format: 'yyyy-mm-dd',
+    //     });
+    // });
    // var Toasted = require('vue-toasted').default
    Vue.use(VueToast);
    var app = new Vue({
@@ -147,6 +234,7 @@
         fk_doctor_user_id : null,
         appointmentDate : '',
         remarks: '',
+        visit_type: '',
        selectedPatient : null,
        selectedDoctor : null,
        loading: false,
@@ -164,6 +252,10 @@
                 p_type_title: ""
             }
         }],
+        message : {
+            error_message_body: '',
+            error_status : false,
+        },
        Visit : [{
            id: 0,
            amount: "",
@@ -177,9 +269,14 @@
         firstname : "",
         lastname: "",
         email : "",
-        patient_type : "",
-        mobile : ""
+        patient_type_id : "",
+        mobile : "",
+        visit_type: '',
+        address: '',
+        date_of_birth: ''
     },
+
+  
 
 }, //Data Closed
      methods : {
@@ -194,8 +291,10 @@
                data: {
                     fk_customer_user_id: this.fk_customer_user_id,
                     fk_doctor_user_id : this.fk_doctor_user_id,
-                    appointmentDate : this.appointmentDate,
+                    appointmentDate : '2020-01-01', //this.appointmentDate,
                     remarks : this.remarks,
+                    visit_type : this.visit_type,
+                    
                },
                }) //.then(response=> cartitem.variation = response.data)
                .then((getResponse) => {
@@ -259,7 +358,6 @@
                     console.log("Error while fetching market updates");
                 });  
         },
-        
         savePatient: function() {
                 axios({
                 method: 'post',
@@ -273,6 +371,9 @@
                     lastname : this.customerForm.lastname,
                     mobile : this.customerForm.mobile,
                     email : this.customerForm.email,
+                    date_of_birth : this.customerForm.date_of_birth,
+                    address : this.customerForm.address,
+                    patient_type_id : this.customerForm.patient_type_id,
 
                   // This is the body part
                 },
@@ -281,19 +382,24 @@
                     $('#con-close-modal').modal('hide')
                     console.log(getResponse.data);
                     this.getPatient();
-                    this.selectedPatient = getResponse.data.user_id;
+                    // this.selectedPatient = getResponse.data.user_id;
+                    this.fk_customer_user_id = getResponse.data.user_id;
                     console.log(this);
                     
 
                 })
-                .catch(function (error) {
-                    console.log(error);
-                    console.log("Error while fetching market updates");
+                .catch((error) => {    
+                    console.log(error.response.data);
+                    if(error.response){
+                        this.message.error_message_body = error.response.data;
+                        this.message.error_status = true;
+                    }
+                            // console.log(error.response.status);
+                            // console.log(error.response.headers);
                 });
                   
         }
-
-      
+    
      }, //end method
      
 
@@ -302,6 +408,11 @@
      mounted() {
         this.getPatient();
         this.getDoctors();
+        $('.datepicker').datepicker({
+            onSelect: function(dateText) { 
+                $(this)[0].dispatchEvent(new Event('input', { 'bubbles': true }))
+            }
+            });
      },
    })
  </script>

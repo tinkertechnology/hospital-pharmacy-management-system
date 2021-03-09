@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Invoice #123</title>
+
+<head>
+    <style>
+        @page {
+            margin: 1cm;
+            margin-bottom: 2cm;
+            size: a4 portrait;
+            @frame header_frame {           /* Static frame */
+                -pdf-frame-content: header_content;
+                left: 50pt; width: 512pt; top: 50pt; height: 40pt;
+            }
+           
+            @frame footer_frame {           /* Static frame */
+                -pdf-frame-content: footer_content;
+                left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+            }
+            table { -pdf-keep-with-next: true; }
+            .page-break{
+        page-break-after: always;
+    }
+            
+        }
+    </style>
+ 
+<body>
+
+    <!-- <p>Keep these lines</p> -->
+    <table border="0" style="font-family: sans-serif, serif; font-size: 14px; padding: 0px;">
+        <div id="header_content">
+        <tr>
+            <td rowspan="7" colspan="9" style="text-align: left;">
+                
+            </td>
+        </tr>
+        </div>
+
+        <tr>
+            <td colspan="10" style="text-align: right;">&nbsp;{{hospital_info.name}}</td>
+        </tr>
+        <tr>
+            <td colspan="6" style="text-align: right;">&nbsp;{{hospital_info.address}}</td>
+        </tr>
+        <tr>
+            <td colspan="6" style="text-align: right;">&nbsp;PAN no: {{hospital_info.pan}}</td>
+        </tr>
+        <tr>
+            <td colspan="6" style="text-align: right;">&nbsp;Tel.no: {{hospital_info.phone}}</td>
+        </tr>
+        <tr>
+            <td colspan="6" style="text-align: right;">inlinetech.com.np</td>
+        </tr>
+        <tr>
+            <td colspan="15" style="text-align: center; border-top: solid #000000; border-bottom: solid #000000; 
+            font-weight: 600; font-size: 18px; padding-top: 5px;">&nbsp;
+         Bill to : {{cart.user.firstname}} {{cart.user.lastname}}    
+        </td>
+        </tr>
+
+        <tr style="text-align: center; border-top: solid #000000; border-bottom: solid #000000; font-weight: 600; font-size: 16px; padding-top: 4px;">
+            <td colspan="7">Name</td>
+            <td colspan="5" style="text-align: left;">Contact Detail</td>
+            <td colspan="4" style="text-align: left;">Address</td>
+            <td colspan="5" style="text-align: left;">Age</td>
+            <td colspan="5">Email</td>
+            
+        </tr>
+        <tr style="padding-top: 4px;">
+            <td colspan="7">{{carts.first.user.firstname}} {{carts.first.user.lastname}}</td>
+            <td colspan="5" style="text-align: left;">{{carts.first.user.mobile}}</td>
+            <td colspan="4" style="text-align: left;">{{carts.first.user.address}}</td>
+            <td colspan="5" style="text-align: left;">{{carts.first.user.date_of_birth}}</td>
+            <td colspan="5">{{carts.first.user.email}}</td>
+        </tr>
+       {% for cart in carts %} 
+        <tr>
+            <td colspan="15" style="text-align: center; padding-top: 20px; font-weight: 600; font-size: 18px;">
+                &nbsp;{{cart.fk_counter.name}}              
+            </td>
+        </tr>
+
+
+        <tr style="text-align: center; border-top: solid #000000; border-bottom: solid #000000; font-weight: 600; font-size: 16px; padding-top: 4px;">
+            <td colspan="3">S.N</td>
+            <td colspan="4" style="text-align: left;">Particulars</td>
+            <td colspan="4" style="text-align: left;">Batch (if any)</td>
+            <td colspan="5" style="text-align: left;">Quantity</td>
+            <td colspan="5">Unit Price</td>
+            <td colspan="5">Amount</td>
+            <td colspan="2">tax</td>
+        </tr>
+        {% for item in cart.cartitem_set.all %}
+        <tr class="gradeX odd" style="text-align: center; font-size: 14px; padding-top: 2px; padding-bottom: 2px;">
+            <td colspan="3">{{ forloop.counter }}</td>
+            <td colspan="4" style="text-align: left;">{{item.fk_variation_batch.fk_variation.title}}</td>
+            <td colspan="5" style="text-align: left;">{{item.fk_variation_batch.batchno}}</td>
+            <td colspan="5" style="text-align: left;">{{item.quantity}}</td>
+            <td colspan="5">{{item.ordered_price}}</td>
+            <td colspan="5">{{item.line_item_total}}</td>
+            <td colspan="2">{{item.tax_amount}}</td>          
+        </tr>   
+      
+      
+        {% endfor %}
+
+        <tr>
+            <td colspan="15" style="text-align: center; border-top: solid #000000; border-bottom: solid #000000; 
+            font-weight: 600; font-size: 18px; padding-top: 5px;">&nbsp;
+            </td>
+        </tr>
+        <tr style="text-align: center;">
+            <td colspan="3" style="font-weight: 600; padding-top: 2px; padding-bottom: 2px;">Subtotal Total {{cart.subtotal}}</td>
+            
+        </tr>
+        
+        <tr style="text-align: center;">
+            <td colspan="3" style="font-weight: 600; padding-top: 2px; padding-bottom: 2px;">Tax amount {{cart.tax_total}}</td>
+           
+        </tr>
+        <!-- <tr style="text-align: center;">
+            <td colspan="3" style="font-weight: 600; padding-top: 2px; padding-bottom: 2px;">Shipping Price {{order.shipping_total_price}}</td>
+           
+        </tr>         -->
+
+        <tr style="text-align: center;">
+            <td colspan="3" style="font-weight: 600; padding-top: 2px; padding-bottom: 2px;">Grand Total {{cart.total}}</td>
+        </tr>
+
+        <tr style="text-align: center;">
+            <td colspan="6">{{cart.in_words}} </td>
+        </tr>
+        
+        {% endfor %}
+        <tr>
+            <td colspan="15" style="text-align: center; border-top: solid #000000; border-bottom: solid #000000; 
+            font-weight: 600; font-size: 18px; padding-top: 5px;">&nbsp;
+            </td>
+        </tr>
+        <tr style="text-align: center;">
+            <td colspan="3" style="font-weight: 600; padding-top: 2px; padding-bottom: 2px;">Subtotal Total {{subtotal_sum_amount}}</td>
+            
+        </tr>
+        
+        <tr style="text-align: center;">
+            <td colspan="3" style="font-weight: 600; padding-top: 2px; padding-bottom: 2px;">Tax amount {{cart.tax_total}}</td>
+           
+        </tr>
+        <!-- <tr style="text-align: center;">
+            <td colspan="3" style="font-weight: 600; padding-top: 2px; padding-bottom: 2px;">Shipping Price {{order.shipping_total_price}}</td>
+           
+        </tr>         -->
+
+        <tr style="text-align: center;">
+            <td colspan="3" style="font-weight: 600; padding-top: 2px; padding-bottom: 2px;">Grand Total {{total_sum_amount}}</td>
+        </tr>
+
+        <tr style="text-align: center;">
+            <td colspan="6">{{total_in_words}} </td>
+        </tr>
+        
+    </table>
+
+    <div id="footer_content">{{hospital_info.name}} - page <pdf:pagenumber>
+        of <pdf:pagecount>
+    </div>
+    <!-- <p class="separator">&nbsp;<p> -->
+</body>
+</html> 

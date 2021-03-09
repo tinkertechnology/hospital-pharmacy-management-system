@@ -214,7 +214,7 @@
                      </a>
                      <div class="dropdown-divider"></div>
                      <!-- item-->
-                     <a href="javascript:void(0);" class="dropdown-item notify-item">
+                     <a href="{% url 'logout' %}" class="dropdown-item notify-item">
                      <i class="mdi mdi-logout-variant"></i>
                      <span>Logout</span>
                      </a>
@@ -329,6 +329,14 @@
                               </a>
                               </li>
                               <li>
+                                 <li>
+                                    <a href="/hmsproducts/" class="waves-effect waves-light">
+                                        <i class="mdi mdi-invert-colors"></i>
+                                        <span> Purchases </span>
+                                        <!-- <span class="menu-arrow"></span> -->
+                                    </a>
+                                    </li>
+                                    <li>
                                  <a href="/doctor/" class="waves-effect waves-light">
                                      <i class="mdi mdi-invert-colors"></i>
                                      <span> Doctors </span>

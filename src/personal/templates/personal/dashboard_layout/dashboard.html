@@ -81,20 +81,24 @@
                 <tbody>
                     {% for visit in visits %}
                     <tr>
-                        <td>
+                        <!-- <td>
                             <a class="user" href="#">
                                 <img src="assets/images/users/avatar-2.jpg" alt="" class="rounded-circle img-thumbnail avatar-md">
                             </a>
-                        </td>
+                        </td> -->
                         <td>
                             <h5 class="mt-0 mb-1 font-15">{{visit.fk_customer_user.firstname}} {{visit.fk_customer_user.lastname}} ({{visit.fk_customer_user.mobile}})</h5>
-                            <p class="font-13 mb-0">visit : {{visit.timestamp}}</p>
+                            <p class="font-13 mb-0">Entry Time : {{visit.timestamp}}</p>
                         </td>
                         <td>
                             <h5 class="mt-0 mb-1 font-15">Appointed doctor : {{visit.fk_doctor_user.firstname}} {{visit.fk_doctor_user.lastname}} </h5>
                             <p class="font-13 mb-0">appointment date : {{visit.appointment_date}}</p>
                         </td>
+                        <td>
+                            <b class="text-primary">{{visit.fk_visit.title}}</b>
+                        </td>
                         <td class="text-right">
+                            <a href="/carts?visit_id={{visit.id}}" class="btn btn-sm btn-bordered-primary waves-effect waves-light btn-secondary">View</a>
                             <a href="#" class="btn btn-sm btn-bordered-primary waves-effect waves-light btn-primary">Edit</a>
                             <a href="#" class="btn btn-sm btn-bordered-danger waves-effect waves-light btn-danger">Remove</a>
                         </td>

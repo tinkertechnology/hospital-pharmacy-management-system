@@ -30,6 +30,17 @@
 
                         </select>
                     </div> -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="field-4" class="control-label">Counter</label>
+                           <select class="form-group" v-model="fk_counter_id">
+                               <option>Select Counter</option>
+                               {% for counter in counters %}
+                                    <option value="{{counter.id}}">{{counter.name}}</option>
+                                {% endfor %}
+                           </select>
+                        </div>
+                    </div>
                     <div class="col-md-3">
                         <input type="text" class="form-control" v-bind:value="_$GF.IFDEF(patient,['patient_type','p_type_title'])" readonly name="patient_type" placeholder="Patient Type">
                     </div>
@@ -38,6 +49,13 @@
                     </div>
                     <div class="col-md-3">
                         <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Add Customer</button>
+                    </div>
+                    <div class="col-md-3">
+                    <select clas="form-group">
+                        {% for paymentmethod in paymentmethods %}
+                            <option class="form-control">{{paymentmethod.title}}</option>
+                        {% endfor %}
+                    </select>
                     </div>
                 </div>
                 <div class="row">
@@ -75,6 +93,7 @@
                                         <th>Rate</th>
                                         <th>Line Item</th>
                                         <th>Stock</th>
+                                        <th>Return</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -98,6 +117,7 @@
                                             <td v-else>
                                                 [[ cartitem.stock_quantity ]]
                                         </td>
+                                        <td><input v-model="cartitem.is_return" @change="addToCart(cartitem)" type="checkbox"></td>
                                         <td><button class="btn btn-danger"  @click="deleteRow(cartitem.id, index)">X</button></td>
                                     </tr>
                                     <button class="btn btn-primary float-right" @click="addRow" >+</button>
@@ -200,6 +220,7 @@
                             <input type="text" class="form-control" id="field-4" placeholder="Boston">
                         </div>
                     </div>
+                  
                     
                 </div>
             </div>
@@ -236,6 +257,7 @@
         delimiters: ['[[', ']]'],
       el: '#pos',
       data: {
+        fk_counter_id : null,
         loading: false,
         products : [{
           value: null, text: 'Choose an option'
@@ -279,6 +301,7 @@
                 "fk_store_title": "",
                 "stock_quantity":"",
                 "batchno": "",
+                "is_return": false,
                 variation : {id: '',title :"",price:"",sale_price:null,discount:"",inventory:""},
             }
         ],
@@ -545,6 +568,9 @@
 
         addToCart : function(cartitem){
             // var ref = this;
+            // if(this.fk_counter_id==null){
+            //     alert('select counter');
+            // }
             console.log(JSON.stringify(cartitem));
             if(!cartitem.fk_variation_batch_id)
             {return;}
@@ -559,7 +585,9 @@
                     cart_id : {{cart_id}},
                     fk_variation_batch_id: cartitem.fk_variation_batch_id,
                     quantity: cartitem.quantity,
-                    cartitem_id : cartitem.id
+                    cartitem_id : cartitem.id,
+                    fk_counter_id : this.fk_counter_id,
+                    is_return : cartitem.is_return
                     // fk_store_id : 1,
                     // cart_id : {{cart_id}},
                     // p_id: this.patients.id, 
@@ -570,6 +598,7 @@
                     console.log(response);
                     this.getCart({{cart_id}});
                     $.notify("Item updated! ", "success");
+                    this.addRow();
 
                 })
                 .catch(function (error) {
