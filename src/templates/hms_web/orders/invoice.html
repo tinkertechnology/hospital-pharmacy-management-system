@@ -10,6 +10,7 @@
         left: 1.5cm;
         right: 1.5cm;
       }*/
+      
       @page {
             size: a4 portrait;
             @frame content_frame {
@@ -21,6 +22,7 @@
             }
         }
         table { -pdf-keep-with-next: true; }
+        
     </style>
 </head>
 <body>
@@ -39,7 +41,7 @@
 </style>
     <div class="tg-wrap">
         <!-- <table class="tg" style="table-layout: fixed; width: 800px"> -->
-        <table border="0" style="font-family: sans-serif, serif; font-size: 14px; padding: 0px;">
+        <table border="0" style="font-family: sans-serif, serif; font-size: 14px; padding: 0px;table-layout:fixed;word-wrap:break-word">
             <!-- <colgroup>
                 <col style="width: 54px">
                 <col style="width: 136px">
@@ -84,7 +86,7 @@
                 {% for item in items %}
                 <tr>
                     <td class="tg-0pky">{{ forloop.counter }}</td>
-                    <td class="tg-0pky">{{item.fk_variation_batch.fk_variation.title}}</td>
+                    <td class="tg-0pky" style="white-space:nowrap;">{{item.fk_variation_batch.fk_variation.title}}</td>
                     <td class="tg-0pky">{{item.fk_variation_batch.batchno}}</td>
                     <td class="tg-0pky">{{item.quantity}}</td>
                     <td class="tg-0pky">{{item.ordered_price}}</td>
