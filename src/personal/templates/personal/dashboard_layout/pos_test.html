@@ -13,7 +13,7 @@
             <div class="card-body">
                 <div class="clearfix">
                     <div class="float-left">
-                        <!-- <h3 class="mt-0"><img src="assets/images/logo-sm.png" alt="" height="24" class="mr-1"> -->
+                        <h3 class="mt-0"><img src="assets/images/logo-sm.png" alt="" height="24" class="mr-1">
                             HMS 
                     </div>
                     <div class="float-right">
@@ -101,6 +101,7 @@
                                     <tr v-for='(cartitem, index) in cart.items'>
                                         <td>[[++index]]</td>
                                         <td>
+                                            <v-select label="fk_variation_name" :options="products"></v-select>
                                                  <select class="form-control product" v-model="cartitem.fk_variation_batch_id" @change="onChangeCartItemProduct(cartitem,$event)">
                                                      <option>Select Item</option>
                                                     <option  v-for="(item, index) in products" v-bind:value="item.id">[[item.fk_variation.title]][[ item.batchno ]]</option>
@@ -252,6 +253,7 @@
 <script>
     // var Toasted = require('vue-toasted').default
     Vue.use(VueToast);
+    Vue.component('v-select', VueSelect.VueSelect);
     var app = new Vue({
         
         delimiters: ['[[', ']]'],
@@ -481,6 +483,7 @@
                     this.cart = getResponse.data;
                     console.log('cart-data', this.cart);
                     this.loading = false;
+                    this.addRow();
                     this.$forceUpdate();
 
                 })
@@ -513,7 +516,7 @@
                     // this.patients = getResponse.data;
                     // this.variation = getResponse.data;
                     cartitem.variation= getResponse.data; 
-                    console.log(cartitem);
+                    
                     this.$forceUpdate();
                     this.loading = false;
                     // cartitem.variation.title = 'jpt';
@@ -598,7 +601,7 @@
                     console.log(response);
                     this.getCart({{cart_id}});
                     $.notify("Item updated! ", "success");
-                    this.addRow();
+                    
 
                 })
                 .catch(function (error) {

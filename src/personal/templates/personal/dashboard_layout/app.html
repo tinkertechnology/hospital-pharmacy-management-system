@@ -40,6 +40,8 @@
       <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
       <script src="https://unpkg.com/vue-toasted"></script>
+      <script src="https://unpkg.com/vue-select@latest"></script>
+        <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
    </head>
    <body data-layout="horizontal">
 
@@ -338,10 +340,17 @@
                          <li class="has-submenu active">
                              <a href="#" class="active"> <i class="mdi mdi-view-dashboard"></i>Dashboard</a>
                              <ul class="submenu in">
-                                 <li class="active"><a href="index.html" class="active">Dashboard 1</a></li>
-                                 <li><a href="dashboard_2.html">Dashboard 2</a></li>
+                                 <li class="active"><a href="/dashboard" class="active">Dashboard 1</a></li>
+                                 
                              </ul>
                          </li>
+                         <li class="has-submenu active">
+                            <a href="#" class="active"> <i class="mdi mdi-view-dashboard"></i>New</a>
+                            <ul class="submenu in">
+                                <li class="active"><a href="/CustomerPatientUserList" class="active">Patient</a></li>
+                                <li><a href="/visit/">Visit</a></li>
+                            </ul>
+                        </li>
 
                          <li class="has-submenu">
                              <a href="#">

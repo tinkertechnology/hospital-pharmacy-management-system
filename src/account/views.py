@@ -88,6 +88,8 @@ def login_view(request):
 		print(request.POST)
 		form = AccountAuthenticationForm(request.POST)
 		# if form.is_valid():
+		request.session['counter'] = request.POST.get('counter')
+		print('session counter',request.session.get('counter'))
 		user = authenticate(mobile=mobile, password=password)
 		print(user)
 		if user:
