@@ -35,8 +35,9 @@ from django.db.models import Q
 from products.models import Variation
 from carts.models import TransactionType
 from payment.models import PaymentMethod
-from account.models import VisitType
+from account.models import VisitType, BloodGroup
 from counter.models import Counter
+from address.models import Country
 User = get_user_model()
 
 
@@ -708,12 +709,14 @@ def carts(request):
 def visit(request):
 	variations = Variation.objects.all()
 	visits_types = VisitType.objects.all()
-	
-	
+	blood_groups = BloodGroup.objects.all()
+	countries = Country.objects.all()	
 	context ={
 		'variations' : variations,
 		# 'visits_type' : visits_type,
 		'visits_types' : visits_types,
-		'patient_types' : UserTypes.objects.all()
+		'patient_types' : UserTypes.objects.all(),
+		'blood_groups' : blood_groups
 	}
 	return render(request, "personal/dashboard_layout/visit.html", context)
+

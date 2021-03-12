@@ -143,6 +143,7 @@ INSTALLED_APPS = [
     'counter',
     'office',
     'vendor',
+    'address'
 
 
 

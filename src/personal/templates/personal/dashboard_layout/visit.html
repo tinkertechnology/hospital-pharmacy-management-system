@@ -114,7 +114,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title mt-0">Add New Customer</h4>
+                        <h4 class="modal-title mt-0">Add New Patient</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -145,10 +145,17 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="field-4" class="control-label">Address</label>
-                                    <input type="text" class="form-control" v-model="customerForm.address" id="field-4" placeholder="Kathmandu, Nepal">
+                                    <label for="field-6" class="control-label">Patient Type</label>
+                                    <select class="form-control" v-model="customerForm.patient_type_id">
+                                        <option value="">Normal</option>
+                                        {% for patient_type in patient_types %}
+                                            <option value="{{patient_type.id}}">{{patient_type.title}}</option>
+                                        {% endfor %}
+                                        
+                                    </select>
                                 </div>
                             </div>
+                         
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="field-5" class="control-label">Date of Birth (BS)</label>
@@ -166,35 +173,70 @@
                             </div>
                             
         
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="field-6" class="control-label">Patient Type</label>
-                                    <select class="form-control" v-model="customerForm.patient_type_id">
-                                        <option value="">Normal</option>
-                                        {% for patient_type in patient_types %}
-                                            <option value="{{patient_type.id}}">{{patient_type.title}}</option>
-                                        {% endfor %}
-                                        
-                                    </select>
-                                </div>
-                            </div>
+                         
 
                           
                         </div>
-                        <!-- <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group no-margin">
-                                    <label for="field-7" class="control-label">Personal Info</label>
-                                    <textarea class="form-control autogrow" id="field-7" placeholder="Write something about yourself" style="overflow: hidden; word-wrap: break-word; resize: horizontal; height: 104px;"></textarea>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="field-4" class="control-label">Country</label>
+                                   
+                                    <select v-model="customerForm.country" class="form-control">
+                                        {% for bg in blood_groups %}
+                                            <option value="{{bg.id}}">{{bg.title}}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
                             </div>
-                        </div> -->
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="field-4" class="control-label">State</label>
+                                    <input type="text" class="form-control" v-model="customerForm.address" id="field-4" placeholder="Country">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="field-4" class="control-label">District</label>
+                                    <input type="text" class="form-control" v-model="customerForm.address" id="field-4" placeholder="Country">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="field-4" class="control-label">Local Gov</label>
+                                    <input type="text" class="form-control" v-model="customerForm.address" id="field-4" placeholder="Local">
+                                </div>
+                            </div>
+
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="field-6" class="control-label">Emergency Number</label>
+                                    <input type="text" class="form-control"  v-model="customerForm.emergency_number" id="field-6" placeholder="">
+                                </div>
+                            </div>
+                            <div class="col-md-6" >
+                                <div class="form-group">
+                                    <label for="field-6" class="control-label">Blood Group</label>
+                                    <select v-model="customerForm.fk_bloodgroup_id" class="form-control">
+                                    {% for bg in blood_groups %}
+                                        <option value="{{bg.id}}">{{bg.title}}</option>
+                                    {% endfor %}
+                                    </select>
+                                   
+                                </div>
+                            </div>
+                        </div>
+
+                        
                     </div>
                     <div class="modal-footer">
                         <!-- <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button> -->
                         <button type="button" class="btn btn-purple waves-effect waves-light" @click="savePatient">Add Patient</button>
-                        <!-- <button  @click="savePatient">save</button> -->
-              
+                        <!-- <button  @click="savePatient">save</button> -->             
                     </div>
                     <div v-if="message.error_status==true"class="alert alert-icon alert-danger alert-dismissible fade show mb-0" role="alert">
                         <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -273,7 +315,9 @@
         mobile : "",
         visit_type: '',
         address: '',
-        date_of_birth: ''
+        date_of_birth: '',
+        fk_bloodgroup_id:'',
+        emergency_number: ''
     },
 
   
@@ -294,6 +338,7 @@
                     appointmentDate : '2020-01-01', //this.appointmentDate,
                     remarks : this.remarks,
                     visit_type : this.visit_type,
+                    
                     
                },
                }) //.then(response=> cartitem.variation = response.data)
@@ -367,6 +412,7 @@
                                 'X-CSRFToken': '{{ csrf_token }}'
                             }, 
                 data: {
+                    fk_customer_id : null,
                     firstname : this.customerForm.firstname,
                     lastname : this.customerForm.lastname,
                     mobile : this.customerForm.mobile,
@@ -374,7 +420,8 @@
                     date_of_birth : this.customerForm.date_of_birth,
                     address : this.customerForm.address,
                     patient_type_id : this.customerForm.patient_type_id,
-
+                    emergency_number : this.customerForm.emergency_number,
+                    fk_bloodgroup_id : this.customerForm.fk_bloodgroup_id
                   // This is the body part
                 },
                 }) //.then(response=> cartitem.variation = response.data)

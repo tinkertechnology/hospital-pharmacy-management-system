@@ -5,6 +5,7 @@ from department.models import Department
 from specializationtype.models import SpecializationType
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from address.models import Country, State, District, LocalGov
 
 
 class MyAccountManager(BaseUserManager):
@@ -41,6 +42,13 @@ class MyAccountManager(BaseUserManager):
 		return user
 
 
+class BloodGroup(models.Model):
+	title = models.CharField(max_length=100, null=True, blank=True)
+
+	def __str__(self):
+		return self.title
+
+
 class Account(AbstractBaseUser):
 	phone_regex = RegexValidator(regex=r'^\+?1?\d{9,14}$', message="Phone number must be entered in the format: '+977999999'. Up to 15 digits allowed.")
 	email 					= models.EmailField(verbose_name="email", max_length=60, unique=True)
@@ -59,8 +67,12 @@ class Account(AbstractBaseUser):
 	address					= models.CharField(max_length=200, null=True, blank=True)
 	gender					= models.CharField(max_length=200, null=True, blank=True)
 	firebase_token          = models.CharField(max_length=500, null=True, blank=True)
-
-
+	emergency_number        = models.CharField(validators=[phone_regex],max_length=15, unique=True, null=True)
+	fk_country				= models.ForeignKey(Country, on_delete=models.CASCADE, null=True,blank=True)
+	fk_state				= models.ForeignKey(State, on_delete=models.CASCADE, null=True,blank=True)
+	fk_district				= models.ForeignKey(District, on_delete=models.CASCADE, null=True,blank=True)
+	fk_localgov				= models.ForeignKey(LocalGov, on_delete=models.CASCADE, null=True,blank=True)
+	fk_blood 				= models.ForeignKey(BloodGroup, null=True, on_delete=models.CASCADE, blank=True)
 
 
 	USERNAME_FIELD = 'mobile'
@@ -156,6 +168,7 @@ class PasswordResetOTP(models.Model):
 
 	def __str__(self):
 		return str(self.mobile) + 'is sent' +str(self.otp)
+
 
 
 
