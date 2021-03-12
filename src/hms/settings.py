@@ -114,6 +114,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'widget_tweaks',
     # My apps
     
     'personal',
