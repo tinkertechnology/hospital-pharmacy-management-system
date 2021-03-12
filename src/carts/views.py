@@ -255,6 +255,7 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 					cart = Cart()
 					cart.user_id = patient_id 
 					cart.fk_visit_id = fk_visit.id
+					cart.fk_counter_id = request.session.get('counter')
 					cart.save()
 				
 		cart_id = request.GET.get('cart_id', cart.id) #cart_id nahunda new create hunxa 
