@@ -48,9 +48,9 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <select class="form-control">
+                                    <select class="form-control" name="counter">
                                         {% for role in visits %}
-                                            <option value="role.slug">{{role.name}}</option>
+                                            <option value="{{role.id}}">{{role.name}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>

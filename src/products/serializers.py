@@ -61,10 +61,17 @@ class VariationSerializer(serializers.ModelSerializer):
 		# print(self.price)	
 
 class VariationBatchSerializer(serializers.ModelSerializer):
+	fk_variation_name = serializers.SerializerMethodField()
 	fk_variation = VariationSerializer()
 	class Meta:
 		model = VariationBatch
 		fields ='__all__'
+
+	def get_fk_variation_name(self, obj):
+		if obj.batchno:
+			return obj.fk_variation.title + ' ' + obj.batchno
+		return obj.fk_variation.title
+
 
 class UserVariationQuantityHistorySerializer(serializers.ModelSerializer):
 	variation = VariationSerializer()
