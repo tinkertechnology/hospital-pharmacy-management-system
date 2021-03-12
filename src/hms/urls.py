@@ -401,6 +401,9 @@ urlpatterns += [
 
     # VENDOR ROUTE
     re_path(r'^vendor/', include('vendor.urls')),
+
+    # COUNTER ROUTE
+    re_path(r'^counter/', include('counter.urls')),
 ]
  # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
