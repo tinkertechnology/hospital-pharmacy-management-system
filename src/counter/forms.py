@@ -1,9 +1,10 @@
 from django import forms
+from django.forms import ModelForm
+from .models import Counter
 
-
-class CounterForm(forms.Form):
+class CounterForm(forms.ModelForm):
     name = forms.CharField(max_length=30)
-    slug = forms.EmailField(max_length=254)
+    slug = forms.CharField(max_length=254, help_text='E.g. category-1')
     # message = forms.CharField(
     #     max_length=2000,
     #     widget=forms.Textarea(),
@@ -14,13 +15,17 @@ class CounterForm(forms.Form):
     #     widget=forms.HiddenInput()
     # )
 
+    class Meta:
+        model = Counter
+        fields = '__all__'
+
     def clean(self):
         cleaned_data = super(CounterForm, self).clean()
         name = cleaned_data.get('name')
         slug = cleaned_data.get('slug')
         # message = cleaned_data.get('message')
-        if not name and not email:
-            raise forms.ValidationError('You have to write something!')
+        if not name and not slug:
+            raise forms.ValidationError('All fields are required !')
 
 
 # class ColorfulCounterForm(forms.Form):

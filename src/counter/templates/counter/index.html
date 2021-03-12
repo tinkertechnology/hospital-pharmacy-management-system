@@ -5,6 +5,8 @@
 {% block content %}
 
 
+{% include 'counter/messages.html' %}
+
 <div class="row">
     <div class="col-lg-12">
         <div class="card-box">
@@ -13,7 +15,7 @@
             </div>
 
             <div class="float-right mb-3">
-                <a href="{% url 'vendor:add' %}">
+                <a href="{% url 'counter:add' %}">
                     <button type="button" class="btn btn-primary waves-effect waves-light">
                         <i class="mdi mdi-home-map-marker"></i>NEW
                     </button>
@@ -26,35 +28,23 @@
                         <tr>
                             <th>#</th>
                             <th>Name</th>
-                            <th>Address</th>
-                            <th>Mobile</th>
-                            <th>Phone</th>
-                            <th>Email</th>
-                            <th>PAN Number</th>
-                            <th>Website</th>
-                            <th>Note</th>
+                            <th>Slug</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% if vendor_list %}
-                            {% for item in vendor_list %}
+                        {% if counter_list %}
+                            {% for item in counter_list %}
                                 <tr>
                                     <th>{{ forloop.counter }}</th>
                                     <td>{{ item.name }}</td>
-                                    <td>{{ item.address }}</td>
-                                    <td>{{ item.mobile }}</td>
-                                    <td>{{ item.phone }}</td>
-                                    <td>{{ item.email }}</td>
-                                    <td>{{ item.pan }}</td>
-                                    <td>{{ item.website }}</td>
-                                    <td>{{ item.notes }}</td>
+                                    <td>{{ item.slug }}</td>
                                     <td>
-                                        <a href="{% url 'vendor:edit' item.id %}">
+                                        <a href="{% url 'counter:edit' item.id %}">
                                             <button class="btn btn-success waves-effect waves-light btn-sm">Edit</button>
                                         </a>
-                                        <a href="{% url 'vendor:delete' item.id %}" onclick="return confirm('Are you sure you want to delete?')">
-                                            <button class="btn btn-danger waves-effect waves-light btn-sm">View</button>
+                                        <a href="{% url 'counter:delete' item.id %}" onclick="return confirm('Are you sure you want to delete?')">
+                                            <button class="btn btn-danger waves-effect waves-light btn-sm">Delete</button>
                                         </a>
                                     </td>
                                 </tr>

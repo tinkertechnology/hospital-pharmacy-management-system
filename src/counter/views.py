@@ -1,6 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Counter
 from .forms import CounterForm
+from django.http import HttpResponse
+from django.contrib import messages
+
 
 # Create your views here.
 def index(request):
@@ -9,25 +12,23 @@ def index(request):
 
 
 def  add(request):
-	fstatusType = "Add"
+	fstatusType = "Create New"
 	fpostType = "Counter"
 
-	if request.method=='POST':
-		counter_details = CounterForm(request.POST)
-
-		if counter_details.is_valid():
-			print('Passed')
-			counter_details.save()
-			return redirect('/counter', messages.success(request, 'Counter added successfully.', 'alert-success'))
-			# return HttpResponse('Added successfully')
+	if request.method == 'POST':
+		form = CounterForm(request.POST)
+		if form.is_valid():
+			print('Passed')  # does nothing, just trigger the validation
+			form.save()
+			# return HttpResponse('Counter added successfully')
+			messages.success(request, 'Counter details added successfully!') 
+			return redirect('/counter')
 		else:
-			print(counter_details.errors)
-			print('Failed')
-			return redirect('counter', messages.success(request, 'All fields are required.', 'alert-success'))
+			form = CounterForm(request.POST)
+			messages.warning(request, 'Please correct the error below.')
 	else:
 		form = CounterForm()
-	
-	return render(request, 'counter/add.html', {'form':form, 'fstatusType': fstatusType, 'fpostType': fpostType})
+	return render(request, 'counter/add.html', {'form': form, 'fstatusType':fstatusType, 'fpostType':fpostType})
 
 
 
@@ -45,7 +46,9 @@ def edit(request, id):
 			if form.save():
 				return redirect('/counter', messages.success(request, 'Counter Management updated successfully', 'alert-success'))
 			else:
-				return redirect('/counter', messages.success(request, 'There was a problem connecting to the server. Please try again later.', 'alert-success'))
+				form = CounterForm(instance=counter_details)
+				messages.warning(request, 'Please correct the error below.')
+				# return redirect('/counter', messages.success(request, 'There was a problem connecting to the server. Please try again later.', 'alert-success'))
 			form.save()
 	else:
 		form = CounterForm(instance=counter_details)
@@ -54,4 +57,7 @@ def edit(request, id):
 
 
 def delete(request, id):
-	print(id)
+	counter_details = Counter.objects.filter(id=id).delete()
+	messages.success(request, 'Counter details deleted Successfully.')
+	return redirect('/counter')
+

@@ -1,4 +1,6 @@
 from . import settings_conf
+from django.contrib.messages import constants as message_constants
+from django.contrib.messages import constants as messages
 # Project specific configuration
 #IS_MULTI_VENDOR = True
 
@@ -187,6 +189,14 @@ WSGI_APPLICATION = 'hms.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+MESSAGE_LEVEL = message_constants.DEBUG
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
 SHIPPING_PRICE = 0
 
 DATABASES = settings_conf.GetDatabases()
