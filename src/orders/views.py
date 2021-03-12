@@ -670,7 +670,8 @@ def pos1(request):
 		"cart" : cart,
 		'cart_id' : cart.id,
 		'paymentmethods' : PaymentMethod.objects.all(),
-		'counters' : counters
+		'counters' : counters,
+		'transaction_types' : TransactionType.objects.all()
 	}
 	return render(request, "personal/dashboard_layout/pos_test.html", context)
 

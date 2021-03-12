@@ -935,13 +935,12 @@ class VisitAPIView(APIView):
 		appointment_date =  request.data.get('appointmentDate')
 		fk_bloodgroup_id = request.data.get('fk_bloodgroup_id')
 		emergency_number = request.data.get('emergency_number')	
+		visit_type = request.data.get('visit_type')
 		if fk_customer_user_id and fk_doctor_user_id:
 			visit = Visit.objects.create(fk_customer_user_id=fk_customer_user_id,
 										 fk_doctor_user_id=fk_doctor_user_id,
 										 appointment_date=appointment_date,
-										 fk_visit_id=visit_type,
-										 fk_blood_id=fk_bloodgroup_id,
-										 emergency_number = emergency_number,
+										 fk_visit_id=visit_type,										 
 										 remarks=remarks)
 			data = {
 				'success': 'Created',

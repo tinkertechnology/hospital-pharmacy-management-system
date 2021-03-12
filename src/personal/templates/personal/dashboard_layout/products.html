@@ -152,6 +152,53 @@
     </div>
 </div>
 
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Rolling Stone Top 500 albums of all time</title>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css">
+  <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <table id="albums" class="table m-0 table-colored-bordered table-bordered-teal" style="width:100%">
+          <thead>
+            <tr>
+              <th>Drug</th>
+              <th>Added date</th>
+              <th>Expiry Date</th>
+              <th>Stock</th>
+              
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+  <script src="//cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+  <script>
+      $(document).ready(function() {
+        $.noConflict();
+          var table = $('#albums').DataTable({
+              "serverSide": true,
+              "ajax": "/api/VariationBatchAPIView/?format=datatables&fk_variation=asp",
+              "columns": [                
+                  {"data": "fk_variation_name", "name": "fk_variation_name", "searchable": true},
+                  {"data": "created_at", "name": "created_at", "searchable": true},
+                  {"data": "expiry_date", "name": "expiry_date"},
+                  {"data": "quantity", "name": "quantity", "sortable": true},
+              ]
+          });
+      });
+  </script>
+</body>
+</html>
 
 <style>
     .loader{  /* Loader Div Class */

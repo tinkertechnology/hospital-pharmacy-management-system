@@ -157,8 +157,13 @@ class VariationByPatientAPIView(APIView):
 		variation = Variation.objects.filter(fk_user_type_id=p_type).filter(product_id=product_id).first()
 		# print(variation.query())
 		return Response(VariationSerializer(variation, read_only=True).data)
+from .variationbatch_filter import VariationBatchFilter
 
 class VariationBatchAPIView(APIView):
+	queryset = VariationBatch.objects.all()
+	serializer_class = VariationBatchSerializer
+	filter_class = VariationBatchFilter
+
 	def get(self, request):
 		return Response(VariationBatchSerializer(VariationBatch.objects.all(), many=True).data)
 

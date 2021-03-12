@@ -71,6 +71,7 @@ from carts.views import (
         ItemCountView, 
         AddToCartView,
         CartItemSaveView,
+        CartTransactionView,
         RemoveCartItemFromCart,
         AddToCartForCustomUserAPIView,
         ReturnToStoreForCustomUserAPIView,
@@ -379,9 +380,11 @@ urlpatterns += [
     path('api/VariationBatchAPIView/', VariationBatchAPIView.as_view(), name="VariationBatchAPIView"),
     path('api/VariationBatchPriceAPIView/', VariationBatchPriceAPIView.as_view(), name="VariationBatchPriceAPIView"),  
     path('api/PurchaseVariationBatchAPIView/', PurchaseVariationBatchAPIView.as_view(), name="PurchaseVariationBatchAPIView"),
+    path('api/CartTransactionView/', CartTransactionView.as_view(), name="CartTransactionView"),
     re_path('^visit-type/', visit_type_index, name="visit-types"),
     re_path('^visit_type_add/', visit_type_add, name="visit_type_add"),
     re_path('^visit-type/<int:id>/edit/', visit_type_edit, name="visit-types-edit"),
+
     
 
     # DEPARTMENT ROUTE
