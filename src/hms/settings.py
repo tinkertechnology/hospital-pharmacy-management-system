@@ -118,7 +118,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'widget_tweaks',
     # My apps
-    
     'personal',
     'account',
     'carts',
@@ -135,6 +134,7 @@ INSTALLED_APPS = [
     'slider',
     'django_filters',
     'rest_framework',
+    'rest_framework_datatables',
     'rest_framework.authtoken',
     # 'rest_registration',
     'hms_web',
@@ -146,6 +146,7 @@ INSTALLED_APPS = [
     'counter',
     'office',
     'vendor',
+    'address'
 
 
 
@@ -275,11 +276,17 @@ EMAIL_USE_TLS = True
 SERVER_HOST = settings_conf.GetServerHost()
 
 REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        'rest_framework_datatables.renderers.DatatablesRenderer',
+    ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
     ),
         'DEFAULT_FILTER_BACKENDS': (
-        'django_filters.rest_framework.DjangoFilterBackend',
+        # 'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework_datatables.filters.DatatablesFilterBackend',
     ),
       'DEFAULT_AUTHENTICATION_CLASSES': (
         "rest_framework_jwt.authentication.JSONWebTokenAuthentication",
@@ -288,8 +295,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         
     ),
-      'DEFAULT_PAGINATION_CLASS': 'products.pagination.ProductPagination',
-      "SEARCH_PARAM" : "q"
+    #   'DEFAULT_PAGINATION_CLASS': 'products.pagination.ProductPagination',
+    #   "SEARCH_PARAM" : "q"
+     'DEFAULT_PAGINATION_CLASS': 'rest_framework_datatables.pagination.DatatablesPageNumberPagination',
+    'PAGE_SIZE': 50,
 }
 
 JWT_AUTH = {

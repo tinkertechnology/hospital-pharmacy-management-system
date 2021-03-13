@@ -378,8 +378,8 @@
                             <a href="#"> <i class="mdi mdi-flip-horizontal"></i>Add
                             </a>
                             <ul class="submenu">
-                                <li><a href="#">Add Purchase Bill</a></li>
                                 <li><a href="{% url 'counter:add' %}">Add Counter</a></li>
+                                <li><a href="/purchase/">Add Purchase Bill</a></li>
                                 <li><a href="#">Add Patient</a></li>
                             </ul>
                         </li>
@@ -646,16 +646,11 @@
 
          {% comment %}
          <div class="left-side-menu">
-
             <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 600px;"><div class="slimscroll-menu" style="overflow: hidden; width: auto; height: 600px;">
-
                 <!--- Sidemenu -->
                 <div id="sidebar-menu" class="mm-active">
-
                     <ul class="metismenu mm-show" id="side-menu">
-
                         <li class="menu-title">Navigation</li>
-
                         <li>
                             <a href="/" class="waves-effect waves-light">
                                 <i class="mdi mdi-view-dashboard"></i>
@@ -759,7 +754,7 @@
                                     <li class="breadcrumb-item active">Dashboard</li>
                                 </ol>
                             </div>
-                            <h4 class="page-title">Dashboard</h4>
+                            <h4 class="page-title">{% block page_title %}{% endblock %}</h4>
                         </div>
                     </div>
                 </div>
@@ -804,6 +799,7 @@
       <script src="https://coderthemes.com/zircos/layouts/vertical/assets/libs/custombox/custombox.min.js"></script>
       <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
       <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+      
        <script>   
 
       // $: single $ means function

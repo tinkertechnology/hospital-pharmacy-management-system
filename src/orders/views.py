@@ -19,7 +19,7 @@ from carts.mixins import TokenMixin
 from rest_framework import permissions
 # from .forms import AddressForm, UserAddressForm, UserOrderForm
 from .mixins import CartOrderMixin, LoginRequiredMixin
-from .models import  Order#UserAddress, UserCheckout, Order, Quotation
+from .models import  Order, PurchaseItem, Purchase#UserAddress, UserCheckout, Order, Quotation
 from .permissions import IsOwnerAndAuth
 from .serializers import  OrderSerializer, OrderDetailSerializer, CartOrderSerializer, \
 		OrderListStoreSerializer, CartOrderListStoreSerializer, CartItemSerializer, UpdateOrderStatusSerializer, \
@@ -35,8 +35,10 @@ from django.db.models import Q
 from products.models import Variation
 from carts.models import TransactionType
 from payment.models import PaymentMethod
-from account.models import VisitType
+from account.models import VisitType, BloodGroup
 from counter.models import Counter
+from address.models import Country
+from vendor.models import Vendor
 User = get_user_model()
 
 
@@ -669,7 +671,8 @@ def pos1(request):
 		"cart" : cart,
 		'cart_id' : cart.id,
 		'paymentmethods' : PaymentMethod.objects.all(),
-		'counters' : counters
+		'counters' : counters,
+		'transaction_types' : TransactionType.objects.all()
 	}
 	return render(request, "personal/dashboard_layout/pos_test.html", context)
 
@@ -701,19 +704,59 @@ def carts(request):
 	return render(request, "personal/dashboard_layout/carts.html", context)
 	
 
+def purchase(request):
+	purchase = Purchase()
+	purchase.save()
+	return redirect('/purchase/create/%s/' %(purchase.id))
+	# return render(request, "personal/dashboard_layout/purchase.html", context)
 
+def purchaseEdit(request, id):
+	context = {
+		'payment_methods' : PaymentMethod.objects.all(),
+		'vendors' : Vendor.objects.all(),
+		'purchase_id': id
+	}
+	return render(request, "personal/dashboard_layout/purchase.html", context)
 
 ###HMS
 
 def visit(request):
 	variations = Variation.objects.all()
 	visits_types = VisitType.objects.all()
-	
-	
+	blood_groups = BloodGroup.objects.all()
+	countries = Country.objects.all()	
 	context ={
 		'variations' : variations,
 		# 'visits_type' : visits_type,
 		'visits_types' : visits_types,
-		'patient_types' : UserTypes.objects.all()
+		'patient_types' : UserTypes.objects.all(),
+		'blood_groups' : blood_groups
 	}
 	return render(request, "personal/dashboard_layout/visit.html", context)
+
+
+from .serializers import PurchaseItemSerializer
+class PurchaseOrderAPIView(APIView):
+	def get(self, request, *args, **kwargs):
+		purchase_id = request.GET.get('purchase_id')
+		purchase = Purchase.objects.filter(pk=purchase_id).first()
+		return Response(PurchaseItemSerializer(purchase.purchaseitems.all(), many=True).data)
+		
+	def post(self, request):
+		purchase_id = request.data.get('purchase_id')
+		purchase_date = request.data.get('purchase_date')
+		bill_date = request.data.get('bill_date')
+		fk_supplier_id = request.data.get('fk_supplier_id')
+		bill_number = request.data.get('bill_number')
+		fk_payment_method_id = request.data.get('fk_payment_method_id')
+		fk_variation_id = request.data.get('fk_variation_id')
+		
+		purchase = Purchase.objects.filter(pk=purchase_id)
+		purchase.purchase_date = purchase_date
+		purchase.bill_date = bill_date
+		purchase.fk_supplier_id = fk_supplier_id
+		purchase.fk_payment_method_id = fk_payment_method_id
+		purchase.save()
+		if fk_variation_id:
+			PurchaseItem.objects.create(fk_variation_id=fk_variation_id, fk_purchase_id=purchase.id)
+		return Response('success', status=200)

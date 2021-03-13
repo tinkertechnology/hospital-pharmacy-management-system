@@ -101,11 +101,11 @@
                                     <tr v-for='(cartitem, index) in cart.items'>
                                         <td>[[++index]]</td>
                                         <td>
-                                            <v-select label="fk_variation_name" :options="products"></v-select>
-                                                 <select class="form-control product" v-model="cartitem.fk_variation_batch_id" @change="onChangeCartItemProduct(cartitem,$event)">
+                                            <v-select label="fk_variation_name" :options="products"  :reduce="jpt => jpt.id"  v-model="cartitem.fk_variation_batch_id" @input="value => onChangeCartItemProduct(cartitem,value)"></v-select>
+                                                 <!-- <select class="form-control product" v-model="cartitem.fk_variation_batch_id" @change="onChangeCartItemProduct(cartitem,$event)">
                                                      <option>Select Item</option>
                                                     <option  v-for="(item, index) in products" v-bind:value="item.id">[[item.fk_variation.title]][[ item.batchno ]]</option>
-                                                </select>
+                                                </select> -->
                                             
                                         </td>
 
@@ -121,7 +121,28 @@
                                         <td><input v-model="cartitem.is_return" @change="addToCart(cartitem)" type="checkbox"></td>
                                         <td><button class="btn btn-danger"  @click="deleteRow(cartitem.id, index)">X</button></td>
                                     </tr>
-                                    <button class="btn btn-primary float-right" @click="addRow" >+</button>
+
+                                    <tr>
+                                        <td>
+                                            <select v-model="transaction.fk_type_id" class="form-control">
+                                                {% for transaction_type in transaction_types %}
+                                                    <option value="{{transaction_type.id}}">{{transaction_type.title}}
+
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        <td>
+                                           <input type="text" v-model="transaction.amount" placeholder="amount" class="form-control">
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-purple" @click="cartTransaction">apply</button>
+                                        </td>
+
+                                        
+                                    </tr>
+
+                                    <!-- <button class="btn btn-primary float-right" @click="addRow" >+</button> -->
                                 </tbody>
                             </table>
                         </div>
@@ -259,6 +280,7 @@
         delimiters: ['[[', ']]'],
       el: '#pos',
       data: {
+        selectedVariationBatch : {},
         fk_counter_id : null,
         loading: false,
         products : [{
@@ -276,6 +298,10 @@
                 p_type_title: ""
             }
     }],
+    transaction : {
+        fk_type_id : '',
+        amount : ''
+    },
     patient :{},
         selectedVal : 1,
         users:[{name:'',email:'',mobno:''}],
@@ -334,9 +360,17 @@
                     console.log("Error while fetching market updates");
                 });  
         },
+        // onChangeCartItemProduct(cartitem,event) {
+        //     console.log('event',event.target.value);
+        //     cartitem.fk_variation_batch_id = event.target.value;
+        //     this.getVariationBatchPrice(cartitem);
+        // },
+
         onChangeCartItemProduct(cartitem,event) {
-            console.log('event',event.target.value);
-            cartitem.fk_variation_batch_id = event.target.value;
+            // console.log('event',event.target.value);
+            console.log('cartitem',cartitem,'event=', event);
+            // cartitem.fk_variation_batch_id = event.id;
+            cartitem.fk_variation_batch_id = event;
             this.getVariationBatchPrice(cartitem);
         },
 
@@ -590,7 +624,7 @@
                     quantity: cartitem.quantity,
                     cartitem_id : cartitem.id,
                     fk_counter_id : this.fk_counter_id,
-                    is_return : cartitem.is_return
+                    is_return : cartitem.is_return                    
                     // fk_store_id : 1,
                     // cart_id : {{cart_id}},
                     // p_id: this.patients.id, 
@@ -601,6 +635,32 @@
                     console.log(response);
                     this.getCart({{cart_id}});
                     $.notify("Item updated! ", "success");
+                    
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        },
+
+        cartTransaction : function(){
+            axios({
+                method: 'post',
+                url:  '/api/CartTransactionView/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                   fk_type_id : this.transaction.fk_type_id,
+                   amount : this.transaction.amount,
+                   fk_cart_id : {{cart_id}}
+                }
+                })
+                .then(response => {
+                    console.log(response);                   
+                    $.notify("transaction added", "success");
+                    this.getCart({{cart_id}});
                     
 
                 })

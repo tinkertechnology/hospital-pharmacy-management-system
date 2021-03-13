@@ -4,7 +4,7 @@ from carts.mixins import TokenMixin
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from .models import Order, StoreWiseOrder#, UserAddress, Quotation, UserCheckout, 
+from .models import Order, StoreWiseOrder, PurchaseItem#, UserAddress, Quotation, UserCheckout, 
 from datetime import timedelta
 from products.models import Product, ProductImage
 from carts.models import Cart, CartItem
@@ -442,5 +442,8 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 
 
-
+class PurchaseItemSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = PurchaseItem
+		fields = '__all__'
 

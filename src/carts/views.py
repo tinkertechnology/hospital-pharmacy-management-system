@@ -36,6 +36,7 @@ from products.serializers import UserVariationQuantityHistorySerializer
 from django.contrib.auth import get_user_model
 from decimal import Decimal
 from orders.invoice import generate_amount_words
+from carts.models import Cart, Transaction
 User = get_user_model()
 
 # 
@@ -261,13 +262,15 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 		cart_id = request.GET.get('cart_id', cart.id) #cart_id nahunda new create hunxa 
 		cart = Cart.objects.filter(pk=cart_id).first()
 		items = CartItemSerializer(cart.cartitem_set.all(), many=True)
+		grand_total = cart.total - cart.transaction_total
 		data = {
 			"cart" : cart.id,
-			"total": cart.total,
+			"total": grand_total,#cart.total,
 			"subtotal": cart.subtotal,
 			"tax_total": cart.tax_total,
 			"count": cart.cartitems.count(),
 			"items": items.data,
+			"discount" : cart.transaction_total,
 			"in_words" : generate_amount_words(cart.total)
 		}
 		# print(cart.items)
@@ -286,7 +289,7 @@ if settings.DEBUG:
 from carts.service import CartItemCreateService
 from orders.service import CreateOrderFromCart, VariationHistoryCountService
 
-from carts.models import Cart
+
 
 
 from account.serializer import CreateUserSerializer
@@ -450,25 +453,6 @@ class ReturnToStoreForCustomUserAPIView(APIView):
 			return Response(seriailzer.data)
 		else:
 			return Response({'Fail': 'The Jar seems to be different than delivered'}, status=400) 
-		
-		
-
-		# CartItemCreateService(data)
-		# auto_carts = Cart.objects.filter(active=1).filter(is_auto_order=True).filter(user=user).all()
-		# # import pprint
-		# # pprint.pprint(auto_carts)
-		# for cart in auto_carts:
-		# 	order_data = {
-		# 	'user_id': user.id,
-		# 	'order_latitude': 1,
-		# 	'order_longitude': 1,
-		# 	'is_auto_order': True,
-		# 	'fk_payment_method': 1
-		# 	}
-		# 	print( order_data )
-		# 	CreateOrderFromCart( order_data )
-		# 	VariationHistoryCountService(cart.id)
-		# 	pass
 		return Response({'Success': 'Updated Sucessfully'},status=200)
 
 
@@ -502,6 +486,27 @@ class CartItemSaveView(CreateAPIView):
 	queryset=CartItem.objects.all()
 	serializer_class = CartItemModelSerializer 
 	# serializer_class = RemoveCartItemFromCartSerializer 
+
+class CartTransactionView(APIView):
+	def post(self, request, *arg, **kwargs):
+		fk_cart_id = request.data.get('fk_cart_id')
+		amount = request.data.get('amount')
+		fk_type_id = request.data.get('fk_type_id')
+		transaction = Transaction()
+		transaction.fk_type_id = fk_type_id
+		transaction.amount = amount
+		transaction.fk_cart_id = fk_cart_id
+		transaction.entered_user = request.user
+		transaction.save()
+		cart = Cart.objects.filter(pk=fk_cart_id).first()
+		transaction_sum_amount = 0
+		for item in Transaction.objects.filter(fk_cart_id=fk_cart_id):
+			transaction_sum_amount+= item.amount
+		cart.transaction_total = transaction_sum_amount
+		cart.save()
+		return Response('hi save bhayo', status=200)
+
+
 
 
 

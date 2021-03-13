@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 from counter.models import Counter
 User = get_user_model()
 from orders.convert_num_to_words import generate_amount_words
+from payment.models import PaymentMethod
 # from orders.models import StoreWiseOrder
 
 
@@ -86,6 +87,11 @@ class Cart(models.Model):
 	credit = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
 	debit = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
 	fk_counter = models.ForeignKey(Counter, null=True, on_delete=models.CASCADE, blank=True)
+	transaction_total = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
+	grand_total = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
+	fk_payment_method = models.ForeignKey(PaymentMethod, null=True, on_delete=models.CASCADE, blank=True)
+	# discount = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
+	# discount_percent = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
 	
 
 	def __unicode__(self):
