@@ -109,7 +109,10 @@ from orders.views import (
                     pos1,
                     carts,
                     cartitems,
-                    visit
+                    visit,
+                    purchase,
+                    purchaseEdit,
+                    PurchaseOrderAPIView
                     )
 
 from products.views import (
@@ -134,7 +137,8 @@ from products.views import (
         hmsvariations,
         VariationBatchAPIView,
         VariationBatchPriceAPIView,
-        PurchaseVariationBatchAPIView
+        PurchaseVariationBatchAPIView,
+        VariationAPIView
         
 
     )
@@ -365,6 +369,8 @@ urlpatterns += [
     path('cartitems', cartitems, name="cartitems"),
     path('hmsproducts/', hmsproducts, name="hmsproducts"),
     path('hmsvariations/<int:id>/', hmsvariations, name="hmsvariations"),
+    path('purchase/', purchase, name="purchase"),
+    path('purchase/create/<int:id>/', purchaseEdit, name="purchaseEdit"),
     
     path('visit/', visit, name="visittype"),
     path('api/VisitAPIView/', VisitAPIView.as_view(), name="VisitAPIView"),
@@ -379,7 +385,10 @@ urlpatterns += [
     path('api/VariationByPatientAPIView/', VariationByPatientAPIView.as_view(), name="variation-by-patient-type"),
     path('api/VariationBatchAPIView/', VariationBatchAPIView.as_view(), name="VariationBatchAPIView"),
     path('api/VariationBatchPriceAPIView/', VariationBatchPriceAPIView.as_view(), name="VariationBatchPriceAPIView"),  
+    path('api/VariationAPIView/', VariationAPIView.as_view(), name="VariationAPIView"), 
     path('api/PurchaseVariationBatchAPIView/', PurchaseVariationBatchAPIView.as_view(), name="PurchaseVariationBatchAPIView"),
+    path('api/PurchaseOrderAPIView/', PurchaseOrderAPIView.as_view(), name="PurchaseOrderAPIView"),
+    
     path('api/CartTransactionView/', CartTransactionView.as_view(), name="CartTransactionView"),
     re_path('^visit-type/', visit_type_index, name="visit-types"),
     re_path('^visit_type_add/', visit_type_add, name="visit_type_add"),
