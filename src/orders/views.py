@@ -751,7 +751,7 @@ class PurchaseOrderAPIView(APIView):
 		fk_payment_method_id = request.data.get('fk_payment_method_id')
 		fk_variation_id = request.data.get('fk_variation_id')
 		
-		purchase = Purchase.objects.filter(pk=purchase_id)
+		purchase = Purchase.objects.filter(pk=purchase_id).first()
 		purchase.purchase_date = purchase_date
 		purchase.bill_date = bill_date
 		purchase.fk_supplier_id = fk_supplier_id
