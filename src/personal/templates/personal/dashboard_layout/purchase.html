@@ -3,7 +3,11 @@
 {% load static %}
 {% block page_title %} Purchase {% endblock %}
 {% block content %}
-
+<style>
+    .your-custom-class {
+    background-color: #59b460 !important; 
+}
+</style>
 <div id="purchase">
     <div class="row">
         <div class="col-md-12">
@@ -13,14 +17,14 @@
                         <div class="col-md-4">
                             <div class="form-group ">
                                 <label >Bill Date</label>
-                                <input type="text" v-model="purchaseForm.bill_date" class="form-control" value="">
+                                <input type="text" v-model="purchaseForm.bill_date" class="form-control" value="{{purchase.bill_date}}">
                             </div>
                         </div>
     
                         <div class="col-md-4">
                             <div class="form-group ">
                                 <label >Purchase Date</label>
-                                <input type="text" v-model="purchaseForm.purchase_date"  class="form-control" placeholder="">
+                                <input type="text" v-model="purchaseForm.purchase_date"  class="form-control" placeholder="" value="{{purchase.purchase_date}}">
                             </div>
                         </div>
                         
@@ -102,7 +106,7 @@
                                 13360
                             </td>
                             <td>
-                                BECLATE-200 INHELAR
+                                [[item.fk_variation.title]]
                             </td>
                             <td>
                                 <input type="text"  class="form-control" >
@@ -141,6 +145,7 @@
                             </td>
                             <td>Rs.0.00</td>
                             <td>Rs.0.00</td>
+                            <td><button class="btn btn-danger" @click="deletePurchaseItem(item.id)">x</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -156,7 +161,8 @@
 
 <script>
     // var Toasted = require('vue-toasted').default
-    Vue.use(VueToast);
+    Vue.use(Toasted)
+  
     Vue.component('v-select', VueSelect.VueSelect);
     var app = new Vue({
        
@@ -271,6 +277,12 @@
                 }) //.then(response=> cartitem.variation = response.data)
                 .then((getResponse) => {                
                     console.log(getResponse.data);
+                    let toast = this.$toasted.show("Purchase Added", { 
+                        theme: "toasted-primary", 
+                        position: "top-right", 
+                        duration : 1500,
+                        className: ['your-custom-class',]
+                    });
                     this.getPurchaseItem();
                 }) 
                 .catch(function (error) {
@@ -279,6 +291,32 @@
                 });
                   
         },
+        deletePurchaseItem(purchaseitemId){
+            axios({
+                method: 'delete',
+                url:  '/api/PurchaseOrderAPIView/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                    purchaseitem_id : purchaseitemId
+                },
+                }) //.then(response=> cartitem.variation = response.data)
+                .then((getResponse) => {                
+                    console.log(getResponse.data);
+                    this.getPurchaseItem();
+                    let toast = this.$toasted.show("Removed !!", { 
+                        theme: "bubble", 
+                        position: "top-right", 
+                        duration : 1500
+                    });
+                }) 
+                .catch(function (error) {
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });
+            }
 
       }, //end method
       
@@ -288,6 +326,7 @@
       mounted() {
           this.getProduct();
           this.getPurchaseItem();
+     
       },
     })
   </script>

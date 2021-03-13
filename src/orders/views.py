@@ -714,6 +714,7 @@ def purchaseEdit(request, id):
 	context = {
 		'payment_methods' : PaymentMethod.objects.all(),
 		'vendors' : Vendor.objects.all(),
+		'purchase' : Purchase.objects.filter(pk=id).first(),
 		'purchase_id': id
 	}
 	return render(request, "personal/dashboard_layout/purchase.html", context)
@@ -760,3 +761,8 @@ class PurchaseOrderAPIView(APIView):
 		if fk_variation_id:
 			PurchaseItem.objects.create(fk_variation_id=fk_variation_id, fk_purchase_id=purchase.id)
 		return Response('success', status=200)
+
+	def delete(self, request):
+		instance = PurchaseItem.objects.get(id=request.data.get('purchaseitem_id'))
+		instance.delete()
+		return Response('Deleted', status=204)
