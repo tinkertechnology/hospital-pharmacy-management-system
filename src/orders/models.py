@@ -122,7 +122,7 @@ class StoreWiseOrder(models.Model):
 	class Meta:
 		ordering = ['-id']
 
-
+from products.models import ProductUnit
 class PurchaseItem(models.Model):
 	fk_purchase = models.ForeignKey("Purchase", related_name="purchaseitems", on_delete=models.CASCADE, blank=True)
 	fk_variation = models.ForeignKey(Variation, on_delete=models.CASCADE, null=True)
@@ -138,12 +138,18 @@ class PurchaseItem(models.Model):
 	cost_price = models.DecimalField(max_digits=25, decimal_places=2, default=0.00)
 	sell_price = models.DecimalField(max_digits=25, decimal_places=2, default=0.00)
 	is_return = models.BooleanField(default=False, null=True, blank=True)
+	fk_product_unit =  models.ForeignKey(ProductUnit, on_delete=models.CASCADE, null=True, blank=True)
+	packaging_quantity  = models.DecimalField(max_digits=25, decimal_places=2, default=1.00)	
+	expiry_date = models.DateField(null=True, blank=True)
+
 
 	def __unicode__(self):
 		return self.fk_variation.title
 
 
-
+def purchase_item_post_save_receiver(sender, instance, *args, **kwargs):
+	instance.fk_purchase.update_subtotal()
+post_save.connect(purchase_item_post_save_receiver, sender=PurchaseItem)
 
 
 class Purchase(models.Model):
@@ -172,14 +178,11 @@ class Purchase(models.Model):
 	def update_subtotal(self):
 		print("updating...")
 		subtotal = 0
-		items = self.cartitem_set.all()
+		items = self.purchaseitems.all()
 		for item in items:
 			subtotal += item.line_item_total
 		self.subtotal = "%.2f" %(subtotal)
 		self.save()
 
-	def is_complete(self):
-		self.active = False
-		self.save()
-	
+
 

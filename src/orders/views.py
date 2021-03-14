@@ -770,6 +770,7 @@ class PurchaseOrderAPIView(APIView):
 
 class PurchaseItemOrderAPIView(APIView):
 	def post(self, request, *args, **kwargs):
+		print(request.data)
 		purchaseitem_id = request.data.get('purchaseitem_id')
 		purchaseitem = PurchaseItem.objects.filter(pk=purchaseitem_id).first()
 		batchno = request.data.get('batchno')
@@ -780,13 +781,20 @@ class PurchaseItemOrderAPIView(APIView):
 		purchaseitem.expiry_date = expiry_date
 		purchaseitem.quantity = quantity
 		purchaseitem.free_quantity = free_quantity
-		total_quantity = quantity + free_quantity
-		if  purchaseitem.quantity and purchaseitem.free_quantity:
-			purchaseitem.total_quantity = purchaseitem.quantity + purchaseitem.free_quantity
+		purchaseitem.batchno = batchno
+		total_quantity = Decimal(quantity) + Decimal(free_quantity)
+		if  quantity and free_quantity:
+			purchaseitem.total_quantity = Decimal(quantity) + Decimal(free_quantity)
+		else:
+			purchaseitem.total_quantity = total_quantity = Decimal(quantity)
 		cp = request.data.get('cost_price', 0.0)
 		sp = request.data.get('sell_price', 0.0)
-		if purchaseitem.total_quantity and purchaseitem.cost_price:
-			purchaseitem.line_item_total = Decimal(cp) * decimal(quantity)
+		purchaseitem.cost_price = cp
+		purchaseitem.sell_price = sp
+		if cp and sp:
+			purchaseitem.line_item_total = Decimal(cp) * Decimal(quantity)
+		else:
+			purchaseitem.line_item_total = 0
 		purchaseitem.save()
-		return Response('bhayo save', sattus=200)
+		return Response('bhayo save', status=200)
 

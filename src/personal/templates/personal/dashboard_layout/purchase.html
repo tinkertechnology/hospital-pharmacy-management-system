@@ -98,6 +98,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                       
                         <tr v-for="(item, index) in purchaseitems"  v-bind:value="[[  item.id ]]" :key="item.id">
                             <td>
                                 [[++index]]
@@ -125,7 +126,7 @@
                                 <input type="number" @change="changePurchaseItem(item)" v-model="item.free_quantity" class="form-control" >
                             </td>
                             <td>
-                                [[item.id]]
+                                [[item.total_quantity]]
                             </td>
                             <td>
                                 <div class="input-group">
@@ -144,11 +145,13 @@
                                 </div>
                             </td>
                             <td>Rs.0.00</td>
-                            <td>Rs.0.00</td>
+                            <td>Rs. [[item.line_item_total]]</td>
                             <td><button class="btn btn-danger" @click="deletePurchaseItem(item.id)">x</button></td>
                         </tr>
                     </tbody>
                 </table>
+
+                Total : [[purchaseResponse.total]]
             </div>
         </div>
     </div>
@@ -187,6 +190,10 @@
         bill_number : '',
         fk_payment_method_id : '',
         fk_variation_id : '',
+    },
+
+    purchaseResponse: {
+        total : 0.0,
     },
     item : [],
         cart :{
@@ -248,8 +255,17 @@
                     // data = getResponse.data;
                     // response.send(data);
                     this.purchaseitems = getResponse.data;
-                    // this.products.unshift(initvalue);
-                    // console.log('product',this.products);
+                    this.item.batchno = getResponse.data.batchno;
+                    this.item.expiry_date = getResponse.data.cost_price;
+                    this.item.free_quantity = getResponse.data.free_quantity;
+                    this.item.line_item_total = getResponse.data.line_item_total;
+                    this.item.quantity = getResponse.data.quantity;
+                    this.item.free_quantity = getResponse.data.free_quantity;
+                    this.item.sell_price = getResponse.data.sell_price;
+                    this.item.cost_price = getResponse.data.cost_price;
+                    this.item.total_quantity = getResponse.data.total_quantity;
+                    this.purchaseResponse.total = getResponse.data.purchase.total;
+                    console.log('total', this.purchaseResponse.total );
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -303,12 +319,13 @@
                                 'X-CSRFToken': '{{ csrf_token }}'
                             }, 
                 data: {
-                    purchaseitem_id : item.id,
-                    quantity: item.quantity,
+                   purchaseitem_id : item.id,
+                   quantity: item.quantity,
                    batchno : item.batchno,
                    free_quantity : item.free_quantity,
                    cost_price : item.cost_price,
                    sell_price : item.sell_price,
+                   expiry_date : item.expiry_date,
 
 
                 },
