@@ -39,6 +39,7 @@ from account.models import VisitType, BloodGroup
 from counter.models import Counter
 from address.models import Country
 from vendor.models import Vendor
+from decimal import Decimal
 User = get_user_model()
 
 
@@ -766,3 +767,26 @@ class PurchaseOrderAPIView(APIView):
 		instance = PurchaseItem.objects.get(id=request.data.get('purchaseitem_id'))
 		instance.delete()
 		return Response('Deleted', status=204)
+
+class PurchaseItemOrderAPIView(APIView):
+	def post(self, request, *args, **kwargs):
+		purchaseitem_id = request.data.get('purchaseitem_id')
+		purchaseitem = PurchaseItem.objects.filter(pk=purchaseitem_id).first()
+		batchno = request.data.get('batchno')
+		expiry_date = request.data.get('expiry_date')
+		quantity = request.data.get('quantity', 0.0)
+		free_quantity = request.data.get('free_quantity', 0.0)
+
+		purchaseitem.expiry_date = expiry_date
+		purchaseitem.quantity = quantity
+		purchaseitem.free_quantity = free_quantity
+		total_quantity = quantity + free_quantity
+		if  purchaseitem.quantity and purchaseitem.free_quantity:
+			purchaseitem.total_quantity = purchaseitem.quantity + purchaseitem.free_quantity
+		cp = request.data.get('cost_price', 0.0)
+		sp = request.data.get('sell_price', 0.0)
+		if purchaseitem.total_quantity and purchaseitem.cost_price:
+			purchaseitem.line_item_total = Decimal(cp) * decimal(quantity)
+		purchaseitem.save()
+		return Response('bhayo save', sattus=200)
+

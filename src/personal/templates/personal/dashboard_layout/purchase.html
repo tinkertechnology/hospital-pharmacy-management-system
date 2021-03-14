@@ -109,20 +109,20 @@
                                 [[item.fk_variation.title]]
                             </td>
                             <td>
-                                <input type="text"  class="form-control" >
+                                <input type="text"  v-model="item.batchno" @change="changePurchaseItem(item)" class="form-control" >
                             </td>
                             <td>
-                                <input type="text"  class="form-control" >
+                                <input type="text"  v-model="item.expiry_date" @change="changePurchaseItem(item)" class="form-control" >
                             </td>
 
                             <td>
                                 [[item.id]]
                             </td>
                             <td>
-                                <input type="number"  class="form-control" >
+                                <input type="number" @change="changePurchaseItem(item)" v-model="item.quantity" class="form-control" >
                             </td>
                             <td>
-                                [[item.id]]
+                                <input type="number" @change="changePurchaseItem(item)" v-model="item.free_quantity" class="form-control" >
                             </td>
                             <td>
                                 [[item.id]]
@@ -132,7 +132,7 @@
                                     <span class="input-group-prepend">
                                         <span class="input-group-text">Rs.</span> 
                                     </span>
-                                    <input type="text" class="form-control">
+                                    <input type="text" @change="changePurchaseItem(item)" v-model="item.cost_price" class="form-control" >
                                 </div>
                             </td>
                             <td>
@@ -140,7 +140,7 @@
                                     <span class="input-group-prepend">
                                         <span class="input-group-text">Rs.</span> 
                                     </span>
-                                    <input type="text" class="form-control">
+                                    <input type="number" @change="changePurchaseItem(item)" v-model="item.sell_price" class="form-control" >
                                 </div>
                             </td>
                             <td>Rs.0.00</td>
@@ -188,6 +188,7 @@
         fk_payment_method_id : '',
         fk_variation_id : '',
     },
+    item : [],
         cart :{
         "token": null,
         "cart": 107,
@@ -291,6 +292,45 @@
                 });
                   
         },
+
+        changePurchaseItem: function(item) {
+            console.log(item);
+                axios({
+                method: 'post',
+                url:  '/api/PurchaseItemOrderAPIView/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                    purchaseitem_id : item.id,
+                    quantity: item.quantity,
+                   batchno : item.batchno,
+                   free_quantity : item.free_quantity,
+                   cost_price : item.cost_price,
+                   sell_price : item.sell_price,
+
+
+                },
+                }) //.then(response=> cartitem.variation = response.data)
+                .then((getResponse) => {                
+                    console.log(getResponse.data);
+                    let toast = this.$toasted.show("Purchase Added", { 
+                        theme: "toasted-primary", 
+                        position: "top-right", 
+                        duration : 1500,
+                        className: ['your-custom-class',]
+                    });
+                    this.getPurchaseItem();
+                }) 
+                .catch(function (error) {
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });
+                  
+        },
+
+        
         deletePurchaseItem(purchaseitemId){
             axios({
                 method: 'delete',

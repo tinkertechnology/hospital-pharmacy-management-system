@@ -131,14 +131,17 @@ class PurchaseItem(models.Model):
 	tax_amount = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	line_item_total = models.DecimalField(max_digits=10, default=0.00, decimal_places=2, blank=True)
 	orginal_price = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
-	ordered_price = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)	
+	ordered_price = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
+	batchno = models.CharField(null=True, blank=True, max_length=100)
+	free_quantity = models.DecimalField(max_digits=25, decimal_places=2, default=1.00)	
+	total_quantity = models.DecimalField(max_digits=25, decimal_places=2, default=1.00)	
+	cost_price = models.DecimalField(max_digits=25, decimal_places=2, default=0.00)
+	sell_price = models.DecimalField(max_digits=25, decimal_places=2, default=0.00)
 	is_return = models.BooleanField(default=False, null=True, blank=True)
 
 	def __unicode__(self):
-		return self.item.title
+		return self.fk_variation.title
 
-	def remove(self):
-		return self.item.remove_from_cart()
 
 
 

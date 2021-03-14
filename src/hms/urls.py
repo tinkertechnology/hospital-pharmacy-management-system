@@ -112,7 +112,8 @@ from orders.views import (
                     visit,
                     purchase,
                     purchaseEdit,
-                    PurchaseOrderAPIView
+                    PurchaseOrderAPIView,
+                    PurchaseItemOrderAPIView
                     )
 
 from products.views import (
@@ -388,6 +389,10 @@ urlpatterns += [
     path('api/VariationAPIView/', VariationAPIView.as_view(), name="VariationAPIView"), 
     path('api/PurchaseVariationBatchAPIView/', PurchaseVariationBatchAPIView.as_view(), name="PurchaseVariationBatchAPIView"),
     path('api/PurchaseOrderAPIView/', PurchaseOrderAPIView.as_view(), name="PurchaseOrderAPIView"),
+    path('api/PurchaseItemOrderAPIView/', PurchaseItemOrderAPIView.as_view(), name="PurchaseItemOrderAPIView"),
+    
+
+    
     
     path('api/CartTransactionView/', CartTransactionView.as_view(), name="CartTransactionView"),
     re_path('^visit-type/', visit_type_index, name="visit-types"),
