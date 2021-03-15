@@ -65,7 +65,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Choose Drug</label>
-                                <select class="form-control select2"  @change="savePurchaseItem($event)"> 
+                                <select class="form-control select2"  @change="savePurchase($event)"> 
                                     <option v-for="(item, index) in products"  v-bind:value="[[  item.id ]]" :key="item.id">[[ item.title ]]</option>
                                 </select>
                             </div>
@@ -93,8 +93,10 @@
                             <th>total qty</th>
                             <th>cp</th>
                             <th>sp</th>
-                            <th>amount</th>
+                            <th>discount %</th>
+                            <th>dis %amount</th>
                             <th>subtotal</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,7 +119,15 @@
                             </td>
 
                             <td>
-                                [[item.id]]
+                                <input type="number" v-model="item.packaging_quantity" @change="changePurchaseItem(item)">
+                                <select v-model="item.fk_product_unit" @change="changePurchaseItem(item)">
+                                    {% for unit in units %}
+                                        
+                                        <option value="{{unit.id}}">
+                                            {{unit.title}}
+                                        </option>
+                                    {% endfor %}
+                                </select>
                             </td>
                             <td>
                                 <input type="number" @change="changePurchaseItem(item)" v-model="item.quantity" class="form-control" >
@@ -129,22 +139,23 @@
                                 [[item.total_quantity]]
                             </td>
                             <td>
-                                <div class="input-group">
-                                    <span class="input-group-prepend">
-                                        <span class="input-group-text">Rs.</span> 
-                                    </span>
+                               
                                     <input type="text" @change="changePurchaseItem(item)" v-model="item.cost_price" class="form-control" >
-                                </div>
+                               
                             </td>
                             <td>
-                                <div class="input-group">
-                                    <span class="input-group-prepend">
-                                        <span class="input-group-text">Rs.</span> 
-                                    </span>
+                               
                                     <input type="number" @change="changePurchaseItem(item)" v-model="item.sell_price" class="form-control" >
-                                </div>
+                               
                             </td>
-                            <td>Rs.0.00</td>
+                            <td>
+                               
+                                    
+                                    <input type="number" @change="changePurchaseItem(item)" v-model="item.discount_percent" class="form-control" >
+                               
+                            </td>
+
+                            <td>Rs.[[item.discount_amount]]</td>
                             <td>Rs. [[item.line_item_total]]</td>
                             <td><button class="btn btn-danger" @click="deletePurchaseItem(item.id)">x</button></td>
                         </tr>
@@ -172,6 +183,7 @@
         delimiters: ['[[', ']]'],
       el: '#purchase',
       data: {   
+        //fk_variation_id: null,
         purchaseitems : [],    
         loading: false,
         products : [{
@@ -254,18 +266,26 @@
                     console.log(getResponse.data);
                     // data = getResponse.data;
                     // response.send(data);
-                    this.purchaseitems = getResponse.data;
-                    this.item.batchno = getResponse.data.batchno;
-                    this.item.expiry_date = getResponse.data.cost_price;
-                    this.item.free_quantity = getResponse.data.free_quantity;
-                    this.item.line_item_total = getResponse.data.line_item_total;
-                    this.item.quantity = getResponse.data.quantity;
-                    this.item.free_quantity = getResponse.data.free_quantity;
-                    this.item.sell_price = getResponse.data.sell_price;
-                    this.item.cost_price = getResponse.data.cost_price;
-                    this.item.total_quantity = getResponse.data.total_quantity;
-                    this.purchaseResponse.total = getResponse.data.purchase.total;
-                    console.log('total', this.purchaseResponse.total );
+                    this.purchaseitems = getResponse.data.purchase_item;
+                    this.item.batchno = getResponse.data.purchase_item.batchno;
+                    this.item.expiry_date = getResponse.data.purchase_item.cost_price;
+                    this.item.free_quantity = getResponse.data.purchase_item.free_quantity;
+                    this.item.line_item_total = getResponse.data.purchase_item.line_item_total;
+                    this.item.quantity = getResponse.data.purchase_item.quantity;
+                    this.item.free_quantity = getResponse.data.purchase_item.free_quantity;
+                    this.item.sell_price = getResponse.data.purchase_item.sell_price;
+                    this.item.cost_price = getResponse.data.purchase_item.cost_price;
+                    this.item.total_quantity = getResponse.data.purchase_item.total_quantity;
+                    this.item.discount_percent = getResponse.data.purchase_item.discount_percent;
+                    this.item.discount_amount  = getResponse.data.purchase_item.discount_amount;
+                    this.purchaseResponse.total = getResponse.data.total_purcahse;
+                    //purchase date, details etc
+                    this.purchaseForm.bill_date = getResponse.data.bill_date;
+                    this.purchaseForm.purchase_date = getResponse.data.purchase_date;
+                    this.purchaseForm.bill_number = getResponse.data.bill_number;
+                    this.purchaseForm.fk_payment_method_id = getResponse.data.fk_payment_method_id;
+                    this.purchaseForm.fk_supplier_id = getResponse.data.fk_vendor_id;
+
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -274,7 +294,9 @@
         },
 
 
-        savePurchaseItem: function(event) {
+        savePurchase: function(event) {
+            if(!event)
+            {return;}
                 axios({
                 method: 'post',
                 url:  '/api/PurchaseOrderAPIView/',
@@ -284,12 +306,14 @@
                             }, 
                 data: {
                     purchase_id : {{purchase_id}},
+                    //purchase table update yesmai garne
+                    // console.log('event val', event.target.value);
                     purchase_date : this.purchaseForm.purchase_date,
                     bill_date : this.purchaseForm.bill_date,
                     fk_supplier_id : this.purchaseForm.fk_supplier_id,
                     bill_number : this.purchaseForm.bill_number,
                     fk_payment_method_id : this.purchaseForm.fk_payment_method_id,
-                    fk_variation_id : event.target.value,//this.purchaseForm.fk_variation_id,
+                    fk_variation_id :  event.target.value,//this.purchaseForm.fk_variation_id,
                 },
                 }) //.then(response=> cartitem.variation = response.data)
                 .then((getResponse) => {                
@@ -310,7 +334,8 @@
         },
 
         changePurchaseItem: function(item) {
-            console.log(item);
+        //    if(fk_variation_id)
+            this.savePurchase();
                 axios({
                 method: 'post',
                 url:  '/api/PurchaseItemOrderAPIView/',
@@ -326,6 +351,9 @@
                    cost_price : item.cost_price,
                    sell_price : item.sell_price,
                    expiry_date : item.expiry_date,
+                   fk_product_unit : item.fk_product_unit,
+                   packaging_quantity : item.packaging_quantity,
+                   discount_percent : item.discount_percent,
 
 
                 },
