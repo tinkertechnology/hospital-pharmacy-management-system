@@ -6,82 +6,22 @@ from django.db import models
 from django.db.models.signals import pre_save, post_save
 # Create your models here.
 from carts.models import Cart
-from products.models import Product
+from products.models import Product, Variation, VariationBatch
 
 from payment.models import PaymentMethod
 from store.models import Store
 from django.contrib.auth import get_user_model
 User = get_user_model()
+from vendor.models import Vendor
 
-import braintree
+# import braintree
 
-if settings.DEBUG:
-	braintree.Configuration.configure(braintree.Environment.Sandbox,
-      merchant_id=settings.BRAINTREE_MERCHANT_ID,
-      public_key=settings.BRAINTREE_PUBLIC,
-      private_key=settings.BRAINTREE_PRIVATE)
+# if settings.DEBUG:
+# 	braintree.Configuration.configure(braintree.Environment.Sandbox,
+#       merchant_id=settings.BRAINTREE_MERCHANT_ID,
+#       public_key=settings.BRAINTREE_PUBLIC,
+#       private_key=settings.BRAINTREE_PRIVATE)
 
-
-
-# class UserCheckout(models.Model):
-# 	user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True) #not required
-# 	email = models.EmailField(unique=True) #--> required
-# 	braintree_id = models.CharField(max_length=120, null=True, blank=True)
-
-# 	def __str__(self): #def __str__(self):
-# 		return self.email
-
-# 	@property
-# 	def get_braintree_id(self,):
-# 		instance = self
-# 		if not instance.braintree_id:
-# 			result = braintree.Customer.create({
-# 			    "email": instance.email,
-# 			})
-# 			if result.is_success:
-# 				instance.braintree_id = result.customer.id
-# 				instance.save()
-# 		return instance.braintree_id
-
-# 	def get_client_token(self):
-# 		customer_id = self.get_braintree_id
-# 		if customer_id:
-# 			client_token = braintree.ClientToken.generate({
-# 			    "customer_id": customer_id
-# 			})
-# 			return client_token
-# 		return None
-
-
-# def update_braintree_id(sender, instance, *args, **kwargs):
-# 	if not instance.braintree_id:
-# 		instance.get_braintree_id
-
-
-# post_save.connect(update_braintree_id, sender=UserCheckout)
-
-
-
-
-# ADDRESS_TYPE = (
-# 	('billing', 'Billing'),
-# 	('shipping', 'Shipping'),
-# )
-
-# class UserAddress(models.Model):
-# 	user = models.ForeignKey(UserCheckout, on_delete=models.CASCADE, blank=True)
-# 	type = models.CharField(max_length=120, choices=ADDRESS_TYPE)
-# 	street = models.CharField(max_length=120)
-# 	city = models.CharField(max_length=120)
-# 	state = models.CharField(max_length=120)
-# 	zipcode = models.CharField(max_length=120)
-# 	phone = models.CharField(max_length=120, null=True)
-
-# 	def __str__(self):
-# 		return self.street
-
-# 	def get_address(self):
-# 		return "%s, %s, %s %s" %(self.street, self.city, self.state, self.zipcode)
 
 
 ORDER_STATUS_CHOICES = (
@@ -182,19 +122,67 @@ class StoreWiseOrder(models.Model):
 	class Meta:
 		ordering = ['-id']
 
+from products.models import ProductUnit
+class PurchaseItem(models.Model):
+	fk_purchase = models.ForeignKey("Purchase", related_name="purchaseitems", on_delete=models.CASCADE, blank=True)
+	fk_variation = models.ForeignKey(Variation, on_delete=models.CASCADE, null=True)
+	# quantity = models.PositiveIntegerField(default=1)
+	quantity = models.DecimalField(max_digits=25, decimal_places=2, default=1.00)	
+	tax_amount = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
+	line_item_total = models.DecimalField(max_digits=10, default=0.00, decimal_places=2, blank=True)
+	orginal_price = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
+	ordered_price = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
+	batchno = models.CharField(null=True, blank=True, max_length=100)
+	free_quantity = models.DecimalField(max_digits=25, decimal_places=2, default=1.00)	
+	total_quantity = models.DecimalField(max_digits=25, decimal_places=2, default=1.00)	
+	cost_price = models.DecimalField(max_digits=25, decimal_places=2, default=0.00)
+	sell_price = models.DecimalField(max_digits=25, decimal_places=2, default=0.00)
+	is_return = models.BooleanField(default=False, null=True, blank=True)
+	fk_product_unit =  models.ForeignKey(ProductUnit, on_delete=models.CASCADE, null=True, blank=True)
+	packaging_quantity  = models.DecimalField(max_digits=25, decimal_places=2, default=1.00)	
+	expiry_date = models.DateField(null=True, blank=True)
 
 
-# class Quotation(models.Model):
-# 	fk_product = models.ForeignKey(Product, on_delete=models.CASCADE)
-# 	email = models.CharField(max_length=200, null=True, blank=True)
-# 	message = models.CharField(max_length=200,null=True,blank=True)
-
-# 	class Meta:
-# 		ordering = ['-id']
-# 	def __str__(self):
-# 		return '%s %s' %(self.email, self.message) 
+	def __unicode__(self):
+		return self.fk_variation.title
 
 
+def purchase_item_post_save_receiver(sender, instance, *args, **kwargs):
+	instance.fk_purchase.update_subtotal()
+post_save.connect(purchase_item_post_save_receiver, sender=PurchaseItem)
+
+
+class Purchase(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+	# purchaseitems = models.ManyToManyField(PurchaseItem, related_name="purchaseitems")
+	bill_date = models.DateField(null=True, blank=True)
+	purchase_date = models.DateField(null=True, blank=True)
+	fk_vendor = models.ForeignKey(Vendor, null=True, blank=True, on_delete=models.CASCADE)
+
+	timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
+	updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+	subtotal = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
+	tax_percentage  = models.DecimalField(max_digits=10, decimal_places=5, default=0.085)
+	tax_total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
+	total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
+	active = models.BooleanField(default=True)
+	credit = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
+	debit = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
+	grand_total = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
+	fk_payment_method = models.ForeignKey(PaymentMethod, null=True, on_delete=models.CASCADE, blank=True)
+	
+
+	def __unicode__(self):
+		return str(self.id)
+
+	def update_subtotal(self):
+		print("updating...")
+		subtotal = 0
+		items = self.purchaseitems.all()
+		for item in items:
+			subtotal += item.line_item_total
+		self.subtotal = "%.2f" %(subtotal)
+		self.save()
 
 
 

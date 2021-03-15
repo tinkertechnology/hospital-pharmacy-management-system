@@ -1,4 +1,6 @@
 from . import settings_conf
+from django.contrib.messages import constants as message_constants
+from django.contrib.messages import constants as messages
 # Project specific configuration
 #IS_MULTI_VENDOR = True
 
@@ -114,8 +116,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'widget_tweaks',
     # My apps
-    
     'personal',
     'account',
     'carts',
@@ -132,6 +134,7 @@ INSTALLED_APPS = [
     'slider',
     'django_filters',
     'rest_framework',
+    'rest_framework_datatables',
     'rest_framework.authtoken',
     # 'rest_registration',
     'hms_web',
@@ -143,6 +146,7 @@ INSTALLED_APPS = [
     'counter',
     'office',
     'vendor',
+    'address'
 
 
 
@@ -186,6 +190,14 @@ WSGI_APPLICATION = 'hms.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+MESSAGE_LEVEL = message_constants.DEBUG
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
 SHIPPING_PRICE = 0
 
 DATABASES = settings_conf.GetDatabases()
@@ -264,11 +276,17 @@ EMAIL_USE_TLS = True
 SERVER_HOST = settings_conf.GetServerHost()
 
 REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        'rest_framework_datatables.renderers.DatatablesRenderer',
+    ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
     ),
         'DEFAULT_FILTER_BACKENDS': (
-        'django_filters.rest_framework.DjangoFilterBackend',
+        # 'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework_datatables.filters.DatatablesFilterBackend',
     ),
       'DEFAULT_AUTHENTICATION_CLASSES': (
         "rest_framework_jwt.authentication.JSONWebTokenAuthentication",
@@ -277,8 +295,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         
     ),
-      'DEFAULT_PAGINATION_CLASS': 'products.pagination.ProductPagination',
-      "SEARCH_PARAM" : "q"
+    #   'DEFAULT_PAGINATION_CLASS': 'products.pagination.ProductPagination',
+    #   "SEARCH_PARAM" : "q"
+     'DEFAULT_PAGINATION_CLASS': 'rest_framework_datatables.pagination.DatatablesPageNumberPagination',
+    'PAGE_SIZE': 50,
 }
 
 JWT_AUTH = {

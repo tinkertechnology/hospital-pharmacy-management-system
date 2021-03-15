@@ -8,13 +8,14 @@ User = get_user_model()
 class CreateUserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = User
-		fields = ('mobile', 'password', 'email', 'username', 'firstname','lastname', 'nick_name')
+		fields = ('mobile', 'password', 'email', 'username', 'firstname','lastname', 'nick_name', 'emergency_number', 'fk_country_id',  'fk_state_id', 'fk_district_id', 'fk_localgov', 'fk_blood_id')
 		extra_kwargs = {'password': {'write_only': True}, }
 
 
 	def create(self, validated_data):
 		password = validated_data.pop('password', None)
 		instance = self.Meta.model(**validated_data)
+		print(instance.__dict__)		
 		if password is not None:
 			instance.set_password(password)
 			instance.save()
