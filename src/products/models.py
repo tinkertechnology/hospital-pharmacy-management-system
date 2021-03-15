@@ -132,9 +132,11 @@ class Variation(models.Model):
 
 	def get_title(self):
 		return "%s - %s" %(self.product.title, self.title)
-	
+
+# from orders.models import PurchaseItem
 class VariationBatch(models.Model):
 	fk_variation = models.ForeignKey(Variation, on_delete=models.CASCADE,)
+	fk_purchaseitem = models.ForeignKey("orders.PurchaseItem", on_delete=models.CASCADE, null=True)
 	quantity = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
 	batchno = models.CharField(max_length=100, null=True, blank=True)
 	price = models.DecimalField(decimal_places=2, max_digits=20)

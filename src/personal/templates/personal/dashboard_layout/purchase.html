@@ -119,7 +119,7 @@
                             </td>
 
                             <td>
-                                <input type="number" v-model="item.packaging_quantity" @change="changePurchaseItem(item)">
+                                <input type="text" v-model="item.packaging_quantity" class="form-control" @change="changePurchaseItem(item)">
                                 <select v-model="item.fk_product_unit" @change="changePurchaseItem(item)">
                                     {% for unit in units %}
                                         
@@ -145,13 +145,13 @@
                             </td>
                             <td>
                                
-                                    <input type="number" @change="changePurchaseItem(item)" v-model="item.sell_price" class="form-control" >
+                                    <input type="text" @change="changePurchaseItem(item)" v-model="item.sell_price" class="form-control" >
                                
                             </td>
                             <td>
                                
                                     
-                                    <input type="number" @change="changePurchaseItem(item)" v-model="item.discount_percent" class="form-control" >
+                                    <input type="text" @change="changePurchaseItem(item)" v-model="item.discount_percent" class="form-control" >
                                
                             </td>
 
@@ -175,6 +175,9 @@
 
 <script>
     // var Toasted = require('vue-toasted').default
+    $(document).ready(function(){
+        $('body').removeClass("container-fluid");
+    });
     Vue.use(Toasted)
   
     Vue.component('v-select', VueSelect.VueSelect);

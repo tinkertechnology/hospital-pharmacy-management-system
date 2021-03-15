@@ -32,7 +32,7 @@ from products.models import Product, Variation, UserVariationQuantityHistory, Pr
 from users.models import UserTypes
 from django.conf import settings
 from django.db.models import Q
-from products.models import Variation
+from products.models import Variation, VariationBatch
 from carts.models import TransactionType
 from payment.models import PaymentMethod
 from account.models import VisitType, BloodGroup
@@ -822,8 +822,29 @@ class PurchaseItemOrderAPIView(APIView):
 			purchaseitem.line_item_total = 0
 		purchaseitem.save()
 		# aba Variation batch ko save gardine
-		# variationbatch = variationbatch
+		vb = VariationBatch.objects.filter(fk_purchaseitem_id=purchaseitem.id).first()
+		if vb:
+			vb.sale_price = purchaseitem.sell_price
+			vb.quantity = purchaseitem.total_quantity
+			vb.batchno = purchaseitem.batchno
+			vb.save()
+			# vb.sale_price = purchaseitem.sell_price
+			# vb.sale_price = purchaseitem.sell_price
 
-
+			# VariationBatch.objects.update(fk_purchaseitem_id=purchaseitem.id, 
+			# 						  quantity=purchaseitem.quantity,
+			# 						   price=purchaseitem.cost_price, 
+			# 						   sale_price=purchaseitem.sell_price,
+			# 						   fk_variation_id=purchaseitem.fk_variation_id,
+			# 						   batchno = purchaseitem.batchno
+			# 						   )
+		else:
+			VariationBatch.objects.create(fk_purchaseitem_id=purchaseitem.id, 
+										quantity=purchaseitem.quantity,
+										price=purchaseitem.cost_price, 
+										sale_price=purchaseitem.sell_price,
+										fk_variation_id=purchaseitem.fk_variation_id,
+										batchno = purchaseitem.batchno
+										)
 		return Response('bhayo save', status=200)
 
