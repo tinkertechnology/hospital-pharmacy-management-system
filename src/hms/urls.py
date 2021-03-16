@@ -121,16 +121,13 @@ from products.views import (
         CategoryListAPIView,
         CategoryRetrieveAPIView,
         ProductListAPIView,
-        ProductRetrieveAPIView,
-        ProductFeaturedListAPIView,
+        ProductRetrieveAPIView,        
         CompanyListAPIView,
         BrandListAPIView,
         GenericNameListAPIView,
-        ProductUnitListAPIView,
-        CreateProductAPIView,
+        ProductUnitListAPIView,        
         CommonProductListAPIView,
         AddProductAPIView,
-        AllProductListAPIView,
         AllProductRetrieveAPIView,
         ProductVariationRetrieveAPIView,
         VariationByPatientAPIView,
@@ -232,11 +229,7 @@ urlpatterns = [
     
     re_path(r'^api/orders/(?P<pk>\d+)/$', OrderRetrieveAPIView.as_view(), name='order_detail_api'),
     re_path(r'^api/products/$', ProductListAPIView.as_view(), name='products_api'),
-    re_path(r'^api/ProductVariationRetrive/(?P<pk>\d+)/$', ProductVariationRetrieveAPIView.as_view(), name='ProductVariationRetriveApiView'),
-    re_path(r'^api/all_products/$', AllProductListAPIView.as_view(), name='all_products_api'), ## for pharma
-    
-    
-    re_path(r'^api/products_create/$', CreateProductAPIView.as_view(), name='products_create_api'),
+    re_path(r'^api/ProductVariationRetrive/(?P<pk>\d+)/$', ProductVariationRetrieveAPIView.as_view(), name='ProductVariationRetriveApiView'),    
     re_path(r'^api/products_add/$', AddProductAPIView.as_view(), name='products_create_api'), ##pharmas
     
     re_path(r'^api/products_common/$', CommonProductListAPIView.as_view(), name='products_common_api'),
@@ -244,8 +237,7 @@ urlpatterns = [
     re_path(r'^api/products/(?P<pk>\d+)/$', ProductRetrieveAPIView.as_view(), name='products_detail_api'),
     re_path(r'^api/all_products/(?P<pk>\d+)/$', AllProductRetrieveAPIView.as_view(), name='all_products_detail_api'),##Pharmas
 
-    # re_path(r'^api/quotation/$', SendQuotationApiView.as_view(), name="send_quotation_api"),
-    re_path(r'^api/featured/$', ProductFeaturedListAPIView.as_view(), name='product_featured_api'),
+
     re_path(r'^api/create_cart/$', AddToCartView.as_view(), name="create_cart_api"),
 
     re_path(r'^api/CartItemSaveView/$', CartItemSaveView.as_view(), name="CartItemSaveView"),

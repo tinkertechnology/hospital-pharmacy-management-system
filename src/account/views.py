@@ -281,7 +281,9 @@ class RegisterAPI(APIView):
 		emergency_number = request.data.get('emergency_number')
 		fk_blood_id = request.data.get('fk_bloodgroup_id')
 		if date_of_birth:
-			date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d').date()
+			bob = datetime.fromisoformat(date_of_birth)
+			print(bob)
+			date_of_birth = datetime.datetime.strptime(bob, '%Y-%m-%d').date()
 		
 		if mobile and password:	
 			if len(mobile)!=10:

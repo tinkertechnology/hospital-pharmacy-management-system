@@ -9,6 +9,8 @@ from store.models import Store
 from users.models import UserType, UserTypes
 from django.conf import settings
 from datetime import date
+from django.db.models import Q
+from model_utils import Choices
 # Create your models here.
 
 class ProductQuerySet(models.query.QuerySet):
@@ -91,47 +93,31 @@ class Product(models.Model):
 		return img #None
 
 class Variation(models.Model):
-	product = models.ForeignKey(Product, on_delete=models.CASCADE,)
+	product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
 	title = models.CharField(max_length=120)
-	price = models.DecimalField(decimal_places=2, max_digits=20)
-	sale_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
 	active = models.BooleanField(default=True)
-	inventory = models.IntegerField(null=True, blank=True) #refer none == unlimited amount
-	is_refill = models.BooleanField(default=False)
-	keep_stock = models.BooleanField(default=False)
 	fk_user_type = models.ForeignKey(UserType, on_delete=models.CASCADE, null=True) #for patient type drug filter
-	expiry_date = models.DateField(null=True, blank=True)
-	# can only ordered  by internal staff
-	# not visible by app
-	is_internal = models.BooleanField(default=False) 
+	rack_number = models.CharField(max_length=120, null=True, blank=True)
+	code = models.CharField(max_length=120, null=True, blank=True)
+	categories = models.ManyToManyField('Category', blank=True)
+	brand = models.ForeignKey('Brand', on_delete=models.CASCADE, blank=True, null=True)
+	generic_name = models.ForeignKey('GenericName', on_delete=models.CASCADE, blank=True, null=True)
+	company = models.ForeignKey('Company', on_delete=models.CASCADE, blank=True, null=True)	
+	
 
 	def __str__(self):
 		return self.title
 
-	def get_price(self):
-		if self.sale_price is not None:
-			return self.sale_price
-		else:
-			return self.price
+	
 
-	def get_html_price(self):
-		if self.sale_price is not None:
-			html_text = "<span class='sale-price'>%s</span> <span class='og-price'>%s</span>" %(self.sale_price, self.price)
-		else:
-			html_text = "<span class='price'>%s</span>" %(self.price)
-		return mark_safe(html_text)
 
-	def get_absolute_url(self):
-		return self.product.get_absolute_url()
-
-	def add_to_cart(self):
-		return "%s?item=%s&qty=1" %(reverse("cart"), self.id)
-
-	def remove_from_cart(self):
-		return "%s?item=%s&qty=1&delete=True" %(reverse("cart"), self.id)
-
-	def get_title(self):
-		return "%s - %s" %(self.product.title, self.title)
+ORDER_COLUMN_CHOICES = Choices(
+	('0', 'id'),
+	('1', 'song'),
+	('2', 'singer'),
+	('3', 'last_modify_date'),
+	('4', 'created'),
+)
 
 # from orders.models import PurchaseItem
 class VariationBatch(models.Model):
@@ -148,6 +134,41 @@ class VariationBatch(models.Model):
 
 	def __str__(self):
 		return '%s-%s' %(self.fk_variation.title, self.batchno)
+
+def query_musics_by_args(**kwargs):
+	draw = int(kwargs.get('draw', None)[0])
+	length = int(kwargs.get('length', None)[0])
+	start = int(kwargs.get('start', None)[0])
+	search_value = kwargs.get('search[value]', None)[0]
+	order_column = kwargs.get('order[0][column]', None)[0]
+	order = kwargs.get('order[0][dir]', None)[0]
+
+	order_column = ORDER_COLUMN_CHOICES[order_column]
+	# django orm '-' -> desc
+	if order == 'desc':
+		order_column = '-' + order_column
+
+	queryset = VariationBatch.objects.all()
+	total = queryset.count()
+
+	if search_value:
+		queryset = queryset.filter(Q(id__icontains=search_value) |
+										Q(song__icontains=search_value) |
+										Q(singer__icontains=search_value) |
+										Q(last_modify_date__icontains=search_value) |
+										Q(created__icontains=search_value))
+
+	count = queryset.count()
+	queryset = queryset.order_by(order_column)[start:start + length]
+	return {
+		'items': queryset,
+		'count': count,
+		'total': total,
+		'draw': draw
+	}
+
+
+
 
 class VariationPrice(models.Model):
 	fk_user_type = models.ForeignKey(UserTypes, on_delete=models.CASCADE, null=True) #for patient type drug filter
