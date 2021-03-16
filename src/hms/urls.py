@@ -390,7 +390,8 @@ urlpatterns += [
     path('api/PurchaseVariationBatchAPIView/', PurchaseVariationBatchAPIView.as_view(), name="PurchaseVariationBatchAPIView"),
     path('api/PurchaseOrderAPIView/', PurchaseOrderAPIView.as_view(), name="PurchaseOrderAPIView"),
     path('api/PurchaseItemOrderAPIView/', PurchaseItemOrderAPIView.as_view(), name="PurchaseItemOrderAPIView"),
-    
+    # path('api/address', GetSDLdata.as_view(), name="GetSDLdata"),
+    re_path(r'^api/address/', include('address.urls')),
 
     
     

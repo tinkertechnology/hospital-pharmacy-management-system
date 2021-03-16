@@ -733,7 +733,8 @@ def visit(request):
 		# 'visits_type' : visits_type,
 		'visits_types' : visits_types,
 		'patient_types' : UserTypes.objects.all(),
-		'blood_groups' : blood_groups
+		'blood_groups' : blood_groups,
+		'countries' : countries
 	}
 	return render(request, "personal/dashboard_layout/visit.html", context)
 
