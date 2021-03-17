@@ -29,15 +29,11 @@
     <style type="text/css">
     /*.tg  {border-collapse:collapse;border-spacing:0;}
     .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-    overflow:hidden;padding:10px 5px;word-break:normal;}
+  overflow:hidden;padding:10px 5px;word-break:normal;}
     .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-    font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-    .tg .tg-c3ow{border-color:inherit;text-align:center;vertical-align:top}
-    .tg .tg-p2m5{border-color:inherit;font-family:"Arial Black", Gadget, sans-serif !important;;font-size:22px;font-weight:bold;
-    text-align:center;vertical-align:top}
-    .tg .tg-p8sp{border-color:inherit;font-size:20px;text-align:center;vertical-align:top}
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
     .tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
-    @media screen and (max-width: 767px) {.tg {width: auto !important;}.tg col {width: auto !important;}.tg-wrap {overflow-x: auto;-webkit-overflow-scrolling: touch;}}*/
+    .tg .tg-0lax{text-align:left;vertical-align:top}*/
 </style>
     <div class="tg-wrap">
         <!-- <table class="tg" style="table-layout: fixed; width: 800px"> -->
@@ -69,11 +65,11 @@
                 <tr style="padding-top: 4px;">
                     <td class="tg-0pky" colspan="2">Invoice No:<br>Patient ID:<br>Patient Name:<br>Patient Address:</td>
                     <td class="tg-0pky" colspan="3">51778-179842<br>106467<br>{{cart.user.firstname}} {{cart.user.lastname}}<br>Kamalbinayak</td>
-                    <td class="tg-0pky" >Invoice Date:<br>Contact No:</td>
+                    <td class="tg-0pky" >Invoice Dates:<br>Contact No:</td>
                     <td style="text-align:left;">12/06/2021<br>{{carts.first.user.mobile}}</td>
                 </tr>
                 
-                <tr style="padding-top: 8px;">
+                <tr style="padding-top: 8px; border-top: 1px solid #000; border-bottom: 1px solid #000;">
                     <td class="tg-0pky">S.No.</td>
                     <td class="tg-0pky">Description</td>
                     <td class="tg-0pky">Qty</td>
@@ -84,7 +80,7 @@
                 </tr>
 
                 {% for item in items %}
-                <tr>
+                <tr style="padding-top: 8px; border-top: 1px solid #000; ">
                     <td class="tg-0pky">{{ forloop.counter }}</td>
                     <td class="tg-0pky" style="white-space:nowrap;">{{item.fk_variation_batch.fk_variation.title}}</td>
                     <td class="tg-0pky">{{item.fk_variation_batch.batchno}}</td>
@@ -94,18 +90,18 @@
                     <td class="tg-0pky">{{item.tax_amount}}</td>
                 </tr>
                 {% endfor %}
-                <tr>
-                    <td class="tg-c3ow" colspan="5" rowspan="3">In Words (NPR) : {{total_in_words}} only</td>
-                    <td class="tg-0pky">Total Taxable Amount</td>
-                    <td class="tg-0pky">{{cart.subtotal}}</td>
+                <tr style="padding-top: 8px; border-top: 1px solid #000;">
+                    <td class="tg-c3ow" colspan="4" rowspan="3">In Words (NPR) : {{total_in_words}} only</td>
+                    <td class="tg-0pky" colspan="2" style="font-weight: bold;">Taxable Amount</td>
+                    <td class="tg-0pky" colspan="1">Rs. {{cart.subtotal}}</td>
                 </tr>
                 <tr>
-                    <td class="tg-0pky">13% VAT</td>
-                    <td class="tg-0pky">{{cart.tax_total}}</td>
+                    <td class="tg-0pky" colspan="2" style="font-weight: bold;">13% VAT</td>
+                    <td class="tg-0pky" colspan="1">Rs. {{cart.tax_total}}</td>
                 </tr>
                 <tr>
-                    <td class="tg-0pky">Total Incl. VAT</td>
-                    <td class="tg-0pky">{{cart.total}}</td>
+                    <td class="tg-0pky" colspan="2" style="font-weight: bold;">Total Incl. VAT</td>
+                    <td class="tg-0pky" colspan="1">Rs. {{cart.total}}</td>
                 </tr>
             </tbody>
         </table>
