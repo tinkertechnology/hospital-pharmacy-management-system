@@ -159,7 +159,8 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="field-5" class="control-label">Date of Birth (BS)</label>
-                                    <input type="text" v-model="customerForm.date_of_birth" class="form-control datepicker" v-model="customerForm.dob" id=""  placeholder="">
+                                    <!-- <input type="text" v-model="customerForm.date_of_birth" class="form-control datepicker" v-model="customerForm.dob" id=""  placeholder=""> -->
+                                    <vuejs-datepicker :language="en" v-model="customerForm.date_of_birth" :value="customerForm.date_of_birth"></vuejs-datepicker>
                                 </div>
                             </div>
                         </div>
@@ -183,9 +184,10 @@
                                 <div class="form-group">
                                     <label for="field-4" class="control-label">Country</label>
                                    
-                                    <select v-model="customerForm.country" class="form-control">
-                                        {% for bg in blood_groups %}
-                                            <option value="{{bg.id}}">{{bg.title}}</option>
+                                    <select class="form-control" @change="fetchState">
+                                        <option>select</option>
+                                        {% for country in countries %}
+                                            <option value="{{country.name}}">{{country.name}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -193,19 +195,31 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="field-4" class="control-label">State</label>
-                                    <input type="text" class="form-control" v-model="customerForm.address" id="field-4" placeholder="Country">
+                                    <!-- <input type="text" class="form-control" v-model="fk_state_id" id="field-4" placeholder="Country"> -->
+                                    <select class="form-control" name="perm_district"  v-model="fk_state_id" @change="fetchDistrict">
+                                        <option value="">Select State</option>
+                                        <option v-for="data in state.results" :value="data.id">[[ data.name ]]</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="field-4" class="control-label">District</label>
-                                    <input type="text" class="form-control" v-model="customerForm.address" id="field-4" placeholder="Country">
+                                    <!-- <input type="text" class="form-control" v-model="fk_district_id" id="field-4" placeholder="Country"> -->
+                                    <select class="form-control" name="perm_district"  v-model="fk_district_id" @change="fetchLocalgov">
+                                        <option value="">Select District</option>
+                                        <option v-for="data in district.results" :value="data.id">[[ data.name ]]</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="field-4" class="control-label">Local Gov</label>
-                                    <input type="text" class="form-control" v-model="customerForm.address" id="field-4" placeholder="Local">
+                                    <!-- <input type="text" class="form-control" v-model="fk_localgov_id" id="field-4" placeholder="Local"> -->
+                                    <select class="form-control" name="perm_district"  v-model="fk_localgov_id" @change="fetchLocalgov">
+                                        <option value="">Select Localgov</option>
+                                        <option v-for="data in localgov.results" :value="data.id">[[ data.name ]]</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -267,11 +281,25 @@
     // });
    // var Toasted = require('vue-toasted').default
    Vue.use(VueToast);
+   
+//    Vue.component('datepicker', Datepicker)
    var app = new Vue({
        
        delimiters: ['[[', ']]'],
      el: '#add_visit',
+     
+    components: {
+  	    vuejsDatepicker
+    },
      data: {
+        fr: vdp_translation_fr.js,
+        fk_state_id: null,
+        fk_district_id: null,
+        fk_localgov_id: null,
+        state : [],
+        district : [],
+        localgov: [],
+
         fk_customer_user_id : null,
         fk_doctor_user_id : null,
         appointmentDate : '',
@@ -315,7 +343,7 @@
         mobile : "",
         visit_type: '',
         address: '',
-        date_of_birth: '',
+        date_of_birth: new Date().toLocaleDateString(),
         fk_bloodgroup_id:'',
         emergency_number: ''
     },
@@ -323,7 +351,9 @@
   
 
 }, //Data Closed
+
      methods : {
+         
        saveVisit: function() {
                axios({
                method: 'post',
@@ -356,6 +386,69 @@
                });
                  
        },
+
+       fetchState: function(){
+                axios.get("/api/address/", {
+                    params :{
+                        state: 1
+                    },
+                     // request_for: 'state'
+                }).then(response =>{
+                    this.state = response.data;
+                    console.log(this.state);
+                    // application.state_data = response.data;
+                    // application.select_state = '';
+                    // application.district_data = '';
+                    // appplication.select_district = '';
+                    // application.localgov_data = '';
+                    // application.select_localgov = '';
+                }).catch(error => {
+                    console.log('error',error);
+                });
+            },
+
+            fetchDistrict : function() {
+                axios.get("/api/address/", {
+                    params :{
+                        fk_state_id: this.fk_state_id
+                    },
+                    // request_for: 'state'
+                }).then(response =>{
+                    this.district = response.data;
+                    console.log('district',this.district);
+                    
+                    // application.state_data = response.data;
+                    // application.select_state = '';
+                    // application.district_data = '';
+                    // appplication.select_district = '';
+                    // application.localgov_data = '';
+                    // application.select_localgov = '';
+                }).catch(error => {
+                    console.log('error',error);
+                });
+            },
+
+            fetchLocalgov : function() {
+                axios.get("/api/address/", {
+                    params :{
+                        fk_district_id: this.fk_district_id
+                    },
+                    // request_for: 'state'
+                }).then(response =>{
+                    this.localgov = response.data;
+                    console.log('localgov',this.localgov);
+                    
+                    // application.state_data = response.data;
+                    // application.select_state = '';
+                    // application.district_data = '';
+                    // appplication.select_district = '';
+                    // application.localgov_data = '';
+                    // application.select_localgov = '';
+                }).catch(error => {
+                    console.log('error',error);
+                });
+            },
+
        onChangeVisitType(event){
            this.Visit.fk_type_id = event.target.value;
            console.log(event.target.value);

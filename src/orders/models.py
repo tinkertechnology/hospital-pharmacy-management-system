@@ -140,6 +140,8 @@ class PurchaseItem(models.Model):
 	is_return = models.BooleanField(default=False, null=True, blank=True)
 	fk_product_unit =  models.ForeignKey(ProductUnit, on_delete=models.CASCADE, null=True, blank=True)
 	packaging_quantity  = models.DecimalField(max_digits=25, decimal_places=2, default=1.00)	
+	discount_percent = models.DecimalField(max_digits=25, decimal_places=2, default=0.00)	
+	discount_amount = models.DecimalField(max_digits=25, decimal_places=2, default=0.00)	
 	expiry_date = models.DateField(null=True, blank=True)
 
 
@@ -158,7 +160,7 @@ class Purchase(models.Model):
 	bill_date = models.DateField(null=True, blank=True)
 	purchase_date = models.DateField(null=True, blank=True)
 	fk_vendor = models.ForeignKey(Vendor, null=True, blank=True, on_delete=models.CASCADE)
-
+	bill_number = models.CharField(max_length=100, null=True, blank=True)
 	timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
 	updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 	subtotal = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)

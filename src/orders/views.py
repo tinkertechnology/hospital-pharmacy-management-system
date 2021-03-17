@@ -28,11 +28,11 @@ import requests
 from carts.models import Cart, CartItem
 from store.models import Store, StoreUser
 from orders.models import StoreWiseOrder
-from products.models import Product, Variation, UserVariationQuantityHistory
+from products.models import Product, Variation, UserVariationQuantityHistory, ProductUnit
 from users.models import UserTypes
 from django.conf import settings
 from django.db.models import Q
-from products.models import Variation
+from products.models import Variation, VariationBatch
 from carts.models import TransactionType
 from payment.models import PaymentMethod
 from account.models import VisitType, BloodGroup
@@ -716,7 +716,8 @@ def purchaseEdit(request, id):
 		'payment_methods' : PaymentMethod.objects.all(),
 		'vendors' : Vendor.objects.all(),
 		'purchase' : Purchase.objects.filter(pk=id).first(),
-		'purchase_id': id
+		'purchase_id': id,
+		'units' : ProductUnit.objects.all(),
 	}
 	return render(request, "personal/dashboard_layout/purchase.html", context)
 
@@ -732,7 +733,8 @@ def visit(request):
 		# 'visits_type' : visits_type,
 		'visits_types' : visits_types,
 		'patient_types' : UserTypes.objects.all(),
-		'blood_groups' : blood_groups
+		'blood_groups' : blood_groups,
+		'countries' : countries
 	}
 	return render(request, "personal/dashboard_layout/visit.html", context)
 
@@ -742,7 +744,20 @@ class PurchaseOrderAPIView(APIView):
 	def get(self, request, *args, **kwargs):
 		purchase_id = request.GET.get('purchase_id')
 		purchase = Purchase.objects.filter(pk=purchase_id).first()
-		return Response(PurchaseItemSerializer(purchase.purchaseitems.all(), many=True).data)
+		data = {}
+		serializer = PurchaseItemSerializer(purchase.purchaseitems.all(), many=True)
+		data = {
+			'purchase_item' : serializer.data,
+			'total_purcahse' : purchase.subtotal,
+			'purchase_date' : purchase.purchase_date,
+			'bill_date' : purchase.bill_date,
+			'bill_number' : purchase.bill_number,
+			'fk_vendor_id' : purchase.fk_vendor_id,
+			'fk_payment_method_id' : purchase.fk_payment_method_id,
+
+			
+		}
+		return Response(data)
 		
 	def post(self, request):
 		purchase_id = request.data.get('purchase_id')
@@ -756,7 +771,8 @@ class PurchaseOrderAPIView(APIView):
 		purchase = Purchase.objects.filter(pk=purchase_id).first()
 		purchase.purchase_date = purchase_date
 		purchase.bill_date = bill_date
-		purchase.fk_supplier_id = fk_supplier_id
+		purchase.bill_number = bill_number
+		purchase.fk_vendor_id = fk_supplier_id
 		purchase.fk_payment_method_id = fk_payment_method_id
 		purchase.save()
 		if fk_variation_id:
@@ -770,18 +786,20 @@ class PurchaseOrderAPIView(APIView):
 
 class PurchaseItemOrderAPIView(APIView):
 	def post(self, request, *args, **kwargs):
-		print(request.data)
+		
 		purchaseitem_id = request.data.get('purchaseitem_id')
 		purchaseitem = PurchaseItem.objects.filter(pk=purchaseitem_id).first()
 		batchno = request.data.get('batchno')
 		expiry_date = request.data.get('expiry_date')
 		quantity = request.data.get('quantity', 0.0)
 		free_quantity = request.data.get('free_quantity', 0.0)
-
+		purchaseitem.fk_product_unit_id = request.data.get('fk_product_unit', 0.0)
+		purchaseitem.packaging_quantity = request.data.get('packaging_quantity', 0.0)
 		purchaseitem.expiry_date = expiry_date
 		purchaseitem.quantity = quantity
 		purchaseitem.free_quantity = free_quantity
 		purchaseitem.batchno = batchno
+		discount_percent = request.data.get('discount_percent', 0.0)
 		total_quantity = Decimal(quantity) + Decimal(free_quantity)
 		if  quantity and free_quantity:
 			purchaseitem.total_quantity = Decimal(quantity) + Decimal(free_quantity)
@@ -792,9 +810,42 @@ class PurchaseItemOrderAPIView(APIView):
 		purchaseitem.cost_price = cp
 		purchaseitem.sell_price = sp
 		if cp and sp:
-			purchaseitem.line_item_total = Decimal(cp) * Decimal(quantity)
+			purchaseitem.line_item_total = Decimal(cp) - Decimal(quantity)
+			purchaseitem.discount_amount = 0
+			if discount_percent:
+				discount_percent = int(float(discount_percent))
+				subtotal = Decimal(cp) * Decimal(quantity)
+				discount_amount = Decimal(discount_percent/100) * subtotal
+				purchaseitem.discount_percent = discount_percent
+				purchaseitem.line_item_total = Decimal(subtotal) - Decimal(discount_amount)
+				purchaseitem.discount_amount = discount_amount		
 		else:
 			purchaseitem.line_item_total = 0
 		purchaseitem.save()
+		# aba Variation batch ko save gardine
+		vb = VariationBatch.objects.filter(fk_purchaseitem_id=purchaseitem.id).first()
+		if vb:
+			vb.sale_price = purchaseitem.sell_price
+			vb.quantity = purchaseitem.total_quantity
+			vb.batchno = purchaseitem.batchno
+			vb.save()
+			# vb.sale_price = purchaseitem.sell_price
+			# vb.sale_price = purchaseitem.sell_price
+
+			# VariationBatch.objects.update(fk_purchaseitem_id=purchaseitem.id, 
+			# 						  quantity=purchaseitem.quantity,
+			# 						   price=purchaseitem.cost_price, 
+			# 						   sale_price=purchaseitem.sell_price,
+			# 						   fk_variation_id=purchaseitem.fk_variation_id,
+			# 						   batchno = purchaseitem.batchno
+			# 						   )
+		else:
+			VariationBatch.objects.create(fk_purchaseitem_id=purchaseitem.id, 
+										quantity=purchaseitem.quantity,
+										price=purchaseitem.cost_price, 
+										sale_price=purchaseitem.sell_price,
+										fk_variation_id=purchaseitem.fk_variation_id,
+										batchno = purchaseitem.batchno
+										)
 		return Response('bhayo save', status=200)
 
