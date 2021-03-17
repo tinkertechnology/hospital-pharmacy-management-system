@@ -191,11 +191,31 @@ class VariationBatchPriceAPIView(APIView):
 		}
 		return Response(data)
 
-class VariationAPIView(APIView):
+# class VariationAPIView(APIView):
+
+	from .pagination import CustomPageNumber
+
+class VariationAPIView(viewsets.ReadOnlyModelViewSet):
+	queryset = Variation.objects.all().order_by('-id')
 	serializer_class = VariationSerializer
-	def get(self, request):	
-		variations = VariationSerializer(Variation.objects.all(), many=True)
-		return Response(variations.data, status=200)
+	# filter_class = VariationBatchFilter
+
+	def get(self, request):
+		jptchanges = request.GET.get('jptchanges')
+		self.pagination_class = CustomPageNumber
+		if jptchanges:
+			queryset = self.filter_queryset(self.queryset.filter(title__icontains=jptchanges))
+		page = self.paginate_queryset(queryset)
+		if page is not None:
+			serializer = self.get_serializer(page, many=True)
+			return self.get_paginated_response(serializer.data)
+		serializer = self.get_serializer(queryset, many=True)
+		return Response(serializer.data) 
+
+	# serializer_class = VariationSerializer
+	# def get(self, request):	
+	# 	variations = VariationSerializer(Variation.objects.all(), many=True)
+	# 	return Response(variations.data, status=200)
 
 
 

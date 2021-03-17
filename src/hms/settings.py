@@ -295,10 +295,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         
     ),
-    #   'DEFAULT_PAGINATION_CLASS': 'products.pagination.ProductPagination',
-    #   "SEARCH_PARAM" : "q"
-     'DEFAULT_PAGINATION_CLASS': 'rest_framework_datatables.pagination.DatatablesPageNumberPagination',
-    'PAGE_SIZE': 50,
+      'DEFAULT_PAGINATION_CLASS': 'products.pagination.CustomPageNumber',
+      "SEARCH_PARAM" : "q",
+    #  'DEFAULT_PAGINATION_CLASS': 'rest_framework_datatables.pagination.DatatablesPageNumberPagination',
+    'PAGE_SIZE': 2,
 }
 
 JWT_AUTH = {

@@ -91,26 +91,11 @@ from store.models import StoreUser
 from users.serializers import DeliveryUserSerializer
 
 class UserSerializer(serializers.ModelSerializer):
-	credit = serializers.SerializerMethodField()
-	jardetails = serializers.SerializerMethodField()
-	# delivery_boys = serializers.SerializerMethodField()
-	comments = serializers.SerializerMethodField()
 	class Meta:
 		model = User
-		fields = ('firstname', 'lastname','mobile', 'nick_name', 'credit', 'jardetails',"comments")
+		fields =  '__all__' #('firstname', 'lastname','mobile', 'nick_name')
 
-	def get_credit(self, obj):
-		user = StoreAccount.objects.filter(fk_user=obj).first()
-		if user:
-			return user.credit
-		return ''
-	def get_jardetails(self, obj):
-		jardetails = UserVariationQuantityHistorySerializer(UserVariationQuantityHistory.objects.filter(user=obj), many=True)
-		return jardetails.data
 	
-	def get_comments(self, obj):
-		comments = CommentSerializer(Comment.objects.filter(user=obj), many=True)
-		return comments.data
 	
 from products.models import Variation
 from products.serializers import ProductVariationListSerializer		

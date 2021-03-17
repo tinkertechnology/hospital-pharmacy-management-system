@@ -56,7 +56,8 @@ from account.views import (
     ##fbv
     visit_type_index,
     visit_type_add,
-    visit_type_edit
+    visit_type_edit,
+    PatientDetailAPIView
 )
 
 
@@ -374,11 +375,12 @@ urlpatterns += [
     path('api/patients/', PatientUserListAPIView.as_view(), name="patients-lists"),
 
     path('CustomerPatientUserList', CustomerPatientUserList.as_view(), name="CustomerPatientUserList"),
+    path('api/PatientDetailAPIView/<int:id>', PatientDetailAPIView.as_view(), name="PatientDetailAPIView"),
     path('api/DoctorUserListAPIView/', DoctorUserListAPIView.as_view(), name="DoctorUserListAPIView"),
     path('api/VariationByPatientAPIView/', VariationByPatientAPIView.as_view(), name="variation-by-patient-type"),
     path('api/VariationBatchAPIView/', VariationBatchAPIView.as_view(), name="VariationBatchAPIView"),
     path('api/VariationBatchPriceAPIView/', VariationBatchPriceAPIView.as_view(), name="VariationBatchPriceAPIView"),  
-    path('api/VariationAPIView/', VariationAPIView.as_view(), name="VariationAPIView"), 
+    path('api/VariationAPIView/', VariationAPIView.as_view({'get': 'list'}), name="VariationAPIView"), 
     path('api/PurchaseVariationBatchAPIView/', PurchaseVariationBatchAPIView.as_view(), name="PurchaseVariationBatchAPIView"),
     path('api/PurchaseOrderAPIView/', PurchaseOrderAPIView.as_view(), name="PurchaseOrderAPIView"),
     path('api/PurchaseItemOrderAPIView/', PurchaseItemOrderAPIView.as_view(), name="PurchaseItemOrderAPIView"),

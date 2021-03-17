@@ -281,9 +281,9 @@ class RegisterAPI(APIView):
 		emergency_number = request.data.get('emergency_number')
 		fk_blood_id = request.data.get('fk_bloodgroup_id')
 		if date_of_birth:
-			bob = datetime.fromisoformat(date_of_birth)
-			print(bob)
-			date_of_birth = datetime.datetime.strptime(bob, '%Y-%m-%d').date()
+			# bob = datetime.fromisoformat(date_of_birth)
+			# print(bob)
+			date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d').date()
 		
 		if mobile and password:	
 			if len(mobile)!=10:
@@ -849,6 +849,7 @@ class MissCallUsersAPIView(APIView):
 from django.views.generic.list import ListView
 from .serializer import DoctorSerializer, VisitSeriailizer
 from .models import Doctor
+
 class CustomerPatientUserList(ListView):
 	model = Account
 	template_name = "personal/dashboard_layout/patients.html"
@@ -876,6 +877,13 @@ class PatientUserListAPIView(APIView):
 		patients = User.objects.filter(pk__in=pids.values('user_id'))
 		return Response(PatientSerializer(patients, many=True).data)
 
+
+class PatientDetailAPIView(APIView):
+	def get(self, request, *args, **kwargs):
+		patient_id = kwargs['id']
+		if patient_id:
+			qs = User.objects.get(pk=patient_id)
+			return Response(UserSerializer(qs, read_only=True).data)
 		
 class DoctorUserListAPIView(ListAPIView):
 	serializer_class = DoctorSerializer

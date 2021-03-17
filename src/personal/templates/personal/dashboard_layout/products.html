@@ -158,6 +158,29 @@
             </div>
         </div>
     </div>
+
+    <div class="portlet-body" >
+        <input type="text" @change="loadGroupsData" v-model="params.jptchanges">
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th> Name </th>
+                <th> CodeName </th>
+                <th> CreatedAt</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(item, index) in groups"  v-bind:value="[[  item.id ]]" :key="item.id">
+                <td>[[ item.title ]]</td>
+                <td>[[ item.title ]]</td>
+                <td>[[ item.title ]]</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="text-right">
+            <pagination :params="params" :num_page="num_page" :callback="loadGroupsData"></pagination>
+        </div>
+    </div>
 </div>
 
 <!-- <!doctype html>
@@ -238,10 +261,94 @@
     });
 
     Vue.use(VueToast);
+    Vue.component('pagination', {
+    template:
+        '<ul class="pagination">' +
+            '<li v-if="showFirst"><a @click="params.page--"><i class="fa fa-angle-left"></i></a></li>' +
+            '<li v-for="num in page_range" v-bind:class="{ \'active\': params.page == num }">' +
+                '<a @click="pageClick(num)">${ num }</a>' +
+            '</li>' +
+            '<li v-if="showLast"><a @click="params.page++"><i class="fa fa-angle-right"></i></a></li>' +
+        '</ul>',
+    props: {
+        params: {
+            type: Object,
+            require: true,
+            jptchanges :'',
+        },
+        num_page: {
+            type: Number,
+            require: true
+        },
+        callback: {
+            type: Function,
+            require: true
+        }
+    },
+    computed: {
+        page_range: function () {
+            var left = 1,
+                right = this.num_page,
+                ar = [];
+            if (this.num_page >= 11) {
+                if (this.params.page > 5 && this.params.page < this.num_page - 4) {
+                    left = this.params.page - 5;
+                    right = this.params.page + 4;
+                } else {
+                    if (this.params.page <= 5) {
+                        left = 1;
+                        right = 10;
+                    } else {
+                        right = this.num_page;
+                        left = this.num_page - 9;
+                    }
+                }
+            }
+            while (left <= right) {
+                ar.push(left);
+                left++
+            }
+            // console.log(''ar);
+            return ar
+        },
+        showLast: function () {
+            return this.params.page != this.num_page;
+        },
+        showFirst: function () {
+            return this.params.page != 1;
+        }
+    },
+    methods: {
+        pageClick: function (cur_page) {
+            if (cur_page != this.params.page) {
+                this.params.page = cur_page;
+                var params = this.params;
+                params.page = this.params.page;
+                this.params = params;
+            }
+        }
+    },
+    watch: {
+        params: {
+            handler: function () {
+                this.callback();
+            },
+            deep: true
+        }
+    },
+    ready: function () {
+        this.callback();
+    }
+});
+    
     var app = new Vue({
         delimiters: ['[[', ']]'],
         el: '#products',
         data: {
+            jptchanges: '',
+            params: { page: 1 },
+            num_page: 1,
+            groups: [], // back-end data that you need render to template
             error :{
                 error_message_body : '',
                 error_status : false,
@@ -303,7 +410,7 @@
         methods: {
             getProduct: function () {
                 this.loading = true;
-                axios.get('/api/VariationBatchAPIView/')
+                axios.get('/api/VariationAPIView/')
                     .then((getResponse) => {
                         console.log("GET Response")
                         console.log(getResponse.data);
@@ -340,6 +447,15 @@
                 }
                 this.cart.items.splice(index, 1);
             },
+        loadGroupsData() {
+            var self = this;
+            $.get('/api/VariationAPIView/' + '?' + $.param(self.params)).done(function (resp) {
+                self.groups = resp.results;
+                console.log('asdasd',self.groups);
+                self.params.page = resp.page;
+                self.num_page = resp.num_page;
+            })
+        },
         
             addProduct: function () {
                 this.loading = true,
@@ -421,6 +537,7 @@
 
         mounted() {
             // this.getProduct();
+            this.loadGroupsData();
             //   this.getPatient();
             //   this.getCart();
 
