@@ -106,7 +106,7 @@
                                 [[++index]]
                             </td>
                             <td>
-                                13360
+                                [[item.fk_variation.code ?? 'N/A']]
                             </td>
                             <td>
                                 [[item.fk_variation.title]]
@@ -257,7 +257,15 @@
                 });  
         },
 
+        validateForm(){
+            if(purchaseForm.bill_date!=null && purchaseForm.purchase_date!=null && purchaseForm.bill_number!=null){
+                return true;
+            }
+            return false;
+
+        },
         getPurchaseItem: function() {
+
             axios.get('/api/PurchaseOrderAPIView/',{
             params: {
                     purchase_id: {{purchase_id}}    

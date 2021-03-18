@@ -1,0 +1,146 @@
+
+<!-- http://localhost:8000/reports/ReportHtml?template=ReportHtmlUsers.html -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Reports</title>
+  <meta name="description" content="meta description">
+  <meta name="author" content="author name">
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+<script src="//cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+</head>
+
+<body>
+
+<section>
+    <div class="section-body">
+        <!-- BEGIN DATATABLE 2 -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-head style-primary">
+                        <header>Filter</header>
+                        <div class="tools">
+                            <a href="{ url 'quote_new' %}" class="btn btn-icon-toggle"><i class="fa fa-plus"></i></a>
+                            <a class="btn btn-icon-toggle btn-collapse"><i class="fa fa-angle-down"></i></a>
+                            <a class="btn btn-icon-toggle btn-close"><i class="md md-close"></i></a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="form-group col-md-3">
+                                <label for="regular2">id</label>
+                                <input type='text' name='id' id='id'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end .col -->
+        </div>
+        <!--end .row -->
+
+         <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-head style-primary">
+                        <header>List</header>
+                    </div>
+
+                    <div class="card-body">                       
+                        <div class="table-responsive">
+                            <table id="quoteTable" class="table order-column hover">
+                                <thead>
+                                    <th>id </th>
+                                    <th>email</th>
+                                    <th>Actions</th>
+                                </thead>
+                            </table>
+                        </div>
+                        <!--end .table-responsive -->
+                    </div>
+                </div>
+            </div>
+            <!--end .col -->
+        </div>
+        <!--end .row -->
+        <!-- END DATATABLE 2 -->
+    </div>
+    <!--end .section-body -->
+</section>
+<script>
+    //   var csrftoken = Cookies.get('csrftoken');
+    let timetable = null;
+    $(function () {
+        'use strict';
+        timetable = $('#quoteTable').DataTable({
+    
+            "processing": true,
+            "serverSide": true,
+
+            "ajax": {
+                //"url": "{ url 'quote_index2' %}",
+                "url": "/api/data?format=json",
+                //"type": "POST",
+                "type": "GET",
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                //"dataSrc":'results', // django provides data in format {'count': 5, next:'url', 'prev':url, 'results':[]}
+    
+                //search garda k data jancha
+                'data': function (data) {
+                    // Append to data
+                    data.id =  $('#id').val();
+                    //data.fk_quotestatus = $('#fk_quotestatus').val();
+                }
+            },
+            "columns": [
+                {
+                    "data": "id",
+                    "orderable": true,
+                    "searchable": true
+                },
+                {
+                    "data": "email",
+                    "searchable": true,
+                    "orderable": true
+                },
+                //// related data filed inside
+                // {
+                //     "data": "fk_quotestatus.name",
+                //     "searchable": true,
+                //     render : function(data, type, row) {
+                //         return '<span class="badge badge-warning">'+data+'</span>'
+                //     }    
+                // },
+            ],
+            //buttons: ['copy', 'excel', 'pdf'],
+            "order": [ [1, "desc"]],
+            
+            // add extra col at index
+            "columnDefs": [{
+                "targets": [2],
+                "data": null,
+                "className": "action-link",
+                "render": function (data, type, full) {
+                    return '<a href="/quote/'+ data.id + '"   title="View quotation" onclick=deleteAjax("' + data.id + '",timetable)><button type="button" class="btn btn-floating-action btn-icon-toggle btn-info" data-toggle="tooltip" data-placement="top" ><i class="fa fa-eye"></i></button></a>' +
+                        '<a href="/quote/edit/'+ data.id + '" title="Edit quotation" onclick=AjaxModal("/quote/edit/' + data.id + '/")> <button type="button" class="btn btn-floating-action btn-icon-toggle btn-success" data-toggle="tooltip" data-placement="top" ><i class="fa fa-pencil"></i></button>' +
+                        '<a href="/quote/delete/'+ data.id + '" title="Delete quotation" onclick=deleteAjax("' + data.id + '",timetable)><button type="button" class="btn btn-floating-action btn-icon-toggle btn-danger" data-toggle="tooltip" data-placement="top" ><i class="fa fa-trash-o"></i></button></a>' 
+                        ;
+                }
+            }],
+        }); //end datatable
+    
+        $('#id').keyup(function () {
+            timetable.draw();
+        });
+        //$('#fk_customer').select2();        
+    
+    });
+</script>
+
+
+</body>
+</html>

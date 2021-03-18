@@ -321,7 +321,9 @@ def hmsvariations(request, id):
 	}
 	return render(request, "personal/dashboard_layout/variation.html", context)
 
-
+def datatable(request):
+	context = {}
+	return render(request, "personal/dashboard_layout/datatable.html", context)
 
 class PurchaseVariationBatchAPIView(APIView):
 	
@@ -337,3 +339,4 @@ class PurchaseVariationBatchAPIView(APIView):
 		variation_batch.price = request.data.get('price')
 		variation_batch.save()
 		return Response('Success', status=200)
+

@@ -133,6 +133,7 @@ from products.views import (
         ProductVariationRetrieveAPIView,
         VariationByPatientAPIView,
         hmsproducts,
+        datatable,
         hmsvariations,
         VariationBatchAPIView,
         VariationBatchPriceAPIView,
@@ -325,7 +326,7 @@ handler500 = views.handler500
 
 
 from orders.invoice import GeneratePDF, GenerateFullPDF
-
+from products.datatable import VariationDataTable
 urlpatterns += [
     path(r'admin/', admin.site.urls),
     # path('', include('hms_web.urls')),
@@ -362,18 +363,15 @@ urlpatterns += [
     path('carts', carts, name="carts"),
     path('cartitems', cartitems, name="cartitems"),
     path('hmsproducts/', hmsproducts, name="hmsproducts"),
+    path('datatable/', datatable, name="datatable"),
     path('hmsvariations/<int:id>/', hmsvariations, name="hmsvariations"),
     path('purchase/', purchase, name="purchase"),
     path('purchase/create/<int:id>/', purchaseEdit, name="purchaseEdit"),
-    
     path('visit/', visit, name="visittype"),
     path('api/VisitAPIView/', VisitAPIView.as_view(), name="VisitAPIView"),
-
     path('api/send_invoice_pdf/<int:cart_id>/',GeneratePDF.as_view(), name='pdf_send_email'),
     path('api/full_bill/<int:cart_id>/',GenerateFullPDF.as_view(), name='pdf_send_email'),
-
     path('api/patients/', PatientUserListAPIView.as_view(), name="patients-lists"),
-
     path('CustomerPatientUserList', CustomerPatientUserList.as_view(), name="CustomerPatientUserList"),
     path('api/PatientDetailAPIView/<int:id>', PatientDetailAPIView.as_view(), name="PatientDetailAPIView"),
     path('api/DoctorUserListAPIView/', DoctorUserListAPIView.as_view(), name="DoctorUserListAPIView"),
@@ -384,6 +382,8 @@ urlpatterns += [
     path('api/PurchaseVariationBatchAPIView/', PurchaseVariationBatchAPIView.as_view(), name="PurchaseVariationBatchAPIView"),
     path('api/PurchaseOrderAPIView/', PurchaseOrderAPIView.as_view(), name="PurchaseOrderAPIView"),
     path('api/PurchaseItemOrderAPIView/', PurchaseItemOrderAPIView.as_view(), name="PurchaseItemOrderAPIView"),
+    path('api/data', VariationDataTable.as_view(), name="VariationDataTable"),
+    
     # path('api/address', GetSDLdata.as_view(), name="GetSDLdata"),
     re_path(r'^api/address/', include('address.urls')),
 

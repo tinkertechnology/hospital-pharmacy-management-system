@@ -38,6 +38,7 @@ class CartItem(models.Model):
 
 def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
 	office = Office.objects.all().first()
+	print(office)
 	qty = instance.quantity
 	if Decimal(qty) >= 0:
 		# price = instance.item.get_price()
@@ -59,7 +60,7 @@ def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
 		instance.ordered_price = price
 		line_item_total = Decimal(qty) * Decimal(price)
 		instance.line_item_total = line_item_total
-		instance.tax_amount = Decimal(float(line_item_total)*float(office.vat)) #settings.TAX_PERCENT_DECIMAL)
+		instance.tax_amount = Decimal(float(line_item_total)* settings.TAX_PERCENT_DECIMAL)
 
 pre_save.connect(cart_item_pre_save_receiver, sender=CartItem)
 
