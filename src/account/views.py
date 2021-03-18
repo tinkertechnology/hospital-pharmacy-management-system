@@ -6,13 +6,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from .serializer import CreateUserSerializer, ProfileSerializer #, SurveyRegisterSerializer
+from .serializer import CreateUserSerializer, ProfileSerializer, PatientSerializer, UserSerializer, DoctorSerializer, VisitSeriailizer #, SurveyRegisterSerializer
 from django.http import HttpResponse
-from .serializer import PatientSerializer
 from users.models import UserType
 from account.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
 from django.contrib.auth.hashers import make_password
-from .models import Account, PhoneOTP, PasswordResetOTP #FsurvgisterSurvey, CustomerDepotRequest, CustomerMessage
 from django.contrib.auth import get_user_model
 import uuid
 from django.shortcuts import get_object_or_404 
@@ -21,7 +19,6 @@ import requests
 from django.core.mail import send_mail
 from rest_framework.generics import CreateAPIView, ListAPIView
 from store.models import StoreUser #., StoreAccount, 
-from .serializer import UserSerializer#, CallLogSerializer
 from django.http import Http404
 from django.db.models import Count, Max, Min, Avg
 from carts.models import CartItem, Cart
@@ -29,10 +26,12 @@ from carts.service import CartItemCreateService
 from orders.service import CreateOrderFromCart
 from orders.constants import ORDER_TYPE_MISSCALL
 import datetime
+from address.models import State, Country, LocalGov, District
 from django.utils import timezone
 from counter.models import Counter
 from users.models import UserTypes
-from .models import Visit, VisitType
+from django.views.generic.list import ListView
+from .models import Doctor, BloodGroup, Visit, VisitType, Account, PhoneOTP, PasswordResetOTP
 from datetime import datetime as dt, timedelta
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -265,11 +264,11 @@ class ValidateOTP(APIView):
 
 
 class RegisterAPI(APIView):
-
 	@csrf_exempt
 	def post(self, request, *args, **kwargs):
 		settings.DLFPRINT()
 		print(request.data)
+		fk_customer_id = request.data.get('fk_customer_id')
 		customer_id = dt.now().strftime('%Y%m%d%H%M%S')#dt.now().strftime('%Y%m%d%H%M%S%f')
 		mobile = request.data.get('mobile', False)
 		# password = request.data.get('password', False)
@@ -287,6 +286,28 @@ class RegisterAPI(APIView):
 			# print(bob)
 			date_of_birth = '2021-01-01'; #datetime.strptime(date_of_birth, '%Y-%m-%d').date()
 		
+		if fk_customer_id: #for edit purpose
+			user = User.objects.get(pk=fk_customer_id)
+			user.firstname = firstname
+			user.lastname = lastname
+			user.email = email
+			user.date_of_birth = date_of_birth
+			user.emergency_number = emergency_number
+			user.fk_blood_id = fk_blood_id
+			user.save()
+			print(user)
+			if request.data.get('patient_type_id'):
+				usertype = UserType()
+				usertype.user_id = user.id
+				usertype.user_type_id = request.data.get('patient_type_id')
+				usertype.save() 
+
+			return Response({
+				'status': True,
+				'detail': 'User Updated',
+				'user_id' : user.id
+			})
+
 		if mobile and password:	
 			if len(mobile)!=10:
 				return Response({"Fail": "Please check your mobile number, it should be 10 digit"}, status.HTTP_400_BAD_REQUEST)
@@ -849,9 +870,7 @@ class MissCallUsersAPIView(APIView):
     #     ctx['description'] = 'My Description'
     #     return ctx
 
-from django.views.generic.list import ListView
-from .serializer import DoctorSerializer, VisitSeriailizer
-from .models import Doctor
+
 
 class CustomerPatientUserList(ListView):
 	model = Account
@@ -880,6 +899,20 @@ class PatientUserListAPIView(APIView):
 		patients = User.objects.filter(pk__in=pids.values('user_id'))
 		return Response(PatientSerializer(patients, many=True).data)
 
+
+def patient_detail(request, id):
+	visits_types = VisitType.objects.all()
+	blood_groups = BloodGroup.objects.all()
+	countries = Country.objects.all()	
+	context ={
+		# 'visits_type' : visits_type,
+		'visits_types' : visits_types,
+		'patient_types' : UserTypes.objects.all(),
+		'blood_groups' : blood_groups,
+		'countries' : countries,
+		'patient_id': id
+	}
+	return render(request, 'personal/dashboard_layout/patient_details.html', context)
 
 class PatientDetailAPIView(APIView):
 	def get(self, request, *args, **kwargs):

@@ -37,6 +37,8 @@
     <link href="https://coderthemes.com/zircos/layouts/vertical/assets/libs/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
     <link href="https://coderthemes.com/zircos/layouts/vertical/assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
     <link href="https://coderthemes.com/zircos/layouts/vertical/assets/libs/custombox/custombox.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/vue-loading-overlay@3"></script>
+    <link href="https://cdn.jsdelivr.net/npm/vue-loading-overlay@3/dist/vue-loading.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
     <script src="//cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
@@ -809,7 +811,8 @@
       <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
       
        <script>   
-
+        Vue.use(VueLoading);
+        Vue.component('loading', VueLoading)
       // $: single $ means function
       // $$: means variable added in vue
       Vue.prototype.$WINDOW = function () { return window; } // this worked
