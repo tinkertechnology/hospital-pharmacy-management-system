@@ -36,6 +36,7 @@ from .models import Visit, VisitType
 from datetime import datetime as dt, timedelta
 from django.core.paginator import Paginator
 from django.contrib import messages
+# from datetime import datetime
 
 User = get_user_model()
 
@@ -262,13 +263,14 @@ class ValidateOTP(APIView):
 		else:
 			return Response({"Fail": "Please both OTP code and mobile number"}, status.HTTP_400_BAD_REQUEST)
 
-from datetime import datetime
+
 class RegisterAPI(APIView):
 
 	@csrf_exempt
 	def post(self, request, *args, **kwargs):
 		settings.DLFPRINT()
 		print(request.data)
+		customer_id = dt.now().strftime('%Y%m%d%H%M%S')#dt.now().strftime('%Y%m%d%H%M%S%f')
 		mobile = request.data.get('mobile', False)
 		# password = request.data.get('password', False)
 		password = mobile
@@ -283,7 +285,7 @@ class RegisterAPI(APIView):
 		if date_of_birth:
 			# bob = datetime.fromisoformat(date_of_birth)
 			# print(bob)
-			date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d').date()
+			date_of_birth = '2021-01-01'; #datetime.strptime(date_of_birth, '%Y-%m-%d').date()
 		
 		if mobile and password:	
 			if len(mobile)!=10:
@@ -299,6 +301,7 @@ class RegisterAPI(APIView):
 						'fk_blood_id' : 1,
 						'fk_country_id' : 1,
 						'emergency_number' : emergency_number,
+						'customer_id' : customer_id
 
 					}
 			serializer = CreateUserSerializer(data = temp_data)

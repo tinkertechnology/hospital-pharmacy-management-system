@@ -9,6 +9,7 @@ from counter.models import Counter
 User = get_user_model()
 from orders.convert_num_to_words import generate_amount_words
 from payment.models import PaymentMethod
+from office.models import Office
 # from orders.models import StoreWiseOrder
 
 
@@ -36,6 +37,7 @@ class CartItem(models.Model):
 
 
 def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
+	office = Office.objects.all().first()
 	qty = instance.quantity
 	if Decimal(qty) >= 0:
 		# price = instance.item.get_price()
@@ -57,7 +59,7 @@ def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
 		instance.ordered_price = price
 		line_item_total = Decimal(qty) * Decimal(price)
 		instance.line_item_total = line_item_total
-		instance.tax_amount = Decimal(float(line_item_total)*settings.TAX_PERCENT_DECIMAL)
+		instance.tax_amount = Decimal(float(line_item_total)*float(office.vat)) #settings.TAX_PERCENT_DECIMAL)
 
 pre_save.connect(cart_item_pre_save_receiver, sender=CartItem)
 
@@ -78,7 +80,7 @@ class Cart(models.Model):
 	timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
 	updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 	subtotal = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
-	tax_percentage  = models.DecimalField(max_digits=10, decimal_places=5, default=0.085)
+	tax_percentage  = models.DecimalField(max_digits=10, decimal_places=5, default=0.00)
 	tax_total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	active = models.BooleanField(default=True)

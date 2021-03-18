@@ -31,7 +31,7 @@ from products.models import Variation, UserVariationQuantityHistory
 from .mixins import TokenMixin, CartUpdateAPIMixin, CartTokenMixin
 from .models import Cart, CartItem
 from account.models import Visit
-from .serializers import CartItemSerializer, CheckoutSerializer, AddToCartSerializer, CartItemModelSerializer, RemoveCartItemFromCartSerializer
+from .serializers import CartItemSerializer,  AddToCartSerializer, CartItemModelSerializer, RemoveCartItemFromCartSerializer
 from products.serializers import UserVariationQuantityHistorySerializer
 from django.contrib.auth import get_user_model
 from decimal import Decimal
@@ -215,7 +215,7 @@ class CheckoutAPIView(TokenMixin, APIView):
 	# 	return Response(data, status=response_status)
 
 
-
+from .serializers import TransactionSerializer
 
 class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 	#authentication_classes = [SessionAuthentication]
@@ -262,16 +262,19 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 		cart_id = request.GET.get('cart_id', cart.id) #cart_id nahunda new create hunxa 
 		cart = Cart.objects.filter(pk=cart_id).first()
 		items = CartItemSerializer(cart.cartitem_set.all(), many=True)
+		transactions = Transaction.objects.filter(fk_cart_id=cart.id)
 		grand_total = cart.total - cart.transaction_total
 		data = {
 			"cart" : cart.id,
+			"paymentmethod" : cart.fk_payment_method_id,
 			"total": grand_total,#cart.total,
 			"subtotal": cart.subtotal,
 			"tax_total": cart.tax_total,
 			"count": cart.cartitems.count(),
 			"items": items.data,
 			"discount" : cart.transaction_total,
-			"in_words" : generate_amount_words(cart.total)
+			"in_words" : generate_amount_words(cart.total),
+			"transactions" : TransactionSerializer(transactions, many=True).data,
 		}
 		# print(cart.items)
 		return Response(data)
@@ -504,7 +507,7 @@ class CartTransactionView(APIView):
 			transaction_sum_amount+= item.amount
 		cart.transaction_total = transaction_sum_amount
 		cart.save()
-		return Response('hi save bhayo', status=200)
+		return Response('Transaction Saved', status=200)
 
 
 

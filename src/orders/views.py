@@ -664,16 +664,17 @@ def pos(request):
 				
 def pos1(request):
 	cart = Cart.objects.filter(pk=request.GET.get('cart_id')).first()
-	# print(cart_id)
-	counters = Counter.objects.all()
-	
+	counter = request.session['counter']
+	print('counter', counter)
+	counter_obj = Counter.objects.filter(pk=counter)
+	print(counter_obj)
 	context = {
 		# 'user_id' : patient_id
 		"cart" : cart,
 		'cart_id' : cart.id,
-		'paymentmethods' : PaymentMethod.objects.all(),
-		'counters' : counters,
-		'transaction_types' : TransactionType.objects.all()
+		'paymentmethods' : PaymentMethod.objects.all(),	
+		'transaction_types' : TransactionType.objects.all(),
+		'counter_obj' : counter_obj,
 	}
 	return render(request, "personal/dashboard_layout/pos_test.html", context)
 
@@ -686,19 +687,18 @@ def carts(request):
 	user_id = request.GET.get('user_id')
 	visit_id = request.GET.get('visit_id')
 	user = User.objects.filter(pk=user_id).first()
-	
 	if user_id:
 		# user = User.objects.get(pk=user_id)
 		carts = Cart.objects.order_by('-id').filter(user_id=user_id)
 	if visit_id:
 		carts = Cart.objects.order_by('-id').filter(fk_visit_id=visit_id)#(user_id=user_id)
-	print(timezone.now())
 	# print(cart_id)
 	context = {
 		'user_id' : user_id,
 		'carts' : carts,
 		'user' : user,
 		"visit_id" : visit_id
+	
 		
 		# 'cart_id' : cart_id.id
 	}

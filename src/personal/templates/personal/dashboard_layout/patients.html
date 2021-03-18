@@ -22,7 +22,7 @@
                 <div class="table-responsive">
                     <table class="table m-0">
 
-                        <thead>
+                        <thead class="bg-teal text-white">
                             <tr>
                                 <th>#</th>
                                 <th>First Name</th>
@@ -344,31 +344,30 @@
 
         RetrivePatientInfo: function(id) {
                 axios({
-                method: 'post',
-                url:  '/api/PatientDetailAPIView/'+id+,
+                method: 'get',
+                url:  '/api/PatientDetailAPIView/'+id,
                 headers: {
                                 'Content-Type': 'application/json',
                                 'X-CSRFToken': '{{ csrf_token }}'
                             }, 
-                data: {
-                    fk_customer_id : null,
-                    firstname : this.customerForm.firstname,
-                    lastname : this.customerForm.lastname,
-                    mobile : this.customerForm.mobile,
-                    email : this.customerForm.email,
-                    date_of_birth : this.customerForm.date_of_birth,
-                    address : this.customerForm.address,
-                    patient_type_id : this.customerForm.patient_type_id,
-                    emergency_number : this.customerForm.emergency_number,
-                    fk_bloodgroup_id : this.customerForm.fk_bloodgroup_id
-
-                  // This is the body part
-                },
+             
                 }) //.then(response=> cartitem.variation = response.data)
                 .then((getResponse) => {
-                    $('#con-close-modal').modal('hide')
+                    // $('#con-close-modal').modal('hide')
                     console.log(getResponse.data);
-                    this.patientType = getResponse.data.user_id;
+                    // this.patientType = getResponse.data.user_id;
+                    // this.patientType = getResponse.data.user_id;
+                    // this.fk_customer_id = getResponse.data.id,
+                    this.customerForm.firstname = getResponse.data.firstname,
+                    console.log('firstname', this.customerForm.firstname);
+                    this.customerForm.lastname = getResponse.data.lastname,
+                    this.customerForm.mobile = getResponse.data.mobile,
+                    this.customerForm.email = getResponse.data.email,
+                    this.customerForm.date_of_birth = getResponse.data.date_of_birth,
+                    this.customerForm.address =getResponse.data.address,
+                    // this.customerForm.patient_type_id = ,
+                    this.customerForm.emergency_number = getResponse.data.emergency_number,
+                    this.customerForm.fk_bloodgroup_id = getResponse.fk_blood
                     
 
                 }) 

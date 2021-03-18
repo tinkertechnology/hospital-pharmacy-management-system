@@ -8,7 +8,7 @@ User = get_user_model()
 class CreateUserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = User
-		fields = ('mobile', 'password', 'email', 'username', 'firstname','lastname', 'nick_name', 'emergency_number', 'fk_country_id',  'fk_state_id', 'fk_district_id', 'fk_localgov', 'fk_blood_id')
+		fields = ('mobile', 'password', 'email', 'username', 'firstname','lastname', 'nick_name', 'emergency_number', 'fk_country_id',  'fk_state_id', 'fk_district_id', 'fk_localgov', 'fk_blood_id', 'customer_id')
 		extra_kwargs = {'password': {'write_only': True}, }
 
 
@@ -82,13 +82,9 @@ class ProfileSerializer(serializers.ModelSerializer):
 			# user.save()
 			# return user
 # from store.models import StoreAccount
-from products.serializers import UserVariationQuantityHistorySerializer
-from products.models import UserVariationQuantityHistory
-from carts.models import Comment
-from carts.serializers import CommentSerializer
+
 # from store.service import getUserStoreService
-from store.models import StoreUser
-from users.serializers import DeliveryUserSerializer
+
 
 class UserSerializer(serializers.ModelSerializer):
 	class Meta:
