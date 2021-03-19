@@ -396,86 +396,7 @@ class AddToCartForCustomUserAPIView(APIView):
 		# return Response(serializer.data)
 
 
-from carts.models import Comment
-class ReturnToStoreForCustomUserAPIView(APIView):
-	# serializer_class = CartItemSerializer
-	def post(self, request, *args, **kwargs):
-		print(request.data)
-		item_id = request.data.get('item_id')
-		phone = request.data.get('phone')
-		comment = request.data.get('comment')
-		user = User.objects.filter(mobile__iexact=phone).first()
-		if not user:
-			return Response({"Fail": phone+ " is not registered, please register"}, status.HTTP_400_BAD_REQUEST)
-		quantity = int(request.data.get('quantity'))
-		# cash = request.data.get('cash', 0) #debit ho
-		# ordered_price = request.data.get('ordered_price')
-		# user_id = user.id
-		# credit = request.data.get('credit')
-		# debit=cash
-		# user_id = um_auto_order.fk_usermembership.fk_member_user_id
-		data = {
-			'user_id': user.id,
-			'item_id': item_id,
-			'quantity': quantity, #this is returned quantity of the user
-			'comment' : comment
-			# 'ordered_price': ordered_price,
-			# 'is_auto_order': True,
-			# 'credit': credit,
-			# 'debit': debit
-		}
-		print(data)
-		query = UserVariationQuantityHistory.objects.filter(user_id=user.id).filter(variation_id=item_id)
-		
-		qs = query.first()
-		if qs:
-			if qs.num_delta==0:
-				data = {}
-				seriailzer = UserVariationQuantityHistorySerializer(qs, read_only=True)
-				message = {'Fail': 'There is no pending Jars in this Account'}
-				data = {
-					"error" : message,
-					"items": seriailzer.data
-				}
-				return Response(data, status=400) 
-			qs.num_delta = qs.num_delta-quantity
-			qs.save()
-			# if comment:
-			# 	if qs.comment is None:
-			# 		qs.comment = ''
-			# 	qs.comment += ', '+comment
-			# if qs.num_delta < 1.0 :
-			# 	qs.comment = ''
-			if comment:
-				cmnt = Comment()
-				cmnt.comment = comment
-				cmnt.user = user
-				cmnt.save()
-			
-			seriailzer = UserVariationQuantityHistorySerializer(qs, read_only=True)
-			return Response(seriailzer.data)
-		else:
-			return Response({'Fail': 'The Jar seems to be different than delivered'}, status=400) 
-		return Response({'Success': 'Updated Sucessfully'},status=200)
 
-
-
-class ItemCountView(View):
-	def get(self, request, *args, **kwargs):
-		if request.is_ajax():
-			# cart_id = self.request.session.get("cart_id")
-			cart = Cart.objects.filter(user_id=request.user.id).first()
-
-			cart_id = cart.id
-			if cart_id == None:
-				count = 0
-			else:
-				cart = Cart.objects.get(id=cart_id)
-				count = cart.items.count()
-			request.session["cart_item_count"] = count
-			return JsonResponse({"count": count})
-		else:
-			raise Http404
 
 
 class AddToCartView(CreateAPIView):
@@ -490,9 +411,15 @@ class CartItemSaveView(CreateAPIView):
 	serializer_class = CartItemModelSerializer 
 	# serializer_class = RemoveCartItemFromCartSerializer 
 
-class CartTransactionView(APIView):
+class CartTransactionView(APIView): # payment method also using this api:
 	def post(self, request, *arg, **kwargs):
 		fk_cart_id = request.data.get('fk_cart_id')
+		fk_paymentmethod = request.data.get('fk_paymentmethod')
+		if fk_paymentmethod:
+			cart = Cart.objects.filter(pk=fk_cart_id).first()
+			cart.fk_payment_method_id = fk_paymentmethod
+			cart.save()
+			return Response('Payment method changed', status=200)
 		amount = request.data.get('amount')
 		fk_type_id = request.data.get('fk_type_id')
 		transaction = Transaction()
@@ -508,6 +435,21 @@ class CartTransactionView(APIView):
 		cart.transaction_total = transaction_sum_amount
 		cart.save()
 		return Response('Transaction Saved', status=200)
+	
+	def delete(self, request):
+		transaction_id = request.data.get('transaction_id')
+		if transaction_id:
+			transaction = Transaction.objects.filter(pk=transaction_id).first()
+			cart = transaction.fk_cart
+			cart.total += transaction.amount
+			cart.transaction_total -=transaction.amount
+			cart.save()
+			transaction.delete()
+			return Response('transaction has been deleted', status=200)
+		return Response('something went wrong', status=400)
+
+
+
 
 
 

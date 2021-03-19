@@ -233,30 +233,32 @@ class AddProductAPIView(APIView): #VariationAdd
 	permission_classes = [IsAuthenticated]
 	def post(self, request, *args, **kwargs):
 		print(request.data)
-		product_title = request.data.get('title', None)	
-		product_id = request.data.get('product_id', '')				
+		variation_id = request.data.get('variation_id')
+		product_title = request.data.get('title')					
 		category_id = request.data.get('category_id', None)
 		brand_id = request.data.get('brand_id', None)
 		product_code = request.data.get('product_code', None)
 		generic_names_id =request.data.get('generic_names_id', None)
 		company_id =request.data.get('company_id', None)
 		rack_number =request.data.get('rack_number', None)
-
+		alert_quantity = request.data.get('alert_quantity', None)
+		alert_expiry_days = request.data.get('alert_expiry_days', None)
 		if product_title is None:
 			return Response({"Fail": "Product name must be provided"}, status.HTTP_400_BAD_REQUEST)
 		if product_code is None:
-			return Response({"Fail": "Product code must be provided"}, status.HTTP_400_BAD_REQUEST)
-		if product_id:
-			settings.DPRINT(product_id)
-			product = Variation.objects.filter(pk=product_id).first()																				
+			return Response({"Fail": "Product code must be provided"}, status.HTTP_400_BAD_REQUEST)	
+		if variation_id:
+			product = Variation.objects.filter(pk=variation_id).first()
 		else:
-			product = Variation()		
+			product = Variation()
 		product.title = product_title	
 		product.generic_name_id = generic_names_id
 		product.company_id = company_id
 		product.brand_id = brand_id	
 		product.code = product_code	
 		product.rack_number = rack_number
+		product.alert_expiry_days = alert_expiry_days
+		product.alert_quantity = alert_quantity
 		product.save()
 		if category_id:
 			if product.categories:

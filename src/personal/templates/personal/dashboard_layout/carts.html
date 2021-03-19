@@ -32,9 +32,6 @@
                     </div>
             </div>
 
-      
-
-
                 </div>
 
                 <div class="card-box">
@@ -74,7 +71,7 @@
                                         <div class="col-md-12">
                                             {% for cart in carts %}
                                             <div class="search-item">
-                                                <h5 class="font-18 mb-1"><a href="/cartitems?cart_id={{cart.id}}">Bill : id {{cart.id}}</a></h5>
+                                                <h5 class="font-18 mb-1"><a href="/cartitems?cart_id={{cart.id}}">Bill : id {{cart.id}}  [ billed from : {{cart.fk_counter.name}} ]</a></h5>
                                                 
                                                 <p class="mb-0">
                                                     Total Payment: {{cart.total}} 

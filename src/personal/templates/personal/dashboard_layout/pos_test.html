@@ -41,7 +41,7 @@
                         <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Add Customer</button>
                     </div> -->
                     <div class="col-md-3">
-                    <select clas="form-group" v-model="paymentmethod" @change="addToCart">
+                    <select clas="form-group" v-model="paymentmethod" @change="updatePaymentMethod">
                         {% for paymentmethod in paymentmethods %}
                             <option class="form-control" value="{{paymentmethod.id}}">{{paymentmethod.title}}</option>
                         {% endfor %}
@@ -178,7 +178,8 @@
                                             <tr>
                                                 <th>#</th>
                                                 <th>Type</th>
-                                                <th>Amount</th>                                             
+                                                <th>Amount</th>
+                                                <th>Action</th>                                             
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -186,6 +187,7 @@
                                                 <th scope="row">[[++index]]</th>
                                                 <td>[[ item.TransactionType ]]</td>
                                                 <td> [[ item.amount ]] </td>                                                
+                                                <th><button class="btn btn-danger" @click="removeTransactionItem(item.id)">x</th>
                                             </tr>
                                            
                                         </tbody>
@@ -506,6 +508,42 @@
             
 
         },
+
+        removeTransactionItem: function(transaction_id){
+            this.loading= true,
+                axios({
+                method: 'delete',
+                url:  'api/CartTransactionView/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                  transaction_id : transaction_id
+                  // This is the body part
+                }
+                }) //.then(response=> cartitem.variation = response.data)
+                .then((getResponse) => {
+                    console.log(getResponse.data);
+                    this.loading = false;
+                    $.notify("transaction removed! ", "success");
+                    this.getCart({{cart_id}});
+                    // this.cartTransaction();
+                    
+
+                })
+                .catch(function (error) {
+                    this.loading = false;
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                    $.notify("Fail to remove item! ", "error");
+                });
+          
+            
+
+        },
+
+        
         lineItem: function(){
          return this.variation.price * this.quantity
         },
@@ -608,6 +646,38 @@
                     
                 }
                     )
+                .catch(function (error) {
+                    this.loading = false;
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });
+                  
+        },
+
+        updatePaymentMethod: function() {
+           
+                axios({
+                method: 'post',
+                url:  '/api/CartTransactionView/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                  fk_cart_id : {{cart_id}},
+                  fk_paymentmethod : this.paymentmethod
+                  // This is the body part
+                }
+                }) //.then(response=> cartitem.variation = response.data)
+                .then((getResponse) => {
+                    console.log(getResponse.data);
+                    $.notify("Paymentmethod updated", "success");
+                    
+                    // cartitem.variation.title = 'jpt';
+                    //Vue.set(cartitem, 'variation', getResponse.data);
+                    
+                    // print(products);
+                })  
                 .catch(function (error) {
                     this.loading = false;
                     console.log(error);

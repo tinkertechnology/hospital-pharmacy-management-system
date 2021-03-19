@@ -103,8 +103,8 @@ class Variation(models.Model):
 	brand = models.ForeignKey('Brand', on_delete=models.CASCADE, blank=True, null=True)
 	generic_name = models.ForeignKey('GenericName', on_delete=models.CASCADE, blank=True, null=True)
 	company = models.ForeignKey('Company', on_delete=models.CASCADE, blank=True, null=True)	
-	
-
+	alert_quantity = models.DecimalField(decimal_places=2, max_digits=20, default=20)
+	alert_expiry_days = models.DecimalField(decimal_places=2, max_digits=20, default=20)
 	def __str__(self):
 		return self.title
 

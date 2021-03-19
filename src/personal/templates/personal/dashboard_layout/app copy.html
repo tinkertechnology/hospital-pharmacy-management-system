@@ -42,11 +42,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
     <script src="//cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-      <style>
-            .your-custom-class {
-                background-color: #59b460 !important; 
-            }
-      </style>
+      
       <!-- Init the plugin -->
  
       
@@ -58,7 +54,7 @@
         <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
    </head>
    <body data-layout="horizontal">
-    <div id="wrapper">
+
       <header id="topnav">
          <!-- Topbar Start -->
          <div class="navbar-custom">
@@ -389,7 +385,7 @@
 
 
 
-     
+      <div id="wrapper">
          <div class="navbar-custom">
             <ul class="list-unstyled topnav-menu float-right mb-0">
                <li class="dropdown notification-list">
@@ -635,7 +631,102 @@
             </ul>
          </div>
 
-        
+         {% comment %}
+         <div class="left-side-menu">
+            <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 600px;"><div class="slimscroll-menu" style="overflow: hidden; width: auto; height: 600px;">
+                <!--- Sidemenu -->
+                <div id="sidebar-menu" class="mm-active">
+                    <ul class="metismenu mm-show" id="side-menu">
+                        <li class="menu-title">Navigation</li>
+                        <li>
+                            <a href="/" class="waves-effect waves-light">
+                                <i class="mdi mdi-view-dashboard"></i>
+                                <span class="badge badge-success badge-pill float-right">2</span>
+                                <span>  Dashboard  </span>
+                            </a>
+                            
+                        </li>
+
+                        <li>
+                            <a href="/CustomerPatientUserList" class="waves-effect waves-light">
+                              <i class="mdi mdi-invert-colors"></i>
+                              <span> Patients </span>
+                              <!-- <span class="menu-arrow"></span> -->
+                           </a>
+                           </li>
+                           <li>
+                              <a href="/api/VisitAPIView/" class="waves-effect waves-light">
+                                <i class="mdi mdi-invert-colors"></i>
+                                <span> Visits </span>
+                                <!-- <span class="menu-arrow"></span> -->
+                             </a>
+                             </li>
+                            <li>
+                              <a href="/hmsproducts/" class="waves-effect waves-light">
+                                  <i class="mdi mdi-invert-colors"></i>
+                                  <span> Items / Services </span>
+                                  <!-- <span class="menu-arrow"></span> -->
+                              </a>
+                              </li>
+                              <li>
+                                 <li>
+                                    <a href="/hmsproducts/" class="waves-effect waves-light">
+                                        <i class="mdi mdi-invert-colors"></i>
+                                        <span> Purchases </span>
+                                        <!-- <span class="menu-arrow"></span> -->
+                                    </a>
+                                    </li>
+                                    <li>
+                                 <a href="/doctor/" class="waves-effect waves-light">
+                                     <i class="mdi mdi-invert-colors"></i>
+                                     <span> Doctors </span>
+                                     <!-- <span class="menu-arrow"></span> -->
+                                 </a>
+                                 </li>
+                                 <li>
+                                    <a href="/nurse/" class="waves-effect waves-light">
+                                        <i class="mdi mdi-invert-colors"></i>
+                                        <span> Nurses </span>
+                                        <!-- <span class="menu-arrow"></span> -->
+                                    </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="javascript: void(0);" class="waves-effect waves-light">
+                                            <i class="mdi mdi-layers"></i>
+                                            <span>  Settings </span>
+                                            <span class="menu-arrow"></span>
+                                        </a>
+                                        <ul class="nav-second-level mm-collapse" aria-expanded="false">
+                                            <li><a href="/office/" class="waves-effect waves-light">Office</a></li>
+                                            <li><a href="/vendor/">Vendor</a></li>
+                                        </ul>
+                                    </li>
+                    </ul>
+
+                </div>
+                <!-- End Sidebar -->
+
+                <div class="clearfix"></div>
+
+                <div class="help-box">
+                    <h5 class="text-muted mt-0">For Help ?</h5>
+                    <p class=""><span class="text-info">Email:</span>
+                        <br> support@support.com</p>
+                    <p class="mb-0"><span class="text-info">Call:</span>
+                        <br> (+123) 123 456 789</p>
+                </div>
+
+            </div><div class="slimScrollBar" style="background: rgb(158, 165, 171); width: 5px; position: absolute; top: 0px; opacity: 0.4; display: none; border-radius: 7px; z-index: 99; right: 1px; height: 323.741px;"></div><div class="slimScrollRail" style="width: 5px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div></div>
+            <!-- Sidebar -left -->
+
+        </div>
+        {% endcomment %}
+
+
+
+
+
          <div class="content-page">
             <div class="content">
                <!-- Start Content-->
@@ -650,7 +741,7 @@
                                     <li class="breadcrumb-item active">Dashboard</li>
                                 </ol>
                             </div>
-                            <h4 class="page-title">{% block page_title %} | hms{% endblock %}</h4>
+                            <h4 class="page-title">{% block page_title %}{% endblock %}</h4>
                         </div>
                     </div>
                 </div>
@@ -671,10 +762,6 @@
                  opacity: 0.8;
                  filter: alpha(opacity=40);
                  }
-
-                      
-          
-               
                  </style>
                   {% endblock %}
                </div>

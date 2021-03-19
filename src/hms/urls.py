@@ -66,17 +66,12 @@ from account.views import (
 from carts.views import (
         CartAPIView,
         CartView, 
-        # CheckoutAPIView,
-        # CheckoutFinalizeAPIView,
-        # CheckoutView, 
-        # CheckoutFinalView,
-        ItemCountView, 
         AddToCartView,
         CartItemSaveView,
         CartTransactionView,
         RemoveCartItemFromCart,
-        AddToCartForCustomUserAPIView,
-        ReturnToStoreForCustomUserAPIView,
+        
+        
 
         )
 from orders.views import (
@@ -184,8 +179,6 @@ urlpatterns = [
     re_path(r'^api/file_upload/$', ApiPostFile.as_view(), name='file_upload'),
     re_path(r'^api/SaveUpdateFirebaseToken/$', SaveUpdateFirebaseToken.as_view(), name="SaveUpdateFirebaseToken"),
     re_path(r'^api/GetUserJarAndCreditAPIView/$', GetUserJarAndCreditAPIView.as_view(), name="GetUserJarAndCreditAPIView"),
-    re_path(r'^api/AddToCartForCustomUserAPIView/$', AddToCartForCustomUserAPIView.as_view(), name="AddToCartForCustomUserAPIView"),
-    re_path(r'^api/ReturnToStoreForCustomUserAPIView/$', ReturnToStoreForCustomUserAPIView.as_view(), name="ReturnToStoreForCustomUserAPIView"),
     re_path(r'^api/GetUserCreditAndJarByStorewise/$', GetUserCreditAndJarByStorewise.as_view(), name="GetUserCreditAndJarByStorewise"),
     re_path(r'^api/GetCallLogsStoreAPIView/$', GetCallLogsStoreAPIView.as_view(), name="GetCallLogsStoreAPIView"),
     re_path(r'^api/MissCallUsersAPIView/$', MissCallUsersAPIView.as_view(), name="MissCallUsersAPIView"),

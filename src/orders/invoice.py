@@ -18,6 +18,7 @@ class GeneratePDF(APIView):
 		if not cart_id: #fk_storewise_order_id passed here
 			return HttpResponse('no order id')
 		cart = Cart.objects.filter(pk=cart_id).first()
+		visit_id = cart.fk_visit.visit_id
 		total_in_words = generate_amount_words(cart.total)
 		print(total_in_words)
 		items = cart.cartitem_set.all()#CartItem.objects.filter(cart_id=ordered_cart_id)
@@ -26,7 +27,8 @@ class GeneratePDF(APIView):
 			'cart': cart,
 			'items': items,
 			'total_in_words':total_in_words,
-			'hospital_info' : hospital_info
+			'hospital_info' : hospital_info,
+			'visit_id': visit_id,
 		}
 
 		mail = EmailMessage(

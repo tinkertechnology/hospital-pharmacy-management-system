@@ -155,7 +155,7 @@ class Transaction(models.Model):
 	amount = models.DecimalField(max_digits=25, decimal_places=2, default=0.00)
 	comment = models.CharField(null=True, max_length=100, blank=True)
 	entered_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-	fk_cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True, blank=True)
+	fk_cart = models.ForeignKey(Cart, related_name="transactions", on_delete=models.CASCADE, null=True, blank=True)
 	def __str__(self):
 		return '%s %s' %(self.amount, self.fk_type.title)
 
