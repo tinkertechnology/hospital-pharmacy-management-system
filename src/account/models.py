@@ -142,6 +142,7 @@ class Visit(models.Model):
 	visit_status = models.BooleanField(default=0, null=True, blank=True)
 	checkout_at = models.DateTimeField(verbose_name='visit out time',null=True, blank=True)
 	fk_visit = models.ForeignKey(VisitType, null=True, blank=True, on_delete=models.CASCADE)
+	visit_id = models.CharField(null=True, blank=True, max_length=100)
 	
 	class Meta:
 		ordering = ['-timestamp']

@@ -159,7 +159,6 @@
         });
     });
     // var Toasted = require('vue-toasted').default
-    Vue.use(VueToast);
     var app = new Vue({
         components: {
   	    vuejsDatepicker
@@ -242,9 +241,14 @@
                 },
                 }) //.then(response=> cartitem.variation = response.data)
                 .then((getResponse) => {
-                    $('#con-close-modal').modal('hide')
                     console.log(getResponse.data);
                     this.getPatient();
+                    let toast = this.$toasted.show("information updated", { 
+                        theme: "toasted-primary", 
+                        position: "top-right", 
+                        duration : 2000,
+                        className: ['your-custom-class',]
+                    });
                     // this.selectedPatient = getResponse.data.user_id;
                     this.fk_customer_user_id = getResponse.data.user_id;
                     console.log(this);

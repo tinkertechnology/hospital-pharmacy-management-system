@@ -3,113 +3,144 @@
 {% load static %}
 
 {% block content %}
-<div class="row" id="add_visit">
-    <div class="col-sm-12">
-        <div class="card-box">
-            <h4 class="header-title">Visit </h4>
-            <p class="sub-header">
-               Register New Visit 
-            </p>
-
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="form-horizontal">
-                        {% comment %}
-                        <div class="form-group row">
-                            <label class="col-md-2 control-label">Reg. Charge / Amount</label>
-                            <div class="col-md-10">
-                                <input type="text" class="form-control" v-model="Visit.amount" value="" placeholder="amount...">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group row">
-                            <label class="col-md-2 control-label" for="example-email">Type</label>
-                            <div class="col-md-10">
-                                <!-- <input type="email" id="example-email" name="example-email" class="form-control" placeholder="Email"> -->
-                                <select name="" @change="onChangeVisitType($event)" v-model="Visit.fk_type_id" class="select2">
-                                    {% for  type in visits_type %}
-                                        <option value="{{type.id}}">{{type.title}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group row">
-                            <label class="col-md-2 control-label" for="example-email">Service/ Items</label>
-                            <div class="col-md-10">
-                                <!-- <input type="email" id="example-email" name="example-email" class="form-control" placeholder="Email"> -->
-                                <select name="" v-model="Visit.cartitem_id" class="select2" @change="onChangeVariation($event)">
-                                    {% for  variation in variations %}
-                                        <option value="{{variation.id}}">{{variation.title}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        {% endcomment %}
-
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 control-label"> Customer</label>
-                            <div class="col-sm-8">
-                                <select class="form-control" v-model="fk_customer_user_id">
-                                    <option  v-for="(patient, index) in patients" v-bind:value="patient.id">[[ patient.firstname ]] [[patient.lastname]] [[patient.mobile]]</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-2">
-                                <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Add Customer</button>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 control-label"> Reffer Doctor</label>
-                            <div class="col-sm-6">
-                                <select class="form-control" v-model="fk_doctor_user_id">
-                                    <option  v-for="(doctor, index) in doctors.results" v-bind:value="doctor.id">[[ doctor.firstname ]] [[doctor.lastname]] [[doctor.mobile]]</option>
-                                </select>
-                            </div>
-                            <label class="col-sm-2 control-label"> Visit Type</label>
-                            <div class="col-sm-2">
-                                <div class="form-group">                                   
-                                    <select class="form-control" v-model="visit_type">
-                                        {% for visit_type in visits_types %}
-                                            <option value="{{visit_type.id}}">{{visit_type.title}}</option>
-                                        {% endfor %}
-                                        
+<div id="add_visit">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card-box">
+                <h4 class="header-title">Visit </h4>
+                <p class="sub-header">
+                   Register New Visit 
+                </p>
+    
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-horizontal">
+                            <div class="form-group row">
+                                <label> Customer</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" v-model="fk_customer_user_id">
+                                        <option  v-for="(patient, index) in patients" v-bind:value="patient.id">[[ patient.firstname ]] [[patient.lastname]] [[patient.mobile]]</option>
                                     </select>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-2 control-label">Appointment Date</label>
-                            
-                                <div class="input-group col-sm-4">
-                                    <input type="text"  v-model="appointmentDate" class="form-control datepicker" placeholder="mm/dd/yyyy" id="">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text bg-primary text-white b-0"><i class="mdi mdi-calendar"></i></span>
-                                    </div>
-
+                                <div class="col-sm-2">
+                                    <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">+</button>
                                 </div>
-                                <label class="col-md-1 control-label"> Remarks</label>
-                            <div class="col-sm-5">
-                                <input type="text" v-model="remarks" class="form-control" value="" placeholder="Remarks">
                             </div>
-                            
-                        </div>
+    
+                            <div class="form-group row">
+                                <label class="col-sm-2 control-label"> Reffer Doctor</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" v-model="fk_doctor_user_id">
+                                        <option  v-for="(doctor, index) in doctors.results" v-bind:value="doctor.id">[[ doctor.firstname ]] [[doctor.lastname]] [[doctor.mobile]]</option>
+                                    </select>
+                                </div>
+                             
+                            </div>
+                            <div class="row">
+                                <label class="col-sm-2 control-label"> Visit Type</label>
+                                <div class="col-sm-10">
+                                    <div class="form-group">                                   
+                                        <select class="form-control" v-model="visit_type">
+                                            {% for visit_type in visits_types %}
+                                                <option value="{{visit_type.id}}">{{visit_type.title}}</option>
+                                            {% endfor %}
+                                            
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 control-label">Appointment Date</label>
+                                
+                                    <div class="input-group col-sm-8">
+                                        <input type="text"  v-model="appointmentDate" class="form-control datepicker" placeholder="mm/dd/yyyy" id="">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text bg-primary text-white b-0"><i class="mdi mdi-calendar"></i></span>
+                                        </div>
+    
+                                    </div>
+                            </div>
 
-                       
+                            <div class="row">
+                                <label class="col-md-2 control-label"> Remarks</label>
+                                <div class="col-sm-10">
+                                    <input type="text" v-model="remarks" class="form-control" value="" placeholder="Remarks">
+                                </div>
+                            </div>
+    
+                           
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <center><button class="btn btn-info" @click="saveVisit">Add</button></center>
+                        </div>
+                        
+                    </div>
+    
+                </div>
+                
+                
+            
+                </div>
+                <!-- end row -->
+    
+                <!-- end row -->
+    
+        </div>
+        <div class="col-md-8">
+            <div class="card-box">
+                <h4 class="header-title mb-4">Default Tabs</h4>
+
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">
+                            <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                            <span class="d-none d-sm-block">Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">
+                            <span class="d-block d-sm-none"><i class="fas fa-user"></i></span>
+                            <span class="d-none d-sm-block">Profile</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="message-tab" data-toggle="tab" href="#message" role="tab" aria-controls="message" aria-selected="false">
+                            <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
+                            <span class="d-none d-sm-block">Messages</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="setting-tab" data-toggle="tab" href="#setting" role="tab" aria-controls="setting" aria-selected="false">
+                            <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+                            <span class="d-none d-sm-block">Settings</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.</p>
+                        <p class="mb-0">Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim.</p>
+                    </div>
+                    <div class="tab-pane show" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <p>Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim.</p>
+                        <p class="mb-0">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.</p>
+                    </div>
+                    <div class="tab-pane" id="message" role="tabpanel" aria-labelledby="message-tab">
+                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.</p>
+                        <p class="mb-0">Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim.</p>
+                    </div>
+                    <div class="tab-pane" id="setting" role="tabpanel" aria-labelledby="setting-tab">
+                        <p>Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim.</p>
+                        <p class="mb-0">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.</p>
                     </div>
                 </div>
-         
 
             </div>
-            <button class="btn btn-info" @click="saveVisit">Submit</button>
-        
-            </div>
-            <!-- end row -->
-
-            <!-- end row -->
-
         </div>
+    </div>
+
         <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"  style="display: none;">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -172,11 +203,6 @@
                                     <input type="text" class="form-control"  v-model="customerForm.email" id="field-6" placeholder="admin@gmail.com">
                                 </div>
                             </div>
-                            
-        
-                         
-
-                          
                         </div>
 
                         <div class="row">
@@ -184,10 +210,10 @@
                                 <div class="form-group">
                                     <label for="field-4" class="control-label">Country</label>
                                    
-                                    <select class="form-control" @change="fetchState">
+                                    <select class="form-control" v-model="fk_country_id" @change="fetchState">
                                         <option>select</option>
                                         {% for country in countries %}
-                                            <option value="{{country.name}}">{{country.name}}</option>
+                                            <option value="{{country.id}}">{{country.name}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -294,6 +320,7 @@
      data: {
         fr: vdp_translation_fr.js,
         fk_state_id: null,
+        fk_country_id: null,
         fk_district_id: null,
         fk_localgov_id: null,
         state : [],
@@ -343,7 +370,7 @@
         mobile : "",
         visit_type: '',
         address: '',
-        date_of_birth: new Date().toLocaleDateString(),
+        date_of_birth: new Date().toDateString(),
         fk_bloodgroup_id:'',
         emergency_number: ''
     },
@@ -514,12 +541,24 @@
                     address : this.customerForm.address,
                     patient_type_id : this.customerForm.patient_type_id,
                     emergency_number : this.customerForm.emergency_number,
-                    fk_bloodgroup_id : this.customerForm.fk_bloodgroup_id
+                    fk_bloodgroup_id : this.customerForm.fk_bloodgroup_id,
+                    fk_country_id : this.fk_country_id,
+                    fk_state_id : this.fk_state_id,
+                    fk_district_id : this.fk_district_id,
+                    fk_localgov_id : this.fk_localgov_id
+
                   // This is the body part
                 },
                 }) //.then(response=> cartitem.variation = response.data)
                 .then((getResponse) => {
-                    $('#con-close-modal').modal('hide')
+                    $('#con-close-modal').modal('hide');
+                    let toast = this.$toasted.show("Patient has been registered", { 
+                        theme: "toasted-primary", 
+                        position: "top-right", 
+                        duration : 2000,
+                        className: ['your-custom-class',]
+                    });
+
                     console.log(getResponse.data);
                     this.getPatient();
                     // this.selectedPatient = getResponse.data.user_id;
@@ -534,6 +573,12 @@
                         this.message.error_message_body = error.response.data;
                         this.message.error_status = true;
                     }
+                    let toast = this.$toasted.show("Please input correct information", { 
+                        theme: "bubble", 
+                        position: "top-right", 
+                        duration : 2000,
+                        className: ['your-custom-class',]
+                    });
                             // console.log(error.response.status);
                             // console.log(error.response.headers);
                 });

@@ -45,8 +45,9 @@
                                 <td>{{patient.mobile}}</td>
                                 <td>{{patient.get_last_visit}}</td>
                                 <td>
-                                    <a class="btn btn-primary" href="/carts?user_id={{patient.id}}">details</a>
-                                    <a class="btn btn-edit" data-toggle="modal" @click="RetrivePatientInfo({{patient.id}})" data-target="#con-close-modal">edit</a>
+                                    <a class="btn btn-primary" href="/carts?user_id={{patient.id}}">visit details</a>
+                                    <!-- <a class="btn btn-edit" data-toggle="modal" @click="RetrivePatientInfo({{patient.id}})" data-target="#con-close-modal">edit</a> -->
+                                    <a class="btn btn-secondary" href="/patient/detail/{{patient.id}}/">Edit</a>
                                 </td>
                             </tr>
                             {% endfor %}

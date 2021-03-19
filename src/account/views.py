@@ -281,6 +281,10 @@ class RegisterAPI(APIView):
 		date_of_birth = request.data.get('date_of_birth')
 		emergency_number = request.data.get('emergency_number')
 		fk_blood_id = request.data.get('fk_bloodgroup_id')
+		fk_country_id = request.data.get('fk_country_id')
+		fk_state_id = request.data.get('fk_state_id')
+		fk_district_id = request.data.get('fk_district_id')
+		fk_localgov_id = request.data.get('fk_localgov_id')
 		if date_of_birth:
 			# bob = datetime.fromisoformat(date_of_birth)
 			# print(bob)
@@ -294,6 +298,10 @@ class RegisterAPI(APIView):
 			user.date_of_birth = date_of_birth
 			user.emergency_number = emergency_number
 			user.fk_blood_id = fk_blood_id
+			user.fk_country_id = fk_country_id
+			user.fk_state_id = fk_state_id
+			user.fk_district_id = fk_district_id
+			user.fk_localgov_id = fk_localgov_id
 			user.save()
 			print(user)
 			if request.data.get('patient_type_id'):
@@ -319,8 +327,11 @@ class RegisterAPI(APIView):
 						'firstname': firstname,
 						'lastname':lastname,
 						'date_of_birth': date_of_birth,
-						'fk_blood_id' : 1,
-						'fk_country_id' : 1,
+						'fk_blood_id' :fk_blood_id,
+						'fk_country' : fk_country_id,
+						'fk_district' : fk_district_id,
+						'fk_state' : fk_state_id,
+						'fk_localgov' : fk_localgov_id,
 						'emergency_number' : emergency_number,
 						'customer_id' : customer_id
 
@@ -982,11 +993,13 @@ class VisitAPIView(APIView):
 		fk_bloodgroup_id = request.data.get('fk_bloodgroup_id')
 		emergency_number = request.data.get('emergency_number')	
 		visit_type = request.data.get('visit_type')
+		visit_id  = dt.now().strftime('%Y%m%d%H%M%S')
 		if fk_customer_user_id and fk_doctor_user_id:
 			visit = Visit.objects.create(fk_customer_user_id=fk_customer_user_id,
 										 fk_doctor_user_id=fk_doctor_user_id,
 										 appointment_date=appointment_date,
-										 fk_visit_id=visit_type,										 
+										 fk_visit_id=visit_type,
+										 visit_id= visit_id,										 
 										 remarks=remarks)
 			data = {
 				'success': 'Created',
