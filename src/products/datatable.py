@@ -1,8 +1,10 @@
 # from django_filters import FilterSet
 import django_filters
-
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from .models import Variation
+from products.filters import VariationFilter
 
 class UsersDataTableFilterSet(django_filters.FilterSet):
     class Meta:
@@ -127,7 +129,16 @@ from rest_framework.generics import  ListAPIView
 class VariationDataTable(generics.ListAPIView):
     serializer_class = VariationDataTableSerializer
     pagination_class = DataTablePagination
-    filterset_class = ProductFilter
+    filterset_class = VariationFilter
+
+    filter_backends = [
+                filters.SearchFilter, 
+                filters.OrderingFilter, 
+                DjangoFilterBackend
+                ]
+    # search_fields = ["title", "description"] // old version
+    filterset_fields = ["title"]
+    ordering_fields  = ["title", "id"]
     #ordering_fields = '__all__'
     # filterset_fields = ['title']
     #ordering = ['id']

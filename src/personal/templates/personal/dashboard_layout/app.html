@@ -42,6 +42,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
     <script src="//cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/vuejs-paginator/2.0.0/vuejs-paginator.min.js"></script> -->
       <style>
             .your-custom-class {
                 background-color: #59b460 !important; 
@@ -371,7 +372,7 @@
                                 <li><a href="/purchase/">Add Purchase Bill</a></li>
                                 <li><a href="#">Add Patient</a></li>
                                 <li><a href="/visit/">Register new Visit</li>
-                                    <li><a href="/office/">Settings</li>
+                                <li><a href="/office/">Settings</li>
                             </ul>
                         </li>
 
@@ -705,6 +706,14 @@
         Vue.component('v-select', VueSelect.VueSelect);
         Vue.use(VueLoading);
         Vue.component('loading', VueLoading)
+        Window.prototype.$ToastSuccess = function (thisRef, msg) { 
+            thisRef.$toasted.show(msg, { 
+                            theme: "toasted-primary", 
+                            position: "top-right", 
+                            duration : 1500,
+                            className: ['your-custom-class',]
+                    });
+         } // this worked
       // $: single $ means function
       // $$: means variable added in vue
       Vue.prototype.$WINDOW = function () { return window; } // this worked

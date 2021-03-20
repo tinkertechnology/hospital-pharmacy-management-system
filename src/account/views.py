@@ -973,8 +973,8 @@ class VisitAPIView(APIView):
 		if fk_visit:
 			qs = qs.filter(fk_visit__id=fk_visit)
 		else:
-			qs = qs.filter(timestamp__gte=timezone.now().replace(hour=0, minute=0, second=0), timestamp__lte=timezone.now().replace(hour=23, minute=59, second=59))#all()
-		paginator = Paginator(qs, 5)  # Show 25 contacts per page
+			qs = qs.all() #qs.filter(timestamp__gte=timezone.now().replace(hour=0, minute=0, second=0), timestamp__lte=timezone.now().replace(hour=23, minute=59, second=59))#all()
+		paginator = Paginator(qs, 10)  # Show 25 contacts per page
 		# Get the current page number
 		page = request.GET.get('page')
 		# Get the current slice (page) of products

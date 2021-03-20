@@ -270,7 +270,15 @@ class AddProductAPIView(APIView): #VariationAdd
 					'status': True,
 					'detail': 'Product Saved successfully'
 					})
-
+	def delete(self, request):
+		print(request)
+		permission_classes = [IsAuthenticated]
+		variation_id = request.data.get('variation_id')
+		variation = Variation.objects.get(pk=variation_id)
+		if variation:
+			variation.delete()
+			return Response('Product removed successfully', status=200)
+		return Response('Error', status=400)
 
 
 
