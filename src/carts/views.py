@@ -273,7 +273,7 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 			"count": cart.cartitems.count(),
 			"items": items.data,
 			"discount" : cart.transaction_total,
-			"in_words" : generate_amount_words(cart.total),
+			"in_words" : generate_amount_words(cart.total-cart.transaction_total),
 			"transactions" : TransactionSerializer(transactions, many=True).data,
 		}
 		# print(cart.items)

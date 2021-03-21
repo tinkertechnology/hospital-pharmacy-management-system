@@ -114,14 +114,14 @@ class CartItemSerializer(serializers.ModelSerializer):
 		user_type = obj.cart.user.usertype
 		if user_type:
 			user_type_id = user_type.user_type_id
-			print(user_type_id)
-			print(obj.fk_variation_batch_id)
+			# print(user_type_id)
+			# print(obj.fk_variation_batch_id)
 			var_batch_obj = VariationBatchPrice.objects.filter(fk_variation_batch_id=obj.fk_variation_batch_id).filter(fk_user_type_id=user_type_id).first()
 			if var_batch_obj:
 				return var_batch_obj.price
-		if obj.fk_variation_batch.sale_price is None:
-			return obj.fk_variation_batch.price
-		return obj.fk_variation_batch.sale_price
+		if obj.fk_variation_batch.sale_price:
+			return obj.fk_variation_batch.sale_price
+		return obj.fk_variation_batch.price
 
 	def get_image(self, obj):
 		# image_url = ProductImage.objects.filter(product_id=obj.item.id).first()
@@ -196,7 +196,7 @@ class CartItemModelSerializer(serializers.ModelSerializer):
 		data['fk_counter_id'] = request.data.get('fk_counter_id')
 		data['is_return'] = request.data.get('is_return')
 		cartItem = CartService.CartItemCreateService(data)
-		print(cartItem.__dict__)
+		# print(cartItem.__dict__)
 		# transaction = {
 		# 	"fk_cart_id" : cartItem.cart_id,
 		# 	"amount" :  cartItem.ordered_price,#request.data.get('amount'),
@@ -230,13 +230,11 @@ class RemoveCartItemFromCartSerializer(serializers.ModelSerializer):
 		fields = '__all__'
 
 	def destroy(self, request, *args, **kwargs):
-		print('jssdjsppt')
 		try:
 			print('delete')
 			instance = self.get_object()
 			quantity = instance.quantity
 			var_batch = instance.fk_variation_batch
-			print('var-batch',var_batch)
 			if var_batch:
 				var_batch.quantity += quantity
 				var_batch.save()

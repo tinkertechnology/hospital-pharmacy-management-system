@@ -38,21 +38,27 @@ class CartItem(models.Model):
 
 def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
 	office = Office.objects.all().first()
-	print(office)
+	# print(office)
 	qty = instance.quantity
+	print('qty')
 	if Decimal(qty) >= 0:
 		# price = instance.item.get_price()
-		print('instance',instance)
+		# print('instance',instance)
+		# print('yei chireko cha')
 		varition_batch = instance.fk_variation_batch
+		# print(varition_batch)
 		if varition_batch:
 			price = varition_batch.price #price , not saleprice
 			var_batch_price = varition_batch.variationbatchprice_set.first()
+			print('variation-batch-price', var_batch_price)
 			if var_batch_price:
 				price = var_batch_price.price
 		# price = instance.fk_variation_batch.variationbatchprice_set.first().price
-		if instance.ordered_price!=0:
-			price = instance.ordered_price
-		instance.orginal_price = price
+		if instance.fk_variation_batch.sale_price:
+			price = instance.fk_variation_batch.sale_price
+		# instance.orginal_price = price
+		else:
+			price = instance.fk_variation_batch.price
 		# if qty>=3:
 		# 	price = price-Decimal(float(price)*(3/10))
 		# elif qty>=2:
