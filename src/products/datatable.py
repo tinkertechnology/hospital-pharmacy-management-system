@@ -117,7 +117,7 @@ class DataTablePagination(pagination.PageNumberPagination):
             },
             'count': self.page.paginator.count,
             'recordsTotal': self.page.paginator.count,
-            # 'recordsFiltered' : 
+            'recordsFiltered' : self.page.paginator.count,
             'data': data
         })
 
