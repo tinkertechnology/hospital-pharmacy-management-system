@@ -86,18 +86,20 @@
                     <td class="tg-0pky">Amount</td>
                 </tr>
 
-                {% for item in items %}
+                {% for item in items %} <!-- item in instance of cartitem-->
                 <tr>
                     <td class="tg-0pky">{{ forloop.counter }}</td>
                     <td class="tg-0pky" style="white-space:nowrap;">{{item.fk_variation_batch.fk_variation.title}}</td>
                     <td class="tg-0pky">{{item.fk_variation_batch.batchno}}</td>
                     <td class="tg-0pky">{{item.quantity}}</td>
                     <td class="tg-0pky">{{item.ordered_price}}</td>
-                    <td class="tg-0pky">{{item.total}}</td>
+                    <td class="tg-0pky">{{item.line_item_total}}</td>
                 </tr>
                 {% endfor %}
 
                 {% if cart.transactions.all %}
+                <tr style="padding-top: 8px;">
+                    <td col-span="4" class="tg-0pky"> Other Transactions</td></tr>
                 <tr style="padding-top: 8px;">
                     <td class="tg-0pky">S.No.</td>
                     <td class="tg-0pky">Type</td>
@@ -108,10 +110,11 @@
                     <td class="tg-0pky">{{ forloop.counter }}</td>
                     <td class="tg-0pky">{{ transaction.fk_type.title }}</td>
                     <td class="tg-0pky">{{ transaction.amount }}</td>
+                    <td class="tg-0pky">{{transaction.comment}}</td>
                 </tr>
                 {% endfor %}
                 <tr>
-                    {{cart.transaction_total}}
+                    <td class="tg-0pky">Total : {{cart.transaction_total}}</td>
                 </tr>
                 {% endif %}
 
@@ -136,7 +139,14 @@
                 <tr>
                     
                     <td class="tg-0pky">G. Total Amount</td>
-                    <td class="tg-0pky">{{cart.total}}</td>
+                    <td class="tg-0pky">{{grand_total}}</td>
+                    
+                </tr>
+                <tr style="text-align: right;">
+                    {% if cart.transaction_total > 0 %}
+                        <td class="tg-0pky">Discount/other </td>
+                        <td class="tg-0pky">{{cart.transaction_total }}</td>
+                    {% endif %}
                 </tr>
                
             </tbody>

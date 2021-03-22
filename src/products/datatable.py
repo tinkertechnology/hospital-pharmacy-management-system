@@ -145,3 +145,7 @@ class VariationDataTable(generics.ListAPIView):
     def get_queryset(self):
         print(self.request)
         return Variation.objects.all()
+
+
+
+

@@ -415,6 +415,7 @@ class CartTransactionView(APIView): # payment method also using this api:
 	def post(self, request, *arg, **kwargs):
 		fk_cart_id = request.data.get('fk_cart_id')
 		fk_paymentmethod = request.data.get('fk_paymentmethod')
+		comment = request.data.get('comment')
 		if fk_paymentmethod:
 			cart = Cart.objects.filter(pk=fk_cart_id).first()
 			cart.fk_payment_method_id = fk_paymentmethod
@@ -425,6 +426,7 @@ class CartTransactionView(APIView): # payment method also using this api:
 		transaction = Transaction()
 		transaction.fk_type_id = fk_type_id
 		transaction.amount = amount
+		transaction.comment = comment
 		transaction.fk_cart_id = fk_cart_id
 		transaction.entered_user = request.user
 		transaction.save()
