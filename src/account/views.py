@@ -267,7 +267,7 @@ class RegisterAPI(APIView):
 	@csrf_exempt
 	def post(self, request, *args, **kwargs):
 		settings.DLFPRINT()
-		print(request.data)
+		# print(request.data)
 		fk_customer_id = request.data.get('fk_customer_id')
 		customer_id = dt.now().strftime('%Y%m%d%H%M%S')#dt.now().strftime('%Y%m%d%H%M%S%f')
 		mobile = request.data.get('mobile', False)
@@ -285,11 +285,11 @@ class RegisterAPI(APIView):
 		fk_state_id = request.data.get('fk_state_id')
 		fk_district_id = request.data.get('fk_district_id')
 		fk_localgov_id = request.data.get('fk_localgov_id')
+		fk_gender_id = request.data.get('fk_gender_id')
 		if date_of_birth:
 			# bob = datetime.fromisoformat(date_of_birth)
 			# print(bob)
-			date_of_birth = '2021-01-01'; #datetime.strptime(date_of_birth, '%Y-%m-%d').date()
-		
+			date_of_birth =  dt.strptime(date_of_birth, '%Y-%m-%d').date()#'2021-01-01'; #
 		if fk_customer_id: #for edit purpose
 			user = User.objects.get(pk=fk_customer_id)
 			user.firstname = firstname
@@ -302,6 +302,7 @@ class RegisterAPI(APIView):
 			user.fk_state_id = fk_state_id
 			user.fk_district_id = fk_district_id
 			user.fk_localgov_id = fk_localgov_id
+			user.fk_gender_id = fk_gender_id
 			user.save()
 			print(user)
 			if request.data.get('patient_type_id'):
@@ -327,13 +328,14 @@ class RegisterAPI(APIView):
 						'firstname': firstname,
 						'lastname':lastname,
 						'date_of_birth': date_of_birth,
-						'fk_blood_id' :fk_blood_id,
+						'fk_blood' :fk_blood_id,
 						'fk_country' : fk_country_id,
 						'fk_district' : fk_district_id,
 						'fk_state' : fk_state_id,
 						'fk_localgov' : fk_localgov_id,
 						'emergency_number' : emergency_number,
-						'customer_id' : customer_id
+						'customer_id' : customer_id,
+						'fk_gender':  fk_gender_id
 
 					}
 			serializer = CreateUserSerializer(data = temp_data)

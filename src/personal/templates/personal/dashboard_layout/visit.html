@@ -16,11 +16,13 @@
                     <div class="col-lg-12">
                         <div class="form-horizontal">
                             <div class="form-group row">
-                                <label> Customer</label>
+                                <label> Select Patient</label>
                                 <div class="col-sm-8">
-                                    <select class="form-control" v-model="fk_customer_user_id">
+                                    <!-- <select class="form-control" v-model="fk_customer_user_id">
                                         <option  v-for="(patient, index) in patients" v-bind:value="patient.id">[[ patient.firstname ]] [[patient.lastname]] [[patient.mobile]]</option>
-                                    </select>
+                                    </select> -->
+                                
+                                    <v-select label="fullname" :options="patients"  v-model="fk_customer_user_id"></v-select>
                                 </div>
                                 <div class="col-sm-2">
                                     <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">+</button>
@@ -52,12 +54,8 @@
                             <div class="form-group row">
                                 <label class="col-sm-4 control-label">Appointment Date</label>
                                 
-                                    <div class="input-group col-sm-8">
-                                        <input type="text"  v-model="appointmentDate" class="form-control datepicker" placeholder="mm/dd/yyyy" id="">
-                                        <div class="input-group-append">
-                                            <span class="input-group-text bg-primary text-white b-0"><i class="mdi mdi-calendar"></i></span>
-                                        </div>
-    
+                                    <div class="input-group col-sm-8">                                       
+                                        <vuejs-datepicker :format="customAppointmentFormatter" v-model="customerForm.appointmentDate"></vuejs-datepicker>    
                                     </div>
                             </div>
 
@@ -189,7 +187,7 @@
                          
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="field-5" class="control-label">Date of Birth (BS)</label>
+                                    <label for="field-5" class="control-label">Date of Birth</label>
                                     <!-- <input type="text" v-model="customerForm.date_of_birth" class="form-control datepicker" v-model="customerForm.dob" id=""  placeholder=""> -->
                                     <vuejs-datepicker :format="customFormatter" v-model="customerForm.date_of_birth"></vuejs-datepicker>
                                     <!-- <input type="text" name="input" placeholder="YYYY-MM-DD" required 
@@ -255,22 +253,29 @@
                         </div>
                         
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="field-6" class="control-label">Emergency Number</label>
                                     <input type="text" class="form-control"  v-model="customerForm.emergency_number" id="field-6" placeholder="">
                                 </div>
                             </div>
-                            <div class="col-md-6" >
+                            <div class="col-md-4" >
                                 <div class="form-group">
                                     <label for="field-6" class="control-label">Blood Group</label>
                                     <select v-model="customerForm.fk_bloodgroup_id" class="form-control">
                                     {% for bg in blood_groups %}
                                         <option value="{{bg.id}}">{{bg.title}}</option>
                                     {% endfor %}
-                                    </select>
-                                   
+                                    </select>                                   
                                 </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="field-6" class="control-label">Gender</label>
+                                    <select v-model="customerForm.fk_gender_id" class="form-control">
+                                    {% for gender in genders %}
+                                        <option value="{{gender.id}}">{{gender.title}}</option>
+                                    {% endfor %}
+                                    </select>   
                             </div>
                         </div>
 
@@ -366,7 +371,9 @@
 
    }],
    customerForm : {
+        appointmentDate: '',
         firstname : "",
+        fk_gender_id : null,
         lastname: "",
         email : "",
         patient_type_id : "",
@@ -395,7 +402,8 @@
                data: {
                     fk_customer_user_id: this.fk_customer_user_id,
                     fk_doctor_user_id : this.fk_doctor_user_id,
-                    appointmentDate : '2020-01-01', //this.appointmentDate,
+                    // appointmentDate : '2020-01-01', //this.appointmentDate,
+                    appointmentDate : this.customerForm.appointmentDate,
                     remarks : this.remarks,
                     visit_type : this.visit_type,
                     
@@ -528,7 +536,10 @@
         },
         customFormatter(date) {
             this.customerForm.date_of_birth = moment(date).format('YYYY-MM-DD');
-            console.log(this.customerForm.date_of_birth);
+              return moment(date).format('YYYY-MM-DD');
+        },
+        customAppointmentFormatter(date) {
+            this.customerForm.appointmentDate = moment(date).format('YYYY-MM-DD');
               return moment(date).format('YYYY-MM-DD');
         },
         savePatient: function() {
@@ -553,7 +564,8 @@
                     fk_country_id : this.fk_country_id,
                     fk_state_id : this.fk_state_id,
                     fk_district_id : this.fk_district_id,
-                    fk_localgov_id : this.fk_localgov_id
+                    fk_localgov_id : this.fk_localgov_id,
+                    fk_gender : this.customerForm.fk_gender_id
 
                   // This is the body part
                 },

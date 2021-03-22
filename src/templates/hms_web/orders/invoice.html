@@ -70,7 +70,9 @@
                     <td class="tg-0pky" colspan="2">Invoice No:<br>Patient ID:<br>Patient Name:<br>Patient Address:</td>
                     <td class="tg-0pky" colspan="3">{{cart.id}}<br>{{cart.user.customer_id}}<br>{{cart.user.firstname}} {{cart.user.lastname}}<br>Kamalbinayak</td>
                     <td class="tg-0pky" >Invoice Date:<br>Contact No:</td>
-                    <td style="text-align:left;">12/06/2021<br>{{carts.first.user.mobile}}</td>                               
+                    <td style="text-align:left;">{{cart.timestamp|date:"Y M d"}}<br>{{carts.first.user.mobile}}</td> <br>  
+                    <td class="tg-0pky" >Mode:{{cart.fk_payment_method.title}} </td><br>
+                  
                 </tr>
                 <tr>
                     <td class="tg-0pky" >VID: {{visit_id}}</td>

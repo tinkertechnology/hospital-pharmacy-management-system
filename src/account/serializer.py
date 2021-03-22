@@ -8,7 +8,7 @@ User = get_user_model()
 class CreateUserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = User
-		fields = ('mobile', 'password', 'email', 'username', 'firstname','lastname', 'nick_name', 'emergency_number', 'fk_country',  'fk_state', 'fk_district', 'fk_localgov', 'fk_blood', 'customer_id')
+		fields = ('mobile', 'password', 'email', 'username', 'firstname','lastname', 'nick_name','date_of_birth', 'emergency_number', 'fk_country',  'fk_state', 'fk_district', 'fk_localgov', 'fk_blood', 'customer_id', 'fk_gender')
 		extra_kwargs = {'password': {'write_only': True}, }
 
 
@@ -108,9 +108,10 @@ class UserTypeSerializer(serializers.ModelSerializer):
 
 class PatientSerializer(serializers.ModelSerializer):
 	patient_type = serializers.SerializerMethodField()
+	fullname = serializers.SerializerMethodField()
 	class Meta:
 		model = User
-		fields = ['id','firstname','lastname', 'mobile', 'patient_type']
+		fields = ['id','firstname','lastname', 'mobile', 'patient_type', 'fullname']
 
 	def get_patient_type(self, obj):
 		ptype =  UserType.objects.filter(user=obj).first()
@@ -121,6 +122,15 @@ class PatientSerializer(serializers.ModelSerializer):
 				'p_type_title' : ptype.user_type.title
 			}
 		return data
+	def get_fullname(self, obj):
+		fullname = ''
+		if obj.firstname:
+			fullname+=obj.firstname
+		if obj.lastname:
+			fullname+=obj.lastname
+		if obj.mobile:
+			fullname+= ' (' + str(obj.mobile) + ')'
+		return fullname
 		# return UserTypeSerializer(ptypes, read_only=True).data
 from .models import Doctor, Visit
 class DoctorSerializer(serializers.ModelSerializer):

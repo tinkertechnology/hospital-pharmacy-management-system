@@ -49,6 +49,12 @@ class BloodGroup(models.Model):
 		return self.title
 
 
+class Gender(models.Model):
+	title = models.CharField(max_length=100, null=True, blank=True)
+
+	def __str__(self):
+		return self.title
+
 class Account(AbstractBaseUser):
 	phone_regex = RegexValidator(regex=r'^\+?1?\d{9,14}$', message="Phone number must be entered in the format: '+977999999'. Up to 15 digits allowed.")
 	email 					= models.EmailField(verbose_name="email", max_length=60, unique=True, null=True)
@@ -64,8 +70,7 @@ class Account(AbstractBaseUser):
 	mobile 					= models.CharField(validators=[phone_regex],max_length=15, unique=True)
 	nick_name 				= models.CharField(max_length=100, null=True, blank=True)
 	date_of_birth			= models.DateField(null=True)
-	address					= models.CharField(max_length=200, null=True, blank=True)
-	gender					= models.CharField(max_length=200, null=True, blank=True)
+	fk_gender					= models.ForeignKey(Gender, null=True, blank=True, on_delete=models.CASCADE)
 	firebase_token          = models.CharField(max_length=500, null=True, blank=True)
 	customer_id				= models.CharField(max_length=100, null=True, blank=True)
 	emergency_number        = models.CharField(validators=[phone_regex],max_length=15, unique=True, null=True)

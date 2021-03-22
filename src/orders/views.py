@@ -35,7 +35,7 @@ from django.db.models import Q
 from products.models import Variation, VariationBatch
 from carts.models import TransactionType
 from payment.models import PaymentMethod
-from account.models import VisitType, BloodGroup
+from account.models import VisitType, BloodGroup, Gender
 from counter.models import Counter
 from address.models import Country
 from vendor.models import Vendor
@@ -731,6 +731,7 @@ def visit(request):
 	context ={
 		'variations' : variations,
 		# 'visits_type' : visits_type,
+		'genders' : Gender.objects.all(),
 		'visits_types' : visits_types,
 		'patient_types' : UserTypes.objects.all(),
 		'blood_groups' : blood_groups,
