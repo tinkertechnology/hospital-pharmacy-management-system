@@ -321,6 +321,7 @@ handler500 = views.handler500
 
 from orders.invoice import GeneratePDF, GenerateFullPDF
 from products.datatable import VariationDataTable
+from account.visit_datatable import VisitDataTable
 urlpatterns += [
     path(r'admin/', admin.site.urls),
     # path('', include('hms_web.urls')),
@@ -378,7 +379,8 @@ urlpatterns += [
     path('api/PurchaseOrderAPIView/', PurchaseOrderAPIView.as_view(), name="PurchaseOrderAPIView"),
     path('api/PurchaseItemOrderAPIView/', PurchaseItemOrderAPIView.as_view(), name="PurchaseItemOrderAPIView"),
     path('api/data', VariationDataTable.as_view(), name="VariationDataTable"),
-    
+    path('api/visits', VisitDataTable.as_view(), name="VisitDataTable"),
+
     # path('api/address', GetSDLdata.as_view(), name="GetSDLdata"),
     re_path(r'^api/address/', include('address.urls')),
 

@@ -13,6 +13,7 @@
       
       @page {
             size: a4 portrait;
+            
             @frame content_frame {
                 left: 70pt;
                 width: 512pt;
@@ -22,6 +23,9 @@
             }
         }
         table { -pdf-keep-with-next: true; }
+            .page-break{
+                page-break-after: always;
+            }            
         
     </style>
 </head>
@@ -144,13 +148,13 @@
                     <td class="tg-0pky">{{grand_total}}</td>
                     
                 </tr>
+                {% if cart.transaction_total > 0 %}
                 <tr style="text-align: right;">
-                    {% if cart.transaction_total > 0 %}
+                    
                         <td class="tg-0pky">Discount/other </td>
                         <td class="tg-0pky">{{cart.transaction_total }}</td>
-                    {% endif %}
                 </tr>
-               
+                {% endif %}
             </tbody>
         </table>
     </div>
