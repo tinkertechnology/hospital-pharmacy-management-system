@@ -144,7 +144,7 @@ class VariationDataTable(generics.ListAPIView):
     #ordering = ['id']
     def get_queryset(self):
         print(self.request)
-        return Variation.objects.all()
+        return Variation.objects.all().order_by('-id')
 
 
 

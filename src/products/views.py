@@ -19,6 +19,7 @@ from vendor.models import Vendor
 from rest_framework.generics import CreateAPIView, ListAPIView,ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
 from products.serializers import VariationSerializer
 from .models import query_musics_by_args
+from counter.models import Counter
 # from store.service import getUserStoreService
 # Create your views here.
 from .filters import ProductFilter
@@ -146,7 +147,9 @@ class VariationBatchAPIView(APIView):
 	filter_class = VariationBatchFilter
 
 	def get(self, request):
-		return Response(VariationBatchSerializer(VariationBatch.objects.all(), many=True).data)
+		# variation_by_counter = Variation.objects.filter(fk_counter_id=request.session['counter']).values_list('id')
+		# print(variation_by_counter)
+		return Response(VariationBatchSerializer(VariationBatch.objects.filter(fk_variation__fk_counter_id=request.session['counter']), many=True).data)
 
 
 class VariationBatchViewSet(viewsets.ModelViewSet):
@@ -243,6 +246,7 @@ class AddProductAPIView(APIView): #VariationAdd
 		rack_number =request.data.get('rack_number', None)
 		alert_quantity = request.data.get('alert_quantity', None)
 		alert_expiry_days = request.data.get('alert_expiry_days', None)
+		fk_counter_id = request.data.get('fk_counter_id')
 		if product_title is None:
 			return Response({"Fail": "Product name must be provided"}, status.HTTP_400_BAD_REQUEST)
 		if product_code is None:
@@ -259,6 +263,7 @@ class AddProductAPIView(APIView): #VariationAdd
 		product.rack_number = rack_number
 		product.alert_expiry_days = alert_expiry_days
 		product.alert_quantity = alert_quantity
+		product.fk_counter_id = fk_counter_id
 		product.save()
 		if category_id:
 			if product.categories:
@@ -322,6 +327,7 @@ def hmsproducts(request):
 		'manufacturers' : Company.objects.all(),
 		'generics' : GenericName.objects.all(),
 		'brands' : Brand.objects.all(),
+		'counters' : Counter.objects.all(),
 	}
 	return render(request, "personal/dashboard_layout/products.html", context)
 

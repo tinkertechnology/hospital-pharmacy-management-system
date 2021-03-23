@@ -19,12 +19,13 @@
                         <thead class="bg-teal text-white">
                             <tr>
                                
-                                <th>Drug Name</th>
-                                <th>Drug Code</th>
+                                <th>Item/Service</th>
+                                <th>item/service Code</th>
                                 <th>Rack Number</th>
                                 <th>Generic Name</th>
                                 <th>Manufacturer</th>
                                 <th>Brand</th>
+                                <th>Counter</th>
                                 <th>Alert qty</th>
                                 <th>Alert Exp Days</th>
                                 <th>Action</th>
@@ -60,6 +61,15 @@
                                     {% for brand in brands %}
                                         <option value="{{brand.id}}">
                                             {{brand.title}}
+                                        </option>
+                                    {% endfor %}
+                                </select>   
+                            </td>
+                            <td>
+                                <select class="form-control" v-model="catlogSaveForm.fk_counter_id">
+                                    {% for counter in counters %}
+                                        <option value="{{counter.id}}">
+                                            {{counter.name}}
                                         </option>
                                     {% endfor %}
                                 </select>   
@@ -318,6 +328,7 @@
                 price: ''
             },
             catlogSaveForm :{
+                fk_counter_id : null,
                 alert_quantity : null,
                 alert_expiry_days : null,
                 product_title: null,
@@ -407,6 +418,7 @@
                           brand_id : this.catlogSaveForm.brand_id,
                           alert_quantity : this.catlogSaveForm.alert_quantity,
                           alert_expiry_days : this.catlogSaveForm.alert_expiry_days,
+                          fk_counter_id : this.catlogSaveForm.fk_counter_id,
                             // This is the body part
                         }
                     }) //.then(response=> cartitem.variation = response.data)

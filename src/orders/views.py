@@ -811,13 +811,14 @@ class PurchaseItemOrderAPIView(APIView):
 		if  quantity and free_quantity:
 			purchaseitem.total_quantity = Decimal(quantity) + Decimal(free_quantity)
 		else:
-			purchaseitem.total_quantity = total_quantity = Decimal(quantity)
+			purchaseitem.total_quantity =  Decimal(quantity)
 		cp = request.data.get('cost_price', 0.0)
 		sp = request.data.get('sell_price', 0.0)
 		purchaseitem.cost_price = cp
 		purchaseitem.sell_price = sp
+		print('1--')
 		if cp and sp:
-			purchaseitem.line_item_total = Decimal(cp) - Decimal(quantity)
+			# purchaseitem.line_item_total = Decimal(cp) - Decimal(quantity) # profit rakhne bhaye matrai
 			purchaseitem.discount_amount = 0
 			if discount_percent:
 				discount_percent = int(float(discount_percent))
@@ -829,6 +830,7 @@ class PurchaseItemOrderAPIView(APIView):
 		else:
 			purchaseitem.line_item_total = 0
 		purchaseitem.save()
+		print('2--')
 		# aba Variation batch ko save gardine
 		vb = VariationBatch.objects.filter(fk_purchaseitem_id=purchaseitem.id).first()
 		if vb:
@@ -846,6 +848,7 @@ class PurchaseItemOrderAPIView(APIView):
 			# 						   fk_variation_id=purchaseitem.fk_variation_id,
 			# 						   batchno = purchaseitem.batchno
 			# 						   )
+			print('3--')
 		else:
 			VariationBatch.objects.create(fk_purchaseitem_id=purchaseitem.id, 
 										quantity=purchaseitem.quantity,
@@ -854,5 +857,5 @@ class PurchaseItemOrderAPIView(APIView):
 										fk_variation_id=purchaseitem.fk_variation_id,
 										batchno = purchaseitem.batchno
 										)
-		return Response('bhayo save', status=200)
+		return Response('Record has been Saved', status=200)
 
