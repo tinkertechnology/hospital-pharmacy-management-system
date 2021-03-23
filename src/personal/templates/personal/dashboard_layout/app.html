@@ -741,14 +741,26 @@
         Vue.component('v-select', VueSelect.VueSelect);
         Vue.use(VueLoading);
         Vue.component('loading', VueLoading)
+        Vue.prototype.$loader = '';
         Window.prototype.$ToastSuccess = function (thisRef, msg) { 
-            thisRef.$toasted.show(msg, { 
+           this.$loader = thisRef.$toasted.show(msg, { 
                             theme: "toasted-primary", 
                             position: "top-right", 
                             duration : 1500,
                             className: ['your-custom-class',]
                     });
-         } // this worked
+            return this.$loader;
+         }
+         
+        // Window.prototype.$ShowLoading = function(thisRef){
+        //     thisRef.$loading.show({
+        //         loader: 'dots'
+        //     });
+        // }
+        Window.prototype.$HideLoading = function(thisRef){
+            thisRef.$ShowLoading.hide();
+        }
+          // this worked
       // $: single $ means function
       // $$: means variable added in vue
       Vue.prototype.$WINDOW = function () { return window; } // this worked

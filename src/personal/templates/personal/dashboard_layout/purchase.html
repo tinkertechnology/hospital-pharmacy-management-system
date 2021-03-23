@@ -260,7 +260,8 @@
 
         },
         getPurchaseItem: function() {
-
+            // $ShowLoading(this);
+            // console.log('loading', $ShowLoading(this));
             axios.get('/api/PurchaseOrderAPIView/',{
             params: {
                     purchase_id: {{purchase_id}}    
@@ -268,6 +269,7 @@
             }
                 )
                 .then(getResponse => {
+                    // this.$loader.hide();
                     console.log("GET Response")
                     console.log(getResponse.data);
                     // data = getResponse.data;
