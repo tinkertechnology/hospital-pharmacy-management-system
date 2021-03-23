@@ -109,10 +109,12 @@ from orders.views import (
                     visit,
                     purchase,
                     purchaseEdit,
+                    purchaseDetails,
+                    purchaseDetail,
                     PurchaseOrderAPIView,
-                    PurchaseItemOrderAPIView
+                    PurchaseItemOrderAPIView,
                     )
-
+from orders.datatable import PurchaseDataTable
 from products.views import (
         # APIHomeView,
         CategoryListAPIView,
@@ -362,6 +364,8 @@ urlpatterns += [
     path('hmsvariations/<int:id>/', hmsvariations, name="hmsvariations"),
     path('purchase/', purchase, name="purchase"),
     path('purchase/create/<int:id>/', purchaseEdit, name="purchaseEdit"),
+    path('purchaseDetails/', purchaseDetails, name="purchaseDetails"),
+    path('purchaseDetail/<int:purchase_id>/', purchaseDetail, name="purchaseDetail"),
     path('visit/', visit, name="visittype"),
     path('patient/detail/<int:id>/', patient_detail, name="patient_detail"),    
     path('api/VisitAPIView/', VisitAPIView.as_view(), name="VisitAPIView"),
@@ -379,6 +383,7 @@ urlpatterns += [
     path('api/PurchaseOrderAPIView/', PurchaseOrderAPIView.as_view(), name="PurchaseOrderAPIView"),
     path('api/PurchaseItemOrderAPIView/', PurchaseItemOrderAPIView.as_view(), name="PurchaseItemOrderAPIView"),
     path('api/data', VariationDataTable.as_view(), name="VariationDataTable"),
+    path('api/PurchaseDataTable', PurchaseDataTable.as_view(), name="PurchaseDataTable"),
     path('api/visits', VisitDataTable.as_view(), name="VisitDataTable"),
 
     # path('api/address', GetSDLdata.as_view(), name="GetSDLdata"),

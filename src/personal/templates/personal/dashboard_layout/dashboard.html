@@ -83,16 +83,17 @@
                             
                            
                             <div class="form-group col-md-3">
+                                Filter
                                 <!-- <label for="regular2">Entry</label>
                                 <input type='text' name='code' id='code'> -->
                             </div>
                             <div class="form-group col-md-3">
-                                <label for="regular2">Patient</label>
+                                <label for="regular2">Patient Name</label>
                                 <input type='text' name='patient' id='fk_customer_user'>
                             </div>  
                             <div class="form-group col-md-3">
-                                <!-- <label for="regular2">Appoint Date</label>
-                                <input type='text' name='generic_name' id='generic_name'> -->
+                                <label for="regular2">Visit ID</label>
+                                <input type='text' name='visit_id' id='visit_id'>
                             </div> 
                             <div class="form-group col-md-3">
                                 <!-- <label for="regular2">Visit</label>
@@ -232,6 +233,7 @@ $(document).ready(function () {
                 data.id =  $('#id').val();
                 data.patient_fullname = $('#fk_customer_user').val();
                 data.code = $('#code').val();
+                data.visit_id = $('#visit_id').val();
                 data.columns=null; //modify ajax request to make less cluttered
                 //added page required for django
                 //start offset dont work
@@ -309,6 +311,13 @@ $(document).ready(function () {
         timetable.draw();
     });
 
+    $('#visit_id').keyup(function(){
+        timetable.draw();
+    });
+
+    $('#fk_customer_user').keyup(function(){
+        timetable.draw();
+    });
     //$('#fk_customer').select2();        
 
 });

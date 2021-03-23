@@ -721,6 +721,12 @@ def purchaseEdit(request, id):
 	}
 	return render(request, "personal/dashboard_layout/purchase.html", context)
 
+def purchaseDetails(request):
+	context = {}
+	return render(request, "personal/dashboard_layout/purchase_report.html", context)
+
+def purchaseDetail(request, purchase_id):
+	pass
 ###HMS
 
 def visit(request):
