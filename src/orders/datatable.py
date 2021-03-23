@@ -10,6 +10,7 @@ from .models import Purchase
 from .filters import PurchaseFilter
 
 class UsersDataTableFilterSet(django_filters.FilterSet):
+    
     class Meta:
         model = Variation
         fields= '__all__'
@@ -164,9 +165,17 @@ class VariationDataTable(generics.ListAPIView):
 
 from rest_framework import serializers
 class PurchaseDataTableSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Purchase
-		fields= '__all__'
+    supplier = serializers.SerializerMethodField()
+    class Meta:
+        model = Purchase
+        fields= '__all__'
+    
+    def get_supplier(self, obj):
+        supplier = ''
+        if obj.fk_vendor:
+            supplier = obj.fk_vendor.name
+        return supplier
+
 from rest_framework import pagination
 from rest_framework.response import Response
 # https://github.com/encode/django-rest-framework/blob/master/rest_framework/pagination.py
