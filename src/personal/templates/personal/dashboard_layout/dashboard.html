@@ -104,10 +104,10 @@
 
                 <div class="card-body">                       
                     <div class="table-responsive">
-                        <table id="visitTable" class="table m-0">
+                        <table id="visitTable" class="table m-0 styled-table">
                             <div class="clear"></div>
                             <thead class="bg-teal text-white">
-                                <th>id </th>
+                                <th>Visit Code </th>
                                 <th>Patient</th>
                                 <th>Entry</th>
                                 <th>Doctor</th>
@@ -216,7 +216,7 @@ $(document).ready(function () {
 
         "processing": true,
         "serverSide": true,
-        "pageLength": 15,
+        "pageLength": 10,
 
         "ajax": {
             //"url": "{ url 'quote_index2' %}",
@@ -241,7 +241,7 @@ $(document).ready(function () {
         },
         "columns": [
             {
-                "data": "id",
+                "data": "visit_id",
                 "orderable": true,
                 "searchable": true
             },

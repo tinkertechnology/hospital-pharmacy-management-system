@@ -263,7 +263,12 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 		cart = Cart.objects.filter(pk=cart_id).first()
 		items = CartItemSerializer(cart.cartitem_set.all(), many=True)
 		transactions = Transaction.objects.filter(fk_cart_id=cart.id)
+		in_word_number = 0
 		grand_total = cart.total - cart.transaction_total
+		# print(grand_total)
+		# in_number_total = 0
+		if grand_total > 0:
+			in_word_number = grand_total
 		data = {
 			"cart" : cart.id,
 			"paymentmethod" : cart.fk_payment_method_id,
@@ -273,7 +278,7 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 			"count": cart.cartitems.count(),
 			"items": items.data,
 			"discount" : cart.transaction_total,
-			"in_words" : generate_amount_words(cart.total-cart.transaction_total),
+			"in_words" : generate_amount_words(in_word_number),
 			"transactions" : TransactionSerializer(transactions, many=True).data,
 		}
 		# print(cart.items)

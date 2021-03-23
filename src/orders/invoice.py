@@ -19,8 +19,10 @@ class GeneratePDF(APIView):
 			return HttpResponse('no order id')
 		cart = Cart.objects.filter(pk=cart_id).first()
 		visit_id = cart.fk_visit.visit_id
-		total_in_words = generate_amount_words(cart.total - cart.transaction_total)
-		print(total_in_words)
+		total_in_words = generate_amount_words(0)	
+		total_in_number  = cart.total - cart.transaction_total
+		if total_in_number > 0:
+			total_in_words = generate_amount_words(total_in_number)	
 		items = cart.cartitem_set.all()#CartItem.objects.filter(cart_id=ordered_cart_id)
 		template = get_template('personal/dashboard_layout/invoice.html')
 		context = {
