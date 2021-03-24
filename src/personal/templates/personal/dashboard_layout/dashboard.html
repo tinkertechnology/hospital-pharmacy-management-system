@@ -74,35 +74,31 @@
 
 
       <!-- BEGIN DATATABLE 2 -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card-box">   
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group ">
+                                <label>Visit ID</label>
+                                <input type="text" class="form-control" placeholder="Enter Visit ID" name="visit_id" id="visit_id">
+                            </div>
+                        </div>
+    
+                        <div class="col-md-3">
+                            <div class="form-group ">
+                                <label>Patient Name</label>
+                                <input type="text" class="form-control" placeholder="Enter Patient Name" name="patient" id="fk_customer_user">
+                            </div>
+                        </div>
+                    </div>             
+                </div>
+            </div>
+        </div>
+
       <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                <div class="card-box table-responsive">
-                    <header header-title>
-                        <div class="row">
-                            
-                           
-                            <div class="form-group col-md-3">
-                                Filter
-                                <!-- <label for="regular2">Entry</label>
-                                <input type='text' name='code' id='code'> -->
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="regular2">Patient Name</label>
-                                <input type='text' name='patient' id='fk_customer_user'>
-                            </div>  
-                            <div class="form-group col-md-3">
-                                <label for="regular2">Visit ID</label>
-                                <input type='text' name='visit_id' id='visit_id'>
-                            </div> 
-                            <div class="form-group col-md-3">
-                                <!-- <label for="regular2">Visit</label>
-                                <input type='text' name='generic_name' id='generic_name'> -->
-                            </div>                             
-                        </div>
-                    </header>
-                </div>
-
                 <div class="card-body">                       
                     <div class="table-responsive">
                         <table id="visitTable" class="table m-0 styled-table">
@@ -168,36 +164,6 @@
     </div>
 </div>
 {% endcomment %}
-<div class="row">
-    <div class="col-xl-12">
-        <div class="card-box">
-            <h4 class="header-title mb-4">Total Revenue</h4>
-
-            <div id="website-stats" style="height: 320px; padding: 0px; position: relative;" class="flot-chart"><canvas class="flot-base" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 620px; height: 320px;" width="1240" height="640"></canvas><div class="flot-text" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; font-size: smaller; color: rgb(84, 84, 84);"><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"><div style="position: absolute; max-width: 73px; top: 304px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 21px; text-align: center;">0</div><div style="position: absolute; max-width: 73px; top: 304px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 119px; text-align: center;">2</div><div style="position: absolute; max-width: 73px; top: 304px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 217px; text-align: center;">4</div><div style="position: absolute; max-width: 73px; top: 304px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 315px; text-align: center;">6</div><div style="position: absolute; max-width: 73px; top: 304px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 413px; text-align: center;">8</div><div style="position: absolute; max-width: 73px; top: 304px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 508px; text-align: center;">10</div><div style="position: absolute; max-width: 73px; top: 304px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 606px; text-align: center;">12</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"><div style="position: absolute; top: 287px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 7px; text-align: right;">0</div><div style="position: absolute; top: 215px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 7px; text-align: right;">5</div><div style="position: absolute; top: 144px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 1px; text-align: right;">10</div><div style="position: absolute; top: 72px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 1px; text-align: right;">15</div><div style="position: absolute; top: 1px; font: 400 13px / 15px &quot;Source Sans Pro&quot;, sans-serif; color: rgb(108, 120, 151); left: 1px; text-align: right;">20</div></div></div><canvas class="flot-overlay" width="1240" height="640" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 620px; height: 320px;"></canvas><div class="legend"><div style="position: absolute; width: 262px; height: 30px; top: -16px; right: 8px; background-color: transparent; opacity: 0.85;"> </div><table style="position:absolute;top:-16px;right:8px;;font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid null;padding:1px"><div style="width:4px;height:0;border:5px solid #4bd396;overflow:hidden"></div></div></td><td class="legendLabel">Google&nbsp;&nbsp;</td><td class="legendColorBox"><div style="border:1px solid null;padding:1px"><div style="width:4px;height:0;border:5px solid #f5707a;overflow:hidden"></div></div></td><td class="legendLabel">Yahoo&nbsp;&nbsp;</td><td class="legendColorBox"><div style="border:1px solid null;padding:1px"><div style="width:4px;height:0;border:5px solid #188ae2;overflow:hidden"></div></div></td><td class="legendLabel">Facebbok&nbsp;&nbsp;</td></tr></tbody></table></div></div>
-        </div>
-    </div>
-</div>
-
-    <!-- <div class="col-xl-6">
-        <div class="card-box">
-            <h4 class="header-title mb-4">Sales Analytics</h4>
-
-            <div class="float-right">
-                <div id="reportrange" class="form-control form-control-sm">
-                    <i class="far fa-calendar-alt mr-1"></i>
-                    <span>January 22, 2021 - February 20, 2021</span>
-                </div>
-            </div>
-            <div class="clearfix"></div>
-
-            <div id="donut-chart">
-                <div id="donut-chart-container" class="flot-chart" style="height: 246px; padding: 0px; position: relative;">
-                <canvas class="flot-base" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 620px; height: 246px;" width="1240" height="492"></canvas><canvas class="flot-overlay" width="1240" height="492" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 620px; height: 246px;"></canvas><div class="legend"><div style="position: absolute; width: 89px; height: 120px; top: 50px; right: 50px; background-color: transparent; opacity: 0.85;"> </div><table style="position:absolute;top:50px;right:50px;;font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid null;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,152,0);overflow:hidden"></div></div></td><td class="legendLabel"><div style="font-size:14px;">&nbsp;Series 1</div></td></tr><tr><td class="legendColorBox"><div style="border:1px solid null;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(141,110,99);overflow:hidden"></div></div></td><td class="legendLabel"><div style="font-size:14px;">&nbsp;Series 2</div></td></tr><tr><td class="legendColorBox"><div style="border:1px solid null;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(38,166,154);overflow:hidden"></div></div></td><td class="legendLabel"><div style="font-size:14px;">&nbsp;Series 3</div></td></tr><tr><td class="legendColorBox"><div style="border:1px solid null;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(127,193,252);overflow:hidden"></div></div></td><td class="legendLabel"><div style="font-size:14px;">&nbsp;Series 4</div></td></tr></tbody></table></div></div>
-            </div>
-
-            <p class="text-muted mb-0 mt-3 text-truncate">Pie chart is used to see the proprotion of each data groups, making Flot pie chart is pretty simple, in order to make pie chart you have to incldue jquery.flot.pie.js plugin.</p>
-        </div>
-    </div> -->
 
 </div>
 
