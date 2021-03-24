@@ -743,23 +743,30 @@
         Vue.component('loading', VueLoading)
         Vue.prototype.$loader = '';
         Window.prototype.$ToastSuccess = function (thisRef, msg) { 
-           this.$loader = thisRef.$toasted.show(msg, { 
+            thisRef.$toasted.show(msg, { 
                             theme: "toasted-primary", 
                             position: "top-right", 
                             duration : 1500,
                             className: ['your-custom-class',]
                     });
-            return this.$loader;
+           
          }
          
-        // Window.prototype.$ShowLoading = function(thisRef){
-        //     thisRef.$loading.show({
-        //         loader: 'dots'
-        //     });
-        // }
-        Window.prototype.$HideLoading = function(thisRef){
-            thisRef.$ShowLoading.hide();
+        Window.prototype.$ShowLoading = function(thisRef){
+            // return
+            // thisRef.$loading.show({
+            //     loader: 'dots'
+            // });
+            let loader = thisRef.$loading.show({
+                loader: 'dots'
+            });
+            return loader;
+            // setTimeout(() => loader.hide(), 3 * 1000)
+
         }
+        // Window.prototype.$HideLoading = function(thisRef){
+        //     thisRef.$ShowLoading.hide();
+        // }
           // this worked
       // $: single $ means function
       // $$: means variable added in vue

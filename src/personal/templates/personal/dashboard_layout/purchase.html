@@ -260,7 +260,7 @@
 
         },
         getPurchaseItem: function() {
-            // $ShowLoading(this);
+            let loader = $ShowLoading(this);
             // console.log('loading', $ShowLoading(this));
             axios.get('/api/PurchaseOrderAPIView/',{
             params: {
@@ -269,7 +269,7 @@
             }
                 )
                 .then(getResponse => {
-                    // this.$loader.hide();
+                    setTimeout(() => loader.hide(), 0.25 * 1000)
                     console.log("GET Response")
                     console.log(getResponse.data);
                     // data = getResponse.data;
