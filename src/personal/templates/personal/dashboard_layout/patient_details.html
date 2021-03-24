@@ -6,85 +6,16 @@
 
 {% block content %}
 
-<div class="col-sm-12" id="pos">
-    <div class="card-box table-responsive">
-        <div class="col-lg-12">
-            <div class="demo-box p-2">
-                <h4 class="header-title"></h4>
-                <div class="row mb-4">
-                    <div class="col-sm-12">
-                        <!-- <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Add Customer</button> -->
-                        <a href="/visit/"><button class="btn btn-secondary">Add New Visit</button></a>
-                    </div>
-
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table m-0">
-
-                        <thead class="bg-teal text-white">
-                            <tr>
-                                <th>#</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Age</th>
-                                <th>Username</th>
-                                <th>Mobile</th>
-                                <th>Last Visit</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for patient in object_list %}
-                            <tr>
-                                <th scope="row">{{ patient.id }}</th>
-                                <td>{{patient.firstname}}</td>
-                                <td>{{ patient.lastname }}</td>
-                                <td>{{patient.get_age}}</td>
-                                <td>{{ patient.mobile}}</td>
-                                <td>{{patient.mobile}}</td>
-                                <td>{{patient.get_last_visit}}</td>
-                                <td>
-                                    <a class="btn btn-primary" href="/carts?user_id={{patient.id}}">visit details</a>
-                                    <!-- <a class="btn btn-edit" data-toggle="modal" @click="RetrivePatientInfo({{patient.id}})" data-target="#con-close-modal">edit</a> -->
-                                    <a class="btn btn-secondary" href="/patient/detail/{{patient.id}}/">Edit</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% if is_paginated %}
-                    <div class="pagination">
-                        <span class="step-links">
-                            {% if page_obj.has_previous %}          
-                                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-                            {% endif %}
-                    
-                            <span class="current">
-                              {{ page_obj.number }}
-                            </span>
-                    
-                            {% if page_obj.has_next %}
-                                <a href="?page={{ page_obj.next_page_number }}">next</a>
-                            {% endif %}
-                        </span>
-                    </div>
-                {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Add new customer modal start -->
-<div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
+<div id="patient">
+    <div class="row">
+        <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title mt-0">Add New Customer</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <h4 class="modal-title mt-0">Editing Patient [[customerForm.firstname]] [[customerForm.lastname]] </h4>
+                <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
-                </button>
+                </button> -->
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -208,18 +139,16 @@
                 </div>
 
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-info waves-effect waves-light" @click="savePatient">Save changes</button>
-                <button  @click="savePatient">save</button>
+            <div class="modal-footer">                
+                <button type="button" class="btn btn-info waves-effect waves-light" @click="savePatient">Save changes</button>                                
             </div>
         </div>
+    </div>        
     </div>
 </div>
 <!-- /.modal -->
- 
-{% endblock %}
 
+{% endblock %}
 
 
 {% block script %}
@@ -230,14 +159,21 @@
         });
     });
     // var Toasted = require('vue-toasted').default
-    Vue.use(VueToast);
     var app = new Vue({
-        
+        components: {
+  	    vuejsDatepicker
+    },
         delimiters: ['[[', ']]'],
-      el: '#pos',
+      el: '#patient',
       data: {
-          abcd : '',
+        fk_state_id: null,
+        fk_district_id: null,
+        fk_localgov_id: null,
+        state : [],
+        district : [],
+        localgov: [],
         customerForm : {
+            fk_customer_id : null,
             firstname : "",
             lastname: "",
             email : "",
@@ -246,7 +182,7 @@
             visit_type: '',
             address: '',
             date_of_birth:  '',//new Date().toLocaleDateString(),
-            fk_bloodgroup_id:'',
+            fk_blood:'',
             emergency_number: ''
     },
         loading: false,
@@ -269,29 +205,6 @@
         selected : '',
         patientType:'',
         quantity: 1,
-
-        cart :{
-        "token": null,
-        "cart": 107,
-        "total": 6510.0,
-        "subtotal": 6000.0,
-        "tax_total": 510.0,
-        "count": 1,
-        "items": [
-            {
-                "product_id": 1,
-                "image": "/static/no-image.jpg",
-                "item": 1,
-                "item_title": "Aspirin-hib (aspirin)",
-                "price": 150.0,
-                "product": 1,
-                "quantity": "40.00",
-                "line_item_total": "6000.00",
-                "fk_store_title": "",
-                variation : {id: '',title :"",price:"",sale_price:null,discount:"",inventory:""},
-            }
-        ]
-    },
     customerForm : {
         firstname : "",
         lastname: "",
@@ -305,70 +218,72 @@
 
 }, //Data Closed
       methods : {
-        // savePatient: function() {
-        //         axios({
-        //         method: 'post',
-        //         url:  '/api/register/',
-        //         headers: {
-        //                         'Content-Type': 'application/json',
-        //                         'X-CSRFToken': '{{ csrf_token }}'
-        //                     }, 
-        //         data: {
-        //             firstname : this.customerForm.firstname,
-        //             lastname : this.customerForm.lastname,
-        //             mobile : this.customerForm.mobile,
-        //             email : this.customerForm.email,
-        //             address : this.customerForm.address,
-        //             date_of_brith: this.customerForm.dob,
-        //             fk_patient_type_id :this.customerForm.fk_patient_type_id
-
-        //           // This is the body part
-        //         },
-        //         }) //.then(response=> cartitem.variation = response.data)
-        //         .then((getResponse) => {
-        //             $('#con-close-modal').modal('hide')
-        //             console.log(getResponse.data);
-        //             this.patientType = getResponse.data.user_id;
+        savePatient: function() {
+                axios({
+                method: 'post',
+                url:  '/api/register/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                    fk_customer_id : this.customerForm.fk_customer_id,
+                    firstname : this.customerForm.firstname,
+                    lastname : this.customerForm.lastname,
+                    mobile : this.customerForm.mobile,
+                    email : this.customerForm.email,
+                    date_of_birth : this.customerForm.date_of_birth,
+                    address : this.customerForm.address,
+                    patient_type_id : this.customerForm.patient_type_id,
+                    emergency_number : this.customerForm.emergency_number,
+                    fk_bloodgroup_id : this.customerForm.fk_bloodgroup_id
+                  // This is the body part
+                },
+                }) //.then(response=> cartitem.variation = response.data)
+                .then((getResponse) => {
+                    console.log(getResponse.data);
+                    this.getPatient();
+                    let toast = this.$toasted.show("information updated", { 
+                        theme: "toasted-primary", 
+                        position: "top-right", 
+                        duration : 2000,
+                        className: ['your-custom-class',]
+                    });
+                    // this.selectedPatient = getResponse.data.user_id;
+                    this.fk_customer_user_id = getResponse.data.user_id;
+                    console.log(this);
                     
 
-        //         }) 
-        //         .catch(function (error) {
-        //             console.log(error);
-        //             console.log("Error while fetching market updates");
-        //         });
+                })
+                .catch((error) => {    
+                    console.log(error.response.data);
+                    if(error.response){
+                        this.message.error_message_body = error.response.data;
+                        this.message.error_status = true;
+                    }
+                            // console.log(error.response.status);
+                            // console.log(error.response.headers);
+                });
                   
-        // },
+        },
 
-        RetrivePatientInfo: function(id) {
-            let loader = Vue.$loading.show({
-                // Pass props by their camelCased names
-                    container: this.$refs.loadingContainer,
-                    canCancel: true, // default false
-                    onCancel: this.yourCallbackMethod,
-                    color: '#000000',
-                    loader: 'spinner',
-                    width: 64,
-                    height: 64,
-                    backgroundColor: '#ffffff',
-                    opacity: 0.5,
-                    zIndex: 999,
-            });
+        RetrivePatientInfo: function() {
                 axios({
                 method: 'get',
-                url:  '/api/PatientDetailAPIView/'+id,
+                url:  '/api/PatientDetailAPIView/'+{{patient_id}},
                 headers: {
                                 'Content-Type': 'application/json',
                                 'X-CSRFToken': '{{ csrf_token }}'
                             }, 
              
                 }) //.then(response=> cartitem.variation = response.data)
-                .then(getResponse => {
+                .then((getResponse) => {
                     // $('#con-close-modal').modal('hide')
                     console.log(getResponse.data);
                     // this.patientType = getResponse.data.user_id;
                     // this.patientType = getResponse.data.user_id;
-                    // this.fk_customer_id = getResponse.data.id,
-                    this.customerForm.firstname = getResponse.data.firstname,                
+                    this.customerForm.fk_customer_id = getResponse.data.id,
+                    this.customerForm.firstname = getResponse.data.firstname,
                     console.log('firstname', this.customerForm.firstname);
                     this.customerForm.lastname = getResponse.data.lastname,
                     this.customerForm.mobile = getResponse.data.mobile,
@@ -377,9 +292,7 @@
                     this.customerForm.address =getResponse.data.address,
                     // this.customerForm.patient_type_id = ,
                     this.customerForm.emergency_number = getResponse.data.emergency_number,
-                    this.customerForm.fk_bloodgroup_id = getResponse.fk_blood
-                    loader.hide();
-                   
+                    this.customerForm.fk_bloodgroup_id = getResponse.data.fk_blood+''
                     
 
                 }) 
@@ -388,7 +301,69 @@
                     console.log("Error while fetching market updates");
                 });
                   
-        }
+        },
+        fetchState: function(){
+                axios.get("/api/address/", {
+                    params :{
+                        state: 1
+                    },
+                     // request_for: 'state'
+                }).then(response =>{
+                    this.state = response.data;
+                    console.log(this.state);
+                    // application.state_data = response.data;
+                    // application.select_state = '';
+                    // application.district_data = '';
+                    // appplication.select_district = '';
+                    // application.localgov_data = '';
+                    // application.select_localgov = '';
+                }).catch(error => {
+                    console.log('error',error);
+                });
+            },
+
+            fetchDistrict : function() {
+                axios.get("/api/address/", {
+                    params :{
+                        fk_state_id: this.fk_state_id
+                    },
+                    // request_for: 'state'
+                }).then(response =>{
+                    this.district = response.data;
+                    console.log('district',this.district);
+                    
+                    // application.state_data = response.data;
+                    // application.select_state = '';
+                    // application.district_data = '';
+                    // appplication.select_district = '';
+                    // application.localgov_data = '';
+                    // application.select_localgov = '';
+                }).catch(error => {
+                    console.log('error',error);
+                });
+            },
+
+            fetchLocalgov : function() {
+                axios.get("/api/address/", {
+                    params :{
+                        fk_district_id: this.fk_district_id
+                    },
+                    // request_for: 'state'
+                }).then(response =>{
+                    this.localgov = response.data;
+                    console.log('localgov',this.localgov);
+                    
+                    // application.state_data = response.data;
+                    // application.select_state = '';
+                    // application.district_data = '';
+                    // appplication.select_district = '';
+                    // application.localgov_data = '';
+                    // application.select_localgov = '';
+                }).catch(error => {
+                    console.log('error',error);
+                });
+            }
+
 
        
       }, //end method
@@ -397,7 +372,8 @@
      
 
       mounted() {
-          console.log('mounted patients.html');
+          console.log('mounted patient_details.html');
+          this.RetrivePatientInfo();
 
       },
     })

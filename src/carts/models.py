@@ -9,6 +9,7 @@ from counter.models import Counter
 User = get_user_model()
 from orders.convert_num_to_words import generate_amount_words
 from payment.models import PaymentMethod
+from office.models import Office
 # from orders.models import StoreWiseOrder
 
 
@@ -36,20 +37,28 @@ class CartItem(models.Model):
 
 
 def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
+	office = Office.objects.all().first()
+	# print(office)
 	qty = instance.quantity
+	print('qty')
 	if Decimal(qty) >= 0:
 		# price = instance.item.get_price()
-		print('instance',instance)
+		# print('instance',instance)
+		# print('yei chireko cha')
 		varition_batch = instance.fk_variation_batch
+		# print(varition_batch)
 		if varition_batch:
 			price = varition_batch.price #price , not saleprice
 			var_batch_price = varition_batch.variationbatchprice_set.first()
+			print('variation-batch-price', var_batch_price)
 			if var_batch_price:
 				price = var_batch_price.price
 		# price = instance.fk_variation_batch.variationbatchprice_set.first().price
-		if instance.ordered_price!=0:
-			price = instance.ordered_price
-		instance.orginal_price = price
+		if instance.fk_variation_batch.sale_price:
+			price = instance.fk_variation_batch.sale_price
+		# instance.orginal_price = price
+		else:
+			price = instance.fk_variation_batch.price
 		# if qty>=3:
 		# 	price = price-Decimal(float(price)*(3/10))
 		# elif qty>=2:
@@ -57,7 +66,7 @@ def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
 		instance.ordered_price = price
 		line_item_total = Decimal(qty) * Decimal(price)
 		instance.line_item_total = line_item_total
-		instance.tax_amount = Decimal(float(line_item_total)*settings.TAX_PERCENT_DECIMAL)
+		instance.tax_amount = Decimal(float(line_item_total)* settings.TAX_PERCENT_DECIMAL)
 
 pre_save.connect(cart_item_pre_save_receiver, sender=CartItem)
 
@@ -78,7 +87,7 @@ class Cart(models.Model):
 	timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
 	updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 	subtotal = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
-	tax_percentage  = models.DecimalField(max_digits=10, decimal_places=5, default=0.085)
+	tax_percentage  = models.DecimalField(max_digits=10, decimal_places=5, default=0.00)
 	tax_total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 	active = models.BooleanField(default=True)
@@ -152,7 +161,7 @@ class Transaction(models.Model):
 	amount = models.DecimalField(max_digits=25, decimal_places=2, default=0.00)
 	comment = models.CharField(null=True, max_length=100, blank=True)
 	entered_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-	fk_cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True, blank=True)
+	fk_cart = models.ForeignKey(Cart, related_name="transactions", on_delete=models.CASCADE, null=True, blank=True)
 	def __str__(self):
 		return '%s %s' %(self.amount, self.fk_type.title)
 

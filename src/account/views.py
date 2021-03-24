@@ -6,13 +6,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from .serializer import CreateUserSerializer, ProfileSerializer #, SurveyRegisterSerializer
+from .serializer import CreateUserSerializer, ProfileSerializer, PatientSerializer, UserSerializer, DoctorSerializer, VisitSeriailizer #, SurveyRegisterSerializer
 from django.http import HttpResponse
-from .serializer import PatientSerializer
 from users.models import UserType
 from account.forms import RegistrationForm, AccountAuthenticationForm, AccountUpdateForm
 from django.contrib.auth.hashers import make_password
-from .models import Account, PhoneOTP, PasswordResetOTP #FsurvgisterSurvey, CustomerDepotRequest, CustomerMessage
 from django.contrib.auth import get_user_model
 import uuid
 from django.shortcuts import get_object_or_404 
@@ -21,7 +19,6 @@ import requests
 from django.core.mail import send_mail
 from rest_framework.generics import CreateAPIView, ListAPIView
 from store.models import StoreUser #., StoreAccount, 
-from .serializer import UserSerializer#, CallLogSerializer
 from django.http import Http404
 from django.db.models import Count, Max, Min, Avg
 from carts.models import CartItem, Cart
@@ -29,13 +26,16 @@ from carts.service import CartItemCreateService
 from orders.service import CreateOrderFromCart
 from orders.constants import ORDER_TYPE_MISSCALL
 import datetime
+from address.models import State, Country, LocalGov, District
 from django.utils import timezone
 from counter.models import Counter
 from users.models import UserTypes
-from .models import Visit, VisitType
+from django.views.generic.list import ListView
+from .models import Doctor, BloodGroup, Visit, VisitType, Account, PhoneOTP, PasswordResetOTP
 from datetime import datetime as dt, timedelta
 from django.core.paginator import Paginator
 from django.contrib import messages
+# from datetime import datetime
 
 User = get_user_model()
 
@@ -89,7 +89,6 @@ def login_view(request):
 		form = AccountAuthenticationForm(request.POST)
 		# if form.is_valid():
 		request.session['counter'] = request.POST.get('counter')
-		print('session counter',request.session.get('counter'))
 		user = authenticate(mobile=mobile, password=password)
 		print(user)
 		if user:
@@ -262,13 +261,14 @@ class ValidateOTP(APIView):
 		else:
 			return Response({"Fail": "Please both OTP code and mobile number"}, status.HTTP_400_BAD_REQUEST)
 
-from datetime import datetime
-class RegisterAPI(APIView):
 
+class RegisterAPI(APIView):
 	@csrf_exempt
 	def post(self, request, *args, **kwargs):
 		settings.DLFPRINT()
-		print(request.data)
+		# print(request.data)
+		fk_customer_id = request.data.get('fk_customer_id')
+		customer_id = dt.now().strftime('%Y%m%d%H%M%S')#dt.now().strftime('%Y%m%d%H%M%S%f')
 		mobile = request.data.get('mobile', False)
 		# password = request.data.get('password', False)
 		password = mobile
@@ -280,11 +280,42 @@ class RegisterAPI(APIView):
 		date_of_birth = request.data.get('date_of_birth')
 		emergency_number = request.data.get('emergency_number')
 		fk_blood_id = request.data.get('fk_bloodgroup_id')
+		fk_country_id = request.data.get('fk_country_id')
+		fk_state_id = request.data.get('fk_state_id')
+		fk_district_id = request.data.get('fk_district_id')
+		fk_localgov_id = request.data.get('fk_localgov_id')
+		fk_gender_id = request.data.get('fk_gender_id')
 		if date_of_birth:
-			bob = datetime.fromisoformat(date_of_birth)
-			print(bob)
-			date_of_birth = datetime.datetime.strptime(bob, '%Y-%m-%d').date()
-		
+			# bob = datetime.fromisoformat(date_of_birth)
+			# print(bob)
+			date_of_birth =  dt.strptime(date_of_birth, '%Y-%m-%d').date()#'2021-01-01'; #
+		if fk_customer_id: #for edit purpose
+			user = User.objects.get(pk=fk_customer_id)
+			user.firstname = firstname
+			user.lastname = lastname
+			user.email = email
+			user.date_of_birth = date_of_birth
+			user.emergency_number = emergency_number
+			user.fk_blood_id = fk_blood_id
+			user.fk_country_id = fk_country_id
+			user.fk_state_id = fk_state_id
+			user.fk_district_id = fk_district_id
+			user.fk_localgov_id = fk_localgov_id
+			user.fk_gender_id = fk_gender_id
+			user.save()
+			print(user)
+			if request.data.get('patient_type_id'):
+				usertype = UserType()
+				usertype.user_id = user.id
+				usertype.user_type_id = request.data.get('patient_type_id')
+				usertype.save() 
+
+			return Response({
+				'status': True,
+				'detail': 'User Updated',
+				'user_id' : user.id
+			})
+
 		if mobile and password:	
 			if len(mobile)!=10:
 				return Response({"Fail": "Please check your mobile number, it should be 10 digit"}, status.HTTP_400_BAD_REQUEST)
@@ -296,9 +327,14 @@ class RegisterAPI(APIView):
 						'firstname': firstname,
 						'lastname':lastname,
 						'date_of_birth': date_of_birth,
-						'fk_blood_id' : 1,
-						'fk_country_id' : 1,
+						'fk_blood' :fk_blood_id,
+						'fk_country' : fk_country_id,
+						'fk_district' : fk_district_id,
+						'fk_state' : fk_state_id,
+						'fk_localgov' : fk_localgov_id,
 						'emergency_number' : emergency_number,
+						'customer_id' : customer_id,
+						'fk_gender':  fk_gender_id
 
 					}
 			serializer = CreateUserSerializer(data = temp_data)
@@ -846,9 +882,8 @@ class MissCallUsersAPIView(APIView):
     #     ctx['description'] = 'My Description'
     #     return ctx
 
-from django.views.generic.list import ListView
-from .serializer import DoctorSerializer, VisitSeriailizer
-from .models import Doctor
+
+
 class CustomerPatientUserList(ListView):
 	model = Account
 	template_name = "personal/dashboard_layout/patients.html"
@@ -876,6 +911,27 @@ class PatientUserListAPIView(APIView):
 		patients = User.objects.filter(pk__in=pids.values('user_id'))
 		return Response(PatientSerializer(patients, many=True).data)
 
+
+def patient_detail(request, id):
+	visits_types = VisitType.objects.all()
+	blood_groups = BloodGroup.objects.all()
+	countries = Country.objects.all()	
+	context ={
+		# 'visits_type' : visits_type,
+		'visits_types' : visits_types,
+		'patient_types' : UserTypes.objects.all(),
+		'blood_groups' : blood_groups,
+		'countries' : countries,
+		'patient_id': id
+	}
+	return render(request, 'personal/dashboard_layout/patient_details.html', context)
+
+class PatientDetailAPIView(APIView):
+	def get(self, request, *args, **kwargs):
+		patient_id = kwargs['id']
+		if patient_id:
+			qs = User.objects.get(pk=patient_id)
+			return Response(UserSerializer(qs, read_only=True).data)
 		
 class DoctorUserListAPIView(ListAPIView):
 	serializer_class = DoctorSerializer
@@ -918,8 +974,8 @@ class VisitAPIView(APIView):
 		if fk_visit:
 			qs = qs.filter(fk_visit__id=fk_visit)
 		else:
-			qs = qs.filter(timestamp__gte=timezone.now().replace(hour=0, minute=0, second=0), timestamp__lte=timezone.now().replace(hour=23, minute=59, second=59))#all()
-		paginator = Paginator(qs, 5)  # Show 25 contacts per page
+			qs = qs.all() #qs.filter(timestamp__gte=timezone.now().replace(hour=0, minute=0, second=0), timestamp__lte=timezone.now().replace(hour=23, minute=59, second=59))#all()
+		paginator = Paginator(qs, 10)  # Show 25 contacts per page
 		# Get the current page number
 		page = request.GET.get('page')
 		# Get the current slice (page) of products
@@ -938,11 +994,13 @@ class VisitAPIView(APIView):
 		fk_bloodgroup_id = request.data.get('fk_bloodgroup_id')
 		emergency_number = request.data.get('emergency_number')	
 		visit_type = request.data.get('visit_type')
+		visit_id  = dt.now().strftime('%Y%m%d%H%M%S')
 		if fk_customer_user_id and fk_doctor_user_id:
 			visit = Visit.objects.create(fk_customer_user_id=fk_customer_user_id,
 										 fk_doctor_user_id=fk_doctor_user_id,
 										 appointment_date=appointment_date,
-										 fk_visit_id=visit_type,										 
+										 fk_visit_id=visit_type,
+										 visit_id= visit_id,										 
 										 remarks=remarks)
 			data = {
 				'success': 'Created',

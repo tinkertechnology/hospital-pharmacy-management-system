@@ -31,7 +31,7 @@ from products.models import Variation, UserVariationQuantityHistory
 from .mixins import TokenMixin, CartUpdateAPIMixin, CartTokenMixin
 from .models import Cart, CartItem
 from account.models import Visit
-from .serializers import CartItemSerializer, CheckoutSerializer, AddToCartSerializer, CartItemModelSerializer, RemoveCartItemFromCartSerializer
+from .serializers import CartItemSerializer,  AddToCartSerializer, CartItemModelSerializer, RemoveCartItemFromCartSerializer
 from products.serializers import UserVariationQuantityHistorySerializer
 from django.contrib.auth import get_user_model
 from decimal import Decimal
@@ -215,7 +215,7 @@ class CheckoutAPIView(TokenMixin, APIView):
 	# 	return Response(data, status=response_status)
 
 
-
+from .serializers import TransactionSerializer
 
 class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 	#authentication_classes = [SessionAuthentication]
@@ -262,16 +262,24 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 		cart_id = request.GET.get('cart_id', cart.id) #cart_id nahunda new create hunxa 
 		cart = Cart.objects.filter(pk=cart_id).first()
 		items = CartItemSerializer(cart.cartitem_set.all(), many=True)
+		transactions = Transaction.objects.filter(fk_cart_id=cart.id)
+		in_word_number = 0
 		grand_total = cart.total - cart.transaction_total
+		# print(grand_total)
+		# in_number_total = 0
+		if grand_total > 0:
+			in_word_number = grand_total
 		data = {
 			"cart" : cart.id,
+			"paymentmethod" : cart.fk_payment_method_id,
 			"total": grand_total,#cart.total,
 			"subtotal": cart.subtotal,
 			"tax_total": cart.tax_total,
 			"count": cart.cartitems.count(),
 			"items": items.data,
 			"discount" : cart.transaction_total,
-			"in_words" : generate_amount_words(cart.total)
+			"in_words" : generate_amount_words(in_word_number),
+			"transactions" : TransactionSerializer(transactions, many=True).data,
 		}
 		# print(cart.items)
 		return Response(data)
@@ -393,86 +401,7 @@ class AddToCartForCustomUserAPIView(APIView):
 		# return Response(serializer.data)
 
 
-from carts.models import Comment
-class ReturnToStoreForCustomUserAPIView(APIView):
-	# serializer_class = CartItemSerializer
-	def post(self, request, *args, **kwargs):
-		print(request.data)
-		item_id = request.data.get('item_id')
-		phone = request.data.get('phone')
-		comment = request.data.get('comment')
-		user = User.objects.filter(mobile__iexact=phone).first()
-		if not user:
-			return Response({"Fail": phone+ " is not registered, please register"}, status.HTTP_400_BAD_REQUEST)
-		quantity = int(request.data.get('quantity'))
-		# cash = request.data.get('cash', 0) #debit ho
-		# ordered_price = request.data.get('ordered_price')
-		# user_id = user.id
-		# credit = request.data.get('credit')
-		# debit=cash
-		# user_id = um_auto_order.fk_usermembership.fk_member_user_id
-		data = {
-			'user_id': user.id,
-			'item_id': item_id,
-			'quantity': quantity, #this is returned quantity of the user
-			'comment' : comment
-			# 'ordered_price': ordered_price,
-			# 'is_auto_order': True,
-			# 'credit': credit,
-			# 'debit': debit
-		}
-		print(data)
-		query = UserVariationQuantityHistory.objects.filter(user_id=user.id).filter(variation_id=item_id)
-		
-		qs = query.first()
-		if qs:
-			if qs.num_delta==0:
-				data = {}
-				seriailzer = UserVariationQuantityHistorySerializer(qs, read_only=True)
-				message = {'Fail': 'There is no pending Jars in this Account'}
-				data = {
-					"error" : message,
-					"items": seriailzer.data
-				}
-				return Response(data, status=400) 
-			qs.num_delta = qs.num_delta-quantity
-			qs.save()
-			# if comment:
-			# 	if qs.comment is None:
-			# 		qs.comment = ''
-			# 	qs.comment += ', '+comment
-			# if qs.num_delta < 1.0 :
-			# 	qs.comment = ''
-			if comment:
-				cmnt = Comment()
-				cmnt.comment = comment
-				cmnt.user = user
-				cmnt.save()
-			
-			seriailzer = UserVariationQuantityHistorySerializer(qs, read_only=True)
-			return Response(seriailzer.data)
-		else:
-			return Response({'Fail': 'The Jar seems to be different than delivered'}, status=400) 
-		return Response({'Success': 'Updated Sucessfully'},status=200)
 
-
-
-class ItemCountView(View):
-	def get(self, request, *args, **kwargs):
-		if request.is_ajax():
-			# cart_id = self.request.session.get("cart_id")
-			cart = Cart.objects.filter(user_id=request.user.id).first()
-
-			cart_id = cart.id
-			if cart_id == None:
-				count = 0
-			else:
-				cart = Cart.objects.get(id=cart_id)
-				count = cart.items.count()
-			request.session["cart_item_count"] = count
-			return JsonResponse({"count": count})
-		else:
-			raise Http404
 
 
 class AddToCartView(CreateAPIView):
@@ -487,14 +416,22 @@ class CartItemSaveView(CreateAPIView):
 	serializer_class = CartItemModelSerializer 
 	# serializer_class = RemoveCartItemFromCartSerializer 
 
-class CartTransactionView(APIView):
+class CartTransactionView(APIView): # payment method also using this api:
 	def post(self, request, *arg, **kwargs):
 		fk_cart_id = request.data.get('fk_cart_id')
+		fk_paymentmethod = request.data.get('fk_paymentmethod')
+		comment = request.data.get('comment')
+		if fk_paymentmethod:
+			cart = Cart.objects.filter(pk=fk_cart_id).first()
+			cart.fk_payment_method_id = fk_paymentmethod
+			cart.save()
+			return Response('Payment method changed', status=200)
 		amount = request.data.get('amount')
 		fk_type_id = request.data.get('fk_type_id')
 		transaction = Transaction()
 		transaction.fk_type_id = fk_type_id
 		transaction.amount = amount
+		transaction.comment = comment
 		transaction.fk_cart_id = fk_cart_id
 		transaction.entered_user = request.user
 		transaction.save()
@@ -504,7 +441,22 @@ class CartTransactionView(APIView):
 			transaction_sum_amount+= item.amount
 		cart.transaction_total = transaction_sum_amount
 		cart.save()
-		return Response('hi save bhayo', status=200)
+		return Response('Transaction Saved', status=200)
+	
+	def delete(self, request):
+		transaction_id = request.data.get('transaction_id')
+		if transaction_id:
+			transaction = Transaction.objects.filter(pk=transaction_id).first()
+			cart = transaction.fk_cart
+			cart.total += transaction.amount
+			cart.transaction_total -=transaction.amount
+			cart.save()
+			transaction.delete()
+			return Response('transaction has been deleted', status=200)
+		return Response('something went wrong', status=400)
+
+
+
 
 
 

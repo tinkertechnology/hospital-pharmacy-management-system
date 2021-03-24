@@ -8,7 +8,7 @@ User = get_user_model()
 class CreateUserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = User
-		fields = ('mobile', 'password', 'email', 'username', 'firstname','lastname', 'nick_name', 'emergency_number', 'fk_country_id',  'fk_state_id', 'fk_district_id', 'fk_localgov', 'fk_blood_id')
+		fields = ('mobile', 'password', 'email', 'username', 'firstname','lastname', 'nick_name','date_of_birth', 'emergency_number', 'fk_country',  'fk_state', 'fk_district', 'fk_localgov', 'fk_blood', 'customer_id', 'fk_gender')
 		extra_kwargs = {'password': {'write_only': True}, }
 
 
@@ -82,35 +82,16 @@ class ProfileSerializer(serializers.ModelSerializer):
 			# user.save()
 			# return user
 # from store.models import StoreAccount
-from products.serializers import UserVariationQuantityHistorySerializer
-from products.models import UserVariationQuantityHistory
-from carts.models import Comment
-from carts.serializers import CommentSerializer
+
 # from store.service import getUserStoreService
-from store.models import StoreUser
-from users.serializers import DeliveryUserSerializer
+
 
 class UserSerializer(serializers.ModelSerializer):
-	credit = serializers.SerializerMethodField()
-	jardetails = serializers.SerializerMethodField()
-	# delivery_boys = serializers.SerializerMethodField()
-	comments = serializers.SerializerMethodField()
 	class Meta:
 		model = User
-		fields = ('firstname', 'lastname','mobile', 'nick_name', 'credit', 'jardetails',"comments")
+		fields =  '__all__' #('firstname', 'lastname','mobile', 'nick_name')
 
-	def get_credit(self, obj):
-		user = StoreAccount.objects.filter(fk_user=obj).first()
-		if user:
-			return user.credit
-		return ''
-	def get_jardetails(self, obj):
-		jardetails = UserVariationQuantityHistorySerializer(UserVariationQuantityHistory.objects.filter(user=obj), many=True)
-		return jardetails.data
 	
-	def get_comments(self, obj):
-		comments = CommentSerializer(Comment.objects.filter(user=obj), many=True)
-		return comments.data
 	
 from products.models import Variation
 from products.serializers import ProductVariationListSerializer		
@@ -127,9 +108,10 @@ class UserTypeSerializer(serializers.ModelSerializer):
 
 class PatientSerializer(serializers.ModelSerializer):
 	patient_type = serializers.SerializerMethodField()
+	fullname = serializers.SerializerMethodField()
 	class Meta:
 		model = User
-		fields = ['id','firstname','lastname', 'mobile', 'patient_type']
+		fields = ['id','firstname','lastname', 'mobile', 'patient_type', 'fullname']
 
 	def get_patient_type(self, obj):
 		ptype =  UserType.objects.filter(user=obj).first()
@@ -140,6 +122,15 @@ class PatientSerializer(serializers.ModelSerializer):
 				'p_type_title' : ptype.user_type.title
 			}
 		return data
+	def get_fullname(self, obj):
+		fullname = ''
+		if obj.firstname:
+			fullname+=obj.firstname
+		if obj.lastname:
+			fullname+=obj.lastname
+		if obj.mobile:
+			fullname+= ' (' + str(obj.mobile) + ')'
+		return fullname
 		# return UserTypeSerializer(ptypes, read_only=True).data
 from .models import Doctor, Visit
 class DoctorSerializer(serializers.ModelSerializer):

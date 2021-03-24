@@ -31,6 +31,7 @@ from account.views import (
     logout_view,
     login_view,
     account_view,
+    patient_detail,
     privacy_policy,
 	must_authenticate_view,
     ValidatePhoneSendOTP,
@@ -56,7 +57,8 @@ from account.views import (
     ##fbv
     visit_type_index,
     visit_type_add,
-    visit_type_edit
+    visit_type_edit,
+    PatientDetailAPIView
 )
 
 
@@ -64,17 +66,12 @@ from account.views import (
 from carts.views import (
         CartAPIView,
         CartView, 
-        # CheckoutAPIView,
-        # CheckoutFinalizeAPIView,
-        # CheckoutView, 
-        # CheckoutFinalView,
-        ItemCountView, 
         AddToCartView,
         CartItemSaveView,
         CartTransactionView,
         RemoveCartItemFromCart,
-        AddToCartForCustomUserAPIView,
-        ReturnToStoreForCustomUserAPIView,
+        
+        
 
         )
 from orders.views import (
@@ -112,10 +109,12 @@ from orders.views import (
                     visit,
                     purchase,
                     purchaseEdit,
+                    purchaseDetails,
+                    purchaseDetail,
                     PurchaseOrderAPIView,
-                    PurchaseItemOrderAPIView
+                    PurchaseItemOrderAPIView,
                     )
-
+from orders.datatable import PurchaseDataTable
 from products.views import (
         # APIHomeView,
         CategoryListAPIView,
@@ -132,6 +131,7 @@ from products.views import (
         ProductVariationRetrieveAPIView,
         VariationByPatientAPIView,
         hmsproducts,
+        datatable,
         hmsvariations,
         VariationBatchAPIView,
         VariationBatchPriceAPIView,
@@ -181,8 +181,6 @@ urlpatterns = [
     re_path(r'^api/file_upload/$', ApiPostFile.as_view(), name='file_upload'),
     re_path(r'^api/SaveUpdateFirebaseToken/$', SaveUpdateFirebaseToken.as_view(), name="SaveUpdateFirebaseToken"),
     re_path(r'^api/GetUserJarAndCreditAPIView/$', GetUserJarAndCreditAPIView.as_view(), name="GetUserJarAndCreditAPIView"),
-    re_path(r'^api/AddToCartForCustomUserAPIView/$', AddToCartForCustomUserAPIView.as_view(), name="AddToCartForCustomUserAPIView"),
-    re_path(r'^api/ReturnToStoreForCustomUserAPIView/$', ReturnToStoreForCustomUserAPIView.as_view(), name="ReturnToStoreForCustomUserAPIView"),
     re_path(r'^api/GetUserCreditAndJarByStorewise/$', GetUserCreditAndJarByStorewise.as_view(), name="GetUserCreditAndJarByStorewise"),
     re_path(r'^api/GetCallLogsStoreAPIView/$', GetCallLogsStoreAPIView.as_view(), name="GetCallLogsStoreAPIView"),
     re_path(r'^api/MissCallUsersAPIView/$', MissCallUsersAPIView.as_view(), name="MissCallUsersAPIView"),
@@ -324,7 +322,8 @@ handler500 = views.handler500
 
 
 from orders.invoice import GeneratePDF, GenerateFullPDF
-
+from products.datatable import VariationDataTable
+from account.visit_datatable import VisitDataTable
 urlpatterns += [
     path(r'admin/', admin.site.urls),
     # path('', include('hms_web.urls')),
@@ -361,19 +360,20 @@ urlpatterns += [
     path('carts', carts, name="carts"),
     path('cartitems', cartitems, name="cartitems"),
     path('hmsproducts/', hmsproducts, name="hmsproducts"),
+    path('datatable/', datatable, name="datatable"),
     path('hmsvariations/<int:id>/', hmsvariations, name="hmsvariations"),
     path('purchase/', purchase, name="purchase"),
     path('purchase/create/<int:id>/', purchaseEdit, name="purchaseEdit"),
-    
+    path('purchaseDetails/', purchaseDetails, name="purchaseDetails"),
+    path('purchaseDetail/<int:purchase_id>/', purchaseDetail, name="purchaseDetail"),
     path('visit/', visit, name="visittype"),
+    path('patient/detail/<int:id>/', patient_detail, name="patient_detail"),    
     path('api/VisitAPIView/', VisitAPIView.as_view(), name="VisitAPIView"),
-
     path('api/send_invoice_pdf/<int:cart_id>/',GeneratePDF.as_view(), name='pdf_send_email'),
     path('api/full_bill/<int:cart_id>/',GenerateFullPDF.as_view(), name='pdf_send_email'),
-
     path('api/patients/', PatientUserListAPIView.as_view(), name="patients-lists"),
-
     path('CustomerPatientUserList', CustomerPatientUserList.as_view(), name="CustomerPatientUserList"),
+    path('api/PatientDetailAPIView/<int:id>', PatientDetailAPIView.as_view(), name="PatientDetailAPIView"),
     path('api/DoctorUserListAPIView/', DoctorUserListAPIView.as_view(), name="DoctorUserListAPIView"),
     path('api/VariationByPatientAPIView/', VariationByPatientAPIView.as_view(), name="variation-by-patient-type"),
     path('api/VariationBatchAPIView/', VariationBatchAPIView.as_view(), name="VariationBatchAPIView"),
@@ -382,6 +382,10 @@ urlpatterns += [
     path('api/PurchaseVariationBatchAPIView/', PurchaseVariationBatchAPIView.as_view(), name="PurchaseVariationBatchAPIView"),
     path('api/PurchaseOrderAPIView/', PurchaseOrderAPIView.as_view(), name="PurchaseOrderAPIView"),
     path('api/PurchaseItemOrderAPIView/', PurchaseItemOrderAPIView.as_view(), name="PurchaseItemOrderAPIView"),
+    path('api/data', VariationDataTable.as_view(), name="VariationDataTable"),
+    path('api/PurchaseDataTable', PurchaseDataTable.as_view(), name="PurchaseDataTable"),
+    path('api/visits', VisitDataTable.as_view(), name="VisitDataTable"),
+
     # path('api/address', GetSDLdata.as_view(), name="GetSDLdata"),
     re_path(r'^api/address/', include('address.urls')),
 

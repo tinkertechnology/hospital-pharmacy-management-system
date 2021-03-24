@@ -13,6 +13,7 @@
       
       @page {
             size: a4 portrait;
+            
             @frame content_frame {
                 left: 70pt;
                 width: 512pt;
@@ -22,6 +23,9 @@
             }
         }
         table { -pdf-keep-with-next: true; }
+            .page-break{
+                page-break-after: always;
+            }            
         
     </style>
 </head>
@@ -60,49 +64,93 @@
                     <td class="tg-c3ow" colspan="7">{{hospital_info.address}}, Phone No: {{hospital_info.phone}}<br>Email: accounts@inlinetech.com.np<br>VAT Registration No: {{hospital_info.pan}}</td>
                 </tr>
                 <tr style="text-align: center; font-size: 18px; font-weight: bold; padding-top: 4px;">
-                    <td class="tg-p2m5" colspan="7">INVOICE</td>
+                    <td class="tg-p2m5" colspan="7">INVOICE [ {{cart.fk_counter.name}} ]</td>
                 </tr>
                 <tr style="padding-top: 4px;">
                     <td class="tg-0pky" colspan="2">Invoice No:<br>Patient ID:<br>Patient Name:<br>Patient Address:</td>
-                    <td class="tg-0pky" colspan="3">51778-179842<br>106467<br>{{cart.user.firstname}} {{cart.user.lastname}}<br>Kamalbinayak</td>
-                    <td class="tg-0pky" >Invoice Dates:<br>Contact No:</td>
-                    <td style="text-align:left;">12/06/2021<br>{{carts.first.user.mobile}}</td>
+                    <td class="tg-0pky" colspan="3">{{cart.id}}<br>{{cart.user.customer_id}}<br>{{cart.user.firstname}} {{cart.user.lastname}}<br>Kamalbinayak</td>
+                    <td class="tg-0pky" >Invoice Date:<br>Contact No:</td>
+                    <td style="text-align:left;">{{cart.timestamp|date:"Y M d"}}<br>{{carts.first.user.mobile}}</td> <br>  
+                    <td class="tg-0pky" >Mode:{{cart.fk_payment_method.title}} </td><br>
+                  
                 </tr>
-                
-                <tr style="padding-top: 8px; border-top: 1px solid #000; border-bottom: 1px solid #000;">
+                <tr>
+                    <td class="tg-0pky" >VID: {{visit_id}}</td>
+                   
+                </tr>
+               
+                <tr style="padding-top: 8px;">
                     <td class="tg-0pky">S.No.</td>
                     <td class="tg-0pky">Description</td>
-                    <td class="tg-0pky">Qty</td>
+                    <td class="tg-0pky">Batch No</td>
                     <td class="tg-0pky">Unit</td>
                     <td class="tg-0pky">Unit Price</td>
-                    <td class="tg-0pky">Disc.</td>
                     <td class="tg-0pky">Amount</td>
                 </tr>
 
-                {% for item in items %}
-                <tr style="padding-top: 8px; border-top: 1px solid #000; ">
+                {% for item in items %} <!-- item in instance of cartitem-->
+                <tr>
                     <td class="tg-0pky">{{ forloop.counter }}</td>
                     <td class="tg-0pky" style="white-space:nowrap;">{{item.fk_variation_batch.fk_variation.title}}</td>
                     <td class="tg-0pky">{{item.fk_variation_batch.batchno}}</td>
                     <td class="tg-0pky">{{item.quantity}}</td>
                     <td class="tg-0pky">{{item.ordered_price}}</td>
-                    <td class="tg-0pky">25.25</td>
-                    <td class="tg-0pky">{{item.tax_amount}}</td>
+                    <td class="tg-0pky">{{item.line_item_total}}</td>
                 </tr>
                 {% endfor %}
-                <tr style="padding-top: 8px; border-top: 1px solid #000;">
-                    <td class="tg-c3ow" colspan="4" rowspan="3">In Words (NPR) : {{total_in_words}} only</td>
-                    <td class="tg-0pky" colspan="2" style="font-weight: bold;">Taxable Amount</td>
-                    <td class="tg-0pky" colspan="1">Rs. {{cart.subtotal}}</td>
+
+                {% if cart.transactions.all %}
+                <tr style="padding-top: 8px;">
+                    <td col-span="4" class="tg-0pky"> Other Transactions</td></tr>
+                <tr style="padding-top: 8px;">
+                    <td class="tg-0pky">S.No.</td>
+                    <td class="tg-0pky">Type</td>
+                    <td class="tg-0pky">Amount</td>                    
+                </tr>
+               {% for transaction in cart.transactions.all %}
+                <tr>
+                    <td class="tg-0pky">{{ forloop.counter }}</td>
+                    <td class="tg-0pky">{{ transaction.fk_type.title }}</td>
+                    <td class="tg-0pky">{{ transaction.amount }}</td>
+                    <td class="tg-0pky">{{transaction.comment}}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td class="tg-0pky">Total : {{cart.transaction_total}}</td>
+                </tr>
+                {% endif %}
+
+               
+                <tr class="padding-top: 20px;">
+                    <td class="tg-c3ow" colspan="5" rowspan="2">In Words (NPR) : {{total_in_words}} only</td>
+                    <td class="tg-0pky">Total {% if cart.tax_percentage > 0 %}Taxable{% endif %} Amount</td>
+                    <td class="tg-0pky">{{cart.subtotal}}</td>
+                </tr>
+               {% if cart.tax_percentage > 0 %}
+                <tr>
+                    <td class="tg-0pky">{{cart.tax_percentage}}% VAT</td>
+                    <td class="tg-0pky">{{cart.tax_total}}</td>
                 </tr>
                 <tr>
-                    <td class="tg-0pky" colspan="2" style="font-weight: bold;">13% VAT</td>
-                    <td class="tg-0pky" colspan="1">Rs. {{cart.tax_total}}</td>
+                    
+                    <td class="tg-0pky">Total Incl. VAT</td>
+                    <td class="tg-0pky">{{cart.total}}</td>
                 </tr>
+               
+                {% endif %}
                 <tr>
-                    <td class="tg-0pky" colspan="2" style="font-weight: bold;">Total Incl. VAT</td>
-                    <td class="tg-0pky" colspan="1">Rs. {{cart.total}}</td>
+                    
+                    <td class="tg-0pky">G. Total Amount</td>
+                    <td class="tg-0pky">{{grand_total}}</td>
+                    
                 </tr>
+                {% if cart.transaction_total > 0 %}
+                <tr style="text-align: right;">
+                    
+                        <td class="tg-0pky">Discount/other </td>
+                        <td class="tg-0pky">{{cart.transaction_total }}</td>
+                </tr>
+                {% endif %}
             </tbody>
         </table>
     </div>
