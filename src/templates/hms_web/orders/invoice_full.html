@@ -16,136 +16,164 @@
             body {
             font-family: Kalimati;
             } */
+        
+
         @page {
-            margin: 1cm;
-            margin-bottom: 2cm;
             size: a4 portrait;
+            @frame content_frame {
+                left: 70pt;
+                width: 512pt;
+                top: 50pt;
+                height: 752pt;
+                /*-pdf-frame-border: 0; */   /* for debugging the layout */
+            }
+
             @frame header_frame {           /* Static frame */
                 -pdf-frame-content: header_content;
                 left: 50pt; width: 512pt; top: 50pt; height: 40pt;
             }
-           
+
             @frame footer_frame {           /* Static frame */
                 -pdf-frame-content: footer_content;
                 left: 150pt; width: 512pt; top: 772pt; height: 20pt;
             }
-            table { -pdf-keep-with-next: true; }
-            .page-break{
-                page-break-after: always;
-            }            
         }
+        table { -pdf-keep-with-next: true; }
+        
     </style>
 <body>
-    <table class="tg" border="0" style="font-family: sans-serif, serif; font-size: 14px; padding: 0px;">
-        <!-- <colgroup>
-            <col style="width: 51px">
-            <col style="width: 129px">
-            <col style="width: 65px">
-            <col style="width: 109px">
-            <col style="width: 76px">
-            <col style="width: 45px">
-            <col style="width: 160px">
-        </colgroup> -->
-        <!-- <thead>
-            <tr>
-                <th colspan="8" style="font-size:20px;text-align:center;vertical-align:top}">
-                    Inlinetech Solutions Pvt. Ltd
-                </th>
-            </tr>
-        </thead> -->
-        <tbody>
-            <div class="header_content">
-                <tr>
-                    <td colspan="7" style="font-size:20px;text-align:center;vertical-align:top}">
-                        {{hospital_info.name}}
+    <div class="tg-wrap">
+        {% for cart in carts %}
+        <table class="tg" style="font-family: sans-serif, serif; padding: 0px;table-layout:fixed; word-wrap:break-word">
+            <tbody>
+                <div id="header_content">
+                    <!-- <tr>
+                        <td rowspan="4" colspan="2">
+                            <img src="https://image.freepik.com/free-vector/hospital-logo-green-blue_1043-66.jpg" width="200" height="200">
+                        </td>
+                    </tr> -->
+                    <tr>
+                        <td style="text-align: center; font-weight: bold; font-size: 24px;" colspan="8">
+                            {{hospital_info.name}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center; font-size: 14px;" colspan="8">
+                            {{hospital_info.address}}, Phone No: {{hospital_info.phone}}<br>
+                            Email: accounts@inlinetech.com.np<br>
+                            VAT Registration No: {{hospital_info.pan}}
+                        </td>
+                    </tr>
+                    <tr style="padding-top: 20px;">
+                        <td style="text-align: center; font-weight: bold; font-size: 24px; padding-top: 4px; padding-bottom: 4px;" colspan="8">
+                            Invoice
+                        </td>
+                    </tr>
+                </div>
+                <tr style="padding-top: 5px; padding-bottom: 5px;">
+                    <td style="text-align: left; font-size: 14px;" colspan="2">
+                        Invoice No:<br>
+                        Patient ID:<br>
+                        Patient Name:<br>
+                        Patient Address:
+                    </td>
+                    <td style="text-align: left; font-size: 14px;" colspan="3">
+                        133660<br>
+                        CR001234<br>
+                        {{cart.user.firstname}} {{cart.user.lastname}}<br>
+                        {{carts.first.user.address}}
+                    </td>
+                    <td style="text-align: left; font-size: 14px;" colspan="2">
+                        Invoice Date:<br><br><br>
+                        Contact No:
+                    </td>
+                    <td style="text-align: left; font-size: 14px;" colspan="1">
+                        2021-01-01<br>2077-12-31<br><br>
+                        {{carts.first.user.mobile}}
                     </td>
                 </tr>
-                <tr>
-                    <td colspan="7" style="text-align:center;vertical-align:top">{{hospital_info.address}}, Phone No: {{hospital_info.phone}}<br>Email: accounts@inlinetech.com.np<br>VAT Registration No: {{hospital_info.pan}}</td>
-                </tr>
+
                 <tr style="padding-top: 10px; padding-bottom: 10px;">
-                    <td colspan="7" style="font-size:22px;font-weight:bold;
-                text-align:center;vertical-align:top">INVOICE</td>
+                    <td style="text-align:left;vertical-align:top; font-size: 14px;" colspan="2">
+                        DOA:<br>
+                        Admitting Doctor:<br>
+                        Department:<br>
+                    </td>
+                    <td style="text-align:left;vertical-align:top; font-size: 14px;" colspan="3">
+                        06/06/2021<br>
+                        Sandesh Awal<br>
+                        MEDICINE<br>
+                    </td>
+                    <td style="text-align:left;vertical-align:top; font-size: 14px;" colspan="2">
+                        DOD:<br>
+                        Room Category:<br>
+                        Length of Stay:
+                    </td>
+                    <td style="text-align:left;vertical-align:top; font-size: 14px;" colspan="1">
+                        12/06/2021<br>
+                        GENERAL A<br>
+                        6
+                    </td>
                 </tr>
-            </div>
-            
-            <tr>
-                <td style="text-align:left;" colspan="2">Invoice No:<br>Patient ID:<br>Patient Name:<br>Patient Address:</td>
-                <td style="text-align:left;vertical-align:top" colspan="3">51778-179842<br>106467<br>{{cart.user.firstname}} {{cart.user.lastname}}<br>{{carts.first.user.address}}</td>
-                <td style="text-align:left;vertical-align:top" colspan="2">Invoice Date:<br>Contact No:</td>
-                <td style="text-align:left;vertical-align:top">12/06/2021<br>{{carts.first.user.mobile}}</td>
-            </tr>
-
-            <tr style="padding-top: 10px;">
-                <td style="text-align:left;vertical-align:top" colspan="2">
-                    DOA:<br>
-                    Admitting Doctor:<br>
-                    Department:<br>
-                </td>
-                <td style="text-align:left;vertical-align:top" colspan="3">
-                    06/06/2021<br>
-                    Sandesh Awal<br>
-                    MEDICINE<br>
-                </td>
-                <td style="text-align:left;vertical-align:top" colspan="2">
-                    DOD:<br>
-                    Room Category:<br>
-                    Length of Stay:
-                </td>
-                <td style="text-align:left;vertical-align:top">
-                    12/06/2021<br>
-                    GENERAL A<br>
-                    6
-                </td>
-            </tr>
-
-            <tr>
-                <td style="text-align:left;vertical-align:top" colspan="7"></td>
-            </tr>
-            {% for cart in carts %}
-                <tr>
-                    <td style="text-align:left;vertical-align:top">S.No.</td>
-                    <td style="text-align:left;vertical-align:top">Description</td>
-                    <td style="text-align:left;vertical-align:top">Qty</td>
-                    <td style="text-align:left;vertical-align:top">Unit</td>
-                    <td style="text-align:left;vertical-align:top">Unit Price</td>
-                    <td style="text-align:left;vertical-align:top">Disc.</td>
-                    <td style="text-align:left;vertical-align:top">Amount</td>
+                
+                
+                <tr style="padding-top: 8px; border-top: 1px solid #000; border-bottom: 1px solid #000;">
+                    <td style="text-align: left; font-size: 14px; width: 40px">S.No</td>
+                    <td style="text-align: left; font-size: 14px; width: 80px">Bill No.</td>
+                    <td style="text-align: left; font-size: 14px; width: 200px">Description</td>
+                    <td style="text-align: center; font-size: 14px; width: 40px">Qty.</td>
+                    <td style="text-align: center; font-size: 14px; width: 40px">Unit</td>
+                    <td style="text-align: center; font-size: 14px; width: 80px">Unit Price</td>
+                    <td style="text-align: center; font-size: 14px; width: 80px">Discount</td>
+                    <td style="text-align: center; font-size: 14px; width: 80pt">Amount</td>
                 </tr>
+                
                     {% for item in cart.cartitem_set.all %}
-                    <tr>
-                        <td style="text-align:left;vertical-align:top">{{ forloop.counter }}</td>
-                        <td style="text-align:left;vertical-align:top">{{item.fk_variation_batch.fk_variation.title}}</td>
-                        <td style="text-align:left;vertical-align:top">{{item.quantity}}</td>
-                        <td style="text-align:left;vertical-align:top"></td>
-                        <td style="text-align:left;vertical-align:top">{{item.ordered_price}}</td>
-                        <td style="text-align:left;vertical-align:top">25.25</td>
-                        <td style="text-align:left;vertical-align:top">{{item.line_item_total}}</td>
-                    </tr>
+                        <tr style="padding-top: 8px; border-top: 1px solid #000; border-bottom: 1px solid #000;">
+                            <td style="text-align: left; font-size: 14px;">{{ forloop.counter }}</td>
+                            <td style="text-align: left; font-size: 14px;">CR002312</td>
+                            <td style="text-align: left; font-size: 14px;">
+                                {{item.fk_variation_batch.fk_variation.title}}
+                            </td>
+                            <td style="text-align: center; font-size: 14px;">{{item.quantity}}</td>
+                            <td style="text-align: center; font-size: 14px;"></td>
+                            <td style="text-align: center; font-size: 14px;">{{item.ordered_price}}</td>
+                            <td style="text-align: center; font-size: 14px;">0.00</td>
+                            <td style="text-align: center; font-size: 14px;">{{item.line_item_total}}</td>
+                        </tr>
                     {% endfor %}
-                 
-                <tr style="padding-top:10px;">
-                    <td style="text-align:left;vertical-align:top" colspan="4" rowspan="3">In Words(NPR): {{cart.in_words}}</td>
-                    <td style="text-align:left;vertical-align:top" colspan="3">Total Taxable Amount: {{cart.subtotal}}</td>
+                
+
+                <tr style="padding-top: 8px;">
+                    <td style="text-align: left; font-size: 14px;" colspan="5" rowspan="3">
+                        In Words (NPR): {{cart.in_words}} only /-
+                    </td>
+                    <td style="text-align: left; font-size: 14px;" colspan="2">Total Amount</td>
+                    <td style="text-align: left; font-size: 14px;">Rs. {{cart.subtotal}}</td>
                 </tr>
                 <tr>
-                    <td>13% VAT: {{ cart.tax_total }}</td>
+                    <td style="text-align: left; font-size: 14px;" colspan="2">13% VAT</td>
+                    <td style="text-align: left; font-size: 14px;">Rs. {{cart.tax_total}}</td>
                 </tr>
-                 <tr>
-                    <td>Total Incl. VAT: {{ cart.total }}</td>
+                <tr>
+                    <td style="text-align: left; font-size: 14px;" colspan="2">Total Incl.VAT</td>
+                    <td style="text-align: left; font-size: 14px;">Rs. {{cart.total}}</td>
                 </tr>
-           {% endfor %}
-        </tbody>
-    </table>
+                
+            </tbody>
+        </table>
+        {% endfor %}
+    </div>
 
+    <p class="separator">&nbsp;<p>
     <div id="footer_content" style="text-align: left; font-size: 10px;">
         <!-- <tr>
             <td class="printed" style="text-align: left;" colspan="8">Printed By: CHANDRA</td>
             <td style="text-align: center;" colspan="3">{{hospital_info.name}} - page <pdf:pagenumber> of <pdf:pagecount></td>
             <td style="text-align: right;"colspan="2">Printed On: 12/06/2021 4:43:43 PM</td>
         </tr> -->
-       Printed By: {{printed_by}}  - page <pdf:pagenumber> of <pdf:pagecount>   Printed On: 12/06/2021 4:43:43 PM
+        Printed By: {{printed_by}}  - page <pdf:pagenumber> of <pdf:pagecount>   Printed On: 12/06/2021 4:43:43 PM
     </div>
-    <!-- <p class="separator">&nbsp;<p> -->
+    
 </body>
 </html> 

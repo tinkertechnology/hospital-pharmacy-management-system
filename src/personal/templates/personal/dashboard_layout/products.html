@@ -18,7 +18,6 @@
                     <table class="table m-0">
                         <thead class="bg-teal text-white">
                             <tr>
-                               
                                 <th>Item/Service</th>
                                 <th>item/service Code</th>
                                 <th>Rack Number</th>
@@ -29,7 +28,6 @@
                                 <th>Alert qty</th>
                                 <th>Alert Exp Days</th>
                                 <th>Action</th>
-                                
                             </tr>
                         </thead>
                         <tbody>
@@ -85,47 +83,68 @@
                 </div>
             </div>
         </div>
+
         <div v-if="error.error_status==true"class="alert alert-icon alert-danger alert-dismissible fade show mb-0 row" role="alert">
             <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">×</span>
             </button> -->
             <i class="mdi mdi-block-helper mr-2"></i>
             <strong>[[error.error_message_body.Fail]]</strong>
-          
         </div>
+
         <!-- BEGIN DATATABLE 2 -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card-box">   
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group ">
+                                <label>ID</label>
+                                <input type="text" class="form-control" name="id" id="id" placeholder="Enter ID">
+                            </div>
+                        </div>
+    
+                        <div class="col-md-3">
+                            <div class="form-group ">
+                                <label>Name</label>
+                                <input type="text" class="form-control" placeholder="Enter Name" name="title" id="title">
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group ">
+                                <label>Code</label>
+                                <input type="text" class="form-control" placeholder="Enter Code" name="code" id="code">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group ">
+                                <label>Generic Name</label>
+                                <input type="text" class="form-control" placeholder="Enter Generic  Name" name="generic_name" id="generic_name">
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group ">
+                                <label>Rack Number</label>
+                                <input type="text" class="form-control" placeholder="Enter Rack Number" name="rack_number" id="rack_number">
+                            </div>
+                        </div>
+                    </div>                
+                </div>
+            </div>
+        </div>
+
          <div class="row">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="card-box table-responsive">
-                        <header header-title>
-                            <div class="row">
-                                <div class="form-group col-md-3">
-                                    <label for="regular2">id</label>
-                                    <input type='text' name='id' id='id'>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label for="regular2">Name</label>
-                                    <input type='text' name='title' id='title'>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label for="regular2">Drug Code</label>
-                                    <input type='text' name='code' id='code'>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label for="regular2">Generic Name</label>
-                                    <input type='text' name='generic_name' id='generic_name'>
-                                </div>                            
-                            </div>
-                        </header>
-                    </div>
-
                     <div class="card-body">                       
                         <div class="table-responsive">
                             <table id="quoteTable" class="table m-0">
                                 <div class="clear"></div>
                                 <thead class="bg-teal text-white">
-                                    <th>id </th>
+                                    <th>ID </th>
                                     <th>Particulars</th>
                                     <th>Code</th>
                                     <th>Generic Name</th>
@@ -200,6 +219,7 @@
                     data.id =  $('#id').val();
                     data.title = $('#title').val();
                     data.code = $('#code').val();
+                    data.rack_number = $('#rack_number').val();
                     data.columns=null; //modify ajax request to make less cluttered
                 //added page required for django
                 //start offset dont work

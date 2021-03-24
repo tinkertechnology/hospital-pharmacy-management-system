@@ -1,175 +1,121 @@
-
 {% extends 'personal/dashboard_layout/app.html' %}
 
 {% load static %}
 
 {% block content %}
-
-<div class="col-sm-12" id="cartpage">
-    <div class="card-box table-responsive">
-        <div class="col-lg-12">
-            <div class="demo-box p-2">
-                <h4 class="header-title">Firstname: {{ user.firstname }} lastname: {{user.lastname}} Patient ID: {{ user.id}}</h4>
-                <div class="row mb-4">
+    <div class="row">
+        <div class="col-sm-12" id="cartpage">
+            <div class="card-box">
+                <h4 class="mt-4 header-title">Patient Name: {{ user.firstname }} {{user.lastname}}</h4>
+                <div class="row mb-2">
                     <div class="col-sm-12">
+                        <h4 class="mt-4 header-title">Patient ID: {{ user.id}}</h4>
+                        <form class="form-inline">
                             <div class="form-group">
-                               <button class="btn btn-primary" @click="createCart">Create New Bill</button>
+                                <button class="btn btn-success waves-effect waves-light btn-md" @click="createCart">Create New Bill</button>
                             </div>
-                    </div>
-                    <div class="col-sm-12">
-                        <div class="form-group">
-                           <button class="btn btn-primary">Mark as finished</button>
-                        </div>
-                </div>
-                <div class="col-sm-12">
-                    <div class="form-group">
-                       {% if user_id %}
-                        <a href="/api/full_bill/1/?user_id={{user_id}}"><button class="btn btn-primary">View Active Bill</button></a>
-                        {% else %}
-                        <a href="/api/full_bill/1/?user_id={{carts.first.user.id}}"><button class="btn btn-primary">View Active Bill</button></a>
-                        {% endif %}
-
-                    </div>
-            </div>
-
-                </div>
-
-                <div class="card-box">
-
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <h4 class="header-title"> {{ user.lastname }}  {{ user.lastname }}</h4>
-                            <p class="sub-header">
-                                Contact Details: <code>+977</code> {{user.mobile}}
-                            </p>
-                            <div id="default" style="cursor: pointer;"><i class="far fa-star text-muted" title="bad" data-score="1"></i>&nbsp;<i class="far fa-star text-muted" title="poor" data-score="2"></i>&nbsp;<i class="far fa-star text-muted" title="regular" data-score="3"></i>&nbsp;<i class="far fa-star text-muted" title="good" data-score="4"></i>&nbsp;<i class="far fa-star text-muted" title="gorgeous" data-score="5"></i><input type="hidden" name="score"></div>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <h4 class="header-title">Patient ID</h4>
-                            <p class="sub-header">
-                                {{user.id}}
-                            </p>
-                            <div id="score" style="cursor: pointer;"><i class="fas fa-star text-danger" title="bad" data-score="1"></i>&nbsp;<i class="fas fa-star text-danger" title="poor" data-score="2"></i>&nbsp;<i class="fas fa-star text-danger" title="regular" data-score="3"></i>&nbsp;<i class="far fa-star text-muted" title="good" data-score="4"></i>&nbsp;<i class="far fa-star text-muted" title="gorgeous" data-score="5"></i><input type="hidden" name="score" value="3"></div>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <h4 class="header-title">Pending Bills</h4>
-                            <p class="sub-header">
-                                {{request.user.cart_set.all.count}}
-                            </p>
-                            <div id="score-callback" data-score="1" style="cursor: pointer;"><i class="fas fa-star text-dark" title="bad" data-score="1"></i>&nbsp;<i class="far fa-star text-muted" title="poor" data-score="2"></i>&nbsp;<i class="far fa-star text-muted" title="regular" data-score="3"></i>&nbsp;<i class="far fa-star text-muted" title="good" data-score="4"></i>&nbsp;<i class="far fa-star text-muted" title="gorgeous" data-score="5"></i><input type="hidden" name="score" value="1"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="search-result-box mt-3">
-
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            {% for cart in carts %}
-                                            <div class="search-item">
-                                                <h5 class="font-18 mb-1"><a href="/cartitems?cart_id={{cart.id}}">Bill : id {{cart.id}}  [ billed from : {{cart.fk_counter.name}} ]</a></h5>
-                                                
-                                                <p class="mb-0">
-                                                    Total Payment: {{cart.total}} 
-                                                </p>
-                                            </div>
-                                            {% endfor %}
-
-                                            <ul class="pagination pagination-split float-right mb-0">
-                                                <li class="page-item disabled">
-                                                    <a href="#" class="page-link"><i class="fa fa-angle-left"></i></a>
-                                                </li>
-                                                <li class="page-item">
-                                                    <a href="#" class="page-link">1</a>
-                                                </li>
-                                                <li class="page-item active">
-                                                    <a href="#" class="page-link">2</a>
-                                                </li>
-                                                <li class="page-item">
-                                                    <a href="#" class="page-link">3</a>
-                                                </li>
-                                                <li class="page-item">
-                                                    <a href="#" class="page-link">4</a>
-                                                </li>
-                                                <li class="page-item">
-                                                    <a href="#" class="page-link">5</a>
-                                                </li>
-                                                <li class="page-item">
-                                                    <a href="#" class="page-link"><i class="fa fa-angle-right"></i></a>
-                                                </li>
-                                            </ul>
-
-                                            <div class="clearfix"></div>
-                                        </div>
-                                    </div>
-                               
-                        </div>
+                            <div class="form-group ml-4">
+                                <button type="submit" class="btn btn-success waves-effect waves-light ml-2 btn-md">Mark as Finished</button>
+                            </div>
+                            <div class="form-group ml-4">
+                                {% if user_id %}
+                                    <a href="/api/full_bill/1/?user_id={{user_id}}">
+                                        <button class="btn btn-primary waves-effect waves-light ml-2 btn-md">View Active Bill</button>
+                                    </a>
+                                {% else %}
+                                    <a href="/api/full_bill/1/?user_id={{carts.first.user.id}}">
+                                        <button class="btn btn-primary waves-effect waves-light ml-2 btn-md">View Active Bill</button>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
- </div>
- {% endblock %}
 
- {% block script %}
- <script>
-    // var Toasted = require('vue-toasted').default
-    Vue.use(VueToast);
-    var app = new Vue({
-        
-        delimiters: ['[[', ']]'],
-      el: '#cartpage',
-      data: {
-        // fk_visit_id : null,
- 
- }, //Data Closed
-      methods : {
-        createCart: function() {
-                axios({
-                method: 'get',
-                url:  '/api/cart/?fk_visit_id='+{{visit_id}}+'&action=create_cart',
-                headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRFToken': '{{ csrf_token }}'
-                            }, 
-                // data: {
-                //     fk_visit_id : {{visit_id}}
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card-box">
+                <h4 class="header-title mb-4">Recent Bill Details</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover table-centered m-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Bill From</th>
+                                <th>Phone</th>
+                                <th>Location</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cart in carts %}
+                            <tr>
+                                <td>
+                                    {{cart.id}}
+                                </td>
+                                <td>
+                                    <a href="/cartitems?cart_id={{cart.id}}"><h5 class="m-0 font-15">{{cart.fk_counter.name}}</h5></a>
+                                    <!-- <p class="m-0 text-muted"><small>Web designer</small></p> -->
+                                </td>
+                                <td>+12 3456 789</td>
+                                <td>USA</td>
+                                <td>{{cart.total}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- table-responsive -->
+            </div>
+            <!-- end card -->
+        </div>
+        <!-- end col -->
+    </div>
+{% endblock %}
 
-                // },
-                }) //.then(response=> cartitem.variation = response.data)
-                .then((getResponse) => {
-                    $('#con-close-modal').modal('hide')
-                 //    console.log(getResponse.data);
-                    //  window.location='/api/VisitAPIView/?customer_id='+ getResponse.data.fk_customer_user_id;
-                    window.location.reload();
-                 //    this.patientType = getResponse.data.user_id;
-                    
- 
-                }) 
-                .catch(function (error) {
-                    console.log(error);
-                    console.log("Error while fetching market updates");
-                });
-                  
-        }
-     
- 
-       
-      }, //end method
-      
- 
-     
- 
-      mounted() {
-        // 
-      },
-    })
-  </script>
 
-  {% endblock %}
+{% block script %}
+    <script>
+        // var Toasted = require('vue-toasted').default
+        Vue.use(VueToast);
+        var app = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#cartpage',
+            data: {
+                // fk_visit_id : null,
+            }, //Data Closed
+            methods : {
+                createCart: function() {
+                    axios({
+                    method: 'get',
+                    url:  '/api/cart/?fk_visit_id='+{{visit_id}}+'&action=create_cart',
+                    headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRFToken': '{{ csrf_token }}'
+                                }, 
+                    // data: {
+                    //     fk_visit_id : {{visit_id}}
+
+                    // },
+                    }) //.then(response=> cartitem.variation = response.data)
+                    .then((getResponse) => {
+                        $('#con-close-modal').modal('hide')
+                        // console.log(getResponse.data);
+                        // window.location='/api/VisitAPIView/?customer_id='+ getResponse.data.fk_customer_user_id;
+                        window.location.reload();
+                        // this.patientType = getResponse.data.user_id;
+                    }) 
+                    .catch(function (error) {
+                        console.log(error);
+                        console.log("Error while fetching market updates");
+                    });
+                }
+            }, //end method
+
+            mounted() {},
+        })
+    </script>
+{% endblock %}

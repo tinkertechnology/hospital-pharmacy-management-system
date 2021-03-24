@@ -8,35 +8,47 @@
 <!-- http://localhost:8000/reports/ReportHtml?template=ReportHtmlUsers.html -->
 
 <section id="products">
-  
     <div class="section-body">
         <!-- BEGIN DATATABLE 2 -->
-         <div class="row">
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card-box">   
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group ">
+                                <label>ID</label>
+                                <input type="text" class="form-control" placeholder="Enter Visit ID" name="id" id="id">
+                            </div>
+                        </div>
+    
+                        <div class="col-md-3">
+                            <div class="form-group ">
+                                <label>Name</label>
+                                <input type="text" class="form-control" placeholder="Enter Name" name="title" id="title">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group ">
+                                <label>Code</label>
+                                <input type="text" class="form-control" placeholder="Enter Code" name="code" id="code">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group ">
+                                <label>Name</label>
+                                <input type="text" class="form-control" placeholder="Enter Generic Name" name="generic_name" id="generic_name">
+                            </div>
+                        </div>
+                    </div>             
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="card-box table-responsive">
-                        <header header-title>
-                            <div class="row">
-                                <div class="form-group col-md-3">
-                                    <label for="regular2">id</label>
-                                    <input type='text' name='id' id='id'>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label for="regular2">Name</label>
-                                    <input type='text' name='title' id='title'>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label for="regular2">Drug Code</label>
-                                    <input type='text' name='code' id='code'>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label for="regular2">Generic Name</label>
-                                    <input type='text' name='generic_name' id='generic_name'>
-                                </div>                            
-                            </div>
-                        </header>
-                    </div>
-
                     <div class="card-body">                       
                         <div class="table-responsive">
                             <table id="quoteTable" class="table m-0">
@@ -59,13 +71,10 @@
                     </div>
                 </div>
             </div>
-            <!--end .col -->
         </div>
-        <!--end .row -->
         <!-- END DATATABLE 2 -->
     </div>
-    <!--end .section-body -->
-    
+    <!--end .section-body -->    
 </section>
 
 <style>
@@ -190,7 +199,6 @@
         });
 
         //$('#fk_customer').select2();        
-    
     });
 
 
