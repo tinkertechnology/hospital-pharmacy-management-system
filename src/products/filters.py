@@ -1,6 +1,6 @@
 from django_filters import FilterSet, CharFilter, NumberFilter
 
-from .models import Product
+from .models import Product, Variation
 
 class ProductFilter(FilterSet):
 	title = CharFilter(field_name='title', lookup_expr='icontains', distinct=True)
@@ -34,5 +34,22 @@ class ProductFilter(FilterSet):
 			'product_unit_id',
 			'sale_price_gt',
 			'fk_store',
+			# 'owner'
+		]
+
+
+
+
+class VariationFilter(FilterSet):
+	title = CharFilter(field_name='title', lookup_expr='icontains', distinct=True)
+	code = CharFilter(field_name='code', lookup_expr='icontains', distinct=True)
+	class Meta:
+		model = Variation
+		# fields = '__all__'
+		fields = [
+		
+			'title',
+			'code',
+		
 			# 'owner'
 		]

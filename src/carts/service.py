@@ -49,7 +49,7 @@ def CartItemCreateService(data):
 
 	active_cart_id = cart.id
 	if cartitem_id:
-		print('yei chireko cha')
+		# print('yei chireko cha')
 		cartItem = CartItem.objects.filter(pk=cartitem_id).first() #.filter(cart_id=cart.id).first()
 		old_quantity = cartItem.quantity
 		cartItem.quantity = quantity

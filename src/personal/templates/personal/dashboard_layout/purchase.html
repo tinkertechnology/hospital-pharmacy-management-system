@@ -3,10 +3,7 @@
 {% load static %}
 {% block page_title %} Purchase {% endblock %}
 {% block content %}
-<style>
-    .your-custom-class {
-    background-color: #59b460 !important; 
-}
+
 </style>
 <div id="purchase">
     <div class="row">
@@ -106,7 +103,7 @@
                                 [[++index]]
                             </td>
                             <td>
-                                13360
+                                [[item.fk_variation.code ?? 'N/A']]
                             </td>
                             <td>
                                 [[item.fk_variation.title]]
@@ -178,9 +175,7 @@
     $(document).ready(function(){
         $('body').removeClass("container-fluid");
     });
-    Vue.use(Toasted)
-  
-    Vue.component('v-select', VueSelect.VueSelect);
+
     var app = new Vue({
        
         delimiters: ['[[', ']]'],
@@ -257,7 +252,16 @@
                 });  
         },
 
+        validateForm(){
+            if(purchaseForm.bill_date!=null && purchaseForm.purchase_date!=null && purchaseForm.bill_number!=null){
+                return true;
+            }
+            return false;
+
+        },
         getPurchaseItem: function() {
+            // $ShowLoading(this);
+            // console.log('loading', $ShowLoading(this));
             axios.get('/api/PurchaseOrderAPIView/',{
             params: {
                     purchase_id: {{purchase_id}}    
@@ -265,6 +269,7 @@
             }
                 )
                 .then(getResponse => {
+                    // this.$loader.hide();
                     console.log("GET Response")
                     console.log(getResponse.data);
                     // data = getResponse.data;

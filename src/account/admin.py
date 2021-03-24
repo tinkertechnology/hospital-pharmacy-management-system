@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from account.models import Account, PasswordResetOTP
-from .models import PhoneOTP, Doctor, Visit, VisitType, BloodGroup
+from .models import PhoneOTP, Doctor, Visit, VisitType, BloodGroup, Gender
 
 
 
@@ -27,6 +27,7 @@ admin.site.register(PhoneOTP)
 admin.site.register(PasswordResetOTP)
 admin.site.register(Doctor)
 admin.site.register(Visit)
+admin.site.register(Gender)
 admin.site.register(VisitType)
 admin.site.register(BloodGroup)
 

@@ -35,7 +35,7 @@ from django.db.models import Q
 from products.models import Variation, VariationBatch
 from carts.models import TransactionType
 from payment.models import PaymentMethod
-from account.models import VisitType, BloodGroup
+from account.models import VisitType, BloodGroup, Gender
 from counter.models import Counter
 from address.models import Country
 from vendor.models import Vendor
@@ -664,16 +664,17 @@ def pos(request):
 				
 def pos1(request):
 	cart = Cart.objects.filter(pk=request.GET.get('cart_id')).first()
-	# print(cart_id)
-	counters = Counter.objects.all()
-	
+	counter = request.session['counter']
+	print('counter', counter)
+	counter_obj = Counter.objects.filter(pk=counter)
+	print(counter_obj)
 	context = {
 		# 'user_id' : patient_id
 		"cart" : cart,
 		'cart_id' : cart.id,
-		'paymentmethods' : PaymentMethod.objects.all(),
-		'counters' : counters,
-		'transaction_types' : TransactionType.objects.all()
+		'paymentmethods' : PaymentMethod.objects.all(),	
+		'transaction_types' : TransactionType.objects.all(),
+		'counter_obj' : counter_obj,
 	}
 	return render(request, "personal/dashboard_layout/pos_test.html", context)
 
@@ -686,19 +687,18 @@ def carts(request):
 	user_id = request.GET.get('user_id')
 	visit_id = request.GET.get('visit_id')
 	user = User.objects.filter(pk=user_id).first()
-	
 	if user_id:
 		# user = User.objects.get(pk=user_id)
 		carts = Cart.objects.order_by('-id').filter(user_id=user_id)
 	if visit_id:
 		carts = Cart.objects.order_by('-id').filter(fk_visit_id=visit_id)#(user_id=user_id)
-	print(timezone.now())
 	# print(cart_id)
 	context = {
 		'user_id' : user_id,
 		'carts' : carts,
 		'user' : user,
 		"visit_id" : visit_id
+	
 		
 		# 'cart_id' : cart_id.id
 	}
@@ -721,6 +721,12 @@ def purchaseEdit(request, id):
 	}
 	return render(request, "personal/dashboard_layout/purchase.html", context)
 
+def purchaseDetails(request):
+	context = {}
+	return render(request, "personal/dashboard_layout/purchase_report.html", context)
+
+def purchaseDetail(request, purchase_id):
+	pass
 ###HMS
 
 def visit(request):
@@ -731,6 +737,7 @@ def visit(request):
 	context ={
 		'variations' : variations,
 		# 'visits_type' : visits_type,
+		'genders' : Gender.objects.all(),
 		'visits_types' : visits_types,
 		'patient_types' : UserTypes.objects.all(),
 		'blood_groups' : blood_groups,
@@ -804,13 +811,14 @@ class PurchaseItemOrderAPIView(APIView):
 		if  quantity and free_quantity:
 			purchaseitem.total_quantity = Decimal(quantity) + Decimal(free_quantity)
 		else:
-			purchaseitem.total_quantity = total_quantity = Decimal(quantity)
+			purchaseitem.total_quantity =  Decimal(quantity)
 		cp = request.data.get('cost_price', 0.0)
 		sp = request.data.get('sell_price', 0.0)
 		purchaseitem.cost_price = cp
 		purchaseitem.sell_price = sp
+		print('1--')
 		if cp and sp:
-			purchaseitem.line_item_total = Decimal(cp) - Decimal(quantity)
+			# purchaseitem.line_item_total = Decimal(cp) - Decimal(quantity) # profit rakhne bhaye matrai
 			purchaseitem.discount_amount = 0
 			if discount_percent:
 				discount_percent = int(float(discount_percent))
@@ -822,6 +830,7 @@ class PurchaseItemOrderAPIView(APIView):
 		else:
 			purchaseitem.line_item_total = 0
 		purchaseitem.save()
+		print('2--')
 		# aba Variation batch ko save gardine
 		vb = VariationBatch.objects.filter(fk_purchaseitem_id=purchaseitem.id).first()
 		if vb:
@@ -839,6 +848,7 @@ class PurchaseItemOrderAPIView(APIView):
 			# 						   fk_variation_id=purchaseitem.fk_variation_id,
 			# 						   batchno = purchaseitem.batchno
 			# 						   )
+			print('3--')
 		else:
 			VariationBatch.objects.create(fk_purchaseitem_id=purchaseitem.id, 
 										quantity=purchaseitem.quantity,
@@ -847,5 +857,5 @@ class PurchaseItemOrderAPIView(APIView):
 										fk_variation_id=purchaseitem.fk_variation_id,
 										batchno = purchaseitem.batchno
 										)
-		return Response('bhayo save', status=200)
+		return Response('Record has been Saved', status=200)
 

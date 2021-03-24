@@ -19,6 +19,7 @@ from vendor.models import Vendor
 from rest_framework.generics import CreateAPIView, ListAPIView,ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
 from products.serializers import VariationSerializer
 from .models import query_musics_by_args
+from counter.models import Counter
 # from store.service import getUserStoreService
 # Create your views here.
 from .filters import ProductFilter
@@ -146,7 +147,9 @@ class VariationBatchAPIView(APIView):
 	filter_class = VariationBatchFilter
 
 	def get(self, request):
-		return Response(VariationBatchSerializer(VariationBatch.objects.all(), many=True).data)
+		# variation_by_counter = Variation.objects.filter(fk_counter_id=request.session['counter']).values_list('id')
+		# print(variation_by_counter)
+		return Response(VariationBatchSerializer(VariationBatch.objects.filter(fk_variation__fk_counter_id=request.session['counter']), many=True).data)
 
 
 class VariationBatchViewSet(viewsets.ModelViewSet):
@@ -191,7 +194,27 @@ class VariationBatchPriceAPIView(APIView):
 		}
 		return Response(data)
 
+# class VariationAPIView(APIView):
+
+	from .pagination import CustomPageNumber
+
 class VariationAPIView(APIView):
+	# queryset = Variation.objects.all().order_by('-id')
+	# serializer_class = VariationSerializer
+	# # filter_class = VariationBatchFilter
+
+	# def get(self, request):
+	# 	jptchanges = request.GET.get('jptchanges')
+	# 	self.pagination_class = CustomPageNumber
+	# 	if jptchanges:
+	# 		queryset = self.filter_queryset(self.queryset.filter(title__icontains=jptchanges))
+	# 	page = self.paginate_queryset(queryset)
+	# 	if page is not None:
+	# 		serializer = self.get_serializer(page, many=True)
+	# 		return self.get_paginated_response(serializer.data)
+	# 	serializer = self.get_serializer(queryset, many=True)
+	# 	return Response(serializer.data) 
+
 	serializer_class = VariationSerializer
 	def get(self, request):	
 		variations = VariationSerializer(Variation.objects.all(), many=True)
@@ -213,30 +236,34 @@ class AddProductAPIView(APIView): #VariationAdd
 	permission_classes = [IsAuthenticated]
 	def post(self, request, *args, **kwargs):
 		print(request.data)
-		product_title = request.data.get('title', None)	
-		product_id = request.data.get('product_id', '')				
+		variation_id = request.data.get('variation_id')
+		product_title = request.data.get('title')					
 		category_id = request.data.get('category_id', None)
 		brand_id = request.data.get('brand_id', None)
 		product_code = request.data.get('product_code', None)
 		generic_names_id =request.data.get('generic_names_id', None)
 		company_id =request.data.get('company_id', None)
 		rack_number =request.data.get('rack_number', None)
-
+		alert_quantity = request.data.get('alert_quantity', None)
+		alert_expiry_days = request.data.get('alert_expiry_days', None)
+		fk_counter_id = request.data.get('fk_counter_id')
 		if product_title is None:
 			return Response({"Fail": "Product name must be provided"}, status.HTTP_400_BAD_REQUEST)
 		if product_code is None:
-			return Response({"Fail": "Product code must be provided"}, status.HTTP_400_BAD_REQUEST)
-		if product_id:
-			settings.DPRINT(product_id)
-			product = Variation.objects.filter(pk=product_id).first()																				
+			return Response({"Fail": "Product code must be provided"}, status.HTTP_400_BAD_REQUEST)	
+		if variation_id:
+			product = Variation.objects.filter(pk=variation_id).first()
 		else:
-			product = Variation()		
+			product = Variation()
 		product.title = product_title	
 		product.generic_name_id = generic_names_id
 		product.company_id = company_id
 		product.brand_id = brand_id	
 		product.code = product_code	
 		product.rack_number = rack_number
+		product.alert_expiry_days = alert_expiry_days
+		product.alert_quantity = alert_quantity
+		product.fk_counter_id = fk_counter_id
 		product.save()
 		if category_id:
 			if product.categories:
@@ -248,7 +275,15 @@ class AddProductAPIView(APIView): #VariationAdd
 					'status': True,
 					'detail': 'Product Saved successfully'
 					})
-
+	def delete(self, request):
+		print(request)
+		permission_classes = [IsAuthenticated]
+		variation_id = request.data.get('variation_id')
+		variation = Variation.objects.get(pk=variation_id)
+		if variation:
+			variation.delete()
+			return Response('Product removed successfully', status=200)
+		return Response('Error', status=400)
 
 
 
@@ -292,6 +327,7 @@ def hmsproducts(request):
 		'manufacturers' : Company.objects.all(),
 		'generics' : GenericName.objects.all(),
 		'brands' : Brand.objects.all(),
+		'counters' : Counter.objects.all(),
 	}
 	return render(request, "personal/dashboard_layout/products.html", context)
 
@@ -301,7 +337,9 @@ def hmsvariations(request, id):
 	}
 	return render(request, "personal/dashboard_layout/variation.html", context)
 
-
+def datatable(request):
+	context = {}
+	return render(request, "personal/dashboard_layout/datatable.html", context)
 
 class PurchaseVariationBatchAPIView(APIView):
 	
@@ -317,3 +355,4 @@ class PurchaseVariationBatchAPIView(APIView):
 		variation_batch.price = request.data.get('price')
 		variation_batch.save()
 		return Response('Success', status=200)
+

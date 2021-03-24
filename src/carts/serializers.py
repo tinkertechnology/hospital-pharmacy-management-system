@@ -6,9 +6,12 @@ User = get_user_model()
 from products.models import Variation, VariationBatchPrice
 from store.serializers import StoreSerializer
 
-from .models import CartItem, Cart, Comment
+from .models import CartItem, Cart,  Transaction, TransactionType
 from products.models import Product,ProductImage
 from .mixins import TokenMixin
+from . import service as CartService
+from products.serializers import VariationSerializer
+
 
 
 
@@ -27,83 +30,7 @@ from .mixins import TokenMixin
 }
 
 """
-class CheckoutSerializer(TokenMixin, serializers.Serializer):
-	checkout_token = serializers.CharField()
-	billing_address = serializers.IntegerField()
-	shipping_address = serializers.IntegerField()
-	cart_token = serializers.CharField()
-	user_checkout_id =serializers.IntegerField(required=False)
-	cart_id = serializers.IntegerField(required=False)
 
-	def validate(self, data):
-		checkout_token = data.get("checkout_token")
-		billing_address = data.get("billing_address")
-		shipping_address = data.get("shipping_address")
-		cart_token = data.get("cart_token")
-
-		cart_token_data = self.parse_token(cart_token)
-		cart_id = cart_token_data.get("cart_id")
-		#print cart_token_data
-
-
-		checkout_data = self.parse_token(checkout_token)
-		user_checkout_id = checkout_data.get("user_checkout_id")
-		#print checkout_data
-
-
-		# try:
-		# 	cart_obj = Cart.objects.get(id=int(cart_id))
-		# 	data["cart_id"] = cart_obj.id
-		# except:
-		# 	raise serializers.ValidationError("This is not a valid cart")
-
-		# try:
-		# 	user_checkout = UserCheckout.objects.get(id=int(user_checkout_id))
-		# 	data["user_checkout_id"] = user_checkout.id
-		# except:
-		# 	raise serializers.ValidationError("This is not a valid user")
-
-
-		# try:
-		# 	billing_obj = UserAddress.objects.get(user__id=int(user_checkout_id), id=int(billing_address))
-		# except:
-		# 	raise serializers.ValidationError("This is not a valid address for this user")
-
-		# try:
-		# 	shipping_obj = UserAddress.objects.get(user__id=int(user_checkout_id), id=int(shipping_address))
-		# except:
-		# 	raise serializers.ValidationError("This is not a valid address for this user")
-
-		return data
-
-	# def validate_<fieldname>(self, value):
-	#   	return value
-	# def validate_checkout_token(self, value):
-	# 	print type(value)
-	# 	if type(value) == type(str()):
-	# 		return value
-	# 	raise serializers.ValidationError("This is not a valid token.")
-
-
-class CommentSerializer(serializers.ModelSerializer):
-	created_at = serializers.DateTimeField(read_only=True, format="%Y-%m-%d")
-	class Meta:
-		model = Comment
-		fields = ['comment', 'created_at', 'updated_at']
-
-class CartVariationSerializer(serializers.ModelSerializer):
-	product = serializers.SerializerMethodField()
-	class Meta:
-		model = Variation
-		fields = [
-			"id",
-			"title",
-			"price",
-			"product",
-		]
-
-	def get_product(self, obj):
-		return obj.product.title
 
 class ProductImageSerializer(serializers.ModelSerializer):
 	# image_url = serializers.SerializerMethodField('get_image_url')
@@ -112,10 +39,11 @@ class ProductImageSerializer(serializers.ModelSerializer):
 		model = ProductImage
 		fields = '__all__'
 
-	
+class TransactionSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Transaction
+		fields = '__all__'
 
-
-from products.serializers import VariationSerializer
 
 class CartItemSerializer(serializers.ModelSerializer):
 	#item = CartVariationSerializer(read_only=True)
@@ -186,14 +114,14 @@ class CartItemSerializer(serializers.ModelSerializer):
 		user_type = obj.cart.user.usertype
 		if user_type:
 			user_type_id = user_type.user_type_id
-			print(user_type_id)
-			print(obj.fk_variation_batch_id)
+			# print(user_type_id)
+			# print(obj.fk_variation_batch_id)
 			var_batch_obj = VariationBatchPrice.objects.filter(fk_variation_batch_id=obj.fk_variation_batch_id).filter(fk_user_type_id=user_type_id).first()
 			if var_batch_obj:
 				return var_batch_obj.price
-		if obj.fk_variation_batch.sale_price is None:
-			return obj.fk_variation_batch.price
-		return obj.fk_variation_batch.sale_price
+		if obj.fk_variation_batch.sale_price:
+			return obj.fk_variation_batch.sale_price
+		return obj.fk_variation_batch.price
 
 	def get_image(self, obj):
 		# image_url = ProductImage.objects.filter(product_id=obj.item.id).first()
@@ -239,7 +167,7 @@ class AddToCartSerializer(serializers.ModelSerializer):
 
 
 		
-from . import service as CartService
+
 class CartItemModelSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CartItem
@@ -251,6 +179,7 @@ class CartItemModelSerializer(serializers.ModelSerializer):
 		user =  self.context['request'].user
 		# print(validated_data)
 		data = {}
+		
 		# print('cart-id',request.data.get('cart_id'))
 		data['user_id'] = request.data.get('p_id')
 		data['fk_visit_id'] = request.data.get('fk_visit_id')
@@ -267,7 +196,7 @@ class CartItemModelSerializer(serializers.ModelSerializer):
 		data['fk_counter_id'] = request.data.get('fk_counter_id')
 		data['is_return'] = request.data.get('is_return')
 		cartItem = CartService.CartItemCreateService(data)
-		print(cartItem.__dict__)
+		# print(cartItem.__dict__)
 		# transaction = {
 		# 	"fk_cart_id" : cartItem.cart_id,
 		# 	"amount" :  cartItem.ordered_price,#request.data.get('amount'),
@@ -301,13 +230,11 @@ class RemoveCartItemFromCartSerializer(serializers.ModelSerializer):
 		fields = '__all__'
 
 	def destroy(self, request, *args, **kwargs):
-		print('jssdjsppt')
 		try:
 			print('delete')
 			instance = self.get_object()
 			quantity = instance.quantity
 			var_batch = instance.fk_variation_batch
-			print('var-batch',var_batch)
 			if var_batch:
 				var_batch.quantity += quantity
 				var_batch.save()
@@ -321,8 +248,26 @@ class RemoveCartItemFromCartSerializer(serializers.ModelSerializer):
 		# return item 
 
 
-from .models import Transaction
+
 class TransactionSerializer(serializers.ModelSerializer):
+	TransactionType = serializers.SerializerMethodField()
+	transaction_by_user =serializers.SerializerMethodField()
 	class Meta:
 		model = Transaction
 		fields = '__all__'
+	
+	def get_TransactionType(self, obj):
+		transaction_type = ""
+		if obj.fk_type:
+			transaction_type = obj.fk_type.title
+		return transaction_type
+	
+	def transaction_by_user(self, obj):
+		user = ""
+		if obj.entered_by_user:
+			if obj.entered_by_user.firstname:
+				user+= obj.entered_by_user.firstname
+				if obj.entered_by_user.lastname:
+					user+= ' '+obj.entered_by_user.lastname
+		return user
+

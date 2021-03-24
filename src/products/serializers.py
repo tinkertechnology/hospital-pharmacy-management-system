@@ -25,44 +25,17 @@ class UserVariationQuantityHistorySerializer(serializers.ModelSerializer):
 
 
 class VariationSerializer(serializers.ModelSerializer):
-	discount = serializers.SerializerMethodField()
+	# discount = serializers.SerializerMethodField()
 	class Meta:
 		model = Variation
-		fields = [
-			"id",
-			"title",
-			"price",
-			'sale_price',
-			'discount',
-			'inventory',
-			"expiry_date",
-		]
-	def get_queryset(self, obj):
-		return obj.filter(is_internal=False)
+		fields = '__all__'
 
 
 
-	def get_discount(self, obj):
-		if obj.sale_price is None:
-			return ""
-		else:
-			price = obj.price
-			sale_price = obj.sale_price
-			discount=0
-			if price!=0:
-				discount = round(((float(price)-float(sale_price))/float(price))*100, 2)			
-			return discount
-
-
-		# return float(price - sale_price)
-		# if self.sale_price:
-		# 	return self.price
-		# return ""
-		# print(self.price)	
 
 class VariationBatchSerializer(serializers.ModelSerializer):
 	fk_variation_name = serializers.SerializerMethodField()
-	fk_variation = VariationSerializer()
+	# fk_variation = VariationSerializer()
 	class Meta:
 		model = VariationBatch
 		fields ='__all__'
@@ -71,14 +44,14 @@ class VariationBatchSerializer(serializers.ModelSerializer):
 		if obj.batchno:
 			return obj.fk_variation.title + ' ' + obj.batchno
 		return obj.fk_variation.title
-	DT_RowId = serializers.SerializerMethodField()
-	DT_RowAttr = serializers.SerializerMethodField()
+	# DT_RowId = serializers.SerializerMethodField()
+	# DT_RowAttr = serializers.SerializerMethodField()
 
-	def get_DT_RowId(self, obj):
-		return 'row_%d' % obj.pk
+	# def get_DT_RowId(self, obj):
+	# 	return 'row_%d' % obj.pk
 
-	def get_DT_RowAttr(self, obj):
-		return {'data-pk': obj.pk}
+	# def get_DT_RowAttr(self, obj):
+	# 	return {'data-pk': obj.pk}
 
 class UserVariationQuantityHistorySerializer(serializers.ModelSerializer):
 	variation = VariationSerializer()
