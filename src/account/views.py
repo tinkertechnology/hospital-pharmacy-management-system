@@ -1011,7 +1011,15 @@ class VisitAPIView(APIView):
 		else:
 			return Response('failed', status=400)
 
-
+	def delete(self, request):
+		visit_id = request.data.get('visit_id')
+		if visit_id:
+			visit = Visit.objects.get(pk=visit_id)
+			if visit:
+				visit.delete()
+				return Response('Success', status=200)
+			return Response('Visit Not Found', status=400)
+		return Response('Something went wrong!', status=400)
 
 # Create your views here.
 def visit_type_index(request):

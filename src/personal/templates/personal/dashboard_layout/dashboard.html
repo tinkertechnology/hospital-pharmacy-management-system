@@ -260,8 +260,9 @@ $(document).ready(function () {
             "data": null,
             "className": "action-link",
             "render": function (data, type, full) {
-                return ' <button class="btb btn-danger" onclick="VueDeleteProduct('+data.id+')">X</button> ' +
-                        '<a href="/carts?visit_id='+ data.id +'" class="btn btn-sm btn-bordered-primary waves-effect waves-light btn-secondary">View</a>'
+                return ' <button class="btb btn-danger" onclick="VueDeleteVisit('+data.id+')">X</button> ' +
+                        '<a href="/carts?visit_id='+ data.id +'" class="btn btn-sm btn-bordered-primary waves-effect waves-light btn-secondary">view</a>'+
+                        '<a href="/carts?visit_id='+ data.id +'" class="mdi mdi-billboard">edit</a>'
                     ;
             }
         }],
@@ -293,5 +294,133 @@ $(document).ready(function () {
 
 </script>
 
+<script>
+    // var Toasted = require('vue-toasted').default
+    Vue.use(VueToast);
+    Vue.component('v-select', VueSelect.VueSelect);
+    var app = new Vue({
+        
+      delimiters: ['[[', ']]'],
+      el: '#pos',
+      data: {
+        selectedVariationBatch : {},
+        fk_counter_id : null,
+        loading: false,
+        products : [{
+          value: null, text: 'Choose an option'
+        },],
+        showModal : false,
+        price: null,
+        transactionTypes: [],
+        paymentmethod : null,
+
+        patients : [{
+            id: 0,
+            firstname: "",
+            lastname: "",
+            mobile: "",
+            patient_type: {
+                p_type_id: null,
+                p_type_title: ""
+            }
+    }],
+    transaction : {
+        fk_type_id : '',
+        amount : '',
+        comment : '',
+    },
+    patient :{},
+        selectedVal : 1,
+        users:[{name:'',email:'',mobno:''}],
+        selected : '',
+        patientType:'',
+        quantity: 1,
+
+        cart :{
+        "token": null,
+        "cart": 107,
+        "total": 6510.0,
+        "subtotal": 6000.0,
+        "tax_total": 510.0,
+        "count": 1,
+        "items": [
+            {
+                "product_id": 1,
+                "image": "/static/no-image.jpg",
+                "item": 1,
+                "item_title": "Aspirin-hib (aspirin)",
+                "price": 150.0,
+                "product": 1,
+                "quantity": "40.00",
+                "line_item_total": "6000.00",
+                "fk_store_title": "",
+                "stock_quantity":"",
+                "batchno": "",
+                "is_return": false,
+                variation : {id: '',title :"",price:"",sale_price:null,discount:"",inventory:""},
+            }
+        ],
+    },
+    customerForm : {
+        firstname : "",
+        lastname: "",
+        email : "",
+        patient_type : "",
+        mobile : ""
+    },
+
+}, //Data Closed
+      methods : {
+
+        removeVisit: function(visit_id){
+            this.loading= true,
+                axios({
+                method: 'delete',
+                url:  '/api/VisitAPIView/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                  visit_id : visit_id
+                  // This is the body part
+                }
+                }) //.then(response=> cartitem.variation = response.data)
+                .then((getResponse) => {
+                    console.log(getResponse.data);
+                    $('#visitTable').DataTable().ajax.reload();
+                    $ToastSuccess(this, 'Visit Removed')
+                    $.notify("Visit Removed! ", "success");
+                   
+                    // this.cartTransaction();
+                    
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                    $.notify("Fail to remove item! ", "error");
+                });
+          
+            
+
+        },
+
+        
+        
+        
+
+        
+      }, //end method
+      
+
+     
+
+      mounted() {
+        window.VueDeleteVisit = this.removeVisit;
+
+      },
+    })
+</script>
 
 {% endblock %}

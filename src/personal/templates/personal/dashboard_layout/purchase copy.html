@@ -1,0 +1,428 @@
+{% extends 'personal/dashboard_layout/app.html' %}
+
+{% load static %}
+{% block page_title %} Purchase {% endblock %}
+{% block content %}
+
+</style>
+<div id="purchase">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card-box">   
+                <form>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group ">
+                                <label >Bill Date</label>
+                                <input type="text" v-model="purchaseForm.bill_date" class="form-control" value="{{purchase.bill_date}}">
+                            </div>
+                        </div>
+    
+                        <div class="col-md-4">
+                            <div class="form-group ">
+                                <label >Purchase Date</label>
+                                <input type="text" v-model="purchaseForm.purchase_date"  class="form-control" placeholder="" value="{{purchase.purchase_date}}">
+                            </div>
+                        </div>
+                        
+    
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Supplier</label>
+                                <select class="form-control" v-model="purchaseForm.fk_supplier_id">
+                                {% for vendor in vendors %}   
+                                    <option value="{{vendor.id}}">
+                                        {{vendor.name}}
+                                    </option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+    
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Bill No.</label>
+                                <input type="text"  v-model="purchaseForm.bill_number" class="form-control" placeholder="bill no.">
+                            </div>
+                        </div>
+    
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Payment Mode</label>
+                                <select class="form-control" v-model="purchaseForm.fk_payment_method_id">
+                                    {% for payment in payment_methods %}
+                                    <option value="{{payment.id}}">
+                                        {{payment.title}}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+    
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Choose Drug</label>
+                                <select class="form-control select2"  @change="savePurchase($event)"> 
+                                    <option v-for="(item, index) in products"  v-bind:value="[[  item.id ]]" :key="item.id">[[ item.title ]]</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>                    
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table m-0">
+                    <thead class="bg-teal text-white">
+                        <tr>
+                            <th>#</th>
+                            <th>Code</th>
+                            <th>Particular</th>
+                            <th>Batch</th>
+                            <th>Expiry</th>
+                            <th>Packaging</th>
+                            <th>qty</th>
+                            <th>free</th>
+                            <th>total qty</th>
+                            <th>cp</th>
+                            <th>sp</th>
+                            <th>discount %</th>
+                            <th>dis %amount</th>
+                            <th>subtotal</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       
+                        <tr v-for="(item, index) in purchaseitems"  v-bind:value="[[  item.id ]]" :key="item.id">
+                            <td>
+                                [[++index]]
+                            </td>
+                            <td>
+                                [[item.fk_variation.code ?? 'N/A']]
+                            </td>
+                            <td>
+                                [[item.fk_variation.title]]
+                            </td>
+                            <td>
+                                <input type="text"  v-model="item.batchno" @change="changePurchaseItem(item)" class="form-control" >
+                            </td>
+                            <td>
+                                <input type="text"  v-model="item.expiry_date" @change="changePurchaseItem(item)" class="form-control" >
+                            </td>
+
+                            <td>
+                                <input type="text" v-model="item.packaging_quantity" class="form-control" @change="changePurchaseItem(item)">
+                                <select v-model="item.fk_product_unit" @change="changePurchaseItem(item)">
+                                    {% for unit in units %}
+                                        
+                                        <option value="{{unit.id}}">
+                                            {{unit.title}}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" @change="changePurchaseItem(item)" v-model="item.quantity" class="form-control" >
+                            </td>
+                            <td>
+                                <input type="number" @change="changePurchaseItem(item)" v-model="item.free_quantity" class="form-control" >
+                            </td>
+                            <td>
+                                [[item.total_quantity]]
+                            </td>
+                            <td>
+                               
+                                    <input type="text" @change="changePurchaseItem(item)" v-model="item.cost_price" class="form-control" >
+                               
+                            </td>
+                            <td>
+                               
+                                    <input type="text" @change="changePurchaseItem(item)" v-model="item.sell_price" class="form-control" >
+                               
+                            </td>
+                            <td>
+                               
+                                    
+                                    <input type="text" @change="changePurchaseItem(item)" v-model="item.discount_percent" class="form-control" >
+                               
+                            </td>
+
+                            <td>Rs.[[item.discount_amount]]</td>
+                            <td>Rs. [[item.line_item_total]]</td>
+                            <td><button class="btn btn-danger" @click="deletePurchaseItem(item.id)">x</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                Total : [[purchaseResponse.total]]
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+    // var Toasted = require('vue-toasted').default
+    $(document).ready(function(){
+        $('body').removeClass("container-fluid");
+    });
+
+    var app = new Vue({
+       
+        delimiters: ['[[', ']]'],
+      el: '#purchase',
+      data: {   
+        //fk_variation_id: null,
+        purchaseitems : [],    
+        loading: false,
+        products : [{
+          value: null, text: 'Choose an option'
+        },],
+        showModal : false,
+        
+    transaction : {
+        fk_type_id : '',
+        amount : ''
+    },
+    purchaseForm :{
+        purchase_date : '',
+        bill_date : '',
+        fk_supplier_id : '',
+        bill_number : '',
+        fk_payment_method_id : '',
+        fk_variation_id : '',
+    },
+
+    purchaseResponse: {
+        total : 0.0,
+    },
+    item : [],
+        cart :{
+        "token": null,
+        "cart": 107,
+        "total": 6510.0,
+        "subtotal": 6000.0,
+        "tax_total": 510.0,
+        "count": 1,
+        "items": [
+            {
+                "product_id": 1,
+                "image": "/static/no-image.jpg",
+                "item": 1,
+                "item_title": "Aspirin-hib (aspirin)",
+                "price": 150.0,
+                "product": 1,
+                "quantity": "40.00",
+                "line_item_total": "6000.00",
+                "fk_store_title": "",
+                "stock_quantity":"",
+                "batchno": "",
+                "is_return": false,
+                variation : {id: '',title :"",price:"",sale_price:null,discount:"",inventory:""},
+            }
+        ],
+    },
+  
+
+}, //Data Closed
+      methods : {
+        getProduct: function() {
+            axios.get('/api/VariationAPIView/')
+                .then((getResponse) => {
+                    console.log("GET Response")
+                    console.log(getResponse.data);
+                    // data = getResponse.data;
+                    // response.send(data);
+                    this.products = getResponse.data;
+                    // this.products.unshift(initvalue);
+                    console.log('product',this.products);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });  
+        },
+
+        validateForm(){
+            if(purchaseForm.bill_date!=null && purchaseForm.purchase_date!=null && purchaseForm.bill_number!=null){
+                return true;
+            }
+            return false;
+
+        },
+        getPurchaseItem: function() {
+            let loader = $ShowLoading(this);
+            // console.log('loading', $ShowLoading(this));
+            axios.get('/api/PurchaseOrderAPIView/',{
+            params: {
+                    purchase_id: {{purchase_id}}    
+                },
+            }
+                )
+                .then(getResponse => {
+                    setTimeout(() => loader.hide(), 0.25 * 1000)
+                    console.log("GET Response")
+                    console.log(getResponse.data);
+                    // data = getResponse.data;
+                    // response.send(data);
+                    this.purchaseitems = getResponse.data.purchase_item;
+                    this.item.batchno = getResponse.data.purchase_item.batchno;
+                    this.item.expiry_date = getResponse.data.purchase_item.cost_price;
+                    this.item.free_quantity = getResponse.data.purchase_item.free_quantity;
+                    this.item.line_item_total = getResponse.data.purchase_item.line_item_total;
+                    this.item.quantity = getResponse.data.purchase_item.quantity;
+                    this.item.free_quantity = getResponse.data.purchase_item.free_quantity;
+                    this.item.sell_price = getResponse.data.purchase_item.sell_price;
+                    this.item.cost_price = getResponse.data.purchase_item.cost_price;
+                    this.item.total_quantity = getResponse.data.purchase_item.total_quantity;
+                    this.item.discount_percent = getResponse.data.purchase_item.discount_percent;
+                    this.item.discount_amount  = getResponse.data.purchase_item.discount_amount;
+                    this.purchaseResponse.total = getResponse.data.total_purcahse;
+                    //purchase date, details etc
+                    this.purchaseForm.bill_date = getResponse.data.bill_date;
+                    this.purchaseForm.purchase_date = getResponse.data.purchase_date;
+                    this.purchaseForm.bill_number = getResponse.data.bill_number;
+                    this.purchaseForm.fk_payment_method_id = getResponse.data.fk_payment_method_id;
+                    this.purchaseForm.fk_supplier_id = getResponse.data.fk_vendor_id;
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });  
+        },
+
+
+        savePurchase: function(event) {
+            if(!event)
+            {return;}
+                axios({
+                method: 'post',
+                url:  '/api/PurchaseOrderAPIView/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                    purchase_id : {{purchase_id}},
+                    //purchase table update yesmai garne
+                    // console.log('event val', event.target.value);
+                    purchase_date : this.purchaseForm.purchase_date,
+                    bill_date : this.purchaseForm.bill_date,
+                    fk_supplier_id : this.purchaseForm.fk_supplier_id,
+                    bill_number : this.purchaseForm.bill_number,
+                    fk_payment_method_id : this.purchaseForm.fk_payment_method_id,
+                    fk_variation_id :  event.target.value,//this.purchaseForm.fk_variation_id,
+                },
+                }) //.then(response=> cartitem.variation = response.data)
+                .then((getResponse) => {                
+                    console.log(getResponse.data);
+                    let toast = this.$toasted.show("Purchase Added", { 
+                        theme: "toasted-primary", 
+                        position: "top-right", 
+                        duration : 1500,
+                        className: ['your-custom-class',]
+                    });
+                    this.getPurchaseItem();
+                }) 
+                .catch(function (error) {
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });
+                  
+        },
+
+        changePurchaseItem: function(item) {
+        //    if(fk_variation_id)
+            this.savePurchase();
+                axios({
+                method: 'post',
+                url:  '/api/PurchaseItemOrderAPIView/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                   purchaseitem_id : item.id,
+                   quantity: item.quantity,
+                   batchno : item.batchno,
+                   free_quantity : item.free_quantity,
+                   cost_price : item.cost_price,
+                   sell_price : item.sell_price,
+                   expiry_date : item.expiry_date,
+                   fk_product_unit : item.fk_product_unit,
+                   packaging_quantity : item.packaging_quantity,
+                   discount_percent : item.discount_percent,
+
+
+                },
+                }) //.then(response=> cartitem.variation = response.data)
+                .then((getResponse) => {                
+                    console.log(getResponse.data);
+                    let toast = this.$toasted.show("Purchase Added", { 
+                        theme: "toasted-primary", 
+                        position: "top-right", 
+                        duration : 1500,
+                        className: ['your-custom-class',]
+                    });
+                    this.getPurchaseItem();
+                }) 
+                .catch(function (error) {
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });
+                  
+        },
+
+        
+        deletePurchaseItem(purchaseitemId){
+            axios({
+                method: 'delete',
+                url:  '/api/PurchaseOrderAPIView/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                    purchaseitem_id : purchaseitemId
+                },
+                }) //.then(response=> cartitem.variation = response.data)
+                .then((getResponse) => {                
+                    console.log(getResponse.data);
+                    this.getPurchaseItem();
+                    let toast = this.$toasted.show("Removed !!", { 
+                        theme: "bubble", 
+                        position: "top-right", 
+                        duration : 1500
+                    });
+                }) 
+                .catch(function (error) {
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                });
+            }
+
+      }, //end method
+      
+
+     
+
+      mounted() {
+          this.getProduct();
+          this.getPurchaseItem();
+     
+      },
+    })
+  </script>
+
+
+{% endblock %}

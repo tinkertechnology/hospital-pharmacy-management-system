@@ -149,7 +149,13 @@ class VariationBatchAPIView(APIView):
 	def get(self, request):
 		# variation_by_counter = Variation.objects.filter(fk_counter_id=request.session['counter']).values_list('id')
 		# print(variation_by_counter)
+		adjustment_purpose = request.GET.get('adjustment')
+		if adjustment_purpose:
+			var = Response(VariationBatchSerializer(VariationBatch.objects.all(), many=True).data)
+			return var
 		return Response(VariationBatchSerializer(VariationBatch.objects.filter(fk_variation__fk_counter_id=request.session['counter']), many=True).data)
+
+	
 
 
 class VariationBatchViewSet(viewsets.ModelViewSet):
@@ -340,6 +346,12 @@ def hmsvariations(request, id):
 def datatable(request):
 	context = {}
 	return render(request, "personal/dashboard_layout/datatable.html", context)
+
+def adjustments(request):
+	context = {
+		'products' : Variation.objects.all(),
+	}
+	return render(request, "personal/dashboard_layout/adjustment.html", context)
 
 class PurchaseVariationBatchAPIView(APIView):
 	
