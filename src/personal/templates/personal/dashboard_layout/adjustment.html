@@ -8,14 +8,14 @@
 <!-- http://localhost:8000/reports/ReportHtml?template=ReportHtmlUsers.html -->
 
 <section id="products">
-    <button class="btn btn-primary" v-on:click="isHidden = false">Add Product</button>
+    <!-- <button class="btn btn-primary" v-on:click="isHidden = false">Add Product</button> -->
   <!-- <button v-on:click="isHidden = !isHidden">Toggle hide and show</button> -->
   
     <div class="section-body">
-        <div class="row"  v-if="!isHidden">
+        <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
-                    <table class="table m-0">
+                    <table class="table m-0 table table-bordered table-responsive" style="overflow-y: auto;">
                         <thead class="bg-teal text-white">
                             <tr>
                                 <th>Item/Service</th>
@@ -30,16 +30,20 @@
                         <tbody>
                             <tr>
                                 
-                                <td><v-select label="fk_variation_name" :options="products"  :reduce="jpt => jpt.id"  v-model="AdjustmentForm.fk_variation_batch_id" @input="value => onChangeCartItemProduct(cartitem,value)"></v-select></td>
-                                <td><input class="form-control form-white" placeholder="Enter code" type="text" v-model="AdjustmentForm.date" /></td>
-                                <td><input class="form-control form-white" placeholder="Enter code" type="text" v-model="AdjustmentForm.math" /></td>
+                                <td style="max-height: 500px;"><v-select  label="fk_variation_name" :options="products" attach  v-model="AdjustmentForm.fk_variation_batch_id" @input="value => onChangeCartItemProduct(cartitem,value)"></v-select></td>
+                                <td><input class="form-control form-white" placeholder="YYYY-MM-DD" type="text" v-model="AdjustmentForm.date" /></td>
+                                <td>
+                                    <select class="form-control" v-model="AdjustmentForm.math">
+                                        <option value="plus">Add</option>
+                                        <option value="minus">deduct</option>
+                                    </select>
+                                   
+                                </td>
                                 <td><input class="form-control form-white" v-model="AdjustmentForm.quantity" placeholder="Enter name" type="text" name="category-name" /></td>
                                 <td><input class="form-control form-white" v-model="AdjustmentForm.remarks" placeholder="Enter name" type="text" name="category-name" /></td>
-                            <td><button type="button" class="btn btn-danger waves-effect waves-light save-category" @click="addProduct">Save</button></td>
+                            <td><button type="button" class="btn btn-danger waves-effect waves-light save-category" @click="addAdjustment">Save</button></td>
                             </tr>
-                           
                         </tbody>
-                       
                     </table>
                 </div>
             </div>
@@ -192,7 +196,7 @@
         delimiters: ['[[', ']]'],
         el: '#products',
         data: {
-            isHidden: true,
+            // isHidden: true,
             jptchanges: '',
             params: { page: 1 },
             num_page: 1,
@@ -254,46 +258,6 @@
 
         }, //Data Closed
         methods: {
-            getProduct: function () {
-                this.loading = true;
-                axios.get('/api/VariationAPIView/')
-                    .then((getResponse) => {
-                        console.log("GET Response")
-                        console.log(getResponse.data);
-                        // data = getResponse.data;
-                        // response.send(data);
-                        this.products = getResponse.data;
-                        this.loading = false;
-                        // print(products);
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        console.log("Error while fetching market updates");
-                        this.loading = false;
-                    });
-            },
-            variationPage: function (product_id) {
-                window.location = '/hmsvariations/' + product_id + '/';
-            },
-            addRow: function () {
-                this.addToCart();
-                this.cart.items.push({
-                    product_id: '',
-                    name: '',
-                    email: '',
-                    mobno: ''
-                })
-
-            },
-            deleteRow(index) {
-                // alert('hi');  
-                // console.log(index);
-                if (index == 0) {
-                    return;
-                }
-                this.cart.items.splice(index, 1);
-            },
-       
             getProduct: function() {
             axios.get('/api/VariationBatchAPIView/?adjustment=1')
                 .then((getResponse) => {
@@ -311,32 +275,26 @@
                 });  
         },
         
-            addProduct: function () {
+            addAdjustment: function () {
                 this.loading = true,
                     axios({
                         method: 'post',
-                        url: '/api/products_add/',
+                        url: '/api/AdjustmentAPIView/',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-CSRFToken': '{{ csrf_token }}'
                         },
                         data: {
-                          title : this.catlogSaveForm.product_title,
-                          company_id : this.catlogSaveForm.company_id,
-                          generic_names_id : this.catlogSaveForm.generic_name_id,
-                          company_id : this.catlogSaveForm.company_id,
-                          product_code : this.catlogSaveForm.product_code,
-                          rack_number : this.catlogSaveForm.rack_number,
-                          brand_id : this.catlogSaveForm.brand_id,
-                          alert_quantity : this.catlogSaveForm.alert_quantity,
-                          alert_expiry_days : this.catlogSaveForm.alert_expiry_days,
-                          fk_counter_id : this.catlogSaveForm.fk_counter_id,
+                            fk_variation_batch_id : this.AdjustmentForm.fk_variation_batch_id.id,
+                            adjustment_date : this.AdjustmentForm.adjustment_date,
+                            math : this.AdjustmentForm.math,
+                            quantity : this.AdjustmentForm.quantity,
+                            remarks : this.AdjustmentForm.remarks,
                             // This is the body part
                         }
                     }) //.then(response=> cartitem.variation = response.data)
                     .then((getResponse) => {
                         console.log(getResponse.data);
-                        $('#quoteTable').DataTable().ajax.reload()
                         // this.getProduct();
                         let toast = this.$toasted.show( this.catlogSaveForm.product_title + " has been added ", { 
                             theme: "toasted-primary", 
@@ -366,86 +324,12 @@
 
             },
 
-            deleteProduct: function (product_id) {
-                this.loading = true,
-                    axios({
-                        method: 'delete',
-                        url: '/api/products_add/',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': '{{ csrf_token }}'
-                        },
-                        data: {
-                            variation_id : product_id
-                            
-                        }
-                    })
-                     .then(response=> { 
-                        $('#quoteTable').DataTable().ajax.reload();
-                        $ToastSuccess(this, 'delete bhayo')
-                     })
-                     
-                    .catch(error => {
-                        this.loading = false;
-                        console.log(error);
-                        if(error.response){
-                           
-                            let toast = this.$toasted.show( error.response.data, { 
-                            theme: "bubble", 
-                            position: "top-right", 
-                            duration : 1500,
-                           
-                    });
-
-                     }
-                        console.log("Error while fetching market updates");
-                    });
-
-            },
-
-
-            addPurchase: function () {
-                this.loading = true,
-                    axios({
-                        method: 'post',
-                        url: '/api/PurchaseVariationBatchAPIView/',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': '{{ csrf_token }}'
-                        },
-                        data: {
-                            'fk_variation_id': this.purchaseForm.fk_variation_id,
-                            'expiry_date': this.purchaseForm.expiration_date,
-                            'fk_vendor_id': this.purchaseForm.fk_vendor_id,
-                            'purchase_date': this.purchaseForm.purchase_date,
-                            'batchno': this.purchaseForm.batchno,
-                            'quantity': this.purchaseForm.quantity,
-                            'use_batch': this.purchaseForm.use_batch ? 1 : 0, //this.purchaseForm.use_batch
-                            'price': this.purchaseForm.price,
-
-                            // This is the body part
-                        }
-                    }) //.then(response=> cartitem.variation = response.data)
-                    .then((getResponse) => {
-                        console.log(getResponse.data);
-                        // this.getProduct();
-                        this.loading = false;
-                        this.getProduct();
-
-                    })
-                    .catch(function (error) {
-                        this.loading = false;
-                        console.log(error);
-                        console.log("Error while fetching market updates");
-                    });
-
-            },
-
+       
         }, //end method
 
 
         mounted() {
-            window.VueDeleteProduct = this.deleteProduct;
+            // window.VueDeleteProduct = this.deleteProduct;
             this.getProduct();
             // this.getProduct();
             // this.loadGroupsData();

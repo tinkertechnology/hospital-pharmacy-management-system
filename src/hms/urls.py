@@ -113,6 +113,7 @@ from orders.views import (
                     purchaseDetail,
                     PurchaseOrderAPIView,
                     PurchaseItemOrderAPIView,
+                    AdjustmentAPIView,
                     )
 from orders.datatable import PurchaseDataTable
 from products.views import (
@@ -384,6 +385,7 @@ urlpatterns += [
     path('api/PurchaseVariationBatchAPIView/', PurchaseVariationBatchAPIView.as_view(), name="PurchaseVariationBatchAPIView"),
     path('api/PurchaseOrderAPIView/', PurchaseOrderAPIView.as_view(), name="PurchaseOrderAPIView"),
     path('api/PurchaseItemOrderAPIView/', PurchaseItemOrderAPIView.as_view(), name="PurchaseItemOrderAPIView"),
+    path('api/AdjustmentAPIView/', AdjustmentAPIView.as_view(), name="AdjustmentAPIView"),
     path('api/data', VariationDataTable.as_view(), name="VariationDataTable"),
     path('api/PurchaseDataTable', PurchaseDataTable.as_view(), name="PurchaseDataTable"),
     path('api/visits', VisitDataTable.as_view(), name="VisitDataTable"),

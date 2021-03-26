@@ -859,3 +859,62 @@ class PurchaseItemOrderAPIView(APIView):
 										)
 		return Response('Record has been Saved', status=200)
 
+
+
+#adjustment api
+from orders.models import Adjustment
+class AdjustmentAPIView(APIView):
+	def get(self, request, *args, **kwargs):
+		pass
+		# purchase_id = request.GET.get('purchase_id')
+		# purchase = Purchase.objects.filter(pk=purchase_id).first()
+		# data = {}
+		# serializer = PurchaseItemSerializer(purchase.purchaseitems.all(), many=True)
+		# data = {
+		# 	'purchase_item' : serializer.data,
+		# 	'total_purcahse' : purchase.subtotal,
+		# 	'purchase_date' : purchase.purchase_date,
+		# 	'bill_date' : purchase.bill_date,
+		# 	'bill_number' : purchase.bill_number,
+		# 	'fk_vendor_id' : purchase.fk_vendor_id,
+		# 	'fk_payment_method_id' : purchase.fk_payment_method_id,
+
+			
+		# }
+		# return Response(data)
+		
+	def post(self, request):
+		# purchaseitem_id = request.data.get('purchase_id')
+		fk_variation_batch_id = request.data.get('fk_variation_batch_id')
+		adjustment_date = request.data.get('purchase_date')
+		math = request.data.get('math')
+		quantity = request.data.get('quantity')
+		remarks = request.data.get('remarks')
+		var_batch_obj  = VariationBatch.objects.get(pk=fk_variation_batch_id)
+		if var_batch_obj:
+			adjustment_obj = Adjustment()
+			adjustment_obj.change_quantity = quantity
+			adjustment_obj.initial_quantity = var_batch_obj.quantity
+			if math=='plus':
+				var_batch_obj.quantity+= int(quantity)
+				adjustment_obj.final_quantity = var_batch_obj.quantity
+			if math=='minus':
+				deduct_res = var_batch_obj.quantity - int(quantity)
+				if deduct_res > 0:
+					var_batch_obj.quantity = deduct_res
+					adjustment_obj.final_quantity = var_batch_obj.quantity
+				else: 
+					return Response('Deduction not possible because Stock is less than entered quantity', status=400)
+			var_batch_obj.save()
+		
+		adjustment_obj.fk_variation_batch_id = fk_variation_batch_id
+		adjustment_obj.operation = math
+		adjustment_obj.adjustment_date = adjustment_date
+		adjustment_obj.remarks = remarks
+		adjustment_obj.save()					
+		return Response('success', status=200)
+
+	def delete(self, request):
+		instance = PurchaseItem.objects.get(id=request.data.get('purchaseitem_id'))
+		instance.delete()
+		return Response('Deleted', status=204)
