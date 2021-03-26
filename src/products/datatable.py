@@ -3,8 +3,9 @@ import django_filters
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
-from .models import Variation
+from .models import Variation, VariationBatch
 from products.filters import VariationFilter
+from .variationbatch_filter import VariationBatchFilter
 
 class UsersDataTableFilterSet(django_filters.FilterSet):
     class Meta:
@@ -148,4 +149,62 @@ class VariationDataTable(generics.ListAPIView):
 
 
 
+class VariationBatchDataTableSerializer(serializers.ModelSerializer):
+    code = serializers.SerializerMethodField()
+    title = serializers.SerializerMethodField()
+    generic_name = serializers.SerializerMethodField()
+    rack_no = serializers.SerializerMethodField()
+    company_name = serializers.SerializerMethodField()
+    class Meta:
+        model = VariationBatch
+        fields= '__all__'
+    
+    def get_code(self, obj):
+        code = "N/A"
+        if obj.fk_variation:
+            code = obj.fk_variation.code
+        return code
+    def get_title(self, obj):
+        title = "N/A"
+        if obj.fk_variation:
+            title = obj.fk_variation.title
+        return title
+
+    def get_generic_name(self, obj):
+        generic_name = "N/A"
+        if obj.fk_variation:
+            if obj.fk_variation.generic_name:
+                generic_name = obj.fk_variation.generic_name.title
+        return generic_name
+    def get_rack_no(self, obj):
+        rack_no = "N/A"
+        if obj.fk_variation:            
+            rack_no = obj.fk_variation.rack_number
+        return rack_no   
+    def get_company_name(self, obj):
+        company_name = "N/A"
+        if obj.fk_variation:
+            if obj.fk_variation.company:
+                generic_name = obj.fk_variation.company.title
+        return company_name    
+
+class VariationBatchTable(generics.ListAPIView):
+    serializer_class = VariationBatchDataTableSerializer
+    pagination_class = DataTablePagination
+    filterset_class = VariationBatchFilter
+
+    filter_backends = [
+                filters.SearchFilter, 
+                filters.OrderingFilter, 
+                DjangoFilterBackend
+                ]
+    # search_fields = ["title", "description"] // old version
+    filterset_fields = ["fk_variation__title"]
+    ordering_fields  = ["id"]
+    #ordering_fields = '__all__'
+    # filterset_fields = ['title']
+    #ordering = ['id']
+    def get_queryset(self):
+        print(self.request)
+        return VariationBatch.objects.all().order_by('-id')
 

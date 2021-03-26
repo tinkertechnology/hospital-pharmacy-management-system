@@ -47,6 +47,10 @@
             .your-custom-class {
             background-color: #59b460 !important; 
             }
+            .v-select .dropdown-menu {
+  display:block;
+}
+
             .styled-table {
             border-collapse: collapse;
             margin: 25px 0;
@@ -80,11 +84,15 @@
         </style>
         <!-- Init the plugin -->
         <!-- development version, includes helpful console warnings -->
-        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script> -->
+        <script src="https://unpkg.com/vue@latest"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue-toasted"></script>
-        <script src="https://unpkg.com/vue-select@3.0.0"></script>
-        <link rel="stylesheet" href="https://unpkg.com/vue-select@3.0.0/dist/vue-select.css">
+        <script src="https://unpkg.com/vue@latest"></script>
+
+        <!-- use the latest vue-select release -->
+        <script src="https://unpkg.com/vue-select@latest"></script>
+        <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
     </head>
     <body data-layout="horizontal">
         <div id="wrapper">
@@ -336,7 +344,8 @@
                                     <a href="#"> <i class="mdi mdi-home-map-marker"></i>Catalogue
                                     </a>
                                     <ul class="submenu">
-                                        <li><a href="/hmsproducts">Drug List</a></li>
+                                        <li><a href="/hmsproducts">Catalogue</a></li>
+                                        <li><a href="/hmsdruglist">Drug List</a></li>
                                         <li><a href="/vendor/">Supplier List</a></li>
                                         <li><a href="/CustomerPatientUserList">Patient List</a></li>
                                         <li><a href="/api/VisitAPIView/">Visit List</a></li>
@@ -663,9 +672,7 @@
                             opacity: 0.8;
                             filter: alpha(opacity=40);
                             }
-                            .v-select .dropdown-menu {
-  display:block;
-}
+                            
                         </style>
                         {% endblock %}
                     </div>

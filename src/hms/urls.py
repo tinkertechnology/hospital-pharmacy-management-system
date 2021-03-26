@@ -132,6 +132,8 @@ from products.views import (
         ProductVariationRetrieveAPIView,
         VariationByPatientAPIView,
         hmsproducts,
+        hmsdruglists,
+        hmsproduct_detail,
         adjustments,
         datatable,
         hmsvariations,
@@ -324,7 +326,8 @@ handler500 = views.handler500
 
 
 from orders.invoice import GeneratePDF, GenerateFullPDF
-from products.datatable import VariationDataTable
+from products.datatable import VariationDataTable, VariationBatchTable
+
 from account.visit_datatable import VisitDataTable
 urlpatterns += [
     path(r'admin/', admin.site.urls),
@@ -362,6 +365,8 @@ urlpatterns += [
     path('carts', carts, name="carts"),
     path('cartitems', cartitems, name="cartitems"),
     path('hmsproducts/', hmsproducts, name="hmsproducts"),
+    path('hmsdruglists/', hmsdruglists, name="hmsdruglists"),
+    path('hmsproduct_detail/<int:id>/', hmsproduct_detail, name="hmsproduct_detail"),
     path('adjustments/', adjustments, name="adjustments"),
     path('datatable/', datatable, name="datatable"),
     path('hmsvariations/<int:id>/', hmsvariations, name="hmsvariations"),
@@ -387,6 +392,7 @@ urlpatterns += [
     path('api/PurchaseItemOrderAPIView/', PurchaseItemOrderAPIView.as_view(), name="PurchaseItemOrderAPIView"),
     path('api/AdjustmentAPIView/', AdjustmentAPIView.as_view(), name="AdjustmentAPIView"),
     path('api/data', VariationDataTable.as_view(), name="VariationDataTable"),
+    path('api/VariationBatchTable', VariationBatchTable.as_view(), name="VariationBatchTable"),
     path('api/PurchaseDataTable', PurchaseDataTable.as_view(), name="PurchaseDataTable"),
     path('api/visits', VisitDataTable.as_view(), name="VisitDataTable"),
 

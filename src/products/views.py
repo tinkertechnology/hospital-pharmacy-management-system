@@ -337,6 +337,30 @@ def hmsproducts(request):
 	}
 	return render(request, "personal/dashboard_layout/products.html", context)
 
+def hmsdruglists(request):
+	context = {
+			'title' : 'HMS DrugList',
+			'products' : Variation.objects.all(),
+			'suppliers' : Vendor.objects.all(),
+			'manufacturers' : Company.objects.all(),
+			'generics' : GenericName.objects.all(),
+			'brands' : Brand.objects.all(),
+			'counters' : Counter.objects.all(),
+		}
+	return render(request, "personal/dashboard_layout/hmsdruglists.html", context)
+
+def hmsproduct_detail(request, id):
+	context = {
+		'title' : 'HMS products',
+		'products' : Variation.objects.all(),
+		'suppliers' : Vendor.objects.all(),
+		'manufacturers' : Company.objects.all(),
+		'generics' : GenericName.objects.all(),
+		'brands' : Brand.objects.all(),
+		'counters' : Counter.objects.all(),
+	}
+	return render(request, "personal/dashboard_layout/hmsproduct_detail.html", context)
+
 def hmsvariations(request, id):
 	context = {
 		'product_id' : id
