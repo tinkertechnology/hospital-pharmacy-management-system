@@ -3,10 +3,11 @@
 
 {% load static %}
 
+{% block page_title %} Dashboard {% endblock %}
 {% block content %}
 
 
-<div class="row">
+<div class="row" id="pos">
     <div class="col-xl-3 col-md-6">
         <div class="card widget-box-one border border-primary bg-soft-primary">
             <div class="card-body">
@@ -91,6 +92,31 @@
                                 <input type="text" class="form-control" placeholder="Enter Patient Name" name="patient" id="fk_customer_user">
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="form-group ">
+                                <label>Visit Type</label>
+                                <select name="visit_type" id="visit_type" class="form-control">
+                                    <option value="">Select</option>
+                                    {% for visit_type in visit_types %}
+                                        <option value="{{visit_type.id}}">
+                                                {{visit_type.title}}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <!-- <input type="text" class="form-control" placeholder="Enter Patient Name" name="patient" id="visit_type"> -->
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="form-group ">
+                                <label>Status</label>
+                               <select class="form-control" id="visit_status" name="visit_status">
+                                   <option value="">Select</option>
+                                   <option value="0">Pending</option>
+                                   <option value="1">Completed</option>
+                               </select>
+                            </div>
+                        </div>
                     </div>             
                 </div>
             </div>
@@ -110,6 +136,8 @@
                                 <th>Doctor</th>
                                 <th>Appoint Date</th>
                                 <th>Visit</th>
+                                <th>Visit Status</th>
+                                <th>Checkout</th>
                                 <th>Actions</th>
                             </thead>
                         </table>
@@ -200,7 +228,9 @@ $(document).ready(function () {
                 data.patient_fullname = $('#fk_customer_user').val();
                 data.code = $('#code').val();
                 data.visit_id = $('#visit_id').val();
+                data.visit_type = $('#visit_type').val()
                 data.columns=null; //modify ajax request to make less cluttered
+                data.visit_status = $('#visit_status').val();
                 //added page required for django
                 //start offset dont work
                 data.page = (data.start + data.length) / data.length ;
@@ -239,9 +269,29 @@ $(document).ready(function () {
                 "searchable": true,
                 "orderable": true
             },
+            {
+                "data": "visit_status",
+                "searchable": true,
+                "orderable": true
+            },
+            {
+                "data": "checkout_at",
+                "searchable": true,
+                "orderable": true
+            },
             
-            
-           
+           {
+            // "targets": [7],
+            "data": null,
+            "className": "action-link",
+            "render": function (data, type, full) {
+                return ' <button class="btb btn-danger" onclick="VueDeleteVisit('+data.id+')">X</button> ' +
+                        '<a href="/carts?visit_id='+ data.id +'" class="btn btn-sm btn-bordered-primary waves-effect waves-light btn-secondary">view</a>'+
+                        '<button class="btm btn-primary" onclick="VuechangeVisit('+data.id+')">complete </button>'
+                    ;
+            }
+        },
+
             //// related data filed inside
             // {
             //     "data": "fk_quotestatus.name",
@@ -255,17 +305,7 @@ $(document).ready(function () {
         "order": [ [1, "desc"]],
         
         // add extra col at index
-        "columnDefs": [{
-            "targets": [6],
-            "data": null,
-            "className": "action-link",
-            "render": function (data, type, full) {
-                return ' <button class="btb btn-danger" onclick="VueDeleteVisit('+data.id+')">X</button> ' +
-                        '<a href="/carts?visit_id='+ data.id +'" class="btn btn-sm btn-bordered-primary waves-effect waves-light btn-secondary">view</a>'+
-                        '<a href="/carts?visit_id='+ data.id +'" class="mdi mdi-billboard">edit</a>'
-                    ;
-            }
-        }],
+       
     }); //end datatable
 
     $('#id').keyup(function () {
@@ -285,6 +325,15 @@ $(document).ready(function () {
     $('#fk_customer_user').keyup(function(){
         timetable.draw();
     });
+    $('#visit_type').change(function() {        
+        timetable.draw();
+
+    $('#visit_status').change(function() {        
+        timetable.draw();
+    });
+        
+    // $(this).val() will work here
+});
     //$('#fk_customer').select2();        
 
 });
@@ -406,11 +455,32 @@ $(document).ready(function () {
 
         },
 
-        
-        
-        
+        changeVisit: function(visit_id){
+            this.loading= true,
+                axios({
+                method: 'Post',
+                url:  '/api/VisitAPIView/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                  visit_id : visit_id
+                  // This is the body part
+                }
+                }) //.then(response=> cartitem.variation = response.data)
+                .then((getResponse) => {
+                    console.log(getResponse.data);
+                    $('#visitTable').DataTable().ajax.reload();
+                    $ToastSuccess(this, getResponse.data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    console.log("Error while fetching market updates");
+                    $.notify("Fail to remove item! ", "error");
+                });
+        },
 
-        
       }, //end method
       
 
@@ -418,6 +488,7 @@ $(document).ready(function () {
 
       mounted() {
         window.VueDeleteVisit = this.removeVisit;
+        window.VuechangeVisit = this.changeVisit;
 
       },
     })

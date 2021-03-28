@@ -987,6 +987,13 @@ class VisitAPIView(APIView):
 		
 	def post(self, request):
 		print(request.data)
+		visit_id = request.data.get('visit_id')
+		if visit_id: #only for visit status change
+			visit_obj = Visit.objects.filter(pk=visit_id).first()
+			visit_obj.visit_status = True #status True is completed and False is pending 1 and 0
+			visit_obj.checkout_at = datetime.datetime.now()
+			visit_obj.save()
+			return Response('Visit Status changed', status=200)
 		fk_customer_user_id = request.data.get('fk_customer_user_id')
 		fk_doctor_user_id =  request.data.get('fk_doctor_user_id')
 		remarks =  request.data.get('remarks')

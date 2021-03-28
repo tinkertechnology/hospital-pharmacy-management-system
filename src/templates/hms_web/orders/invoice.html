@@ -41,7 +41,7 @@
 </style>
     <div class="tg-wrap">
         <!-- <table class="tg" style="table-layout: fixed; width: 800px"> -->
-        <table border="0" style="font-family: sans-serif, serif; font-size: 14px; padding: 0px;table-layout:fixed;word-wrap:break-word">
+        <table border="0.1" style="font-family: sans-serif, serif; font-size: 14px; padding: 2px;table-layout:fixed;word-wrap:break-word">
             <!-- <colgroup>
                 <col style="width: 54px">
                 <col style="width: 136px">
@@ -67,16 +67,15 @@
                     <td class="tg-p2m5" colspan="7">INVOICE [ {{cart.fk_counter.name}} ]</td>
                 </tr>
                 <tr style="padding-top: 4px;">
-                    <td class="tg-0pky" colspan="2">Invoice No:<br>Patient ID:<br>Patient Name:<br>Patient Address:</td>
-                    <td class="tg-0pky" colspan="3">{{cart.id}}<br>{{cart.user.customer_id}}<br>{{cart.user.firstname}} {{cart.user.lastname}}<br>Kamalbinayak</td>
-                    <td class="tg-0pky" >Invoice Date:<br>Contact No:</td>
-                    <td style="text-align:left;">{{cart.timestamp|date:"Y M d"}}<br>{{carts.first.user.mobile}}</td> <br>  
-                    <td class="tg-0pky" >Mode:{{cart.fk_payment_method.title}} </td><br>
-                  
+                    <td class="tg-0pky" colspan="2">Invoice No:<br>Patient ID:<br>Patient Name:<br>Patient Address: <br> Doctor: <br> VID: </td>
+                    <td class="tg-0pky" colspan="3"><br>{{cart.id}}<br>{{cart.user.customer_id}}<br>{{cart.user.firstname}} {{cart.user.lastname}}<br>  Kamalbinayak <br> {{cart.fk_visit.fk_doctor_user.firstname}} {{cart.fk_visit.fk_doctor_user.lastname}} <br> {{visit_id}} <br></td>
+                    <td class="tg-0pky" >Invoice Date:<br>Contact No: <br> Payment:</td>
+                    <td style="text-align:left;">{{cart.timestamp|date:"Y M d"}}<br>{{carts.first.user.mobile}} <br>{{cart.fk_payment_method.title}}</td> <br>                                
+                    <!-- <td class="tg-0pky"> </td>   -->
                 </tr>
+
                 <tr>
-                    <td class="tg-0pky" >VID: {{visit_id}}</td>
-                   
+                   <td class="tg-0pky" colspan="7" > <center><b>Bill details </b> </center></td>                   
                 </tr>
                
                 <tr style="padding-top: 8px;">
@@ -101,31 +100,31 @@
 
                 {% if cart.transactions.all %}
                 <tr style="padding-top: 8px;">
-                    <td col-span="4" class="tg-0pky"> Other Transactions</td></tr>
+                    <td class="tg-0pky" colspan="7" > <center><b>Other Transactions </b></center></td>
+                </tr>
                 <tr style="padding-top: 8px;">
                     <td class="tg-0pky">S.No.</td>
                     <td class="tg-0pky">Type</td>
-                    <td class="tg-0pky">Amount</td>                    
+                    <td class="tg-0pky">Amount</td> 
+                    <td class="tg-0pky" colspan="4">Remarks</td> 
+                                       
                 </tr>
                {% for transaction in cart.transactions.all %}
                 <tr>
                     <td class="tg-0pky">{{ forloop.counter }}</td>
                     <td class="tg-0pky">{{ transaction.fk_type.title }}</td>
                     <td class="tg-0pky">{{ transaction.amount }}</td>
-                    <td class="tg-0pky">{{transaction.comment}}</td>
+                    <td class="tg-0pky" colspan="4">{{transaction.comment}}</td>
                 </tr>
                 {% endfor %}
                 <tr>
-                    <td class="tg-0pky">Total : {{cart.transaction_total}}</td>
+                    <td class="tg-0pky" colspan="7"> <b><center>Total : Nrs. {{cart.transaction_total}}</center></b></td>
+                    
                 </tr>
                 {% endif %}
 
                
-                <tr class="padding-top: 20px;">
-                    <td class="tg-c3ow" colspan="5" rowspan="2">In Words (NPR) : {{total_in_words}} only</td>
-                    <td class="tg-0pky">Total {% if cart.tax_percentage > 0 %}Taxable{% endif %} Amount</td>
-                    <td class="tg-0pky">{{cart.subtotal}}</td>
-                </tr>
+               
                {% if cart.tax_percentage > 0 %}
                 <tr>
                     <td class="tg-0pky">{{cart.tax_percentage}}% VAT</td>
@@ -137,18 +136,20 @@
                     <td class="tg-0pky">{{cart.total}}</td>
                 </tr>
                
-                {% endif %}
-                <tr>
-                    
-                    <td class="tg-0pky">G. Total Amount</td>
-                    <td class="tg-0pky">{{grand_total}}</td>
-                    
+                {% endif %}               
+                <tr class="padding-top: 20px;">
+                    <td class="tg-c3ow" colspan="5" rowspan="2">In Words (NPR) : {{total_in_words}} only</td>
+                    <td class="tg-0pky" colspan="2"> Calculations </td>
+                   {% comment %} <td class="tg-0pky">Total {% if cart.tax_percentage > 0 %}Taxable{% endif %} Amount</td>
+                    <td class="tg-0pky">{{cart.subtotal}}</td> {% endcomment %}
                 </tr>
                 {% if cart.transaction_total > 0 %}
                 <tr style="text-align: right;">
                     
-                        <td class="tg-0pky">Discount/other </td>
-                        <td class="tg-0pky">{{cart.transaction_total }}</td>
+                        <td class="tg-0pky"> Amount <br> Discount/other <br> Net Total : <br>  </td>
+                        <td class="tg-0pky">{{cart.subtotal}} <br> -{{cart.transaction_total }} <br>{{grand_total}}</td>
+                        
+                        
                 </tr>
                 {% endif %}
             </tbody>

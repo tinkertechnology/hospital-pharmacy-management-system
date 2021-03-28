@@ -43,6 +43,8 @@ class VariationDataTableSerializer(serializers.ModelSerializer):
     patient_fullname = serializers.SerializerMethodField()
     doctor_fullname = serializers.SerializerMethodField()
     visit_type = serializers.SerializerMethodField()
+    visit_status = serializers.SerializerMethodField()
+
     class Meta:
         model = Visit
         fields= '__all__'
@@ -69,7 +71,13 @@ class VariationDataTableSerializer(serializers.ModelSerializer):
         visit_type = ''
         if obj.fk_visit:
             return obj.fk_visit.title
-            
+    def get_visit_status(self,obj):
+        visit_status = ''
+        if obj.visit_status:
+            visit_status = "Completed"
+            return visit_status
+        visit_status = "Pending"
+        return visit_status
 
 
 

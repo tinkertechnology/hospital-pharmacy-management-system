@@ -1,7 +1,7 @@
 {% extends 'personal/dashboard_layout/app.html' %}
 
 {% load static %}
-
+{% block page_title %} Register New Visit {% endblock %}
 {% block content %}
 <div id="add_visit">
     <div class="row">
@@ -86,7 +86,7 @@
                 <!-- end row -->
     
         </div>
-        <div class="col-md-8">
+        <!-- <div class="col-md-8">
             <div class="card-box">
                 <h4 class="header-title mb-4">Default Tabs</h4>
 
@@ -136,7 +136,7 @@
                 </div>
 
             </div>
-        </div>
+        </div> -->
     </div>
 
         <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"  style="display: none;">
@@ -301,7 +301,7 @@
                     </div>
             
         </div>
-</div>
+        </div>
 
 
 {% endblock %}
@@ -400,7 +400,7 @@
                                'X-CSRFToken': '{{ csrf_token }}'
                            }, 
                data: {
-                    fk_customer_user_id: this.fk_customer_user_id,
+                    fk_customer_user_id: this.fk_customer_user_id.id,
                     fk_doctor_user_id : this.fk_doctor_user_id,
                     // appointmentDate : '2020-01-01', //this.appointmentDate,
                     appointmentDate : this.customerForm.appointmentDate,

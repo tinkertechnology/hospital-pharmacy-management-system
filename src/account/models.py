@@ -73,7 +73,7 @@ class Account(AbstractBaseUser):
 	fk_gender					= models.ForeignKey(Gender, null=True, blank=True, on_delete=models.CASCADE)
 	firebase_token          = models.CharField(max_length=500, null=True, blank=True)
 	customer_id				= models.CharField(max_length=100, null=True, blank=True)
-	emergency_number        = models.CharField(validators=[phone_regex],max_length=15, unique=True, null=True)
+	emergency_number        = models.CharField(max_length=10,unique=False, null=True, blank=True)
 	fk_country				= models.ForeignKey(Country, on_delete=models.CASCADE, null=True,blank=True)
 	fk_state				= models.ForeignKey(State, on_delete=models.CASCADE, null=True,blank=True)
 	fk_district				= models.ForeignKey(District, on_delete=models.CASCADE, null=True,blank=True)
@@ -140,11 +140,11 @@ class VisitType(models.Model):
 
 class Visit(models.Model):
 	fk_customer_user = models.ForeignKey(Account, related_name="fk_customer_user", on_delete=models.CASCADE)
-	fk_doctor_user = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="doctors_assigned")
+	fk_doctor_user = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="doctors_assigned", null=True, blank=True)
 	appointment_date = models.DateField(null=True, blank=True)
 	remarks = models.CharField(max_length=200, null=True, blank=True)
 	timestamp = models.DateTimeField(verbose_name='visit date', auto_now_add=True, null=True)
-	visit_status = models.BooleanField(default=0, null=True, blank=True)
+	visit_status = models.BooleanField(default=False, null=True, blank=True)
 	checkout_at = models.DateTimeField(verbose_name='visit out time',null=True, blank=True)
 	fk_visit = models.ForeignKey(VisitType, null=True, blank=True, on_delete=models.CASCADE)
 	visit_id = models.CharField(null=True, blank=True, max_length=100)

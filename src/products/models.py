@@ -137,38 +137,6 @@ class VariationBatch(models.Model):
 	def __str__(self):
 		return '%s-%s' %(self.fk_variation.title, self.batchno)
 
-def query_musics_by_args(**kwargs):
-	draw = int(kwargs.get('draw', None)[0])
-	length = int(kwargs.get('length', None)[0])
-	start = int(kwargs.get('start', None)[0])
-	search_value = kwargs.get('search[value]', None)[0]
-	order_column = kwargs.get('order[0][column]', None)[0]
-	order = kwargs.get('order[0][dir]', None)[0]
-
-	order_column = ORDER_COLUMN_CHOICES[order_column]
-	# django orm '-' -> desc
-	if order == 'desc':
-		order_column = '-' + order_column
-
-	queryset = VariationBatch.objects.all()
-	total = queryset.count()
-
-	if search_value:
-		queryset = queryset.filter(Q(id__icontains=search_value) |
-										Q(song__icontains=search_value) |
-										Q(singer__icontains=search_value) |
-										Q(last_modify_date__icontains=search_value) |
-										Q(created__icontains=search_value))
-
-	count = queryset.count()
-	queryset = queryset.order_by(order_column)[start:start + length]
-	return {
-		'items': queryset,
-		'count': count,
-		'total': total,
-		'draw': draw
-	}
-
 
 
 

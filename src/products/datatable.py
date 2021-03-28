@@ -1,11 +1,14 @@
 # from django_filters import FilterSet
 import django_filters
 from rest_framework import filters
+from rest_framework import serializers
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from .models import Variation, VariationBatch
 from products.filters import VariationFilter
 from .variationbatch_filter import VariationBatchFilter
+from rest_framework import pagination
+from rest_framework.response import Response
 
 class UsersDataTableFilterSet(django_filters.FilterSet):
     class Meta:
@@ -38,13 +41,11 @@ class ProductFilter(django_filters.FilterSet):
 #         #filter_fields = __all__
     
 
-from rest_framework import serializers
 class VariationDataTableSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Variation
 		fields= '__all__'
-from rest_framework import pagination
-from rest_framework.response import Response
+
 # https://github.com/encode/django-rest-framework/blob/master/rest_framework/pagination.py
 # see fields to overide from PageNumberPagination
 class DataTablePagination(pagination.PageNumberPagination):
@@ -207,4 +208,6 @@ class VariationBatchTable(generics.ListAPIView):
     def get_queryset(self):
         print(self.request)
         return VariationBatch.objects.all().order_by('-id')
+
+
 

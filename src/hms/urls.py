@@ -114,8 +114,9 @@ from orders.views import (
                     PurchaseOrderAPIView,
                     PurchaseItemOrderAPIView,
                     AdjustmentAPIView,
+                    generate_pdf,
                     )
-from orders.datatable import PurchaseDataTable
+from orders.datatable import PurchaseDataTable, AdjustmentDataTable
 from products.views import (
         # APIHomeView,
         CategoryListAPIView,
@@ -378,6 +379,10 @@ urlpatterns += [
     path('patient/detail/<int:id>/', patient_detail, name="patient_detail"),    
     path('api/VisitAPIView/', VisitAPIView.as_view(), name="VisitAPIView"),
     path('api/send_invoice_pdf/<int:cart_id>/',GeneratePDF.as_view(), name='pdf_send_email'),
+
+    # path('api/send_invoice_pdf/<int:cart_id>/', generate_pdf, name='generate_pdf'),
+
+
     path('api/full_bill/<int:cart_id>/',GenerateFullPDF.as_view(), name='pdf_send_email'),
     path('api/patients/', PatientUserListAPIView.as_view(), name="patients-lists"),
     path('CustomerPatientUserList', CustomerPatientUserList.as_view(), name="CustomerPatientUserList"),
@@ -394,6 +399,7 @@ urlpatterns += [
     path('api/data', VariationDataTable.as_view(), name="VariationDataTable"),
     path('api/VariationBatchTable', VariationBatchTable.as_view(), name="VariationBatchTable"),
     path('api/PurchaseDataTable', PurchaseDataTable.as_view(), name="PurchaseDataTable"),
+    path('api/AdjustmentDataTable', AdjustmentDataTable.as_view(), name="AdjustmentDataTable"),
     path('api/visits', VisitDataTable.as_view(), name="VisitDataTable"),
 
     # path('api/address', GetSDLdata.as_view(), name="GetSDLdata"),

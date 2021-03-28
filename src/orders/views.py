@@ -40,6 +40,8 @@ from counter.models import Counter
 from address.models import Country
 from vendor.models import Vendor
 from decimal import Decimal
+import pdfkit
+from django.template.loader import get_template
 User = get_user_model()
 
 
@@ -93,7 +95,24 @@ class OrderListAPIView(ListAPIView):
 
 
 
+def generate_pdf(request, cart_id):
+	# invoice = get_object_or_404(Invoice, pk=invoice_id, created_by=request.user)
+	# team = Team.objects.filter(created_by=request.user).first()
 
+	template_name = 'orders/pdf.html'
+
+	# if invoice.is_credit_for:
+	# 	template_name = 'pdf_creditnote.html'
+
+	template = get_template(template_name)
+	# html = template.render({'invoice': invoice, 'team': team})
+	html = template.render({'invoice': '1234', 'team': '123'})
+	pdf = pdfkit.from_string(html, False, options={})
+
+	response = HttpResponse(pdf, content_type='application/pdf')
+	response['Content-Disposition'] = 'attachment; filename="invoice.pdf"'
+
+	return response
 
 
 
@@ -886,10 +905,16 @@ class AdjustmentAPIView(APIView):
 	def post(self, request):
 		# purchaseitem_id = request.data.get('purchase_id')
 		fk_variation_batch_id = request.data.get('fk_variation_batch_id')
-		adjustment_date = request.data.get('purchase_date')
+		# adjustment_date = request.data.get('purchase_date')
 		math = request.data.get('math')
+		print('math', math)
 		quantity = request.data.get('quantity')
 		remarks = request.data.get('remarks')
+		if not math:
+			return Response('Please select operation for adjustment', status=400)
+		if not quantity:
+			return Response('Please input quantity for adjustment', status=400)
+
 		var_batch_obj  = VariationBatch.objects.get(pk=fk_variation_batch_id)
 		if var_batch_obj:
 			adjustment_obj = Adjustment()
@@ -909,7 +934,7 @@ class AdjustmentAPIView(APIView):
 		
 		adjustment_obj.fk_variation_batch_id = fk_variation_batch_id
 		adjustment_obj.operation = math
-		adjustment_obj.adjustment_date = adjustment_date
+		# adjustment_obj.adjustment_date = adjustment_date
 		adjustment_obj.remarks = remarks
 		adjustment_obj.save()					
 		return Response('success', status=200)

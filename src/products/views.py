@@ -18,7 +18,6 @@ from rest_framework.views import APIView
 from vendor.models import Vendor
 from rest_framework.generics import CreateAPIView, ListAPIView,ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
 from products.serializers import VariationSerializer
-from .models import query_musics_by_args
 from counter.models import Counter
 # from store.service import getUserStoreService
 # Create your views here.
@@ -373,6 +372,7 @@ def datatable(request):
 
 def adjustments(request):
 	context = {
+		'page_title' : 'Adjustments',
 		'products' : Variation.objects.all(),
 	}
 	return render(request, "personal/dashboard_layout/adjustment.html", context)
