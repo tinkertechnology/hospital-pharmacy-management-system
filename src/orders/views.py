@@ -706,6 +706,7 @@ def carts(request):
 	user_id = request.GET.get('user_id')
 	visit_id = request.GET.get('visit_id')
 	user = User.objects.filter(pk=user_id).first()
+	carts = None
 	if user_id:
 		# user = User.objects.get(pk=user_id)
 		carts = Cart.objects.order_by('-id').filter(user_id=user_id)
