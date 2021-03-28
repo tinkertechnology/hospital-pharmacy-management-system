@@ -58,8 +58,9 @@ from account.views import (
     visit_type_index,
     visit_type_add,
     visit_type_edit,
-    PatientDetailAPIView
+    PatientDetailAPIView,
 )
+from account.patient_datatable import PatientDataTable
 
 
 
@@ -134,6 +135,7 @@ from products.views import (
         VariationByPatientAPIView,
         hmsproducts,
         hmsdruglists,
+        drugprice_special,
         hmsproduct_detail,
         adjustments,
         datatable,
@@ -368,6 +370,7 @@ urlpatterns += [
     path('hmsproducts/', hmsproducts, name="hmsproducts"),
     path('hmsdruglists/', hmsdruglists, name="hmsdruglists"),
     path('hmsproduct_detail/<int:id>/', hmsproduct_detail, name="hmsproduct_detail"),
+    path('drugprice_special/', drugprice_special, name="drugprice_special"),
     path('adjustments/', adjustments, name="adjustments"),
     path('datatable/', datatable, name="datatable"),
     path('hmsvariations/<int:id>/', hmsvariations, name="hmsvariations"),
@@ -401,6 +404,8 @@ urlpatterns += [
     path('api/PurchaseDataTable', PurchaseDataTable.as_view(), name="PurchaseDataTable"),
     path('api/AdjustmentDataTable', AdjustmentDataTable.as_view(), name="AdjustmentDataTable"),
     path('api/visits', VisitDataTable.as_view(), name="VisitDataTable"),
+    path('api/PatientDataTable', PatientDataTable.as_view(), name="PatientDataTable"),
+    
 
     # path('api/address', GetSDLdata.as_view(), name="GetSDLdata"),
     re_path(r'^api/address/', include('address.urls')),

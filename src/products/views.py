@@ -149,6 +149,7 @@ class VariationBatchAPIView(APIView):
 		# variation_by_counter = Variation.objects.filter(fk_counter_id=request.session['counter']).values_list('id')
 		# print(variation_by_counter)
 		adjustment_purpose = request.GET.get('adjustment')
+		
 		if adjustment_purpose:
 			var = Response(VariationBatchSerializer(VariationBatch.objects.all(), many=True).data)
 			return var
@@ -347,6 +348,18 @@ def hmsdruglists(request):
 			'counters' : Counter.objects.all(),
 		}
 	return render(request, "personal/dashboard_layout/hmsdruglists.html", context)
+
+def drugprice_special(request):
+	context = {
+			'title' : 'Price setup / Special Users',
+			'products' : Variation.objects.all(),
+			'suppliers' : Vendor.objects.all(),
+			'manufacturers' : Company.objects.all(),
+			'generics' : GenericName.objects.all(),
+			'brands' : Brand.objects.all(),
+			'counters' : Counter.objects.all(),
+		}
+	return render(request, "personal/dashboard_layout/drugprice.html", context)
 
 def hmsproduct_detail(request, id):
 	context = {

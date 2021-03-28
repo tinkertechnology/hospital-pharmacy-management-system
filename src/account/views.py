@@ -897,6 +897,7 @@ class CustomerPatientUserList(ListView):
 	def get_context_data(self, **kwargs):
 		context = super(CustomerPatientUserList, self).get_context_data(**kwargs)
 		context['patient_types'] = UserTypes.objects.all()
+		context['page_title'] = "Customers"
 		# context['filter'] = self.request.GET.get('filter', 'give-default-value')
 		# context['orderby'] = self.request.GET.get('orderby', 'give-default-value')
 
