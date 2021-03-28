@@ -33,6 +33,7 @@ class GeneratePDF(APIView):
 			'total_in_words':total_in_words,
 			'hospital_info' : hospital_info,
 			'visit_id': visit_id,
+			'times_to_print' : range(2), 
 		}
 
 		mail = EmailMessage(

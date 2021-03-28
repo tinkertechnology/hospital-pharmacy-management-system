@@ -41,6 +41,8 @@
 </style>
     <div class="tg-wrap">
         <!-- <table class="tg" style="table-layout: fixed; width: 800px"> -->
+        {% for time in times_to_print  %}
+        
         <table border="0.1" style="font-family: sans-serif, serif; font-size: 14px; padding: 2px;table-layout:fixed;word-wrap:break-word">
             <!-- <colgroup>
                 <col style="width: 54px">
@@ -64,7 +66,7 @@
                     <td class="tg-c3ow" colspan="7">{{hospital_info.address}}, Phone No: {{hospital_info.phone}}<br>Email: accounts@inlinetech.com.np<br>VAT Registration No: {{hospital_info.pan}}</td>
                 </tr>
                 <tr style="text-align: center; font-size: 18px; font-weight: bold; padding-top: 4px;">
-                    <td class="tg-p2m5" colspan="7">INVOICE [ {{cart.fk_counter.name}} ]</td>
+                    <td class="tg-p2m5" colspan="7">INVOICE [ {{cart.fk_counter.name}} ]  {%  ifequal forloop.counter 2 %} Customer copy {% endifequal  %}</td>
                 </tr>
                 <tr style="padding-top: 4px;">
                     <td class="tg-0pky" colspan="2">Invoice No:<br>Patient ID:<br>Patient Name:<br>Patient Address: <br> Doctor: <br> VID: </td>
@@ -118,8 +120,7 @@
                 </tr>
                 {% endfor %}
                 <tr>
-                    <td class="tg-0pky" colspan="7"> <b><center>Total : Nrs. {{cart.transaction_total}}</center></b></td>
-                    
+                    <td class="tg-0pky" colspan="7"> <b><center>Total : Nrs. {{cart.transaction_total}}</center></b></td>                    
                 </tr>
                 {% endif %}
 
@@ -140,20 +141,24 @@
                 <tr class="padding-top: 20px;">
                     <td class="tg-c3ow" colspan="5" rowspan="2">In Words (NPR) : {{total_in_words}} only</td>
                     <td class="tg-0pky" colspan="2"> Calculations </td>
-                   {% comment %} <td class="tg-0pky">Total {% if cart.tax_percentage > 0 %}Taxable{% endif %} Amount</td>
-                    <td class="tg-0pky">{{cart.subtotal}}</td> {% endcomment %}
+                   {% comment %} 
+                   <td class="tg-0pky">Total {% if cart.tax_percentage > 0 %}Taxable{% endif %} Amount</td>
+                    <td class="tg-0pky">{{cart.subtotal}}</td> 
+                    {% endcomment %}
                 </tr>
-                {% if cart.transaction_total > 0 %}
+                
                 <tr style="text-align: right;">
-                    
+                       
                         <td class="tg-0pky"> Amount <br> Discount/other <br> Net Total : <br>  </td>
-                        <td class="tg-0pky">{{cart.subtotal}} <br> -{{cart.transaction_total }} <br>{{grand_total}}</td>
+                        <td class="tg-0pky">Rs. {{cart.subtotal}} <br>  {% if cart.transaction_total > 0 %} - Rs. {{cart.transaction_total }} {% else %} 0.0  {% endif %} <br> Rs. {{grand_total}}</td>
                         
-                        
+                       
                 </tr>
-                {% endif %}
+               
             </tbody>
         </table>
+
+        {% endfor %}
     </div>
 </body>
 </html> 
