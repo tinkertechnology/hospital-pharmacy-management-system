@@ -3,10 +3,12 @@
 
 {% load static %}
 
-
+{% block page_title %}{{page_title}} {% endblock %}
 {% block content %}
 
 <div class="col-sm-12" id="pos">
+    
+    {% comment %}
     <div class="card-box table-responsive">
         <div class="col-lg-12">
             <div class="demo-box p-2">
@@ -74,9 +76,10 @@
             </div>
         </div>
     </div>
-</div>
+    {% endcomment %}
 
-<!-- Add new customer modal start -->
+{% comment %}
+    <!-- Add new customer modal start -->
 <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -217,7 +220,56 @@
     </div>
 </div>
 <!-- /.modal -->
+{% endcomment %}
  
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card-box">   
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group ">
+                                <label>Customer ID</label>
+                                <input type="text" class="form-control" placeholder="Enter Visit ID" name="customer_id" id="customer_id">
+                            </div>
+                        </div>
+    
+                        <div class="col-md-3">
+                            <div class="form-group ">
+                                <label>Patient Name</label>
+                                <input type="text" class="form-control" placeholder="Enter Patient Name" name="patient" id="firstname">
+                            </div>
+                        </div>
+                    </div>             
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">                       
+                <div class="table-responsive">
+                    <table id="visitTable" class="table m-0 styled-table">
+                        <div class="clear"></div>
+                        <thead class="bg-teal text-white">
+                            <th>ID </th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Age</th>
+                            <th>Last Visit</th>
+                            <th>Mobile</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </thead>
+                    </table>
+                </div>
+                <!--end .table-responsive -->
+            </div>
+        </div>
+    </div>
+    <!--end .col -->
+</div>
+</div>
 {% endblock %}
 
 
@@ -229,6 +281,135 @@
             format: 'yyyy-mm-dd',
         });
     });
+
+        //   var csrftoken = Cookies.get('csrftoken');
+    let timetable = null;
+
+$(document).ready(function () {
+    $(".date").datepicker("option", "dateFormat", 'yyyy-mm-dd');
+    $(function () {
+    'use strict';
+    $.noConflict();
+    timetable = $('#visitTable').DataTable({
+
+        "processing": true,
+        "serverSide": true,
+        "pageLength": 10,
+
+        "ajax": {
+            //"url": "{ url 'quote_index2' %}",
+            "url": "/api/PatientDataTable?format=datatables",
+            //"type": "POST",
+            "type": "GET",
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            //"dataSrc":'results', // django provides data in format {'count': 5, next:'url', 'prev':url, 'results':[]}
+
+            //search garda k data jancha
+            'data': function (data) {
+                // Append to data
+                data.id =  $('#id').val();
+                data.patient_fullname = $('#firstname').val();
+                // data.code = $('#code').val();
+                data.customer_id = $('#customer_id').val();
+                data.columns=null; //modify ajax request to make less cluttered
+                //added page required for django
+                //start offset dont work
+                data.page = (data.start + data.length) / data.length ;
+                //data.fk_quotestatus = $('#fk_quotestatus').val();
+            }
+        },
+        "columns": [
+            {
+                "data": "customer_id",
+                "orderable": true,
+                "searchable": true
+            },
+            
+            {
+                "data": "patient_fullname",
+                "searchable": true,
+                "orderable": true
+            },
+            {
+                "data": "gender",
+                "searchable": true,
+                "orderable": true
+            },
+            {
+                "data": "age",
+                "searchable": true,
+                "orderable": true
+            },
+            {
+                "data": "last_visit",
+                "searchable": true,
+                "orderable": true
+            },
+            {
+                "data": "mobile",
+                "searchable": true,
+                "orderable": true
+            },
+            {
+                "data": "email",
+                "searchable": true,
+                "orderable": true
+            },
+            
+            
+           
+            //// related data filed inside
+            // {
+            //     "data": "fk_quotestatus.name",
+            //     "searchable": true,
+            //     render : function(data, type, row) {
+            //         return '<span class="badge badge-warning">'+data+'</span>'
+            //     }    
+            // },
+        ],
+        // buttons: ['copy', 'excel', 'pdf'],
+        "order": [ [1, "desc"]],
+        
+        // add extra col at index
+        "columnDefs": [{
+            "targets": [7],
+            "data": null,
+            "className": "action-link",
+            "render": function (data, type, full) {
+                return ' <button class="btb btn-danger" onclick="VueDeleteVisit('+data.id+')">X</button> ' +
+                        '<a href="/carts?visit_id='+ data.id +'" class="btn btn-sm btn-bordered-primary waves-effect waves-light btn-secondary">view</a>'+
+                        '<a href="/carts?visit_id='+ data.id +'" class="mdi mdi-billboard">edit</a>'
+                    ;
+            }
+        }],
+    }); //end datatable
+
+    $('#id').keyup(function () {
+        timetable.draw();
+    });
+    $('#customer_id').keyup(function () {
+        timetable.draw();
+    });
+    $('#firstname').keyup(function () {
+        timetable.draw();
+    });
+
+    // $('#visit_id').keyup(function(){
+    //     timetable.draw();
+    // });
+
+    // $('#fk_customer_user').keyup(function(){
+    //     timetable.draw();
+    // });
+    //$('#fk_customer').select2();        
+
+});
+
+
+});
+
+
+ 
     // var Toasted = require('vue-toasted').default
     Vue.use(VueToast);
     var app = new Vue({

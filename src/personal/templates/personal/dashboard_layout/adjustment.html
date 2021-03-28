@@ -296,13 +296,7 @@
                     .then((getResponse) => {
                         console.log(getResponse.data);
                         // this.getProduct();
-                        let toast = this.$toasted.show( this.catlogSaveForm.product_title + " has been added ", { 
-                            theme: "toasted-primary", 
-                            position: "top-right", 
-                            duration : 1500,
-                            className: ['your-custom-class',]
-                    });
-                        this.loading = false;
+                        $ToastSuccess(this, 'Item adjusted!');
 
                     })
                     .catch(error => {
@@ -311,7 +305,7 @@
                         if(error.response){
                             this.error.error_message_body = error.response.data;
                             this.error.error_status = true;
-                            let toast = this.$toasted.show( error.response.data.Fail, { 
+                            let toast = this.$toasted.show( error.response.data, { 
                             theme: "bubble", 
                             position: "top-right", 
                             duration : 1500,
