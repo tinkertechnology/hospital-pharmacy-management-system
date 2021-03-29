@@ -40,7 +40,7 @@ from counter.models import Counter
 from address.models import Country
 from vendor.models import Vendor
 from decimal import Decimal
-import pdfkit
+# import pdfkit
 from django.template.loader import get_template
 User = get_user_model()
 
