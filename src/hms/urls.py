@@ -134,7 +134,7 @@ from products.views import (
         ProductVariationRetrieveAPIView,
         VariationByPatientAPIView,
         hmsproducts,
-        hmsdruglists,
+        hmsdruglists,        
         drugprice_special,
         hmsproduct_detail,
         adjustments,
@@ -143,14 +143,11 @@ from products.views import (
         VariationBatchAPIView,
         VariationBatchPriceAPIView,
         PurchaseVariationBatchAPIView,
-        VariationAPIView
-        
-
+        VariationAPIView,
+        VariationBatchPriceAPIView        
     )
 
 from prescription.views import(
-
-
     ApiPostFile
     )
 
@@ -158,14 +155,12 @@ from inquiry.views import (
     InquiryApiView,
     message_list,
     view_messages
-
     )
 
 from users.views import (
     UserInquiryList,
     UserInquiryForPharmacist,
     DeliveryUsersByStore
-    
     )
 
 

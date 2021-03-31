@@ -44,14 +44,9 @@ class VariationBatchSerializer(serializers.ModelSerializer):
 		if obj.batchno:
 			return obj.fk_variation.title + ' ' + obj.batchno
 		return obj.fk_variation.title
-	# DT_RowId = serializers.SerializerMethodField()
-	# DT_RowAttr = serializers.SerializerMethodField()
 
-	# def get_DT_RowId(self, obj):
-	# 	return 'row_%d' % obj.pk
 
-	# def get_DT_RowAttr(self, obj):
-	# 	return {'data-pk': obj.pk}
+
 
 class UserVariationQuantityHistorySerializer(serializers.ModelSerializer):
 	variation = VariationSerializer()

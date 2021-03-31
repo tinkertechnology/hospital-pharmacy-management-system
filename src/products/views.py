@@ -282,7 +282,6 @@ class AddProductAPIView(APIView): #VariationAdd
 					'detail': 'Product Saved successfully'
 					})
 	def delete(self, request):
-		print(request)
 		permission_classes = [IsAuthenticated]
 		variation_id = request.data.get('variation_id')
 		variation = Variation.objects.get(pk=variation_id)
@@ -326,6 +325,7 @@ class ProductVariationRetrieveUpdateDestroyApiView(RetrieveUpdateDestroyAPIView)
         return MembershipType.objects.all()
 
 def hmsproducts(request):
+	permission_classes = [IsAuthenticated]
 	context = {
 		'title' : 'HMS products',
 		'products' : Variation.objects.all(),
@@ -338,6 +338,7 @@ def hmsproducts(request):
 	return render(request, "personal/dashboard_layout/products.html", context)
 
 def hmsdruglists(request):
+	permission_classes = [IsAuthenticated]
 	context = {
 			'title' : 'HMS DrugList',
 			'products' : Variation.objects.all(),
@@ -348,20 +349,19 @@ def hmsdruglists(request):
 			'counters' : Counter.objects.all(),
 		}
 	return render(request, "personal/dashboard_layout/hmsdruglists.html", context)
+from users.models import UserTypes
 
 def drugprice_special(request):
+	permission_classes = [IsAuthenticated]
 	context = {
 			'title' : 'Price setup / Special Users',
-			'products' : Variation.objects.all(),
-			'suppliers' : Vendor.objects.all(),
-			'manufacturers' : Company.objects.all(),
-			'generics' : GenericName.objects.all(),
-			'brands' : Brand.objects.all(),
-			'counters' : Counter.objects.all(),
+			'usertypes' : UserTypes.objects.all(),
+			
 		}
-	return render(request, "personal/dashboard_layout/drugprice.html", context)
+	return render(request, "personal/dashboard_layout/special_price.html", context)
 
 def hmsproduct_detail(request, id):
+	permission_classes = [IsAuthenticated]
 	context = {
 		'title' : 'HMS products',
 		'products' : Variation.objects.all(),
@@ -374,16 +374,19 @@ def hmsproduct_detail(request, id):
 	return render(request, "personal/dashboard_layout/hmsproduct_detail.html", context)
 
 def hmsvariations(request, id):
+	permission_classes = [IsAuthenticated]
 	context = {
 		'product_id' : id
 	}
 	return render(request, "personal/dashboard_layout/variation.html", context)
 
 def datatable(request):
+	permission_classes = [IsAuthenticated]
 	context = {}
 	return render(request, "personal/dashboard_layout/datatable.html", context)
 
 def adjustments(request):
+	permission_classes = [IsAuthenticated]
 	context = {
 		'page_title' : 'Adjustments',
 		'products' : Variation.objects.all(),
@@ -391,7 +394,7 @@ def adjustments(request):
 	return render(request, "personal/dashboard_layout/adjustment.html", context)
 
 class PurchaseVariationBatchAPIView(APIView):
-	
+	permission_classes = [IsAuthenticated]
 	def post(self, request, *args, **kwargs):
 		variation_batch = VariationBatch()
 		print(request.data)
@@ -405,3 +408,26 @@ class PurchaseVariationBatchAPIView(APIView):
 		variation_batch.save()
 		return Response('Success', status=200)
 
+class VariationBatchPriceAPIView(APIView):
+	permission_classes = [IsAuthenticated]
+	def post(self, request, *args, **kwargs):
+		var_batch_price_id = request.data.get('var_batch_price_id') #for edit purpose
+		var_batch_price_obj = VariationBatchPrice()
+		if var_batch_price_id:
+			var_batch_price_obj = VariationBatchPrice.objects.filter(pk=var_batch_price_id).first()	
+			if not var_batch_price_obj:
+				return Response('Failed to update', status=400)
+		price = request.data.get('price')
+		fk_variation_batch_id = request.data.get('fk_variation_batch_id')
+		fk_user_type_id = request.data.get('fk_user_type_id')
+
+		#check if item price is assign to the type of fk_user_type_id
+		check_var_batch_price_obj = VariationBatchPrice.objects.filter(fk_user_type_id=fk_user_type_id).filter(fk_variation_batch_id=fk_variation_batch_id).first()
+		if check_var_batch_price_obj:
+			return Response('Price already set for this user type', status=400)			
+		var_batch_price_obj.fk_variation_batch_id = fk_variation_batch_id
+		var_batch_price_obj.price = price
+		var_batch_price_obj.sale_price = price
+		var_batch_price_obj.fk_user_type_id = fk_user_type_id
+		var_batch_price_obj.save()
+		return Response('Success', status=200)
