@@ -187,18 +187,43 @@ class VariationBatchPriceAPIView(APIView):
 		quantity = 0
 		batchno = ''
 		expiry_date = ''
+		price = 0
+		price = VariationBatch.objects.filter(pk=fk_variation_batch_id).first().sale_price
 		if variation_batch_price:
 			var_batch = variation_batch_price.fk_variation_batch
 			if var_batch:
 				quantity = var_batch.quantity
 				batchno = var_batch.batchno
 				expiry_date = var_batch.expiry_date
+				price = variation_batch_price.price
 		data = {
-			'price':variation_batch_price.price if variation_batch_price else 0,
+			'price':price,
 			'stock' : quantity,
 			"batchno" : batchno
 		}
 		return Response(data)
+
+	def post(self, request, *args, **kwargs):
+			var_batch_price_id = request.data.get('var_batch_price_id') #for edit purpose
+			var_batch_price_obj = VariationBatchPrice()
+			if var_batch_price_id:
+				var_batch_price_obj = VariationBatchPrice.objects.filter(pk=var_batch_price_id).first()	
+				if not var_batch_price_obj:
+					return Response('Failed to update', status=400)
+			price = request.data.get('price')
+			fk_variation_batch_id = request.data.get('fk_variation_batch_id')
+			fk_user_type_id = request.data.get('fk_user_type_id')
+
+			#check if item price is assign to the type of fk_user_type_id
+			check_var_batch_price_obj = VariationBatchPrice.objects.filter(fk_user_type_id=fk_user_type_id).filter(fk_variation_batch_id=fk_variation_batch_id).first()
+			if check_var_batch_price_obj:
+				return Response('Price already set for this user type', status=400)			
+			var_batch_price_obj.fk_variation_batch_id = fk_variation_batch_id
+			var_batch_price_obj.price = price
+			var_batch_price_obj.sale_price = price
+			var_batch_price_obj.fk_user_type_id = fk_user_type_id
+			var_batch_price_obj.save()
+			return Response('Success', status=200)
 
 # class VariationAPIView(APIView):
 
@@ -408,26 +433,26 @@ class PurchaseVariationBatchAPIView(APIView):
 		variation_batch.save()
 		return Response('Success', status=200)
 
-class VariationBatchPriceAPIView(APIView):
-	permission_classes = [IsAuthenticated]
-	def post(self, request, *args, **kwargs):
-		var_batch_price_id = request.data.get('var_batch_price_id') #for edit purpose
-		var_batch_price_obj = VariationBatchPrice()
-		if var_batch_price_id:
-			var_batch_price_obj = VariationBatchPrice.objects.filter(pk=var_batch_price_id).first()	
-			if not var_batch_price_obj:
-				return Response('Failed to update', status=400)
-		price = request.data.get('price')
-		fk_variation_batch_id = request.data.get('fk_variation_batch_id')
-		fk_user_type_id = request.data.get('fk_user_type_id')
+# class VariationBatchPriceAPIView(APIView):
+# 	permission_classes = [IsAuthenticated]
+# 	def get(self, request, *args, **kwargs):
+# 		var_batch_price_id = request.data.get('var_batch_price_id') #for edit purpose
+# 		var_batch_price_obj = VariationBatchPrice()
+# 		if var_batch_price_id:
+# 			var_batch_price_obj = VariationBatchPrice.objects.filter(pk=var_batch_price_id).first()	
+# 			if not var_batch_price_obj:
+# 				return Response('Failed to update', status=400)
+# 		price = request.data.get('price')
+# 		fk_variation_batch_id = request.data.get('fk_variation_batch_id')
+# 		fk_user_type_id = request.data.get('fk_user_type_id')
 
-		#check if item price is assign to the type of fk_user_type_id
-		check_var_batch_price_obj = VariationBatchPrice.objects.filter(fk_user_type_id=fk_user_type_id).filter(fk_variation_batch_id=fk_variation_batch_id).first()
-		if check_var_batch_price_obj:
-			return Response('Price already set for this user type', status=400)			
-		var_batch_price_obj.fk_variation_batch_id = fk_variation_batch_id
-		var_batch_price_obj.price = price
-		var_batch_price_obj.sale_price = price
-		var_batch_price_obj.fk_user_type_id = fk_user_type_id
-		var_batch_price_obj.save()
-		return Response('Success', status=200)
+# 		#check if item price is assign to the type of fk_user_type_id
+# 		check_var_batch_price_obj = VariationBatchPrice.objects.filter(fk_user_type_id=fk_user_type_id).filter(fk_variation_batch_id=fk_variation_batch_id).first()
+# 		# if check_var_batch_price_obj:
+# 		# 	return Response('Price already set for this user type', status=400)			
+# 		var_batch_price_obj.fk_variation_batch_id = fk_variation_batch_id
+# 		var_batch_price_obj.price = price
+# 		var_batch_price_obj.sale_price = price
+# 		var_batch_price_obj.fk_user_type_id = fk_user_type_id
+# 		var_batch_price_obj.save()
+# 		return Response('Success', status=200)

@@ -263,6 +263,7 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 					cart.fk_counter_id = request.session.get('counter')
 					fiscal_year_obj = FiscalYear.objects.filter(active=True).first()
 					# cart.fk_fiscalyear = fiscal_year_obj
+					
 					test = cart.fk_fiscalyear_id!=fiscal_year_obj.id
 					print('test000', test)
 					if test:						
