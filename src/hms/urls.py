@@ -324,7 +324,7 @@ handler500 = views.handler500
 
 
 from orders.invoice import GeneratePDF, GenerateFullPDF
-from products.datatable import VariationDataTable, VariationBatchTable
+from products.datatable import VariationDataTable, VariationBatchTable, VariationBatchPriceTable
 
 from account.visit_datatable import VisitDataTable
 urlpatterns += [
@@ -396,6 +396,7 @@ urlpatterns += [
     path('api/AdjustmentAPIView/', AdjustmentAPIView.as_view(), name="AdjustmentAPIView"),
     path('api/data', VariationDataTable.as_view(), name="VariationDataTable"),
     path('api/VariationBatchTable', VariationBatchTable.as_view(), name="VariationBatchTable"),
+    path('api/VariationBatchPriceTable', VariationBatchPriceTable.as_view(), name="VariationBatchPriceTable"),
     path('api/PurchaseDataTable', PurchaseDataTable.as_view(), name="PurchaseDataTable"),
     path('api/AdjustmentDataTable', AdjustmentDataTable.as_view(), name="AdjustmentDataTable"),
     path('api/visits', VisitDataTable.as_view(), name="VisitDataTable"),

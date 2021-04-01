@@ -63,13 +63,8 @@
                                 <thead class="bg-teal text-white">
                                     <th>#</th>
                                     <th>Product</th>
-                                    <th>Batch Number</th>
-                                    <th>Inital qty</th>
-                                    <th>Adjust Qty</th>
-                                    <th>Operation</th>
-                                    <th>Final Qty</th>
-                                    <th>Remarks</th>
-                                    <th>Adjust Date</th>                                    
+                                    <th>Patient Type</th>
+                                    <th>Price</th>
                                     <th>Actions</th>
                                 </thead>
                             </table>
@@ -126,7 +121,7 @@
 
             "ajax": {
                 //"url": "{ url 'quote_index2' %}",
-                "url": "/api/AdjustmentDataTable?format=datatables",
+                "url": "/api/VariationBatchPriceTable?format=datatables",
                 //"type": "POST",
                 "type": "GET",
                 headers: { 'X-CSRFToken': '{{ csrf_token }}' },
@@ -153,45 +148,21 @@
                     "searchable": true
                 },
                 {
-                    "data": "product",
+                    "data": "title",
                     "searchable": true,
                     "orderable": true
                 },
                 {
-                    "data": "batchno",
+                    "data": "user_type",
                     "searchable": true,
                     "orderable": true
                 },
                 {
-                    "data": "initial_quantity",
+                    "data": "price",
                     "searchable": true,
                     "orderable": true
                 },
-                {
-                    "data": "change_quantity",
-                    "searchable": true,
-                    "orderable": true
-                },
-                {
-                    "data": "operation",
-                    "searchable": true,
-                    "orderable": true
-                },
-                {
-                    "data": "final_quantity",
-                    "searchable": true,
-                    "orderable": true
-                },
-                {
-                    "data": "remarks",
-                    "searchable": true,
-                    "orderable": true
-                },
-                {
-                    "data": "timestamp",
-                    "searchable": true,
-                    "orderable": true
-                },
+                
                
                 //// related data filed inside
                 // {
@@ -207,7 +178,7 @@
             
             // add extra col at index
             "columnDefs": [{
-                "targets": [9],
+                "targets": [4],
                 "data": null,
                 "className": "action-link",
                 "render": function (data, type, full) {

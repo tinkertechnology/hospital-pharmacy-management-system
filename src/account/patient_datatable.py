@@ -49,6 +49,7 @@ class PatientDataTableSerializer(serializers.ModelSerializer):
     gender = serializers.SerializerMethodField()
     age = serializers.SerializerMethodField()
     last_visit = serializers.SerializerMethodField()
+    user_type = serializers.SerializerMethodField()
     class Meta:
         model = Account
         fields= '__all__'
@@ -74,6 +75,14 @@ class PatientDataTableSerializer(serializers.ModelSerializer):
             delta = relativedelta(datetime.now().date(), obj.date_of_birth) 
             return str(delta.years) + ' years'
         return delta
+    def get_user_type(self, obj):
+        user_type = 'N/A'
+        user_type_obj = UserType.objects.filter(user=obj).first()
+        if user_type_obj:
+            user_type_obj = user_type_obj.user_type
+            if user_type_obj:
+                user_type = user_type_obj.title
+        return user_type
     
     def get_last_visit(self, obj):
         last_visit = ""

@@ -304,11 +304,14 @@ class RegisterAPI(APIView):
 			user.fk_gender_id = fk_gender_id
 			user.save()
 			print(user)
-			if request.data.get('patient_type_id'):
-				usertype = UserType()
-				usertype.user_id = user.id
-				usertype.user_type_id = request.data.get('patient_type_id')
-				usertype.save() 
+			# if request.data.get('patient_type_id'):
+			usertype = UserType()
+			usertype.user_id = user.id
+			if not request.data.get('patient_type_id'):
+				usertype.user_type_id =  None#request.data.get('patient_type_id')
+			else:
+				usertype.user_type_id =  request.data.get('patient_type_id')
+			usertype.save() 
 
 			return Response({
 				'status': True,
@@ -342,11 +345,14 @@ class RegisterAPI(APIView):
 			user = serializer.save()
 			##saving the created user as patient 
 			## only save if usertype is selected from form
+		
+			usertype = UserType()
+			usertype.user_id = user.id
 			if request.data.get('patient_type_id'):
-				usertype = UserType()
-				usertype.user_id = user.id
 				usertype.user_type_id = request.data.get('patient_type_id')
-				usertype.save() 
+			else:
+				usertype.user_type_id = None
+			usertype.save() 
 			data = {}
 			return Response({
 				'status': True,

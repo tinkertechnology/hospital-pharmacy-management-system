@@ -257,6 +257,7 @@
                             <th>Gender</th>
                             <th>Age</th>
                             <th>Last Visit</th>
+                            <th>Type</th>
                             <th>Mobile</th>
                             <th>Email</th>
                             <th>Actions</th>
@@ -346,6 +347,11 @@ $(document).ready(function () {
                 "orderable": true
             },
             {
+                "data": "user_type",
+                "searchable": true,
+                "orderable": true
+            },
+            {
                 "data": "mobile",
                 "searchable": true,
                 "orderable": true
@@ -372,7 +378,7 @@ $(document).ready(function () {
         
         // add extra col at index
         "columnDefs": [{
-            "targets": [7],
+            "targets": [8],
             "data": null,
             "className": "action-link",
             "render": function (data, type, full) {
