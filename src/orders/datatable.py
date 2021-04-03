@@ -8,7 +8,8 @@ from products.models import Variation
 from products.filters import VariationFilter
 from .filters import AdjustmentFilter
 from django_filters import FilterSet, CharFilter, NumberFilter
-from .filters import PurchaseFilter
+from .filters import PurchaseFilter, SalesFilter
+from carts.models import Cart
 
 class UsersDataTableFilterSet(django_filters.FilterSet):
     
@@ -123,6 +124,7 @@ class DataTablePagination(pagination.PageNumberPagination):
             'count': self.page.paginator.count,
             'recordsTotal': self.page.paginator.count,
             'recordsFiltered' : self.page.paginator.count,
+           
             'data': data
         })
 
@@ -253,6 +255,7 @@ class DataTablePagination(pagination.PageNumberPagination):
             'count': self.page.paginator.count,
             'recordsTotal': self.page.paginator.count,
             'recordsFiltered' : self.page.paginator.count,
+            'totalSales' : '',
             'data': data
         })
 
@@ -326,3 +329,59 @@ class AdjustmentDataTable(generics.ListAPIView):
     def get_queryset(self):
         print(self.request)
         return Adjustment.objects.all().order_by('-id')
+
+
+
+class SalesDataTableSerializer(serializers.ModelSerializer): #order ko data-table Cart
+    payment_mode = serializers.SerializerMethodField()
+    visit_id = serializers.SerializerMethodField()
+    bill_counter = serializers.SerializerMethodField()
+    total = serializers.SerializerMethodField()
+    class Meta:
+        model = Cart
+        fields= '__all__'
+    
+    def get_payment_mode(self, obj):
+        payment_mode = "n/a"
+        if obj.fk_payment_method:
+            payment_mode = obj.fk_payment_method.title
+
+        return payment_mode
+
+    def get_visit_id(self, obj):
+        visit_id = "n/a"
+        if obj.fk_visit:
+            visit_id = obj.fk_visit.visit_id
+        return visit_id
+
+    def get_bill_counter(self, obj):
+        bill_counter = "n/a"
+        if obj.fk_counter:
+            bill_counter = obj.fk_counter.name
+        return bill_counter        
+
+    def get_total(self, obj):
+        total = obj.total        
+        if obj.transaction_total > 0:
+           total = obj.total - obj.transaction_total                      
+        return total
+
+class SalesDataTable(generics.ListAPIView):
+    serializer_class = SalesDataTableSerializer
+    pagination_class = DataTablePagination
+    filterset_class = SalesFilter
+
+    filter_backends = [
+                filters.SearchFilter, 
+                filters.OrderingFilter, 
+                DjangoFilterBackend
+                ]
+    # search_fields = ["title", "description"] // old version
+    filterset_fields = ["fk_variation__title"]
+    ordering_fields  = ["id"]
+    #ordering_fields = '__all__'
+    # filterset_fields = ['title']
+    #ordering = ['id']
+    def get_queryset(self):
+        print(self.request)
+        return Cart.objects.all().order_by('-id')

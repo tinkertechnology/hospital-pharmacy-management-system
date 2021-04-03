@@ -383,7 +383,7 @@ $(document).ready(function () {
             "className": "action-link",
             "render": function (data, type, full) {
                 return ' <button class="btb btn-danger" onclick="VueDeleteVisit('+data.id+')">X</button> ' +
-                        '<a href="/carts?visit_id='+ data.id +'" class="btn btn-sm btn-bordered-primary waves-effect waves-light btn-secondary">view</a>'+
+                        '<a href="/api/VisitAPIView/?customer_id='+ data.id +'" class="btn btn-sm btn-bordered-primary waves-effect waves-light btn-secondary">view</a>'+                       
                         '<a href="/carts?visit_id='+ data.id +'" class="mdi mdi-billboard">edit</a>'
                     ;
             }

@@ -385,18 +385,37 @@ def drugprice_special(request):
 		}
 	return render(request, "personal/dashboard_layout/special_price.html", context)
 
+from rest_framework.decorators import api_view
+@api_view(['GET','POST'])
 def hmsproduct_detail(request, id):
 	permission_classes = [IsAuthenticated]
+	if request.method == 'GET':
+		return Response(VariationSerializer(Variation.objects.filter(pk=id), many=True).data)
+		# context = {
+		# 	'title' : 'HMS products',
+		# 	'products' : Variation.objects.all(),
+		# 	'suppliers' : Vendor.objects.all(),
+		# 	'manufacturers' : Company.objects.all(),
+		# 	'generics' : GenericName.objects.all(),
+		# 	'brands' : Brand.objects.all(),
+		# 	'counters' : Counter.objects.all(),
+		# }
+		# return render(request, "personal/dashboard_layout/hmsproduct_detail.html", context)
+
+
+def sales(request):
+	permission_classes = [IsAuthenticated]
 	context = {
-		'title' : 'HMS products',
-		'products' : Variation.objects.all(),
-		'suppliers' : Vendor.objects.all(),
-		'manufacturers' : Company.objects.all(),
-		'generics' : GenericName.objects.all(),
-		'brands' : Brand.objects.all(),
-		'counters' : Counter.objects.all(),
+		'title' : 'Sales',
+		# 'products' : Variation.objects.all(),
+		# 'suppliers' : Vendor.objects.all(),
+		# 'manufacturers' : Company.objects.all(),
+		# 'generics' : GenericName.objects.all(),
+		# 'brands' : Brand.objects.all(),
+		# 'counters' : Counter.objects.all(),
 	}
-	return render(request, "personal/dashboard_layout/hmsproduct_detail.html", context)
+	return render(request, "personal/dashboard_layout/sales.html", context)
+
 
 def hmsvariations(request, id):
 	permission_classes = [IsAuthenticated]

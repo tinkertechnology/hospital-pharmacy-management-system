@@ -71,10 +71,9 @@ from carts.views import (
         CartItemSaveView,
         CartTransactionView,
         RemoveCartItemFromCart,
-        
-        
-
         )
+
+from orders.datatable import SalesDataTable
 from orders.views import (
                     # AddressSelectFormView, 
                     # UserAddressCreateView,
@@ -134,6 +133,7 @@ from products.views import (
         ProductVariationRetrieveAPIView,
         VariationByPatientAPIView,
         hmsproducts,
+        sales,
         hmsdruglists,        
         drugprice_special,
         hmsproduct_detail,
@@ -363,6 +363,7 @@ urlpatterns += [
     path('carts', carts, name="carts"),
     path('cartitems', cartitems, name="cartitems"),
     path('hmsproducts/', hmsproducts, name="hmsproducts"),
+    path('sales/', sales, name="sales"),
     path('hmsdruglists/', hmsdruglists, name="hmsdruglists"),
     path('hmsproduct_detail/<int:id>/', hmsproduct_detail, name="hmsproduct_detail"),
     path('drugprice_special/', drugprice_special, name="drugprice_special"),
@@ -401,8 +402,7 @@ urlpatterns += [
     path('api/AdjustmentDataTable', AdjustmentDataTable.as_view(), name="AdjustmentDataTable"),
     path('api/visits', VisitDataTable.as_view(), name="VisitDataTable"),
     path('api/PatientDataTable', PatientDataTable.as_view(), name="PatientDataTable"),
-    
-
+    path('api/SalesDataTable', SalesDataTable.as_view(), name="SalesDataTable"),
     # path('api/address', GetSDLdata.as_view(), name="GetSDLdata"),
     re_path(r'^api/address/', include('address.urls')),
 

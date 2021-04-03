@@ -142,13 +142,16 @@
           
                 <!-- Modal Header -->
                 <div class="modal-header">
-                  <h4 class="modal-title">Modal Heading</h4>
+                  <h4 class="modal-title">Edit</h4>
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
           
                 <!-- Modal body -->
-                <div class="modal-body">
-                  Modal body..
+                <div class="modal-body" id="modal-body">
+                  <div class="col-md-12">
+                      [[loadProductForm.title]]
+                      <input type="text" v-model="loadProductForm.title" value="loadProductForm.title">
+                  </div>
                 </div>
           
                 <!-- Modal footer -->
@@ -190,7 +193,10 @@
         <!-- END DATATABLE 2 -->
     </div>
     <!--end .section-body -->
-    
+    <!-- Large modal -->
+<!-- Modal -->
+
+  
 </section>
 
 <style>
@@ -337,6 +343,22 @@
         delimiters: ['[[', ']]'],
         el: '#products',
         data: {
+            loadProductForm :{
+                active: true,
+                alert_expiry_days: null,
+                alert_quantity: null,
+                brand: null,
+                categories: [],
+                code: "",
+                company: null,
+                fk_counter: 1,
+                fk_user_type: null,
+                generic_name: null,
+                id: 35,
+                product: null,
+                rack_number: null,
+                title: "C charge",
+            },
             isHidden: true,
             jptchanges: '',
             params: { page: 1 },
@@ -425,43 +447,50 @@
 
 
             loadProductDetail: function (id) {
-                // this.loading = true;
-                // $.noConflict();
+                $=jQuery.noConflict();
+             
+            //    $('#myModal').show();
                
                 
-                $.ajax({
-                url: '/hmsproduct_detail/'+ id + '/',
-                type: 'GET',
-                dataType: 'json', // added data type
-                success: function(res) {
-                    // console.log(res);
-                    // alert(res);
+                // $.ajax({
+                // url: '/hmsproduct_detail/'+ id + '/',
+                // type: 'GET',
+                // dataType: 'json', // added data type
+                // success: function(res) {
+                //     // console.log(res);
+                    
+                    
+                //     // alert(res);
 
-                    $('#myModal').html(res);
-                    jQuery(document).ready(function($){
-                    $('#myModal').modal('show');
-                });
+                // $('#myModal').modal('show');
                    
-                }
-            });
-            // thisRef = this.ref;
-            //     axios.get('/hmsproduct_detail/'+ id + '/')
-            //         .then((getResponse) => {
-            //             console.log("GET Response")
-            //             console.log(getResponse.data);
-            //             // data = getResponse.data;
-            //             // response.send(data);
-            //             this.products = getResponse.data;
-            //             this.loading = false;
-            //             $('#myModal').html(getResponse);
-            //             $('#myModal').modal('show');
-            //             // print(products);
-            //         })
-            //         .catch(function (error) {
-            //             console.log(error);
-            //             console.log("Error while fetching market updates");
-            //             this.loading = false;
-            //         });
+                // }
+                
+            
+           
+                axios.get('/hmsproduct_detail/'+ id + '/')
+                    .then((getResponse) => {
+                        console.log("GET Response")
+                        console.log(getResponse.data);
+                        // data = getResponse.data;
+                        // response.send(data);
+                        // this.products = getResponse.data;
+                        this.loadProductForm = getResponse.data;
+                        console.log('loadProductForm.title',this.loadProductForm);
+                        $ShowLoading(this);
+                       
+                       
+                        // print(products);
+                    }).then(res => {
+                        
+                        $('#myModal').modal('show');
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        console.log("Error while fetching market updates");
+                       
+                    });
+                
             },
 
 
