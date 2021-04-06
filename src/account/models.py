@@ -6,6 +6,7 @@ from specializationtype.models import SpecializationType
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from address.models import Country, State, District, LocalGov
+from users.models import UserTypes
 
 
 class MyAccountManager(BaseUserManager):
@@ -134,7 +135,7 @@ class Nurse(models.Model):
 # 	title = models.CharField(max_length=100, null=True, blank=True)
 class VisitType(models.Model):
 	title = models.CharField(max_length=100, null=True, blank=True)
-
+	slug = models.SlugField(max_length=40, null=True, blank=True, unique=True)
 	def __str__(self):
 		return self.title
 
@@ -147,6 +148,7 @@ class Visit(models.Model):
 	visit_status = models.BooleanField(default=False, null=True, blank=True)
 	checkout_at = models.DateTimeField(verbose_name='visit out time',null=True, blank=True)
 	fk_visit = models.ForeignKey(VisitType, null=True, blank=True, on_delete=models.CASCADE)
+	fk_user_type = models.ForeignKey(UserTypes, null=True, blank=True, on_delete=models.DO_NOTHING)
 	visit_id = models.CharField(null=True, blank=True, max_length=100)
 	
 	class Meta:

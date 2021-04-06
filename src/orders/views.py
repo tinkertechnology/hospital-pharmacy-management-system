@@ -748,12 +748,14 @@ def purchaseDetails(request):
 def purchaseDetail(request, purchase_id):
 	pass
 ###HMS
-
+from users.models import UserTypes
 def visit(request):
 	variations = Variation.objects.all()
 	visits_types = VisitType.objects.all()
 	blood_groups = BloodGroup.objects.all()
-	countries = Country.objects.all()	
+	countries = Country.objects.all()
+	users_type = UserTypes.objects.all()
+	print(users_type)	
 	context ={
 		'variations' : variations,
 		# 'visits_type' : visits_type,
@@ -761,7 +763,8 @@ def visit(request):
 		'visits_types' : visits_types,
 		'patient_types' : UserTypes.objects.all(),
 		'blood_groups' : blood_groups,
-		'countries' : countries
+		'countries' : countries,
+		'user_types' : users_type
 	}
 	return render(request, "personal/dashboard_layout/visit.html", context)
 

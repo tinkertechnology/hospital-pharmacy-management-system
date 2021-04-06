@@ -124,7 +124,6 @@ INSTALLED_APPS = [
     'products',
     'orders',
     'inquiry',
-    
     'users',
     'store',
     'payment',
@@ -179,6 +178,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'hms.visit_context_processor.opd_auto_checkout',
             ],
         },
     },

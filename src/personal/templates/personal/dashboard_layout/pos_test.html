@@ -1,7 +1,7 @@
 {% extends 'personal/dashboard_layout/app.html' %}
 
 {% load static %}
-
+{% block page_title %} Sales {% endblock %}
 {% block content %}
 <div id="pos"> 
 <div class="row">
@@ -30,7 +30,7 @@
                     </div> -->
 
                     <div class="col-md-3">
-                        <input type="text" class="form-control" v-bind:value="_$GF.IFDEF(patient,['patient_type','p_type_title'])" readonly name="patient_type" placeholder="Patient Type">
+                        TYPE <span class="badge badge-danger">{% if cart.fk_visit.fk_user_type %} {{cart.fk_visit.fk_user_type.title}} </span> {% else %} <span class="badge badge-warning">Normal</span>   {% endif %}
                     </div>
                     <div class="col-md-3">
                         <input type="text" class="form-control" name="insureee_id" placeholder="Insuree ID">
@@ -410,7 +410,7 @@
         },
 
         getVariationBatchPrice: function(cartitem) {
-            axios.get('/api/VariationBatchPriceAPIView/?variation_batch_id='+cartitem.fk_variation_batch_id+'&fk_user_type_id={{cart.user.usertype.user_type_id}}')
+            axios.get('/api/VariationBatchPriceAPIView/?variation_batch_id='+cartitem.fk_variation_batch_id+'&fk_user_type_id={{cart.fk_visit.fk_user_type.id}}') // {{cart.user.usertype.user_type_id}}')
                 .then((getResponse) => {
                     console.log('variationpriceapiview',getResponse.data);
                     cartitem.price = getResponse.data.price;

@@ -8,7 +8,7 @@
 
 
 <div class="row" id="pos">
-    <div class="col-xl-3 col-md-6">
+    <!-- <div class="col-xl-3 col-md-6">
         <div class="card widget-box-one border border-primary bg-soft-primary">
             <div class="card-body">
                 <div class="float-right avatar-lg rounded-circle mt-3">
@@ -21,10 +21,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- end col -->
 
-    <div class="col-xl-3 col-md-6">
+    <!-- <div class="col-xl-3 col-md-6">
         <div class="card widget-box-one border border-warning bg-soft-warning">
             <div class="card-body">
                 <div class="float-right avatar-lg rounded-circle mt-3">
@@ -37,10 +37,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- end col -->
 
-    <div class="col-xl-3 col-md-6">
+    <!-- <div class="col-xl-3 col-md-6">
         <div class="card widget-box-one border border-danger bg-soft-danger">
             <div class="card-body">
                 <div class="float-right avatar-lg rounded-circle mt-3">
@@ -53,10 +53,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- end col -->
 
-    <div class="col-xl-3 col-md-6">
+    <!-- <div class="col-xl-3 col-md-6">
         <div class="card widget-box-one border border-success bg-soft-success">
             <div class="card-body">
                 <div class="float-right avatar-lg rounded-circle mt-3">
@@ -69,7 +69,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- end col -->
 </div>
 
@@ -285,21 +285,13 @@ $(document).ready(function () {
             "data": null,
             "className": "action-link",
             "render": function (data, type, full) {
-                return ' <button class="btb btn-danger" onclick="VueDeleteVisit('+data.id+')">X</button> ' +
-                        '<a href="/carts?visit_id='+ data.id +'" class="btn btn-sm btn-bordered-primary waves-effect waves-light btn-secondary">view</a>'+
-                        '<button class="btm btn-primary" onclick="VuechangeVisit('+data.id+')">complete </button>'
+                return '' +
+                        '<a href="/carts?visit_id='+ data.id +'"> <i class="mdi mdi-monitor-edit" title="show bills" style="font-size: 30px"></i></a>'+
+                        '<i class="mdi mdi-timeline-check" style="font-size: 40px; color: green;" title="checkout" onclick="VuechangeVisit('+data.id+')"> </i>'
                     ;
             }
         },
-
-            //// related data filed inside
-            // {
-            //     "data": "fk_quotestatus.name",
-            //     "searchable": true,
-            //     render : function(data, type, row) {
-            //         return '<span class="badge badge-warning">'+data+'</span>'
-            //     }    
-            // },
+      
         ],
         // buttons: ['copy', 'excel', 'pdf'],
         "order": [ [1, "desc"]],
