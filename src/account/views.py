@@ -1005,12 +1005,14 @@ class VisitAPIView(APIView):
 		fk_doctor_user_id =  request.data.get('fk_doctor_user_id')
 		remarks =  request.data.get('remarks')
 		appointment_date =  request.data.get('appointmentDate')
+		if not appointment_date:
+			appointment_date = datetime.datetime.now()
 		fk_bloodgroup_id = request.data.get('fk_bloodgroup_id')
 		emergency_number = request.data.get('emergency_number')	
 		visit_type = request.data.get('visit_type')
 		fk_patient_type_id = request.data.get('fk_patient_type_id')
 		visit_id  = dt.now().strftime('%Y%m%d%H%M%S')
-		if fk_customer_user_id and fk_doctor_user_id:
+		if fk_customer_user_id:
 			visit = Visit.objects.create(fk_customer_user_id=fk_customer_user_id,
 										 fk_doctor_user_id=fk_doctor_user_id,
 										 appointment_date=appointment_date,
@@ -1025,7 +1027,7 @@ class VisitAPIView(APIView):
 			}
 			return Response(data, status=200)
 		else:
-			return Response('failed', status=400)
+			return Response('failed Patient Was not Selected', status=400)
 
 	def delete(self, request):
 		visit_id = request.data.get('visit_id')

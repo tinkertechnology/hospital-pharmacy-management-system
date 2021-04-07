@@ -25,6 +25,7 @@ class GeneratePDF(APIView):
 			total_in_words = generate_amount_words(total_in_number)	
 		items = cart.cartitem_set.all()#CartItem.objects.filter(cart_id=ordered_cart_id)
 		template = get_template('personal/dashboard_layout/invoice.html')
+		bill_printed_by = str(request.user.firstname) +' '+ str(request.user.lastname)
 		context = {
 			# 'discount': sum(cart.transactions.all)
 			'grand_total' : cart.total - cart.transaction_total,
@@ -33,6 +34,7 @@ class GeneratePDF(APIView):
 			'total_in_words':total_in_words,
 			'hospital_info' : hospital_info,
 			'visit_id': visit_id,
+			'bill_printed_by': bill_printed_by,
 			'times_to_print' : range(2), 
 		}
 

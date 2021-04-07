@@ -9,20 +9,22 @@
             <div class="card-box">
                 <h4 class="header-title">Visit </h4>
                 <p class="sub-header">
-                   Register New Visit 
                 </p>    
-                <div class="row">                  
+                <div class="row1">                  
                         <div class="form-horizontal">
                             <div class="form-group row">
-                                <label> Select Patient</label>
-                                <div class="col-sm-6 col-md-6">
+                                <div class="col-sm-3 col-md-3">
+                                    <label> Select Patient</label>
+                                </div>
+                                
+                                <div class="col-sm-9 col-md-6">
                                     <!-- <select class="form-control" v-model="fk_customer_user_id">
                                         <option  v-for="(patient, index) in patients" v-bind:value="patient.id">[[ patient.firstname ]] [[patient.lastname]] [[patient.mobile]]</option>
                                     </select> -->
                                 
                                     <v-select label="fullname" :options="patients"  v-model="fk_customer_user_id"></v-select>
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-3 col-md-3" >
                                     <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">+</button>
                                 </div>
                             </div>
@@ -79,7 +81,7 @@
     
                            
                         </div>
-                   
+                   <br />
                     <div class="row">
                         <div class="col-md-12">
                             <center><button class="btn btn-info" @click="saveVisit">Add</button></center>

@@ -15,7 +15,7 @@
             size: a4 portrait;
             
             @frame content_frame {
-                left: 70pt;
+                left: 40pt;
                 width: 512pt;
                 top: 50pt;
                 height: 752pt;
@@ -154,11 +154,14 @@
                         
                        
                 </tr>
+                
                
             </tbody>
         </table>
-
+        <br />
+        Bill printed : {{bill_printed_by}}  Time: {% now "SHORT_DATETIME_FORMAT" %}
         {% endfor %}
     </div>
+    
 </body>
 </html> 
