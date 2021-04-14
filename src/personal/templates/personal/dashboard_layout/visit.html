@@ -22,7 +22,10 @@
                                         <option  v-for="(patient, index) in patients" v-bind:value="patient.id">[[ patient.firstname ]] [[patient.lastname]] [[patient.mobile]]</option>
                                     </select> -->
                                 
-                                    <v-select label="fullname" :options="patients"  v-model="fk_customer_user_id"></v-select>
+                                    <!-- <v-select label="fullname" :options="patients"  v-model="fk_customer_user_id"></v-select> -->
+                                    <label class="typo__label">Patient</label>
+                                        <multiselect v-model="fk_customer_user_id" :options="patients" label="fullname" :searchable="true" :close-on-select="true" :show-labels="true" placeholder="Select Patient"></multiselect>
+                                    <!-- <pre class="language-json"><code>[[ fullname  ]]</code></pre> -->
                                 </div>
                                 <div class="col-sm-3 col-md-3" >
                                     <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">+</button>

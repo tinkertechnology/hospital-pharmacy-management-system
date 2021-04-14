@@ -133,6 +133,7 @@ class VariationBatch(models.Model):
 	expiry_date = models.DateField(null=True, blank=True)
 	purchase_date = models.DateField(null=True, blank=True)
 	use_batch = models.BooleanField(default=True)
+	is_initial = models.BooleanField(default=False, blank=True)
 
 	def __str__(self):
 		return '%s-%s' %(self.fk_variation.title, self.batchno)

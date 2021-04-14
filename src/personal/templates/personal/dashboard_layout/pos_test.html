@@ -92,8 +92,11 @@
                                                      <option>Select Item</option>
                                                     <option  v-for="(item, index) in products" v-bind:value="item.id">[[item.fk_variation.title]][[ item.batchno ]]</option>
                                                 </select> -->
-                                            
+                                                <!-- <label class="typo__label">Single select</label>
+                                                <multiselect :options="products" :searchable="false" :close-on-select="false" :show-labels="false" placeholder="Pick a value"  v-model="cartitem.fk_variation_batch_id" @input="value => onChangeCartItemProduct(cartitem,value)"></multiselect>
+                                                <pre class="language-json"><code>[[ value  ]]</code></pre>     -->
                                         </td>
+
 
                                         <td>[[ cartitem.expiry_date ]]</td>
                                         <td><input type="text" class="form-control"  @change="onChangeCartItemQuantiy(cartitem, $event)" v-bind:value="[[cartitem.quantity]]"></td>
@@ -304,7 +307,7 @@
 </script>
 <script>
     // var Toasted = require('vue-toasted').default
-    Vue.use(VueToast);
+    Vue.use(VueToast);    
     Vue.component('v-select', VueSelect.VueSelect);
     var app = new Vue({
         

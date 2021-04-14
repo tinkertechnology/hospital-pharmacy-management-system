@@ -7,222 +7,6 @@
 {% block content %}
 
 <div class="col-sm-12" id="pos">
-    
-    {% comment %}
-    <div class="card-box table-responsive">
-        <div class="col-lg-12">
-            <div class="demo-box p-2">
-                <h4 class="header-title"></h4>
-                <div class="row mb-4">
-                    <div class="col-sm-12">
-                        <!-- <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Add Customer</button> -->
-                        <a href="/visit/"><button class="btn btn-secondary">Add New Visit</button></a>
-                    </div>
-
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table m-0">
-
-                        <thead class="bg-teal text-white">
-                            <tr>
-                                <th>#</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Age</th>
-                                <th>Username</th>
-                                <th>Mobile</th>
-                                <th>Last Visit</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for patient in object_list %}
-                            <tr>
-                                <th scope="row">{{ patient.id }}</th>
-                                <td>{{patient.firstname}}</td>
-                                <td>{{ patient.lastname }}</td>
-                                <td>{{patient.get_age}}</td>
-                                <td>{{ patient.mobile}}</td>
-                                <td>{{patient.mobile}}</td>
-                                <td>{{patient.get_last_visit}}</td>
-                                <td>
-                                    <a class="btn btn-primary" href="/carts?user_id={{patient.id}}">visit details</a>
-                                    <!-- <a class="btn btn-edit" data-toggle="modal" @click="RetrivePatientInfo({{patient.id}})" data-target="#con-close-modal">edit</a> -->
-                                    <a class="btn btn-secondary" href="/patient/detail/{{patient.id}}/">Edit</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% if is_paginated %}
-                    <div class="pagination">
-                        <span class="step-links">
-                            {% if page_obj.has_previous %}          
-                                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-                            {% endif %}
-                    
-                            <span class="current">
-                              {{ page_obj.number }}
-                            </span>
-                    
-                            {% if page_obj.has_next %}
-                                <a href="?page={{ page_obj.next_page_number }}">next</a>
-                            {% endif %}
-                        </span>
-                    </div>
-                {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endcomment %}
-
-{% comment %}
-    <!-- Add new customer modal start -->
-<div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title mt-0">Add New Customer</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="field-1" class="control-label">First Name</label>
-                            <input type="text" class="form-control" v-model="customerForm.firstname" id="field-1" placeholder="John">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="field-2" class="control-label">Last Name</label>
-                            <input type="text" class="form-control" v-model="customerForm.lastname" id="field-2" placeholder="Doe">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="field-3" class="control-label">Mobile Number</label>
-                            <input type="text" class="form-control" v-model="customerForm.mobile" id="field-3" placeholder="9841xxxxxx">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="field-6" class="control-label">Patient Type</label>
-                            <select class="form-control" v-model="customerForm.patient_type_id">
-                                <option value="">Normal</option>
-                                {% for patient_type in patient_types %}
-                                    <option value="{{patient_type.id}}">{{patient_type.title}}</option>
-                                {% endfor %}
-                                
-                            </select>
-                        </div>
-                    </div>
-                 
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="field-5" class="control-label">Date of Birth (BS)</label>
-                            <!-- <input type="text" v-model="customerForm.date_of_birth" class="form-control datepicker" v-model="customerForm.dob" id=""  placeholder=""> -->
-                            <vuejs-datepicker :language="en" v-model="customerForm.date_of_birth" :value="customerForm.date_of_birth"></vuejs-datepicker>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="field-6" class="control-label">Email Address</label>
-                            <input type="text" class="form-control"  v-model="customerForm.email" id="field-6" placeholder="admin@gmail.com">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="field-4" class="control-label">Country</label>
-                           
-                            <select class="form-control" @change="fetchState">
-                                <option>select</option>
-                                {% for country in countries %}
-                                    <option value="{{country.name}}">{{country.name}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="field-4" class="control-label">State</label>
-                            <!-- <input type="text" class="form-control" v-model="fk_state_id" id="field-4" placeholder="Country"> -->
-                            <select class="form-control" name="perm_district"  v-model="fk_state_id" @change="fetchDistrict">
-                                <option value="">Select State</option>
-                                <option v-for="data in state.results" :value="data.id">[[ data.name ]]</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="field-4" class="control-label">District</label>
-                            <!-- <input type="text" class="form-control" v-model="fk_district_id" id="field-4" placeholder="Country"> -->
-                            <select class="form-control" name="perm_district"  v-model="fk_district_id" @change="fetchLocalgov">
-                                <option value="">Select District</option>
-                                <option v-for="data in district.results" :value="data.id">[[ data.name ]]</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="field-4" class="control-label">Local Gov</label>
-                            <!-- <input type="text" class="form-control" v-model="fk_localgov_id" id="field-4" placeholder="Local"> -->
-                            <select class="form-control" name="perm_district"  v-model="fk_localgov_id" @change="fetchLocalgov">
-                                <option value="">Select Localgov</option>
-                                <option v-for="data in localgov.results" :value="data.id">[[ data.name ]]</option>
-                            </select>
-                        </div>
-                    </div>
-
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="field-6" class="control-label">Emergency Number</label>
-                            <input type="text" class="form-control"  v-model="customerForm.emergency_number" id="field-6" placeholder="">
-                        </div>
-                    </div>
-                    <div class="col-md-6" >
-                        <div class="form-group">
-                            <label for="field-6" class="control-label">Blood Group</label>
-                            <select v-model="customerForm.fk_bloodgroup_id" class="form-control">
-                            {% for bg in blood_groups %}
-                                <option value="{{bg.id}}">{{bg.title}}</option>
-                            {% endfor %}
-                            </select>
-                           
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-info waves-effect waves-light" @click="savePatient">Save changes</button>
-                <button  @click="savePatient">save</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- /.modal -->
-{% endcomment %}
- 
-
 <div class="row">
     <div class="col-lg-12">
         <div class="row mt-4">
@@ -382,9 +166,10 @@ $(document).ready(function () {
             "data": null,
             "className": "action-link",
             "render": function (data, type, full) {
-                return ' <button class="btb btn-danger" onclick="VueDeleteVisit('+data.id+')">X</button> ' +
-                        '<a href="/api/VisitAPIView/?customer_id='+ data.id +'" class="btn btn-sm btn-bordered-primary waves-effect waves-light btn-secondary">view</a>'+                       
-                        '<a href="/carts?visit_id='+ data.id +'" class="mdi mdi-billboard">edit</a>'
+                return '' +
+                '<a href="/api/VisitAPIView/?customer_id='+ data.id +'"> <i class="mdi mdi-monitor-edit" title="show all Visits" style="font-size: 30px"></i></a>'+
+                '<a href="/carts?visit_id='+ data.id +'"> <i class="mdi mdi-book-account" title="show bills" style="font-size: 30px"></i></a>'
+                        
                     ;
             }
         }],
@@ -422,20 +207,18 @@ $(document).ready(function () {
         
         delimiters: ['[[', ']]'],
       el: '#pos',
-      data: {
-          abcd : '',
-        customerForm : {
-            firstname : "",
-            lastname: "",
-            email : "",
-            patient_type_id : "",
-            mobile : "",
-            visit_type: '',
-            address: '',
-            date_of_birth:  '',//new Date().toLocaleDateString(),
-            fk_bloodgroup_id:'',
-            emergency_number: ''
+      components: {
+  	    vuejsDatepicker
     },
+      data: {
+        fk_state_id: null,
+        fk_country_id: null,
+        fk_district_id: null,
+        fk_localgov_id: null,
+        state : [],
+        district : [],
+        localgov: [],
+        abcd : '',
         loading: false,
         products : [],
         showModal : false,
@@ -480,52 +263,88 @@ $(document).ready(function () {
         ]
     },
     customerForm : {
+        appointmentDate: '',
         firstname : "",
+        fk_gender_id : null,
         lastname: "",
         email : "",
-        patient_type : "",
+        patient_type_id : null,
         mobile : "",
-        address: "",
-        fk_patient_type_id: "",
-        dob : ""
+        visit_type: '',
+        address: '',
+        date_of_birth:  '', //new Date().toDateString(),
+        fk_bloodgroup_id:'',
+        emergency_number: ''
     },
+    message : {
+            error_message_body: '',
+            error_status : false,
+        },
 
 }, //Data Closed
       methods : {
-        // savePatient: function() {
-        //         axios({
-        //         method: 'post',
-        //         url:  '/api/register/',
-        //         headers: {
-        //                         'Content-Type': 'application/json',
-        //                         'X-CSRFToken': '{{ csrf_token }}'
-        //                     }, 
-        //         data: {
-        //             firstname : this.customerForm.firstname,
-        //             lastname : this.customerForm.lastname,
-        //             mobile : this.customerForm.mobile,
-        //             email : this.customerForm.email,
-        //             address : this.customerForm.address,
-        //             date_of_brith: this.customerForm.dob,
-        //             fk_patient_type_id :this.customerForm.fk_patient_type_id
+        savePatient: function() {
+                axios({
+                method: 'post',
+                url:  '/api/register/',
+                headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }, 
+                data: {
+                    fk_customer_id : null,
+                    firstname : this.customerForm.firstname,
+                    lastname : this.customerForm.lastname,
+                    mobile : this.customerForm.mobile,
+                    email : this.customerForm.email,
+                    date_of_birth : this.customerForm.date_of_birth,
+                    address : this.customerForm.address,
+                    patient_type_id : this.customerForm.patient_type_id,
+                    emergency_number : this.customerForm.emergency_number,
+                    fk_bloodgroup_id : this.customerForm.fk_bloodgroup_id,
+                    fk_country_id : this.fk_country_id,
+                    fk_state_id : this.fk_state_id,
+                    fk_district_id : this.fk_district_id,
+                    fk_localgov_id : this.fk_localgov_id,
+                    fk_gender : this.customerForm.fk_gender_id
 
-        //           // This is the body part
-        //         },
-        //         }) //.then(response=> cartitem.variation = response.data)
-        //         .then((getResponse) => {
-        //             $('#con-close-modal').modal('hide')
-        //             console.log(getResponse.data);
-        //             this.patientType = getResponse.data.user_id;
+                  // This is the body part
+                },
+                }) //.then(response=> cartitem.variation = response.data)
+                .then((getResponse) => {
+                    $('#con-close-modal').modal('hide');
+                    let toast = this.$toasted.show("Patient has been registered", { 
+                        theme: "toasted-primary", 
+                        position: "top-right", 
+                        duration : 2000,
+                        className: ['your-custom-class',]
+                    });
+
+                    console.log(getResponse.data);
+                    this.getPatient();
+                    // this.selectedPatient = getResponse.data.user_id;
+                    this.fk_customer_user_id = getResponse.data.user_id;
+                    console.log(this);
                     
 
-        //         }) 
-        //         .catch(function (error) {
-        //             console.log(error);
-        //             console.log("Error while fetching market updates");
-        //         });
+                })
+                .catch((error) => {    
+                    console.log(error.response.data);
+                    if(error.response){
+                        this.message.error_message_body = error.response.data;
+                        this.message.error_status = true;
+                    }
+                    let toast = this.$toasted.show("Please input correct information", { 
+                        theme: "bubble", 
+                        position: "top-right", 
+                        duration : 2000,
+                        className: ['your-custom-class',]
+                    });
+                            // console.log(error.response.status);
+                            // console.log(error.response.headers);
+                });
                   
-        // },
-
+        },
         RetrivePatientInfo: function(id) {
             let loader = Vue.$loading.show({
                 // Pass props by their camelCased names

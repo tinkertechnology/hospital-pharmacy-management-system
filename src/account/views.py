@@ -35,6 +35,8 @@ from .models import Doctor, BloodGroup, Visit, VisitType, Account, PhoneOTP, Pas
 from datetime import datetime as dt, timedelta
 from django.core.paginator import Paginator
 from django.contrib import messages
+from products.models import UserVariationQuantityHistory, VariationBatch
+from products.serializers import UserVariationQuantityHistorySerializer
 # from datetime import datetime
 
 User = get_user_model()
@@ -750,8 +752,7 @@ class SaveUpdateFirebaseToken(APIView):
 			})
 
 
-from products.models import UserVariationQuantityHistory
-from products.serializers import UserVariationQuantityHistorySerializer
+
 class GetUserJarAndCreditAPIView(APIView):
 	serializer_class = UserVariationQuantityHistorySerializer
 	def post(self, request, *args, **kwargs):
@@ -1012,6 +1013,7 @@ class VisitAPIView(APIView):
 		visit_type = request.data.get('visit_type')
 		fk_patient_type_id = request.data.get('fk_patient_type_id')
 		visit_id  = dt.now().strftime('%Y%m%d%H%M%S')
+		intial_prod_batch = VariationBatch.objects.filter(is_initial=True)		
 		if fk_customer_user_id:
 			visit = Visit.objects.create(fk_customer_user_id=fk_customer_user_id,
 										 fk_doctor_user_id=fk_doctor_user_id,
@@ -1020,6 +1022,14 @@ class VisitAPIView(APIView):
 										 visit_id= visit_id,
 										 fk_user_type_id = fk_patient_type_id,										 
 										 remarks=remarks)
+		if intial_prod_batch:
+			cart = Cart()
+			cart.user_id = fk_customer_user_id
+			cart.fk_visit_id = visit.id
+			cart.save()
+			for prod in intial_prod_batch:
+				CartItem.objects.create(cart_id=cart.id, fk_variation_batch_id=prod.id,fk_counter_id=request.session['counter'], ordered_price=prod.price, orginal_price=prod.price, quantity=1)		
+
 			data = {
 				'success': 'Created',
 				'id' : visit.id,

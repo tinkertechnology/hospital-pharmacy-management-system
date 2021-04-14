@@ -183,7 +183,9 @@ class VariationBatchPriceAPIView(APIView):
 	def get(self, request):
 		fk_user_type_id = request.GET.get('fk_user_type_id')
 		fk_variation_batch_id = request.GET.get('variation_batch_id')
-		variation_batch_price = VariationBatchPrice.objects.filter(fk_user_type_id=fk_user_type_id).filter(fk_variation_batch_id=fk_variation_batch_id).first()
+		variation_batch_price = VariationBatchPrice.objects.filter(fk_variation_batch_id=fk_variation_batch_id).first()
+		if fk_user_type_id:
+			variation_batch_price = VariationBatchPrice.objects.filter(fk_user_type_id=fk_user_type_id).filter(fk_variation_batch_id=fk_variation_batch_id)
 		quantity = 0
 		batchno = ''
 		expiry_date = ''
