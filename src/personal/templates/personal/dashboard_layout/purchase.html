@@ -173,7 +173,8 @@
 <script>
     // var Toasted = require('vue-toasted').default
     $(document).ready(function(){
-        $('body').removeClass("container-fluid");
+        $('.container-fluid').attr('class', 'RoundedCorners');
+        // $('.col-md-12').remove();
     });
 
     var app = new Vue({
@@ -269,7 +270,8 @@
             }
                 )
                 .then(getResponse => {
-                    setTimeout(() => loader.hide(), 0.25 * 1000)
+                    // setTimeout(() => loader.hide(), 0.25 * 1000)
+                    loader.hide();
                     console.log("GET Response")
                     console.log(getResponse.data);
                     // data = getResponse.data;
