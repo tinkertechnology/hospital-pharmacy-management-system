@@ -137,6 +137,7 @@ from products.views import (
         hmsdruglists,        
         drugprice_special,
         hmsproduct_detail,
+        apihmsproduct_detail,
         adjustments,
         datatable,
         hmsvariations,
@@ -362,10 +363,11 @@ urlpatterns += [
     path('pos1/<int:patient_id>/', pos1, name='pos'),
     path('carts', carts, name="carts"),
     path('cartitems', cartitems, name="cartitems"),
-    path('hmsproducts/', hmsproducts, name="hmsproducts"),
+    path('hmsproducts/', hmsproducts, name="hmsproducts"), #catalogue
+    path('hmsproduct_detail/<int:id>/', hmsproduct_detail, name="hmsproduct_detail"), #catalogue
     path('sales/', sales, name="sales"),
     path('hmsdruglists/', hmsdruglists, name="hmsdruglists"),
-    path('hmsproduct_detail/<int:id>/', hmsproduct_detail, name="hmsproduct_detail"),
+    path('api/hmsproduct_detail/<int:id>/', apihmsproduct_detail, name="api_hmsproduct_detail"),
     path('drugprice_special/', drugprice_special, name="drugprice_special"),
     path('adjustments/', adjustments, name="adjustments"),
     path('datatable/', datatable, name="datatable"),

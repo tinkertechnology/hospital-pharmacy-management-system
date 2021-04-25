@@ -312,8 +312,8 @@
                 "data": null,
                 "className": "action-link",
                 "render": function (data, type, full) {
-                    return ' <button class="btb btn-danger" onclick="VueDeleteProduct('+data.id+')">X</button> '+
-                    '<button class="btb btn-danger" onclick="VueLoadProductDetail('+data.id+')"><></button>'                    
+                    return ' <button class="btb btn-danger" onclick="VueDeleteProduct('+data.id+')">&nbsp; X &nbsp;</button> '+
+                    '<button class="btb btn-warning" onclick="VueLoadProductDetail('+data.id+')">edit</button>'                    
                         ;
                 }
             }],
@@ -446,51 +446,8 @@
             },
 
 
-            loadProductDetail: function (id) {
-                $=jQuery.noConflict();
-             
-            //    $('#myModal').show();
-               
-                
-                // $.ajax({
-                // url: '/hmsproduct_detail/'+ id + '/',
-                // type: 'GET',
-                // dataType: 'json', // added data type
-                // success: function(res) {
-                //     // console.log(res);
-                    
-                    
-                //     // alert(res);
-
-                // $('#myModal').modal('show');
-                   
-                // }
-                
-            
-           
-                axios.get('/hmsproduct_detail/'+ id + '/')
-                    .then((getResponse) => {
-                        console.log("GET Response")
-                        console.log(getResponse.data);
-                        // data = getResponse.data;
-                        // response.send(data);
-                        // this.products = getResponse.data;
-                        this.loadProductForm = getResponse.data;
-                        console.log('loadProductForm.title',this.loadProductForm);
-                        $ShowLoading(this);
-                       
-                       
-                        // print(products);
-                    }).then(res => {
-                        
-                        $('#myModal').modal('show');
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                        console.log("Error while fetching market updates");
-                       
-                    });
-                
+            loadProductDetail: function (id) {            
+                window.location.href="/hmsproduct_detail/"+ id;                    
             },
 
 

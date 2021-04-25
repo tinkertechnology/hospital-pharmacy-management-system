@@ -118,7 +118,7 @@ class ProductListAPIView(generics.ListAPIView):
 
 
 class ProductRetrieveAPIView(generics.RetrieveAPIView):
-	queryset = Product.objects.all()
+	queryset = Variation.objects.all()
 	serializer_class = ProductDetailSerializer
 
 
@@ -311,6 +311,7 @@ class AddProductAPIView(APIView): #VariationAdd
 	def delete(self, request):
 		permission_classes = [IsAuthenticated]
 		variation_id = request.data.get('variation_id')
+		print('variation_id', variation_id)
 		variation = Variation.objects.get(pk=variation_id)
 		if variation:
 			variation.delete()
@@ -364,6 +365,23 @@ def hmsproducts(request):
 	}
 	return render(request, "personal/dashboard_layout/products.html", context)
 
+def hmsproduct_detail(request, id):
+	permission_classes = [IsAuthenticated]
+	variation = Variation.objects.get(pk=id)
+	print('varitin',variation)
+	context = {
+		'title' : 'Editing '+ variation.title ,
+		'variation' : variation,
+		'suppliers' : Vendor.objects.all(),
+		'manufacturers' : Company.objects.all(),
+		'generics' : GenericName.objects.all(),
+		'brands' : Brand.objects.all(),
+		'counters' : Counter.objects.all(),
+		'product_id' : id,
+	}
+	return render(request, "personal/dashboard_layout/hmsproduct_detail.html", context)
+
+
 def hmsdruglists(request):
 	permission_classes = [IsAuthenticated]
 	context = {
@@ -389,7 +407,7 @@ def drugprice_special(request):
 
 from rest_framework.decorators import api_view
 @api_view(['GET','POST'])
-def hmsproduct_detail(request, id):
+def apihmsproduct_detail(request, id):
 	permission_classes = [IsAuthenticated]
 	if request.method == 'GET':
 		return Response(VariationSerializer(Variation.objects.filter(pk=id), many=True).data)

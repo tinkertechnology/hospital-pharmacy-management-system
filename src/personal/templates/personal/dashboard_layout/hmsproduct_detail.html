@@ -2,6 +2,14 @@
 
 <!-- http://localhost:8000/reports/ReportHtml?template=ReportHtmlUsers.html -->
 
+{% extends 'personal/dashboard_layout/app.html' %}
+
+{% load static %}
+
+{% block page_title %} {{title}} {% endblock %}
+{% block content %}
+
+
 <section id="products">
    
   <!-- <button v-on:click="isHidden = !isHidden">Toggle hide and show</button> -->
@@ -28,7 +36,7 @@
                         <tbody>
                             <tr>
                                 
-                                <td><input class="form-control form-white" placeholder="Enter name" type="text" v-model="catlogSaveForm.product_title" /></td>
+                                <td><input class="form-control" value="{{variation}}" type="text" v-model="catlogSaveForm.product_title" /></td>
                                 <td><input class="form-control form-white" placeholder="Enter code" type="text" v-model="catlogSaveForm.product_code" /></td>
                                 <td><input class="form-control form-white" v-model="catlogSaveForm.rack_number" placeholder="Enter name" type="text" name="category-name" /></td>
                                 <td><select class="form-control form-white" v-model="catlogSaveForm.generic_name_id" data-placeholder="Choose a product..." name="category-color">
@@ -105,8 +113,9 @@
         filter: alpha(opacity=40);
     }
 </style>
+{% endblock %}
 
-
+{% block script %}
 <script>
 
     //   var csrftoken = Cookies.get('csrftoken');
@@ -338,39 +347,27 @@
        
         
             addProduct: function () {
-                this.loading = true,
                     axios({
-                        method: 'post',
-                        url: '/api/products_add/',
+                        method: 'get',
+                        url: '/api/products/{{product_id}}/',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-CSRFToken': '{{ csrf_token }}'
                         },
-                        data: {
-                          title : this.catlogSaveForm.product_title,
-                          company_id : this.catlogSaveForm.company_id,
-                          generic_names_id : this.catlogSaveForm.generic_name_id,
-                          company_id : this.catlogSaveForm.company_id,
-                          product_code : this.catlogSaveForm.product_code,
-                          rack_number : this.catlogSaveForm.rack_number,
-                          brand_id : this.catlogSaveForm.brand_id,
-                          alert_quantity : this.catlogSaveForm.alert_quantity,
-                          alert_expiry_days : this.catlogSaveForm.alert_expiry_days,
-                          fk_counter_id : this.catlogSaveForm.fk_counter_id,
-                            // This is the body part
-                        }
+   
                     }) //.then(response=> cartitem.variation = response.data)
                     .then((getResponse) => {
-                        console.log(getResponse.data);
-                        $('#quoteTable').DataTable().ajax.reload()
-                        // this.getProduct();
-                        let toast = this.$toasted.show( this.catlogSaveForm.product_title + " has been added ", { 
-                            theme: "toasted-primary", 
-                            position: "top-right", 
-                            duration : 1500,
-                            className: ['your-custom-class',]
-                    });
-                        this.loading = false;
+                        console.log(getResponse.data);                      
+                          this.catlogSaveForm.product_title = getResponse.title,
+                          this.catlogSaveForm.company_id = getResponse.company,
+                          this.catlogSaveForm.generic_name_id = getResponse.generic_name,                          
+                          this.catlogSaveForm.product_code=getResponse.code,
+                           this.catlogSaveForm.rack_number=getResponse.rack_number,
+                           this.catlogSaveForm.brand_id=getResponse.brand,
+                           this.catlogSaveForm.alert_quantity=getResponse.alert_quantity,
+                           this.catlogSaveForm.alert_expiry_days=getResponse.alert_expiry_days,
+                          this.catlogSaveForm.fk_counter_id=getResponse.fk_counter
+                
 
                     })
                     .catch(error => {
@@ -472,14 +469,12 @@
 
         mounted() {
             window.VueDeleteProduct = this.deleteProduct;
-            // this.getProduct();
-            // this.loadGroupsData();
-            //   this.getPatient();
-            //   this.getCart();
+           // this.addProduct();
 
         },
     })
 </script>
+{% endblock %}
 
 
 
