@@ -9,8 +9,8 @@
                 <h4 class="mt-4 header-title">Patient Name: {{ user.firstname }} {{user.lastname}}</h4>
                 <div class="row mb-2">
                     <div class="col-sm-12">
-                        <h4 class="mt-4 header-title">Patient ID: {{ user.id}}</h4>
-                        <form class="form-inline">
+                        <h4 class="mt-4 header-title">Patient ID: {{ user.customer_id}}</h4>
+                        <form1 class="form-inline">
                             <div class="form-group">
                                 <button class="btn btn-success waves-effect waves-light btn-md" @click="createCart">Create New Bill</button>
                             </div>
@@ -28,7 +28,7 @@
                                     </a>
                                 {% endif %}
                             </div>
-                        </form>
+                        </form1>
                     </div>
                 </div>
             </div>
@@ -36,7 +36,7 @@
     </div>
 
     <div class="row">
-        <div class="col-xl-6">
+        <div class="col-xl-12">
             <div class="card-box">
                 <h4 class="header-title mb-4">Recent Bill Details</h4>
                 <div class="table-responsive">
@@ -44,10 +44,11 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Bill From</th>
-                                <th>Phone</th>
-                                <th>Location</th>
-                                <th>Total</th>
+                                <th>Bill Counter</th>
+                                <th>Bill amount</th>
+                                <th>Paid By</th>
+                                <th>Billed by</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,9 +61,18 @@
                                     <a href="/cartitems?cart_id={{cart.id}}"><h5 class="m-0 font-15">{{cart.fk_counter.name}}</h5></a>
                                     <!-- <p class="m-0 text-muted"><small>Web designer</small></p> -->
                                 </td>
-                                <td>+12 3456 789</td>
-                                <td>USA</td>
                                 <td>{{cart.total}}</td>
+                                <td>{{cart.fk_payment_method.title}}</td>                                
+                                <td>{{cart.fk_bill_created_by_user.firstname }} {{cart.fk_bill_created_by_user.lastname }}</td>
+                                <td>
+                                    <a href="/cartitems?cart_id={{cart.id}}"><button class="btn btn-purple">Modify</button></a>
+                                    <button class="btn btn-danger" @click="ModifyCart({{cart_id}})">Delete</button>
+                                    <!-- <p class="m-0 text-muted"><small>Web designer</small></p> -->
+                                </td>
+                               
+                                   
+                                    <!-- <p class="m-0 text-muted"><small>Web designer</small></p> -->
+                               
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -102,9 +112,32 @@
                     // },
                     }) //.then(response=> cartitem.variation = response.data)
                     .then((getResponse) => {
-                        $('#con-close-modal').modal('hide')
-                        // console.log(getResponse.data);
-                        // window.location='/api/VisitAPIView/?customer_id='+ getResponse.data.fk_customer_user_id;
+                        // $('#con-close-modal').modal('hide')
+                        $ToastSuccess(this, 'Created New Bill');                      
+                        window.location.reload();
+                        // this.patientType = getResponse.data.user_id;
+                    }) 
+                    .catch(function (error) {
+                        console.log(error);
+                        console.log("Error while fetching market updates");
+                    });
+                },
+
+                ModifyCart: function(cart_id) { //delete or change 
+                    axios({
+                    method: 'delete',
+                    url:  '/api/cart/',
+                    headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRFToken': '{{ csrf_token }}'
+                                }, 
+                    data: {
+                        cart_id : cart_id,
+                    },
+                    }) //.then(response=> cartitem.variation = response.data)
+                    .then((getResponse) => {
+                        // $('#con-close-modal').modal('hide')
+                        $ToastSuccess(this, getResponse.data);                      
                         window.location.reload();
                         // this.patientType = getResponse.data.user_id;
                     }) 

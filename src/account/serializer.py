@@ -116,11 +116,19 @@ class PatientSerializer(serializers.ModelSerializer):
 	def get_patient_type(self, obj):
 		ptype =  UserType.objects.filter(user=obj).first()
 		data = {}
+		
 		if ptype:
-			data = {
-				'p_type_id': ptype.user_type.id,
-				'p_type_title' : ptype.user_type.title
-			}
+			if ptype.user_type:
+				data = {
+					'p_type_id': ptype.user_type.id,
+					'p_type_title' : ptype.user_type.title
+				}
+			else:
+				data = {
+					'p_type_id' : 'n/a',
+					'p_type_title' : 'n/a'
+
+				}
 		return data
 	def get_fullname(self, obj):
 		fullname = ''

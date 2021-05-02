@@ -44,14 +44,9 @@ class VariationBatchSerializer(serializers.ModelSerializer):
 		if obj.batchno:
 			return obj.fk_variation.title + ' ' + obj.batchno
 		return obj.fk_variation.title
-	# DT_RowId = serializers.SerializerMethodField()
-	# DT_RowAttr = serializers.SerializerMethodField()
 
-	# def get_DT_RowId(self, obj):
-	# 	return 'row_%d' % obj.pk
 
-	# def get_DT_RowAttr(self, obj):
-	# 	return {'data-pk': obj.pk}
+
 
 class UserVariationQuantityHistorySerializer(serializers.ModelSerializer):
 	variation = VariationSerializer()
@@ -110,21 +105,12 @@ class ProductDetailUpdateSerializer(serializers.ModelSerializer):
 
 class ProductDetailSerializer(serializers.ModelSerializer):
 	# variation_set =  #VariationSerializer(many=True, read_only=True)
-	variation_set = serializers.SerializerMethodField(source='get_variation_set', read_only=True)
-	image = serializers.SerializerMethodField()
-	fk_common_product = CommonProductSerializer()
+	# variation_set = serializers.SerializerMethodField(source='get_variation_set', read_only=True)
+	# image = serializers.SerializerMethodField()
+	# fk_common_product = CommonProductSerializer()
 	class Meta:
-		model = Product
-		fields = [
-			"id",
-			"title",
-			"description",
-			"price",
-			"image",
-			"variation_set",
-			# "variation_set1",
-			"fk_common_product"
-		]
+		model = Variation
+		fields = '__all__'
 		
 	def get_variation_set(self, obj):
 		return VariationSerializer(obj.variation_set.filter(is_internal=False), many=True).data

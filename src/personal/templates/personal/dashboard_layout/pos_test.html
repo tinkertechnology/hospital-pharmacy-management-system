@@ -1,15 +1,12 @@
 {% extends 'personal/dashboard_layout/app.html' %}
 
 {% load static %}
-
+{% block page_title %} Sales {% endblock %}
 {% block content %}
 <div id="pos"> 
 <div class="row">
     <div class="col-md-12">
         <div class="card">
-            <!-- <div class="panel-heading">
-                    <h4>Invoice</h4>
-                </div> -->
             <div class="card-body">
                 <div class="clearfix">
                     <div class="float-left">
@@ -23,6 +20,7 @@
                     </div>
                 </div>
                 <hr>
+
                 <div class="row">
                     <!-- <div class="col-md-3">
                         <select class="form-control select2" v-model="patientType" @change="onChangePatients($event)"> 
@@ -32,39 +30,36 @@
                     </div> -->
 
                     <div class="col-md-3">
-                        <input type="text" class="form-control" v-bind:value="_$GF.IFDEF(patient,['patient_type','p_type_title'])" readonly name="patient_type" placeholder="Patient Type">
+                        TYPE <span class="badge badge-danger">{% if cart.fk_visit.fk_user_type %} {{cart.fk_visit.fk_user_type.title}} </span> {% else %} <span class="badge badge-warning">Normal</span>   {% endif %}
                     </div>
                     <div class="col-md-3">
                         <input type="text" class="form-control" name="insureee_id" placeholder="Insuree ID">
                     </div>
-                    <!-- <div class="col-md-3">
-                        <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Add Customer</button>
-                    </div> -->
+                    
                     <div class="col-md-3">
-                    <select clas="form-group" v-model="paymentmethod" @change="updatePaymentMethod">
-                        {% for paymentmethod in paymentmethods %}
-                            <option class="form-control" value="{{paymentmethod.id}}">{{paymentmethod.title}}</option>
-                        {% endfor %}
-                    </select>
+                        <select class="form-control" v-model="paymentmethod" @change="updatePaymentMethod">
+                            {% for paymentmethod in paymentmethods %}
+                                <option value="{{paymentmethod.id}}">{{paymentmethod.title}}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-md-12">
                         <div class="float-right mt-3">
                             <p><strong>Order Date: </strong> {{cart.timestamp}}</p>
-
-                            <!-- <p><strong>Order Status: </strong> <span class="badge badge-danger">Pending</span></p> -->
+                            <p><strong>Order Status: </strong> <span class="badge badge-danger">Pending</span></p>
                             <p><strong>Order ID: </strong> #{{cart_id}}</p>
                         </div>
                         <div class="flaot-left mt-3">
                             <address>
-                                  <strong>Patient : {{cart.user.firstname}} {{cart.user.lastname}} </strong><br>
-                                  Contact: {{cart.user.mobile}}<br>
-                                 Address : <br>
-                                  <abbr title="Phone">P:</abbr> {{cart.user.mobile}}
-                                  </address>
+                                <strong>Patient : {{cart.user.firstname}} {{cart.user.lastname}} </strong><br>
+                                Contact: {{cart.user.mobile}}<br>
+                                Address : <br>
+                                <abbr title="Phone">P:</abbr> {{cart.user.mobile}}
+                            </address>
                         </div>
-
                     </div>
                     <!-- end col -->
                 </div>
@@ -97,8 +92,11 @@
                                                      <option>Select Item</option>
                                                     <option  v-for="(item, index) in products" v-bind:value="item.id">[[item.fk_variation.title]][[ item.batchno ]]</option>
                                                 </select> -->
-                                            
+                                                <!-- <label class="typo__label">Single select</label>
+                                                <multiselect :options="products" :searchable="false" :close-on-select="false" :show-labels="false" placeholder="Pick a value"  v-model="cartitem.fk_variation_batch_id" @input="value => onChangeCartItemProduct(cartitem,value)"></multiselect>
+                                                <pre class="language-json"><code>[[ value  ]]</code></pre>     -->
                                         </td>
+
 
                                         <td>[[ cartitem.expiry_date ]]</td>
                                         <td><input type="text" class="form-control"  @change="onChangeCartItemQuantiy(cartitem, $event)" v-bind:value="[[cartitem.quantity]]"></td>
@@ -121,8 +119,9 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="clearfix mt-4">
                             <h5 class="small text-dark">IN WORDS :  [[cart.in_words.toUpperCase()]]</h5>
                             <br />
@@ -147,30 +146,34 @@
                         <h3 class="text-right">Total Rs.[[ cart.total ]]</h3>
                     </div>
                 </div>
+                
+                <hr>
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="col-md-4">                        
-                            <select v-model="transaction.fk_type_id" class="form-control">
-                                <label>Type</label>
-                                {% for transaction_type in transaction_types %}
-                                    <option value="{{transaction_type.id}}">{{transaction_type.title}}
+                    <div class="col-md-3">
+                        <select v-model="transaction.fk_type_id" class="form-control">
+                            <label>Type</label>
+                            {% for transaction_type in transaction_types %}
+                                <option value="{{transaction_type.id}}">{{transaction_type.title}}
 
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <input type="text" v-model="transaction.amount" placeholder="amount" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <input type="text" v-model="transaction.comment" placeholder="remarks" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <button class="btn btn-purple" @click="cartTransaction">apply</button>
-                        </div>
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" v-model="transaction.amount" placeholder="amount" class="form-control">
                     </div>
                     
-                    <div  v-if="transactionTypes.length > 0"  class="row">
+                    <div class="col-md-3">
+                        <input type="text" v-model="transaction.comment" placeholder="remarks" class="form-control">
+                    </div>
+
+                    <div class="col-md-3">
+                        <button class="btn btn-purple" @click="cartTransaction">apply</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div  v-if="transactionTypes.length > 0"  class="col-sm-12">
                         <div class="col-lg-12">
 
                             <div class="demo-box mt-4">
@@ -201,30 +204,15 @@
                             </div>
 
                         </div>
-                       
                     </div>
-                   
-                   
-
-
-                  
-
-
-                    <!-- <tr v-for='(item, index) in '>
-                         <td>
-                             [[item.TransactionType]]
-                         </td>
-                         <td>
-                             [[item.amount]]
-                         </td>
-                    </tr> -->
                 </div>
                 <hr>
+
                 <div class="hidden-print">
                     <div class="float-right d-print-none">
-                        <!-- <a href="javascript:window.print()" class="btn btn-dark waves-effect waves-light"><i class="fa fa-print"></i></a> -->
+                        <a href="/api/send_invoice_pdf/{{cart_id}}/" class="btn btn-dark waves-effect waves-light">Print</a>
                         <button class="btn btn-primary waves-effect waves-light" @click="addToCart">Submit</button>
-                        <a href="/api/send_invoice_pdf/{{cart_id}}/" target="_blank">invoice</a>
+                        <!-- <a href="/api/send_invoice_pdf/{{cart_id}}/" target="_blank">invoice</a> -->
                     </div>
                 </div>
             </div>
@@ -319,7 +307,7 @@
 </script>
 <script>
     // var Toasted = require('vue-toasted').default
-    Vue.use(VueToast);
+    Vue.use(VueToast);    
     Vue.component('v-select', VueSelect.VueSelect);
     var app = new Vue({
         
@@ -425,7 +413,7 @@
         },
 
         getVariationBatchPrice: function(cartitem) {
-            axios.get('/api/VariationBatchPriceAPIView/?variation_batch_id='+cartitem.fk_variation_batch_id+'&fk_user_type_id={{cart.user.usertype.user_type_id}}')
+            axios.get('/api/VariationBatchPriceAPIView/?variation_batch_id='+cartitem.fk_variation_batch_id+'&fk_user_type_id={{cart.fk_visit.fk_user_type.id}}') // {{cart.user.usertype.user_type_id}}')
                 .then((getResponse) => {
                     console.log('variationpriceapiview',getResponse.data);
                     cartitem.price = getResponse.data.price;
@@ -803,7 +791,7 @@
 
       },
     })
-  </script>
+</script>
 
 
 {% endblock %}

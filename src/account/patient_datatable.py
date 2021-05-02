@@ -3,8 +3,11 @@ import django_filters
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
-from .models import Visit
-from .visit_filter import VisitFilter
+from .models import Account
+from rest_framework import pagination
+from rest_framework.response import Response
+from .patient_filter import PatientFilter
+from users.models import UserType
 
 
 # class UsersDataTableFilterSet(django_filters.FilterSet):
@@ -39,50 +42,72 @@ from .visit_filter import VisitFilter
     
 
 from rest_framework import serializers
-class VariationDataTableSerializer(serializers.ModelSerializer):
+from dateutil.relativedelta import relativedelta
+from datetime import datetime
+class PatientDataTableSerializer(serializers.ModelSerializer):
     patient_fullname = serializers.SerializerMethodField()
-    doctor_fullname = serializers.SerializerMethodField()
-    visit_type = serializers.SerializerMethodField()
-    visit_status = serializers.SerializerMethodField()
-
+    gender = serializers.SerializerMethodField()
+    age = serializers.SerializerMethodField()
+    last_visit = serializers.SerializerMethodField()
+    user_type = serializers.SerializerMethodField()
     class Meta:
-        model = Visit
+        model = Account
         fields= '__all__'
 
     def get_patient_fullname(self, obj):
         fullname = ""
-        if obj.fk_customer_user:
-            if obj.fk_customer_user.firstname:
-                fullname += obj.fk_customer_user.firstname
-            if obj.fk_customer_user.lastname:
-                fullname += ' '+obj.fk_customer_user.lastname
+        if obj.firstname:
+            fullname += obj.firstname
+        if obj.lastname:
+            fullname += ' '+obj.lastname
         return fullname
 
-    def get_doctor_fullname(self, obj):
-        fullname = ""
-        if obj.fk_doctor_user:
-            if obj.fk_doctor_user.firstname:
-                fullname += obj.fk_doctor_user.firstname
-            if obj.fk_doctor_user.lastname:
-                fullname += ' '+obj.fk_doctor_user.lastname
-        return fullname
+    def get_gender(self, obj):
+        gender = ""
+        if obj.fk_gender:
+           gender = obj.fk_gender.title
+        return gender
+    
 
-    def get_visit_type(self,obj):
-        visit_type = ''
-        if obj.fk_visit:
-            return obj.fk_visit.title
-    def get_visit_status(self,obj):
-        visit_status = ''
-        if obj.visit_status:
-            visit_status = "Completed"
-            return visit_status
-        visit_status = "Pending"
-        return visit_status
+    def get_age(self, obj):
+        delta = 'N/A'
+        if obj.date_of_birth:
+            delta = relativedelta(datetime.now().date(), obj.date_of_birth) 
+            return str(delta.years) + ' years'
+        return delta
+    def get_user_type(self, obj):
+        user_type = 'N/A'
+        user_type_obj = UserType.objects.filter(user=obj).first()
+        if user_type_obj:
+            user_type_obj = user_type_obj.user_type
+            if user_type_obj:
+                user_type = user_type_obj.title
+        return user_type
+    
+    def get_last_visit(self, obj):
+        last_visit = ""
+        last_visit_obj = obj.fk_customer_user.first() #order_by('-timestamp').first()
+        print('last-visit', last_visit_obj)
+            # print('last', last_visit)
+        if last_visit_obj:
+            last_visit = last_visit_obj.timestamp.strftime("%Y-%m-%d, %I:%M %p")
+        return last_visit
+
+    # def get_visit_type(self,obj):
+    #     visit_type = ''
+    #     # if obj.fk_visit:
+    #     #     return obj.fk_visit.title
+    #     if obj.fk_customer_user: #visit ma
+    #         visit = obj.fk_customer_user.fk_visit
+    #         if visit:
+    #             visit_type = visit.title
+    #     return visit_type
+
+            
 
 
 
-from rest_framework import pagination
-from rest_framework.response import Response
+
 # https://github.com/encode/django-rest-framework/blob/master/rest_framework/pagination.py
 # see fields to overide from PageNumberPagination
 class DataTablePagination(pagination.PageNumberPagination):
@@ -143,7 +168,7 @@ class DataTablePagination(pagination.PageNumberPagination):
         
         if page_number in self.last_page_strings:
             page_number = paginator.num_pages
-        print("print(page_size, start, page_number)")
+        # print("print(page_size, start, page_number)")
         print(page_size, start, page_number)
         return page_number
 
@@ -165,10 +190,10 @@ from rest_framework.generics import  ListAPIView
 # urlpatterns += [ re_path(r'^api/UsersDataTable/$', UsersDataTable.as_view(), name="inquiry_user"), ]
 # 
 # /api/UsersDataTable?id=
-class VisitDataTable(generics.ListAPIView):
-    serializer_class = VariationDataTableSerializer
+class PatientDataTable(generics.ListAPIView):
+    serializer_class = PatientDataTableSerializer
     pagination_class = DataTablePagination
-    filterset_class = VisitFilter
+    filterset_class = PatientFilter
 
     filter_backends = [
                 filters.SearchFilter, 
@@ -176,14 +201,16 @@ class VisitDataTable(generics.ListAPIView):
                 DjangoFilterBackend
                 ]
     # search_fields = ["title", "description"] // old version
-    filterset_fields = ["title"]
-    ordering_fields  = ["title", "id"]
+    filterset_fields = ["firstname"]
+    ordering_fields  = ["-id"]
     #ordering_fields = '__all__'
     # filterset_fields = ['title']
     #ordering = ['id']
     def get_queryset(self):
-        print(self.request)
-        return Visit.objects.all().order_by('-timestamp')
+        # print(self.request)
+        pids = UserType.objects.all()
+        patients = Account.objects.filter(pk__in=pids.values('user_id'))
+        return patients#Account.objects.all().order_by('-id')
 
 
 

@@ -18,7 +18,6 @@ from rest_framework.views import APIView
 from vendor.models import Vendor
 from rest_framework.generics import CreateAPIView, ListAPIView,ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
 from products.serializers import VariationSerializer
-from .models import query_musics_by_args
 from counter.models import Counter
 # from store.service import getUserStoreService
 # Create your views here.
@@ -119,7 +118,7 @@ class ProductListAPIView(generics.ListAPIView):
 
 
 class ProductRetrieveAPIView(generics.RetrieveAPIView):
-	queryset = Product.objects.all()
+	queryset = Variation.objects.all()
 	serializer_class = ProductDetailSerializer
 
 
@@ -149,7 +148,14 @@ class VariationBatchAPIView(APIView):
 	def get(self, request):
 		# variation_by_counter = Variation.objects.filter(fk_counter_id=request.session['counter']).values_list('id')
 		# print(variation_by_counter)
+		adjustment_purpose = request.GET.get('adjustment')
+		
+		if adjustment_purpose:
+			var = Response(VariationBatchSerializer(VariationBatch.objects.all(), many=True).data)
+			return var
 		return Response(VariationBatchSerializer(VariationBatch.objects.filter(fk_variation__fk_counter_id=request.session['counter']), many=True).data)
+
+	
 
 
 class VariationBatchViewSet(viewsets.ModelViewSet):
@@ -177,22 +183,49 @@ class VariationBatchPriceAPIView(APIView):
 	def get(self, request):
 		fk_user_type_id = request.GET.get('fk_user_type_id')
 		fk_variation_batch_id = request.GET.get('variation_batch_id')
-		variation_batch_price = VariationBatchPrice.objects.filter(fk_user_type_id=fk_user_type_id).filter(fk_variation_batch_id=fk_variation_batch_id).first()
+		variation_batch_price = VariationBatchPrice.objects.filter(fk_variation_batch_id=fk_variation_batch_id).first()
+		if fk_user_type_id:
+			variation_batch_price = VariationBatchPrice.objects.filter(fk_user_type_id=fk_user_type_id).filter(fk_variation_batch_id=fk_variation_batch_id)
 		quantity = 0
 		batchno = ''
 		expiry_date = ''
+		price = 0
+		price = VariationBatch.objects.filter(pk=fk_variation_batch_id).first().sale_price
 		if variation_batch_price:
 			var_batch = variation_batch_price.fk_variation_batch
 			if var_batch:
 				quantity = var_batch.quantity
 				batchno = var_batch.batchno
 				expiry_date = var_batch.expiry_date
+				price = variation_batch_price.price
 		data = {
-			'price':variation_batch_price.price if variation_batch_price else 0,
+			'price':price,
 			'stock' : quantity,
 			"batchno" : batchno
 		}
 		return Response(data)
+
+	def post(self, request, *args, **kwargs):
+			var_batch_price_id = request.data.get('var_batch_price_id') #for edit purpose
+			var_batch_price_obj = VariationBatchPrice()
+			if var_batch_price_id:
+				var_batch_price_obj = VariationBatchPrice.objects.filter(pk=var_batch_price_id).first()	
+				if not var_batch_price_obj:
+					return Response('Failed to update', status=400)
+			price = request.data.get('price')
+			fk_variation_batch_id = request.data.get('fk_variation_batch_id')
+			fk_user_type_id = request.data.get('fk_user_type_id')
+
+			#check if item price is assign to the type of fk_user_type_id
+			check_var_batch_price_obj = VariationBatchPrice.objects.filter(fk_user_type_id=fk_user_type_id).filter(fk_variation_batch_id=fk_variation_batch_id).first()
+			if check_var_batch_price_obj:
+				return Response('Price already set for this user type', status=400)			
+			var_batch_price_obj.fk_variation_batch_id = fk_variation_batch_id
+			var_batch_price_obj.price = price
+			var_batch_price_obj.sale_price = price
+			var_batch_price_obj.fk_user_type_id = fk_user_type_id
+			var_batch_price_obj.save()
+			return Response('Success', status=200)
 
 # class VariationAPIView(APIView):
 
@@ -276,9 +309,9 @@ class AddProductAPIView(APIView): #VariationAdd
 					'detail': 'Product Saved successfully'
 					})
 	def delete(self, request):
-		print(request)
 		permission_classes = [IsAuthenticated]
 		variation_id = request.data.get('variation_id')
+		print('variation_id', variation_id)
 		variation = Variation.objects.get(pk=variation_id)
 		if variation:
 			variation.delete()
@@ -320,6 +353,7 @@ class ProductVariationRetrieveUpdateDestroyApiView(RetrieveUpdateDestroyAPIView)
         return MembershipType.objects.all()
 
 def hmsproducts(request):
+	permission_classes = [IsAuthenticated]
 	context = {
 		'title' : 'HMS products',
 		'products' : Variation.objects.all(),
@@ -331,18 +365,100 @@ def hmsproducts(request):
 	}
 	return render(request, "personal/dashboard_layout/products.html", context)
 
+def hmsproduct_detail(request, id):
+	permission_classes = [IsAuthenticated]
+	variation = Variation.objects.get(pk=id)
+	print('varitin',variation)
+	context = {
+		'title' : 'Editing '+ variation.title ,
+		'variation' : variation,
+		'suppliers' : Vendor.objects.all(),
+		'manufacturers' : Company.objects.all(),
+		'generics' : GenericName.objects.all(),
+		'brands' : Brand.objects.all(),
+		'counters' : Counter.objects.all(),
+		'product_id' : id,
+	}
+	return render(request, "personal/dashboard_layout/hmsproduct_detail.html", context)
+
+
+def hmsdruglists(request):
+	permission_classes = [IsAuthenticated]
+	context = {
+			'title' : 'HMS DrugList',
+			'products' : Variation.objects.all(),
+			'suppliers' : Vendor.objects.all(),
+			'manufacturers' : Company.objects.all(),
+			'generics' : GenericName.objects.all(),
+			'brands' : Brand.objects.all(),
+			'counters' : Counter.objects.all(),
+		}
+	return render(request, "personal/dashboard_layout/hmsdruglists.html", context)
+from users.models import UserTypes
+
+def drugprice_special(request):
+	permission_classes = [IsAuthenticated]
+	context = {
+			'title' : 'Price setup / Special Users',
+			'usertypes' : UserTypes.objects.all(),
+			
+		}
+	return render(request, "personal/dashboard_layout/special_price.html", context)
+
+from rest_framework.decorators import api_view
+@api_view(['GET','POST'])
+def apihmsproduct_detail(request, id):
+	permission_classes = [IsAuthenticated]
+	if request.method == 'GET':
+		return Response(VariationSerializer(Variation.objects.filter(pk=id), many=True).data)
+		# context = {
+		# 	'title' : 'HMS products',
+		# 	'products' : Variation.objects.all(),
+		# 	'suppliers' : Vendor.objects.all(),
+		# 	'manufacturers' : Company.objects.all(),
+		# 	'generics' : GenericName.objects.all(),
+		# 	'brands' : Brand.objects.all(),
+		# 	'counters' : Counter.objects.all(),
+		# }
+		# return render(request, "personal/dashboard_layout/hmsproduct_detail.html", context)
+
+
+def sales(request):
+	permission_classes = [IsAuthenticated]
+	context = {
+		'title' : 'Sales',
+		# 'products' : Variation.objects.all(),
+		# 'suppliers' : Vendor.objects.all(),
+		# 'manufacturers' : Company.objects.all(),
+		# 'generics' : GenericName.objects.all(),
+		# 'brands' : Brand.objects.all(),
+		# 'counters' : Counter.objects.all(),
+	}
+	return render(request, "personal/dashboard_layout/sales.html", context)
+
+
 def hmsvariations(request, id):
+	permission_classes = [IsAuthenticated]
 	context = {
 		'product_id' : id
 	}
 	return render(request, "personal/dashboard_layout/variation.html", context)
 
 def datatable(request):
+	permission_classes = [IsAuthenticated]
 	context = {}
 	return render(request, "personal/dashboard_layout/datatable.html", context)
 
+def adjustments(request):
+	permission_classes = [IsAuthenticated]
+	context = {
+		'page_title' : 'Adjustments',
+		'products' : Variation.objects.all(),
+	}
+	return render(request, "personal/dashboard_layout/adjustment.html", context)
+
 class PurchaseVariationBatchAPIView(APIView):
-	
+	permission_classes = [IsAuthenticated]
 	def post(self, request, *args, **kwargs):
 		variation_batch = VariationBatch()
 		print(request.data)
@@ -356,3 +472,26 @@ class PurchaseVariationBatchAPIView(APIView):
 		variation_batch.save()
 		return Response('Success', status=200)
 
+# class VariationBatchPriceAPIView(APIView):
+# 	permission_classes = [IsAuthenticated]
+# 	def get(self, request, *args, **kwargs):
+# 		var_batch_price_id = request.data.get('var_batch_price_id') #for edit purpose
+# 		var_batch_price_obj = VariationBatchPrice()
+# 		if var_batch_price_id:
+# 			var_batch_price_obj = VariationBatchPrice.objects.filter(pk=var_batch_price_id).first()	
+# 			if not var_batch_price_obj:
+# 				return Response('Failed to update', status=400)
+# 		price = request.data.get('price')
+# 		fk_variation_batch_id = request.data.get('fk_variation_batch_id')
+# 		fk_user_type_id = request.data.get('fk_user_type_id')
+
+# 		#check if item price is assign to the type of fk_user_type_id
+# 		check_var_batch_price_obj = VariationBatchPrice.objects.filter(fk_user_type_id=fk_user_type_id).filter(fk_variation_batch_id=fk_variation_batch_id).first()
+# 		# if check_var_batch_price_obj:
+# 		# 	return Response('Price already set for this user type', status=400)			
+# 		var_batch_price_obj.fk_variation_batch_id = fk_variation_batch_id
+# 		var_batch_price_obj.price = price
+# 		var_batch_price_obj.sale_price = price
+# 		var_batch_price_obj.fk_user_type_id = fk_user_type_id
+# 		var_batch_price_obj.save()
+# 		return Response('Success', status=200)

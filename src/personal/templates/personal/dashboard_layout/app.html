@@ -7,7 +7,7 @@
         <meta name="description" content="Hospital Pharmacy Management System">
         <meta name="author" content="Inlinetech HMS">
         <!-- App favicon -->
-        <link rel="shortcut icon" href="assets/images/favicon.ico">
+        <link rel="shortcut icon" href="https://inlinetech.com.np/images/logo.png">
         <!-- App title -->
         <title>HMS | INLINETECH</title>
         <!-- CSRF Token -->
@@ -17,10 +17,13 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.9.55/css/materialdesignicons.min.css" integrity="sha512-vIgFb4o1CL8iMGoIF7cYiEVFrel13k/BkTGvs0hGfVnlbV6XjAA0M0oEHdWqGdAVRTDID3vIZPOHmKdrMAUChA==" crossorigin="anonymous" />
         <script src="https://cdn.jsdelivr.net/npm/vue-toast-notification"></script>
         <link href="https://cdn.jsdelivr.net/npm/vue-toast-notification/dist/theme-default.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="https://coderthemes.com/zircos/layouts/vertical/assets/css/icons.min.css">
         <script src="https://unpkg.com/vue-toasted"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vue-toasted/1.1.28/vue-toasted.min.css" integrity="sha512-P9tgFEUBcyvFHEXSRGLQB/SvGxnMfJCZGy4SBp+JIFgs1BSoYfUkadkZri9Rwkeh8Vg0lGo72X99o31wetRGCw==" crossorigin="anonymous" />
         <script src="https://unpkg.com/vuejs-datepicker"></script>
         <script src="https://unpkg.com/vuejs-datepicker/dist/locale/translations/fr.js"></script>
+        <script src="https://unpkg.com/vue-multiselect@2.1.0"></script>
+        <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
         <!-- Table datatable css -->
         <link href="https://coderthemes.com/zircos/layouts/vertical/assets/libs/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
         <link href="https://coderthemes.com/zircos/layouts/vertical/assets/libs/datatables/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
@@ -46,6 +49,10 @@
             .your-custom-class {
             background-color: #59b460 !important; 
             }
+            .v-select .dropdown-menu {
+  display:block;
+}
+
             .styled-table {
             border-collapse: collapse;
             margin: 25px 0;
@@ -79,9 +86,13 @@
         </style>
         <!-- Init the plugin -->
         <!-- development version, includes helpful console warnings -->
-        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script> -->
+        <script src="https://unpkg.com/vue@latest"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/vue-toasted"></script>
+        <script src="https://unpkg.com/vue@latest"></script>
+
+        <!-- use the latest vue-select release -->
         <script src="https://unpkg.com/vue-select@latest"></script>
         <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
     </head>
@@ -106,7 +117,7 @@
                             <li class="dropdown notification-list">
                                 <a class="nav-link dropdown-toggle  waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                                     <i class="mdi mdi-bell noti-icon"></i>
-                                    <span class="badge badge-success rounded-circle noti-icon-badge">4</span>
+                                    
                                     <div class="noti-dot">
                                         <span class="dot"></span>
                                         <span class="pulse"></span>
@@ -180,79 +191,19 @@
                                     See all Notification
                                     <i class="fi-arrow-right"></i>
                                     </a>
+                                
+                                
                                 </div>
                             </li>
-                            <li class="dropdown notification-list">
-                                <a class="nav-link dropdown-toggle  waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <i class="mdi mdi-email noti-icon"></i>
-                                <span class="badge badge-danger rounded-circle noti-icon-badge">8</span>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right dropdown-lg">
-                                    <!-- item-->
-                                    <div class="dropdown-item noti-title">
-                                        <h5 class="font-16 m-0">
-                                            <span class="float-right">
-                                            <a href="" class="text-dark">
-                                            <small>Clear All</small>
-                                            </a>
-                                            </span>Messages
-                                        </h5>
-                                    </div>
-                                    <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 422px;">
-                                        <div class="slimscroll noti-scroll" style="overflow: hidden; width: auto; height: 422px;">
-                                            <div class="inbox-widget">
-                                                <a href="#">
-                                                    <div class="inbox-item">
-                                                        <div class="inbox-item-img"><img src="assets/images/users/avatar-1.jpg" class="rounded-circle" alt=""></div>
-                                                        <p class="inbox-item-author">Chadengle</p>
-                                                        <p class="inbox-item-text text-truncate">Hey! there I'm available...</p>
-                                                    </div>
-                                                </a>
-                                                <a href="#">
-                                                    <div class="inbox-item">
-                                                        <div class="inbox-item-img"><img src="assets/images/users/avatar-2.jpg" class="rounded-circle" alt=""></div>
-                                                        <p class="inbox-item-author">Tomaslau</p>
-                                                        <p class="inbox-item-text text-truncate">I've finished it! See you so...</p>
-                                                    </div>
-                                                </a>
-                                                <a href="#">
-                                                    <div class="inbox-item">
-                                                        <div class="inbox-item-img"><img src="assets/images/users/avatar-3.jpg" class="rounded-circle" alt=""></div>
-                                                        <p class="inbox-item-author">Stillnotdavid</p>
-                                                        <p class="inbox-item-text text-truncate">This theme is awesome!</p>
-                                                    </div>
-                                                </a>
-                                                <a href="#">
-                                                    <div class="inbox-item">
-                                                        <div class="inbox-item-img"><img src="assets/images/users/avatar-4.jpg" class="rounded-circle" alt=""></div>
-                                                        <p class="inbox-item-author">Kurafire</p>
-                                                        <p class="inbox-item-text text-truncate">Nice to meet you</p>
-                                                    </div>
-                                                </a>
-                                                <a href="#">
-                                                    <div class="inbox-item">
-                                                        <div class="inbox-item-img"><img src="assets/images/users/avatar-5.jpg" class="rounded-circle" alt=""></div>
-                                                        <p class="inbox-item-author">Shahedk</p>
-                                                        <p class="inbox-item-text text-truncate">Hey! there I'm available...</p>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <!-- end inbox-widget -->
-                                        </div>
-                                        <div class="slimScrollBar" style="background: rgb(158, 165, 171); width: 5px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px;"></div>
-                                        <div class="slimScrollRail" style="width: 5px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div>
-                                    </div>
-                                    <!-- All-->
-                                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
-                                    See all Messages
-                                    <i class="fi-arrow-right"></i>
-                                    </a>
-                                </div>
-                            </li>
+                        
                             <li class="dropdown notification-list">
                                 <a class="nav-link dropdown-toggle nav-user mr-0 waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <img src="assets/images/users/avatar-1.jpg" alt="user-image" class="rounded-circle">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSq85nM_mqPIwNv98rKduTCxaGlckt6D2raXXXbpqcMlgbE27o7jhg8rHtLmobdpNaqcho&usqp=CAU" alt="user-image" class="rounded-circle">
                                 </a>
+                                <a class="nav-link dropdown-toggle nav-user mr-0 waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                <!-- <div id="MyClockDisplay" class="clock" onload="showTime()"></div> -->
+                                </a>
+                                
                                 <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
                                     <!-- item-->
                                     <div class="dropdown-header noti-title">
@@ -300,22 +251,7 @@
                                 </span>
                             </a>
                         </div>
-                        <ul class="list-unstyled topnav-menu topnav-menu-left m-0">
-                            <li class="d-none d-sm-block">
-                                <form class="app-search">
-                                    <div class="app-search-box">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Search...">
-                                            <div class="input-group-append">
-                                                <button class="btn" type="submit">
-                                                <i class="fas fa-search"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </li>
-                        </ul>
+                
                         <div class="clearfix"></div>
                     </div>
                 </div>
@@ -326,17 +262,14 @@
                             <!-- Navigation Menu-->
                             <ul class="navigation-menu in">
                                 <li class="has-submenu active">
-                                    <a href="#" class="active"> <i class="mdi mdi-view-dashboard"></i>Dashboard</a>
-                                    <ul class="submenu in">
-                                        <li class="active"><a href="/dashboard" class="active">Dashboard 1</a></li>
-                                    </ul>
+                                    <a href="/dashboard/" class="active"> <i class="mdi mdi-view-dashboard"></i>Dashboard</a>                                 
                                 </li>
                                 <li class="has-submenu last-elements">
                                     <a href="#"> <i class="mdi mdi-home-map-marker"></i>Catalogue
                                     </a>
                                     <ul class="submenu">
-                                        <li><a href="/hmsproducts">Drug List</a></li>
-                                        <li><a href="/vendor/">Supplier List</a></li>
+                                        <li><a href="/hmsproducts">Catalogue</a></li>
+                                        <li><a href="/hmsdruglists/">Drug List</a></li>
                                         <li><a href="/CustomerPatientUserList">Patient List</a></li>
                                         <li><a href="/api/VisitAPIView/">Visit List</a></li>
                                     </ul>
@@ -353,7 +286,7 @@
                                     <a href="#"> <i class="mdi mdi-flip-horizontal"></i>Sales
                                     </a>
                                     <ul class="submenu">
-                                        <li><a href="#">Sales Report</a></li>
+                                        <li><a href="/sales/">Sales Report</a></li>
                                         <li><a href="#">Sales Return Report</a></li>
                                     </ul>
                                 </li>
@@ -368,6 +301,9 @@
                                             <a href="/visit/">Register new Visit</a>
                                         </li>
                                         <li><a href="/office/">Settings</a></li>
+                                        <li><a href="/adjustments/">Adjustments</a></li>
+                                        <li><a href="/vendor/">Supplier List</a></li>
+                                        <li><a href="/drugprice_special/">Special Price</a></li>
                                     </ul>
                                 </li>
                                 
@@ -383,10 +319,13 @@
             </header>
             
             <div class="navbar-custom">
+                
                 <ul class="list-unstyled topnav-menu float-right mb-0">
+                    
                     <li class="dropdown notification-list">
+                        
                         <a class="nav-link dropdown-toggle  waves-effect" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                        <i class="mdi mdi-bell noti-icon"></i>
+                        
                         <span class="badge badge-success rounded-circle noti-icon-badge">4</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right dropdown-lg" style="">
@@ -635,11 +574,12 @@
                             <div class="col-md-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right">
-                                        <ol class="breadcrumb m-0">
+                                        
+                                        <!-- <ol class="breadcrumb m-0">
                                             <li class="breadcrumb-item"><a href="javascript: void(0);">Zircos</a></li>
                                             <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboard </a></li>
                                             <li class="breadcrumb-item active">Dashboard</li>
-                                        </ol>
+                                        </ol> -->
                                     </div>
                                     <h4 class="page-title">{% block page_title %} | hms{% endblock %}</h4>
                                 </div>
@@ -647,6 +587,20 @@
                         </div>
                         {% block content %}
                         <style>
+                            .clock {
+                                background: black;
+                            /* position: absolute; */
+                            top: 50%;
+                            left: 50%;
+                            transform: translateX(-50%) translateY(-50%);
+                            color: #17D4FE;
+                            font-size: 60px;
+                            font-family: Orbitron;
+                            letter-spacing: 7px;
+                        
+
+
+                        }
                             .loader{  /* Loader Div Class */
                             position: absolute;
                             top:0px;
@@ -662,6 +616,7 @@
                             opacity: 0.8;
                             filter: alpha(opacity=40);
                             }
+                            
                         </style>
                         {% endblock %}
                     </div>
@@ -688,7 +643,8 @@
             Vue.use(Toasted)
             Vue.component('v-select', VueSelect.VueSelect);
             Vue.use(VueLoading);
-            Vue.component('loading', VueLoading)
+            Vue.component('loading', VueLoading);
+            Vue.component('multiselect', window.VueMultiselect.default);
             Vue.prototype.$loader = '';
             Window.prototype.$ToastSuccess = function (thisRef, msg) { 
                 thisRef.$toasted.show(msg, { 

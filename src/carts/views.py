@@ -217,6 +217,10 @@ class CheckoutAPIView(TokenMixin, APIView):
 
 from .serializers import TransactionSerializer
 
+
+# def generate_bill(cart_obj):
+from app_settings.models import FiscalYear
+
 class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 	#authentication_classes = [SessionAuthentication]
 	#permission_classes = [IsAuthenticated]
@@ -257,6 +261,20 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 					cart.user_id = patient_id 
 					cart.fk_visit_id = fk_visit.id
 					cart.fk_counter_id = request.session.get('counter')
+					fiscal_year_obj = FiscalYear.objects.filter(active=True).first()
+					# cart.fk_fiscalyear = fiscal_year_obj
+					
+					test = cart.fk_fiscalyear_id!=fiscal_year_obj.id
+					print('test000', test)
+					if test:						
+						cart.fk_fiscalyear = fiscal_year_obj
+						bill_no = 1
+					else:
+						print('else')
+						cart.fk_fiscalyear = fiscal_year_obj
+						cart_last = Cart.objects.last()						
+						bill_no+=cart_last.bill_number
+					cart.bill_number = bill_no
 					cart.save()
 				
 		cart_id = request.GET.get('cart_id', cart.id) #cart_id nahunda new create hunxa 
@@ -284,6 +302,18 @@ class CartAPIView(CartTokenMixin, CartUpdateAPIMixin, APIView):
 		# print(cart.items)
 		return Response(data)
 
+	def post(self, request): #method for modifying the data
+		pass
+	
+	def delete(self, request):
+		cart_id = request.data.get('cart_id')
+		if cart_id:
+			cart_obj = Cart.objects.filter(pk=cart_id).first()
+			if cart_obj:
+				cart_obj.delete()
+				return Response('Bill removed', status=204)
+			return Response('Bill doesn`t exist, maybe someone has already deleted it? ', status=400)
+		return Response('Something went Wrong', status=400)
 
 
 if settings.DEBUG:

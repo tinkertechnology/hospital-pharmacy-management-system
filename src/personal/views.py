@@ -2,10 +2,10 @@ from django.shortcuts import render, redirect
 from operator import attrgetter
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from app_settings.models import SideMenu
-from account.models import Visit
+from account.models import Visit, VisitType
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-BLOG_POSTS_PER_PAGE = 10
+# BLOG_POSTS_PER_PAGE = 10
 
 def home_screen_view(request, *args, **kwargs):
 	return HttpResponseRedirect('/login')
@@ -41,7 +41,11 @@ def  dashboard_view(request):
 	# return HttpResponse('dashboard_view')
 	menus = SideMenu.objects.filter(parent_id=None).order_by('order').all()
 	visits = Visit.objects.order_by('-id').all()
-	ctx = {'menus' : menus,'visits': visits}
+	ctx = {'menus' : menus,
+		  'visits': visits, 
+		  'visit_types' : VisitType.objects.all(),
+		  
+		  }
 	return render(request, 'personal/dashboard_layout/dashboard.html', ctx)
 
 

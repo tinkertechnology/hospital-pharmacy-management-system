@@ -23,3 +23,10 @@ class SideMenu(models.Model):
 
 	def __str__(self):
 		return str(self.title)
+
+class FiscalYear(models.Model):
+	title =models.CharField(max_length=100, null=True, blank=True)
+	active = models.BooleanField(default=False, null=True, blank=True)
+	
+	def __str__(self):
+		return self.title

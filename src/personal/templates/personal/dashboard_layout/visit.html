@@ -1,30 +1,33 @@
 {% extends 'personal/dashboard_layout/app.html' %}
 
 {% load static %}
-
+{% block page_title %} Register New Visit {% endblock %}
 {% block content %}
 <div id="add_visit">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-12">
             <div class="card-box">
                 <h4 class="header-title">Visit </h4>
                 <p class="sub-header">
-                   Register New Visit 
-                </p>
-    
-                <div class="row">
-                    <div class="col-lg-12">
+                </p>    
+                <div class="row1">                  
                         <div class="form-horizontal">
                             <div class="form-group row">
-                                <label> Select Patient</label>
-                                <div class="col-sm-8">
+                                <div class="col-sm-3 col-md-3">
+                                    <label> Select Patient</label>
+                                </div>
+                                
+                                <div class="col-sm-9 col-md-6">
                                     <!-- <select class="form-control" v-model="fk_customer_user_id">
                                         <option  v-for="(patient, index) in patients" v-bind:value="patient.id">[[ patient.firstname ]] [[patient.lastname]] [[patient.mobile]]</option>
                                     </select> -->
                                 
-                                    <v-select label="fullname" :options="patients"  v-model="fk_customer_user_id"></v-select>
+                                    <!-- <v-select label="fullname" :options="patients"  v-model="fk_customer_user_id"></v-select> -->
+                                    <label class="typo__label">Patient</label>
+                                        <multiselect v-model="fk_customer_user_id" :options="patients" label="fullname" :searchable="true" :close-on-select="true" :show-labels="true" placeholder="Select Patient"></multiselect>
+                                    <!-- <pre class="language-json"><code>[[ fullname  ]]</code></pre> -->
                                 </div>
-                                <div class="col-sm-2">
+                                <div class="col-sm-3 col-md-3" >
                                     <button class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">+</button>
                                 </div>
                             </div>
@@ -51,6 +54,19 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <label class="col-sm-2 control-label"> Patient Type</label>
+                                <div class="col-sm-10">
+                                    <div class="form-group">                                   
+                                        <select class="form-control" v-model="fk_patient_type_id">                                           
+                                            {% for ut in user_types %}
+                                                <option value="{{ut.id}}">{{ut.title}}</option>
+                                            {% endfor %}                                            
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group row">
                                 <label class="col-sm-4 control-label">Appointment Date</label>
                                 
@@ -68,7 +84,7 @@
     
                            
                         </div>
-                    </div>
+                   <br />
                     <div class="row">
                         <div class="col-md-12">
                             <center><button class="btn btn-info" @click="saveVisit">Add</button></center>
@@ -86,7 +102,7 @@
                 <!-- end row -->
     
         </div>
-        <div class="col-md-8">
+        <!-- <div class="col-md-8">
             <div class="card-box">
                 <h4 class="header-title mb-4">Default Tabs</h4>
 
@@ -136,7 +152,7 @@
                 </div>
 
             </div>
-        </div>
+        </div> -->
     </div>
 
         <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"  style="display: none;">
@@ -301,7 +317,7 @@
                     </div>
             
         </div>
-</div>
+    </div>
 
 
 {% endblock %}
@@ -338,6 +354,7 @@
         fk_customer_user_id : null,
         fk_doctor_user_id : null,
         appointmentDate : '',
+        fk_patient_type_id : null,
         remarks: '',
         visit_type: '',
        selectedPatient : null,
@@ -348,7 +365,7 @@
        showModal : false,
        patients:[],
        patient : [{
-            id: 0,
+            id: '',
             firstname: "",
             lastname: "",
             mobile: "",
@@ -376,7 +393,7 @@
         fk_gender_id : null,
         lastname: "",
         email : "",
-        patient_type_id : "",
+        patient_type_id : null,
         mobile : "",
         visit_type: '',
         address: '',
@@ -400,11 +417,12 @@
                                'X-CSRFToken': '{{ csrf_token }}'
                            }, 
                data: {
-                    fk_customer_user_id: this.fk_customer_user_id,
+                    fk_customer_user_id: this.fk_customer_user_id.id,
                     fk_doctor_user_id : this.fk_doctor_user_id,
                     // appointmentDate : '2020-01-01', //this.appointmentDate,
                     appointmentDate : this.customerForm.appointmentDate,
                     remarks : this.remarks,
+                    fk_patient_type_id : this.fk_patient_type_id,
                     visit_type : this.visit_type,
                     
                     

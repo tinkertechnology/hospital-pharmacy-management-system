@@ -58,8 +58,9 @@ from account.views import (
     visit_type_index,
     visit_type_add,
     visit_type_edit,
-    PatientDetailAPIView
+    PatientDetailAPIView,
 )
+from account.patient_datatable import PatientDataTable
 
 
 
@@ -70,10 +71,9 @@ from carts.views import (
         CartItemSaveView,
         CartTransactionView,
         RemoveCartItemFromCart,
-        
-        
-
         )
+
+from orders.datatable import SalesDataTable
 from orders.views import (
                     # AddressSelectFormView, 
                     # UserAddressCreateView,
@@ -113,8 +113,10 @@ from orders.views import (
                     purchaseDetail,
                     PurchaseOrderAPIView,
                     PurchaseItemOrderAPIView,
+                    AdjustmentAPIView,
+                    generate_pdf,
                     )
-from orders.datatable import PurchaseDataTable
+from orders.datatable import PurchaseDataTable, AdjustmentDataTable
 from products.views import (
         # APIHomeView,
         CategoryListAPIView,
@@ -131,19 +133,22 @@ from products.views import (
         ProductVariationRetrieveAPIView,
         VariationByPatientAPIView,
         hmsproducts,
+        sales,
+        hmsdruglists,        
+        drugprice_special,
+        hmsproduct_detail,
+        apihmsproduct_detail,
+        adjustments,
         datatable,
         hmsvariations,
         VariationBatchAPIView,
         VariationBatchPriceAPIView,
         PurchaseVariationBatchAPIView,
-        VariationAPIView
-        
-
+        VariationAPIView,
+        VariationBatchPriceAPIView        
     )
 
 from prescription.views import(
-
-
     ApiPostFile
     )
 
@@ -151,14 +156,12 @@ from inquiry.views import (
     InquiryApiView,
     message_list,
     view_messages
-
     )
 
 from users.views import (
     UserInquiryList,
     UserInquiryForPharmacist,
     DeliveryUsersByStore
-    
     )
 
 
@@ -322,7 +325,8 @@ handler500 = views.handler500
 
 
 from orders.invoice import GeneratePDF, GenerateFullPDF
-from products.datatable import VariationDataTable
+from products.datatable import VariationDataTable, VariationBatchTable, VariationBatchPriceTable
+
 from account.visit_datatable import VisitDataTable
 urlpatterns += [
     path(r'admin/', admin.site.urls),
@@ -359,7 +363,13 @@ urlpatterns += [
     path('pos1/<int:patient_id>/', pos1, name='pos'),
     path('carts', carts, name="carts"),
     path('cartitems', cartitems, name="cartitems"),
-    path('hmsproducts/', hmsproducts, name="hmsproducts"),
+    path('hmsproducts/', hmsproducts, name="hmsproducts"), #catalogue
+    path('hmsproduct_detail/<int:id>/', hmsproduct_detail, name="hmsproduct_detail"), #catalogue
+    path('sales/', sales, name="sales"),
+    path('hmsdruglists/', hmsdruglists, name="hmsdruglists"),
+    path('api/hmsproduct_detail/<int:id>/', apihmsproduct_detail, name="api_hmsproduct_detail"),
+    path('drugprice_special/', drugprice_special, name="drugprice_special"),
+    path('adjustments/', adjustments, name="adjustments"),
     path('datatable/', datatable, name="datatable"),
     path('hmsvariations/<int:id>/', hmsvariations, name="hmsvariations"),
     path('purchase/', purchase, name="purchase"),
@@ -370,6 +380,10 @@ urlpatterns += [
     path('patient/detail/<int:id>/', patient_detail, name="patient_detail"),    
     path('api/VisitAPIView/', VisitAPIView.as_view(), name="VisitAPIView"),
     path('api/send_invoice_pdf/<int:cart_id>/',GeneratePDF.as_view(), name='pdf_send_email'),
+
+    # path('api/send_invoice_pdf/<int:cart_id>/', generate_pdf, name='generate_pdf'),
+
+
     path('api/full_bill/<int:cart_id>/',GenerateFullPDF.as_view(), name='pdf_send_email'),
     path('api/patients/', PatientUserListAPIView.as_view(), name="patients-lists"),
     path('CustomerPatientUserList', CustomerPatientUserList.as_view(), name="CustomerPatientUserList"),
@@ -382,10 +396,15 @@ urlpatterns += [
     path('api/PurchaseVariationBatchAPIView/', PurchaseVariationBatchAPIView.as_view(), name="PurchaseVariationBatchAPIView"),
     path('api/PurchaseOrderAPIView/', PurchaseOrderAPIView.as_view(), name="PurchaseOrderAPIView"),
     path('api/PurchaseItemOrderAPIView/', PurchaseItemOrderAPIView.as_view(), name="PurchaseItemOrderAPIView"),
+    path('api/AdjustmentAPIView/', AdjustmentAPIView.as_view(), name="AdjustmentAPIView"),
     path('api/data', VariationDataTable.as_view(), name="VariationDataTable"),
+    path('api/VariationBatchTable', VariationBatchTable.as_view(), name="VariationBatchTable"),
+    path('api/VariationBatchPriceTable', VariationBatchPriceTable.as_view(), name="VariationBatchPriceTable"),
     path('api/PurchaseDataTable', PurchaseDataTable.as_view(), name="PurchaseDataTable"),
+    path('api/AdjustmentDataTable', AdjustmentDataTable.as_view(), name="AdjustmentDataTable"),
     path('api/visits', VisitDataTable.as_view(), name="VisitDataTable"),
-
+    path('api/PatientDataTable', PatientDataTable.as_view(), name="PatientDataTable"),
+    path('api/SalesDataTable', SalesDataTable.as_view(), name="SalesDataTable"),
     # path('api/address', GetSDLdata.as_view(), name="GetSDLdata"),
     re_path(r'^api/address/', include('address.urls')),
 

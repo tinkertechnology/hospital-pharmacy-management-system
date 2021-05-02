@@ -3,11 +3,13 @@ import django_filters
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
-from .models import Variation
+from .models import Adjustment, Purchase
+from products.models import Variation
 from products.filters import VariationFilter
+from .filters import AdjustmentFilter
 from django_filters import FilterSet, CharFilter, NumberFilter
-from .models import Purchase
-from .filters import PurchaseFilter
+from .filters import PurchaseFilter, SalesFilter
+from carts.models import Cart
 
 class UsersDataTableFilterSet(django_filters.FilterSet):
     
@@ -122,6 +124,7 @@ class DataTablePagination(pagination.PageNumberPagination):
             'count': self.page.paginator.count,
             'recordsTotal': self.page.paginator.count,
             'recordsFiltered' : self.page.paginator.count,
+           
             'data': data
         })
 
@@ -252,6 +255,7 @@ class DataTablePagination(pagination.PageNumberPagination):
             'count': self.page.paginator.count,
             'recordsTotal': self.page.paginator.count,
             'recordsFiltered' : self.page.paginator.count,
+            'totalSales' : '',
             'data': data
         })
 
@@ -279,3 +283,105 @@ class PurchaseDataTable(generics.ListAPIView):
     def get_queryset(self):
         print(self.request)
         return Purchase.objects.all()
+
+
+
+class AdjustmentDataTableSerializer(serializers.ModelSerializer):
+    product = serializers.SerializerMethodField()
+    batchno = serializers.SerializerMethodField()
+    class Meta:
+        model = Adjustment
+        fields= '__all__'
+    
+    def get_product(self, obj):
+        product = ""
+        var_batch_obj = obj.fk_variation_batch
+        if var_batch_obj:
+            var_obj = var_batch_obj.fk_variation
+            if var_obj:
+                product = var_obj.title
+        return product
+
+    def get_batchno(self, obj):
+        batchno = ""
+        var_batch_obj = obj.fk_variation_batch
+        if var_batch_obj:
+           batchno = var_batch_obj.batchno
+           
+        return batchno            
+
+class AdjustmentDataTable(generics.ListAPIView):
+    serializer_class = AdjustmentDataTableSerializer
+    pagination_class = DataTablePagination
+    filterset_class = AdjustmentFilter
+
+    filter_backends = [
+                filters.SearchFilter, 
+                filters.OrderingFilter, 
+                DjangoFilterBackend
+                ]
+    # search_fields = ["title", "description"] // old version
+    filterset_fields = ["fk_variation__title"]
+    ordering_fields  = ["id"]
+    #ordering_fields = '__all__'
+    # filterset_fields = ['title']
+    #ordering = ['id']
+    def get_queryset(self):
+        print(self.request)
+        return Adjustment.objects.all().order_by('-id')
+
+
+
+class SalesDataTableSerializer(serializers.ModelSerializer): #order ko data-table Cart
+    payment_mode = serializers.SerializerMethodField()
+    visit_id = serializers.SerializerMethodField()
+    bill_counter = serializers.SerializerMethodField()
+    total = serializers.SerializerMethodField()
+    class Meta:
+        model = Cart
+        fields= '__all__'
+    
+    def get_payment_mode(self, obj):
+        payment_mode = "n/a"
+        if obj.fk_payment_method:
+            payment_mode = obj.fk_payment_method.title
+
+        return payment_mode
+
+    def get_visit_id(self, obj):
+        visit_id = "n/a"
+        if obj.fk_visit:
+            visit_id = obj.fk_visit.visit_id
+        return visit_id
+
+    def get_bill_counter(self, obj):
+        bill_counter = "n/a"
+        if obj.fk_counter:
+            bill_counter = obj.fk_counter.name
+        return bill_counter        
+
+    def get_total(self, obj):
+        total = obj.total        
+        if obj.transaction_total > 0:
+           total = obj.total - obj.transaction_total                      
+        return total
+
+class SalesDataTable(generics.ListAPIView):
+    serializer_class = SalesDataTableSerializer
+    pagination_class = DataTablePagination
+    filterset_class = SalesFilter
+
+    filter_backends = [
+                filters.SearchFilter, 
+                filters.OrderingFilter, 
+                DjangoFilterBackend
+                ]
+    # search_fields = ["title", "description"] // old version
+    filterset_fields = ["fk_variation__title"]
+    ordering_fields  = ["id"]
+    #ordering_fields = '__all__'
+    # filterset_fields = ['title']
+    #ordering = ['id']
+    def get_queryset(self):
+        print(self.request)
+        return Cart.objects.all().order_by('-id')

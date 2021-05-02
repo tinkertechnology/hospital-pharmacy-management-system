@@ -10,6 +10,8 @@ User = get_user_model()
 from orders.convert_num_to_words import generate_amount_words
 from payment.models import PaymentMethod
 from office.models import Office
+from account.models import Visit
+from app_settings.models import FiscalYear
 # from orders.models import StoreWiseOrder
 
 
@@ -78,7 +80,7 @@ def cart_item_post_save_receiver(sender, instance, *args, **kwargs):
 post_save.connect(cart_item_post_save_receiver, sender=CartItem)
 
 post_delete.connect(cart_item_post_save_receiver, sender=CartItem)
-from account.models import Visit
+
 
 class Cart(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -99,6 +101,8 @@ class Cart(models.Model):
 	transaction_total = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
 	grand_total = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
 	fk_payment_method = models.ForeignKey(PaymentMethod, null=True, on_delete=models.CASCADE, blank=True)
+	fk_fiscalyear = models.ForeignKey(FiscalYear, null=True, on_delete=models.CASCADE, blank=True)
+	bill_number = models.CharField(max_length=100, null=True, blank=True)
 	# discount = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
 	# discount_percent = models.DecimalField(max_digits=25, decimal_places=2, default=0.00, null=True, blank=True)
 	

@@ -40,6 +40,8 @@ from counter.models import Counter
 from address.models import Country
 from vendor.models import Vendor
 from decimal import Decimal
+# import pdfkit
+from django.template.loader import get_template
 User = get_user_model()
 
 
@@ -93,7 +95,24 @@ class OrderListAPIView(ListAPIView):
 
 
 
+def generate_pdf(request, cart_id):
+	# invoice = get_object_or_404(Invoice, pk=invoice_id, created_by=request.user)
+	# team = Team.objects.filter(created_by=request.user).first()
 
+	template_name = 'orders/pdf.html'
+
+	# if invoice.is_credit_for:
+	# 	template_name = 'pdf_creditnote.html'
+
+	template = get_template(template_name)
+	# html = template.render({'invoice': invoice, 'team': team})
+	html = template.render({'invoice': '1234', 'team': '123'})
+	pdf = pdfkit.from_string(html, False, options={})
+
+	response = HttpResponse(pdf, content_type='application/pdf')
+	response['Content-Disposition'] = 'attachment; filename="invoice.pdf"'
+
+	return response
 
 
 
@@ -687,6 +706,7 @@ def carts(request):
 	user_id = request.GET.get('user_id')
 	visit_id = request.GET.get('visit_id')
 	user = User.objects.filter(pk=user_id).first()
+	carts = None
 	if user_id:
 		# user = User.objects.get(pk=user_id)
 		carts = Cart.objects.order_by('-id').filter(user_id=user_id)
@@ -728,12 +748,14 @@ def purchaseDetails(request):
 def purchaseDetail(request, purchase_id):
 	pass
 ###HMS
-
+from users.models import UserTypes
 def visit(request):
 	variations = Variation.objects.all()
 	visits_types = VisitType.objects.all()
 	blood_groups = BloodGroup.objects.all()
-	countries = Country.objects.all()	
+	countries = Country.objects.all()
+	users_type = UserTypes.objects.all()
+	print(users_type)	
 	context ={
 		'variations' : variations,
 		# 'visits_type' : visits_type,
@@ -741,7 +763,8 @@ def visit(request):
 		'visits_types' : visits_types,
 		'patient_types' : UserTypes.objects.all(),
 		'blood_groups' : blood_groups,
-		'countries' : countries
+		'countries' : countries,
+		'user_types' : users_type
 	}
 	return render(request, "personal/dashboard_layout/visit.html", context)
 
@@ -859,3 +882,68 @@ class PurchaseItemOrderAPIView(APIView):
 										)
 		return Response('Record has been Saved', status=200)
 
+
+
+#adjustment api
+from orders.models import Adjustment
+class AdjustmentAPIView(APIView):
+	def get(self, request, *args, **kwargs):
+		pass
+		# purchase_id = request.GET.get('purchase_id')
+		# purchase = Purchase.objects.filter(pk=purchase_id).first()
+		# data = {}
+		# serializer = PurchaseItemSerializer(purchase.purchaseitems.all(), many=True)
+		# data = {
+		# 	'purchase_item' : serializer.data,
+		# 	'total_purcahse' : purchase.subtotal,
+		# 	'purchase_date' : purchase.purchase_date,
+		# 	'bill_date' : purchase.bill_date,
+		# 	'bill_number' : purchase.bill_number,
+		# 	'fk_vendor_id' : purchase.fk_vendor_id,
+		# 	'fk_payment_method_id' : purchase.fk_payment_method_id,
+
+			
+		# }
+		# return Response(data)
+		
+	def post(self, request):
+		# purchaseitem_id = request.data.get('purchase_id')
+		fk_variation_batch_id = request.data.get('fk_variation_batch_id')
+		# adjustment_date = request.data.get('purchase_date')
+		math = request.data.get('math')
+		print('math', math)
+		quantity = request.data.get('quantity')
+		remarks = request.data.get('remarks')
+		if not math:
+			return Response('Please select operation for adjustment', status=400)
+		if not quantity:
+			return Response('Please input quantity for adjustment', status=400)
+
+		var_batch_obj  = VariationBatch.objects.get(pk=fk_variation_batch_id)
+		if var_batch_obj:
+			adjustment_obj = Adjustment()
+			adjustment_obj.change_quantity = quantity
+			adjustment_obj.initial_quantity = var_batch_obj.quantity
+			if math=='plus':
+				var_batch_obj.quantity+= int(quantity)
+				adjustment_obj.final_quantity = var_batch_obj.quantity
+			if math=='minus':
+				deduct_res = var_batch_obj.quantity - int(quantity)
+				if deduct_res > 0:
+					var_batch_obj.quantity = deduct_res
+					adjustment_obj.final_quantity = var_batch_obj.quantity
+				else: 
+					return Response('Deduction not possible because Stock is less than entered quantity', status=400)
+			var_batch_obj.save()
+		
+		adjustment_obj.fk_variation_batch_id = fk_variation_batch_id
+		adjustment_obj.operation = math
+		# adjustment_obj.adjustment_date = adjustment_date
+		adjustment_obj.remarks = remarks
+		adjustment_obj.save()					
+		return Response('success', status=200)
+
+	def delete(self, request):
+		instance = PurchaseItem.objects.get(id=request.data.get('purchaseitem_id'))
+		instance.delete()
+		return Response('Deleted', status=204)
