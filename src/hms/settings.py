@@ -118,7 +118,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'widget_tweaks',
     # My apps
-    'personal',
+    'personal', 
     'account',
     'carts',
     'products',
