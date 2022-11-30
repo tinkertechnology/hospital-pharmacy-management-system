@@ -1,1 +1,1 @@
-Django E-commerce full rest-api
+HMS open source hospital management system with pharmacy store
